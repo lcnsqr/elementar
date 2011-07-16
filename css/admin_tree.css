@@ -1,0 +1,166 @@
+#content_editor_tree {
+	color: #666666;
+}
+
+#tree_parent_0 {
+	position: relative;
+	background-color: #eee;
+	text-shadow: white 0 1px 0;
+	border: 1px solid #cccccf;
+	padding: 5px;
+}
+
+.tree_parent a {
+	color: #666666;
+}
+
+.tree_parent {
+	position: relative;
+}
+.tree_listing {
+	display: none;
+	margin-left: 16px;
+	line-height: 16px;
+	padding-bottom: 3px;
+}
+#tree_listing_0 {
+	display: block;
+	margin-left: 0;
+}
+
+.tree_listing_row {
+	height: 16px;
+	margin-bottom: 4px;
+}
+.unfold {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-image: url("/img/bullet_down.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.fold {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-image: url("/img/bullet_right.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.bullet_placeholder {
+	display: block;
+	width: 16px;
+	height: 16px;
+}
+
+.tree_listing_row .tree_listing_bullet {
+	float: left;
+	height: 16px;
+	line-height: 16px;
+}
+.tree_listing_row .tree_listing_icon {
+	float: left;
+	height: 16px;
+	line-height: 16px;
+}
+.tree_listing_row .tree_listing_icon img {
+	vertical-align: middle;
+}
+.tree_listing_row .tree_listing_menu {
+	display: none;
+	float: right;
+}
+.tree_listing_row .tree_listing_menu a.tree_menu_dropdown_button {
+	height: 16px;
+	line-height: 16px;
+}
+.tree_listing_row .tree_listing_menu a.tree_menu_dropdown_button img {
+	vertical-align: middle;
+}
+.tree_listing_row .tree_listing_header {
+	margin-left: 16px;
+	margin-right: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+.tree_listing_row .tree_listing_header h1 {
+	display: inline;
+	font-size: 13px;
+	vertical-align: -1px;
+}
+
+
+
+
+
+.tree_listing_row .tree_listing_text {
+	margin-left: 32px;
+	margin-right: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+.tree_listing_row span.label {
+	vertical-align: -1px;
+}
+
+.tree_listing_row form.label input[type="text"] {
+	background-color: #eee;
+	border-width: 0;
+	height: 16px;
+	line-height: 16px;
+	width: 100%;
+	color: #666666;
+	text-shadow: white 0 1px 0;
+	cursor: default;
+}
+.tree_listing_row .tree_listing_hover form.label input[type="text"] {
+	color: #2d2d2d;
+}
+.tree_listing_row form.label input.edit[type="text"] {
+	background-color: #fff;
+	border: 1px solid #cccccf;
+	cursor: text;
+	margin-top: -1px;
+	margin-left: -1px;
+}
+
+
+
+
+.tree_listing_row .tree_menu {
+	position: relative;
+}
+.tree_listing_row .tree_menu a {
+	display: block;
+	height: 12px;
+}
+.tree_listing_row .tree_menu a:hover {
+	color: #4478b2;
+}
+.tree_listing_row .tree_menu_dropdown {
+	display: none;
+	z-index: 1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 160px;
+	padding: 5px;
+	background-color: #fff;
+	border: 1px solid #666666;
+}
+.tree_listing_row .tree_menu_dropdown ul li {
+	position: static;
+	float: none;
+	margin-bottom: 2px;
+}
+.tree_listing_row .tree_menu_dropdown ul li a {
+	display: inline;
+}
+.tree_listing_row .tree_menu_dropdown ul li hr {
+	border-width: 0;
+	height: 1px;
+	background-color: #666;
+}

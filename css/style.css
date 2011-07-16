@@ -1,0 +1,174 @@
+body {
+	background-image: url("/img/body_bg.gif");
+	background-repeat: repeat-x; 
+	background-color: #fff;
+	background-position: 0px 34px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: .8em;
+	letter-spacing: 0px;
+}
+
+#header {
+	width: 100%;
+	height: 43px;
+	background-color: #063368;
+	background-image: url("/img/header_bg.png");
+	background-repeat: no-repeat;
+	background-position: center bottom;
+}
+
+#header #header_inside {
+	width: 1050px;
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+#header #header_inside p {
+	position: absolute;
+	top: 12px;
+	font-size: 8px;
+	line-height: 9px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+#header #header_inside p em {
+	font-style: normal;
+	color: #fad306;
+}
+
+#header #header_inside p a {
+	color: #fad306;
+	text-decoration: none;
+}
+#header #header_inside p a:visited {
+	color: #fad306;
+}
+#header #header_inside p a:active {
+	color: #fad306;
+}
+#header #header_inside p a:hover {
+	color: #fad306;
+	text-decoration: underline;
+}
+
+#header_shadow {
+	width: 100%;
+	height: 7px;
+	background-image: url("/img/header_shadow_bg.png");
+	background-repeat: no-repeat;
+	background-position: top center;
+}
+	
+#main {
+	width: 1050px;
+	margin-left: auto; 
+	margin-right: auto;
+	color: #063368;
+	line-height: 1.2em;
+}
+
+#main_top {
+	width: 100%;
+	height: 341px;
+	position: relative;
+}
+
+#main_top_nav {
+	position: relative;
+	width: 100%;
+	height: 111px;
+}
+
+#logo_rai {
+	position: absolute;
+	bottom: 0;
+}
+
+#main_top_nav ul {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+#main_top_nav ul li {
+	display: inline; 
+	color: #fff;
+	font-size: .8em;
+	font-weight: bold;
+}
+#main_top_nav ul li a {
+	color: #063368;
+	margin: 0px 2px 0px 2px;
+	font-weight: normal;
+	text-transform: uppercase;
+	text-decoration: none;
+}
+#main_top_nav ul li a:hover {
+	text-decoration: underline;
+}
+#main_top_nav ul li a:active {
+	color: #063368;
+}
+#main_top_nav ul li a:visited {
+	color: #063368;
+}
+
+#main_bottom_nav {
+	height: 69px;
+	width: 100%;
+	background-image: url("/img/main_bottom_nav_bg.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+#main_bottom {
+	width: 100%;
+	font-size: 1em;
+	line-height: 1.1em;
+}
+
+.main_bottom_left {
+	float: left;
+	margin-left: 40px;
+	width: 520px;
+	margin-bottom: 12px;
+}
+
+.main_bottom_right {
+	margin-left: 640px;
+	margin-bottom: 12px;
+}
+
+.rule {
+	width: 100%;
+	clear: left;
+	height: 9px;
+	background-image: url("/img/rule_bg.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.column_title {
+	margin-bottom: 16px;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	line-height: 1.6em;
+	font-weight: 600;
+	letter-spacing: -1px;
+	color: #fff;
+	text-shadow: 2px 2px 2px #353535;
+}
+
+#footer {
+	margin-top: 12px;
+	clear: both;
+}
+
+#footer p {
+	text-align: center;
+}
+
+#footer #logo_rango {
+	position: absolute;
+}
