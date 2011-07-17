@@ -5,7 +5,9 @@
 <?php endif; ?>
 
 <?php if ( (bool) $element_id === FALSE ): ?>
-<p>Criar elemento do tipo <?php echo $element_types_dropdown; ?> <a id="choose_<?php echo $parent; ?>_element_type" href="<?php echo $parent_id; ?>" title="Criar elemento">Criar</a></p>
+<div>
+<span>Criar elemento do tipo </span><?php echo $element_types_dropdown; ?><span> <a id="choose_<?php echo $parent; ?>_element_type" href="<?php echo $parent_id; ?>" title="Criar elemento">Criar</a></span>
+</div>
 <?php endif; ?>
 <hr />
 <div style="display: none;" id="element_editor_form">

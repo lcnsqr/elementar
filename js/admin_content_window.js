@@ -2,6 +2,30 @@
 
 $(function() {
 
+	// Unfocus proper elements
+	$("body").click(function() {
+		// dropdown widget
+		var widget = $(".dropdown_items_listing").parents(".dropdown_items_listing_inline").first();
+		$(".dropdown_items_listing").fadeOut("fast");
+		$(widget).find("a.down").addClass("up").removeClass("down");
+	});
+	
+	// Dropdown widget
+	$(".dropdown_items_listing_inline > a").live('click', function(event) {
+		event.preventDefault();
+		var listing = $(this).parent().find(".dropdown_items_listing").first();
+		if ( $(this).hasClass("up") ) {
+			$(listing).fadeIn("fast");
+			$(this).addClass("down");
+			$(this).removeClass("up");
+		}
+		else {
+			$(listing).fadeOut("fast");
+			$(this).addClass("up");
+			$(this).removeClass("down");
+		}
+	});
+
 	// Salvar meta fields
 	$("#button_meta_save").live('click', function(event) {
 		event.preventDefault();
@@ -52,6 +76,17 @@ $(function() {
 		}, "json");
 	});
 
+	// Selecao do tipo do elemento
+	$(".dropdown_items_listing_element_type_target").live('click', function(event) {
+		event.preventDefault();
+		
+		var type_id = $(this).attr("href");
+		var element_name = $(this).html();
+		
+		$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
+		$(this).parents(".dropdown_items_listing_inline").children("a:first").html(element_name);
+	});
+
 	// Criar formulário de novo elemento em categoria
 	$("a#choose_category_element_type").live('click', function(event) {
 		event.preventDefault();
@@ -61,7 +96,7 @@ $(function() {
 
 		var parent = "category";
 		var parent_id = $(this).attr("href");
-		var type_id = $("#element_type").val();
+		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 		
 		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
 			try {
@@ -93,8 +128,8 @@ $(function() {
 
 		var parent = "content";
 		var parent_id = $(this).attr("href");
-		var type_id = $("#element_type").val();
-		
+		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
+
 		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {

@@ -2,6 +2,19 @@
 
 $(function() {
 
+	// Unfocus proper elements
+	$("body").click(function() {
+		// tree menu listings
+		$(".dropdown:visible").fadeOut("fast", "easeOutSine", function () {
+			$(this).parents(".tree_listing_menu").first().fadeOut("fast", "easeOutSine");
+			$(this).parents(".tree_listing_menu").next(".tree_listing_text").toggleClass("tree_listing_hover", false);
+		});
+		// Discard labels being edited
+		$("form.label").find("input.edit[type='text']").each(function() {
+			$(this).removeClass("edit");
+		});
+	});
+	
 	/*
 	 * Show existing contents listing and rotate bullet arrow
 	 */
@@ -67,18 +80,7 @@ $(function() {
 		$(this).next(".tree_menu").children(".tree_menu_dropdown:visible").fadeOut("fast", "easeInSine");
 		$(this).next(".tree_menu").children(".tree_menu_dropdown:hidden").fadeIn("fast", "easeInSine");
 	});
-	$("body").click(function() {
-		$(".dropdown:visible").fadeOut("fast", "easeOutSine", function () {
-			$(this).parents(".tree_listing_menu").first().fadeOut("fast", "easeOutSine");
-			$(this).parents(".tree_listing_menu").next(".tree_listing_text").toggleClass("tree_listing_hover", false);
-		});
 
-		// Discard labels being edited
-		$("form.label").find("input.edit[type='text']").each(function() {
-			$(this).removeClass("edit");
-		});
-	});
-	
 	/*
 	 * Activate rename category/content/element
 	 */

@@ -1157,6 +1157,22 @@ class Content extends CI_Controller {
 	 */
 	function _render_element_types_dropdown($selected = "1", $id = "element_type" )
 	{
+		$elements = $this->cms->get_element_types();
+		$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($elements) . "\">" . current($elements) . "</a>";
+		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
+		$dropdown .= "<div class=\"dropdown_items_listing\">";
+		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
+		foreach ( $elements as $element_id => $element )
+		{
+			$dropdown .= "<li><a class=\"dropdown_items_listing_element_type_target\" href=\"" . $element_id . "\">" . $element . "</a></li>";
+		}
+		$dropdown .= "</ul>";
+		$dropdown .= "</div></div>";
+		$dropdown .= "</div>";
+		return $dropdown;
+	}
+	function _render_element_types_dropdown_bak($selected = "1", $id = "element_type" )
+	{
 		$options = $this->cms->get_element_types();
 		$attributes = "id=\"" . $id . "\"";
 		return form_dropdown('element_types', $options, $selected, $attributes);

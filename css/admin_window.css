@@ -8,8 +8,33 @@
 /*
  * Dropdown input
  */
+.dropdown_items_listing_inline {
+	position: relative;
+	display: inline-block;
+}
+.dropdown_items_listing_inline > a {
+	position: relative;
+	z-index: 2;
+	padding: 0 4px;
+}
+.dropdown_items_listing_inline > a.up {
+	border: 1px solid #666666;
+	background-color: #fff;
+}
+.dropdown_items_listing_inline > a.down {
+	border-top: 1px solid #666666;
+	border-right: 1px solid #666666;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #666666;
+	background-color: #fff;
+}
 .dropdown_items_listing_position {
 	position: relative;
+}
+.dropdown_items_listing_inline .dropdown_items_listing_position {
+	position: relative;
+	margin-top: -1px;
+	margin-left: 0;
 }
 .dropdown_items_listing_position .dropdown_items_listing {
 	display: none;
