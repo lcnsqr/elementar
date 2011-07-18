@@ -14,7 +14,7 @@ $(function() {
 	$(".dropdown_items_listing_inline > a").live('click', function(event) {
 		event.preventDefault();
 		var listing = $(this).parent().find(".dropdown_items_listing").first();
-		if ( $(this).hasClass("up") ) {
+		if ( ! $(listing).is(":visible") ) {
 			$(listing).fadeIn("fast");
 			$(this).addClass("down");
 			$(this).removeClass("up");
@@ -83,8 +83,10 @@ $(function() {
 		var type_id = $(this).attr("href");
 		var type_name = $(this).html();
 		
-		$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
-		$(this).parents(".dropdown_items_listing_inline").children("a:first").html(type_name);
+		if ( type_id != "0" ) {
+			$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
+			$(this).parents(".dropdown_items_listing_inline").children("a:first").html(type_name);
+		}
 	});
 
 	// Criar formulário de novo elemento em categoria
@@ -101,9 +103,11 @@ $(function() {
 		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
+					// Close type editor (if visible)
+					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#element_editor_form").html(data.form).show();
 					// appropriate tinymce
-					$("#element_editor_form").find("textarea").each(function() {
+					$("#content_editor_form").find("textarea").each(function() {
 						make_editor($(this));
 					});
 				}
@@ -133,9 +137,11 @@ $(function() {
 		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
+					// Close type editor (if visible)
+					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#element_editor_form").html(data.form).show();
 					// appropriate tinymce
-					$("#element_editor_form").find("textarea").each(function() {
+					$("#content_editor_form").find("textarea").each(function() {
 						make_editor($(this));
 					});
 				}
@@ -197,8 +203,10 @@ $(function() {
 		var type_id = $(this).attr("href");
 		var type_name = $(this).html();
 		
-		$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
-		$(this).parents(".dropdown_items_listing_inline").children("a:first").html(type_name);
+		if ( type_id != "0" ) {
+			$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
+			$(this).parents(".dropdown_items_listing_inline").children("a:first").html(type_name);
+		}
 	});
 
 	// Criar conteúdo
@@ -209,12 +217,13 @@ $(function() {
 		$("#sections_blocker").fadeIn("fast");
 
 		var category_id = $(this).attr("href");
-		//var type_id = $("#content_type").val();
 		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 		
 		$.post("/admin/content/xhr_render_content_form", { category_id : category_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
+					// Close type editor (if visible)
+					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editor_form").html(data.form).show();
 					// appropriate tinymce
 					$("#content_editor_form").find("textarea").each(function() {
@@ -347,21 +356,45 @@ $(function() {
 	/* 
 	 * Carregar formulário new content_type
 	 */
-	$("a#type_create").live('click', function(event) {
+	$("a#content_type_create").live('click', function(event) {
 		event.preventDefault();
 
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
 
-		name = $("#new_type_field").val();
-		$.post("/admin/content/xhr_render_content_type_form", { name : name }, function(data){
+		$.post("/admin/content/xhr_render_content_type_form", function(data){
 			try {
 				if ( data.done == true ) {
 					$("#type_define_new_container").html(data.html).show("slow");
 				}
 				else {
 					showClientWarning(data.error);
-					$("#new_type_field").focus();
+				}
+			}
+			catch (err) {
+				showClientWarning("Erro de comunicação com o servidor");
+			}
+			// Bloqueio
+			$("#sections_blocker").fadeOut("fast");
+		}, "json");
+	});
+
+	/* 
+	 * Carregar formulário new element_type
+	 */
+	$("a#element_type_create").live('click', function(event) {
+		event.preventDefault();
+
+		// Bloqueio
+		$("#sections_blocker").fadeIn("fast");
+
+		$.post("/admin/content/xhr_render_element_type_form", function(data){
+			try {
+				if ( data.done == true ) {
+					$("#type_define_new_container").html(data.html).show("slow");
+				}
+				else {
+					showClientWarning(data.error);
 				}
 			}
 			catch (err) {
@@ -383,7 +416,7 @@ $(function() {
 	/*
 	 * Criar content_type
 	 */
-	$("#type_define_new_form").live('submit', function(event) {
+	$("#content_type_define_new_form").live('submit', function(event) {
 		event.preventDefault();
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
@@ -392,31 +425,93 @@ $(function() {
 				if ( data.done == true ) {
 					showClientWarning("Tipo salvo com sucesso");
 					$("#type_define_new_container").hide('slow', function() {
-						$("#type_define_new_container").html("");
+
+						// Reload types dropdown widget with new value
+						var id = $("#choose_content_type").attr('href');
+				
+						$.post("/admin/content/xhr_render_content_new", { id : id, type_id : data.type_id }, function(data){
+							try {
+								if ( data.done == true ) {
+									$("#content_editor_window").html(data.html).show();
+								}
+							}
+							catch (err) {
+								showClientWarning("Erro de comunicação com o servidor");
+							}
+				
+							// Bloqueio
+							$("#sections_blocker").fadeOut("fast");
+						}, "json");
+
 					});
-					
-					// Recarregar seção
-					$.post("/admin/content/xhr_render_section", { section : "tipo" }, function(reload){
-						try {
-							// esconder, atualizar e exibir seção
-							divid = "div_tipos";
-							$('div#'+divid).fadeOut("fast", function() {
-								$('div#'+divid).html(reload.html);
-								$('div#'+divid).fadeIn("slow");
-							});
-							$("#elapsed_time").html(reload.elapsed_time);
-						}
-						catch (err) {
-							showClientWarning("Erro de comunicação com o servidor");
-						}
-					}, "json");
+				}
+				else {
+					showClientWarning(data.error);
+					// Bloqueio
+					$("#sections_blocker").fadeOut("fast");
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
+				// Bloqueio
+				$("#sections_blocker").fadeOut("fast");
 			}
-			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+		}, "json");
+	});
+
+	/*
+	 * Criar element_type
+	 */
+	$("#element_type_define_new_form").live('submit', function(event) {
+		event.preventDefault();
+		// Bloqueio
+		$("#sections_blocker").fadeIn("fast");
+		$.post("/admin/content/xhr_write_element_type", $(this).serialize(), function(data){
+			try {
+				if ( data.done == true ) {
+					showClientWarning("Tipo salvo com sucesso");
+					$("#type_define_new_container").hide('slow', function() {
+						$("#type_define_new_container").html("");
+					});
+					
+					// Reload types dropdown widget with new value
+					/*
+					 * Resend parent type for proper rendering
+					 */
+					if ( $("#choose_element_type > a").attr("id") == "choose_category_element_type" ) {
+						var parent = "category";
+					}
+					else if ( $("#choose_element_type > a").attr("id") == "choose_content_element_type" ) {
+						var parent = "content";
+					}
+
+					var id = $("#choose_element_type > a").attr("href");
+			
+					$.post("/admin/content/xhr_render_element_new", { parent : parent, id : id, type_id : data.type_id }, function(data){
+						try {
+							if ( data.done == true ) {
+								$("#content_editor_window").html(data.html).show();
+							}
+						}
+						catch (err) {
+							showClientWarning("Erro de comunicação com o servidor");
+						}
+						// Bloqueio
+						$("#sections_blocker").fadeOut("fast");
+					}, "json");
+
+				}
+				else {
+					showClientWarning(data.error);
+					// Bloqueio
+					$("#sections_blocker").fadeOut("fast");
+				}
+			}
+			catch (err) {
+				showClientWarning("Erro de comunicação com o servidor");
+				// Bloqueio
+				$("#sections_blocker").fadeOut("fast");
+			}
 		}, "json");
 	});
 

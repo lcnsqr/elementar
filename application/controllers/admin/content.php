@@ -262,73 +262,153 @@ class Content extends CI_Controller {
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
-
-		$name = $this->input->post('name', TRUE);
+			
+		$form = "<hr /><p class=\"page_subtitle\">Defini&ccedil;&atilde;o de novo tipo</p>";
 		
-		if ($name != "" ) 
-		{
-			$sname = $this->common->normalize_string($name);
-			
-			$form = "<p class=\"page_subtitle\">" . $name . "</p>";
-			
-			$attributes = array('class' => 'type_define_new_form', 'id' => 'type_define_new_form');
-			$hidden = array('name' => $name, 'field_count' => 1);
-			$form .= form_open('#', $attributes, $hidden);
-			
-			/*
-			 * div field model
-			 */
-			$form .= "<div id=\"type_define_new_field_0\" class=\"type_define_new_field\" >";
-			
-			/*
-			 * field name
-			 */
-			$form .= "<p>";
-			$form .= form_label("Nome do campo", "field_0");
-			$form .= br(1);
-			$attributes = array(
-				"id" => "field_0",
-				"name" => "field_0"
-			);
-			$form .= form_input($attributes);
-			$form .= "</p>";
+		$attributes = array('class' => 'content_type_define_new_form', 'id' => 'content_type_define_new_form');
+		$hidden = array('field_count' => 1);
+		$form .= form_open('#', $attributes, $hidden);
 
-			/*
-			 * field type
-			 */
-			$form .= "<p>";
-			$form .= form_label("Tipo do campo", "field_type_0");
-			$form .= br(1);
-			$form .= $this->_render_field_type_dropdown();
-			$form .= "</p>";
+		/*
+		 * Type name
+		 */
+		$form .= "<div class=\"form_content_field\">";
+		$attributes = array('class' => 'field_label');
+		$form .= form_label("Nome do tipo", "name", $attributes);
+		$form .= br(1);
+		$attributes = array(
+			'name' => 'name',
+			'id' => 'name'
+		);
+		$form .= form_input($attributes);
+		$form .= "</div> <!-- .form_content_field -->";
+		
+		/*
+		 * div field model
+		 */
+		$form .= "<div id=\"type_define_new_field_0\" class=\"type_define_new_field\" >";
+		
+		/*
+		 * field name
+		 */
+		$form .= "<p>";
+		$form .= form_label("Nome do campo", "field_0");
+		$form .= br(1);
+		$attributes = array(
+			"id" => "field_0",
+			"name" => "field_0"
+		);
+		$form .= form_input($attributes);
+		$form .= "</p>";
 
-			/*
-			 * close div field model
-			 */
-			$form .= "</div> <!-- #type_define_new_field_0 -->";
+		/*
+		 * field type
+		 */
+		$form .= "<p>";
+		$form .= form_label("Tipo do campo", "field_type_0");
+		$form .= br(1);
+		$form .= $this->_render_field_type_dropdown();
+		$form .= "</p>";
 
-			$form .= "<p><a href=\"add_type_field\" id=\"add_type_field\">Incluir outro campo</a></p>";
+		/*
+		 * close div field model
+		 */
+		$form .= "</div> <!-- #type_define_new_field_0 -->";
+
+		$form .= "<p><a href=\"add_type_field\" id=\"add_type_field\">Incluir outro campo</a></p>";
+		
+		$form .= "<div class=\"form_control_buttons\">";
+
+		$form .= form_submit('type_save', 'Salvar');
+		
+		$form .= "</div>";
+
+		$form .= form_close();
+		
+		$response = array(
+			'done' => TRUE,
+			'html' => $form
+		);
+
+		$this->common->ajax_response($response);
+
+	}
+
+	/**
+	 * Gerar formulário para inserção de tipo de elemento
+	 */
+	function xhr_render_element_type_form()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
 			
-			$form .= "<div class=\"form_control_buttons\">";
+		$form = "<hr /><p class=\"page_subtitle\">Defini&ccedil;&atilde;o de novo tipo</p>";
+		
+		$attributes = array('class' => 'element_type_define_new_form', 'id' => 'element_type_define_new_form');
+		$hidden = array('field_count' => 1);
+		$form .= form_open('#', $attributes, $hidden);
 
-			$form .= form_submit('type_save', 'Salvar');
-			
-			$form .= "</div>";
+		/*
+		 * Type name
+		 */
+		$form .= "<div class=\"form_content_field\">";
+		$attributes = array('class' => 'field_label');
+		$form .= form_label("Nome do tipo", "name", $attributes);
+		$form .= br(1);
+		$attributes = array(
+			'name' => 'name',
+			'id' => 'name'
+		);
+		$form .= form_input($attributes);
+		$form .= "</div> <!-- .form_content_field -->";
+		
+		/*
+		 * div field model
+		 */
+		$form .= "<div id=\"type_define_new_field_0\" class=\"type_define_new_field\" >";
+		
+		/*
+		 * field name
+		 */
+		$form .= "<p>";
+		$form .= form_label("Nome do campo", "field_0");
+		$form .= br(1);
+		$attributes = array(
+			"id" => "field_0",
+			"name" => "field_0"
+		);
+		$form .= form_input($attributes);
+		$form .= "</p>";
 
-			$form .= form_close();
-			
-			$response = array(
-				'done' => TRUE,
-				'html' => $form
-			);
-		}
-		else 
-		{
-			$response = array(
-				'done' => FALSE,
-				'error' => "Forneça o nome para o novo tipo"
-			);
-		}
+		/*
+		 * field type
+		 */
+		$form .= "<p>";
+		$form .= form_label("Tipo do campo", "field_type_0");
+		$form .= br(1);
+		$form .= $this->_render_field_type_dropdown();
+		$form .= "</p>";
+
+		/*
+		 * close div field model
+		 */
+		$form .= "</div> <!-- #type_define_new_field_0 -->";
+
+		$form .= "<p><a href=\"add_type_field\" id=\"add_type_field\">Incluir outro campo</a></p>";
+		
+		$form .= "<div class=\"form_control_buttons\">";
+
+		$form .= form_submit('type_save', 'Salvar');
+		
+		$form .= "</div>";
+
+		$form .= form_close();
+		
+		$response = array(
+			'done' => TRUE,
+			'html' => $form
+		);
+
 		$this->common->ajax_response($response);
 
 	}
@@ -660,11 +740,13 @@ class Content extends CI_Controller {
 
 		$category_id = $this->input->post('id', TRUE);
 		
+		$type_id = (int) $this->input->post('type_id', TRUE);
+
 		$data = array();
 		$data['content_id'] = NULL;
 		$data['category_id'] = $category_id;
 		$data['breadcrumb'] = $this->common->breadcrumb_category($category_id);
-		$data['content_types_dropdown'] = $this->_render_content_types_dropdown();
+		$data['content_types_dropdown'] = $this->_render_content_types_dropdown($type_id);
 		
 		$html = $this->load->view('admin/admin_content_new', $data, true);
 
@@ -690,6 +772,8 @@ class Content extends CI_Controller {
 		$parent = $this->input->post('parent', TRUE);
 		$parent_id = $this->input->post('id', TRUE);
 
+		$type_id = (int) $this->input->post('type_id', TRUE);
+
 		$data = array();
 		$data['element_id'] = NULL;
 		$data['parent_id'] = $parent_id;
@@ -703,7 +787,7 @@ class Content extends CI_Controller {
 			$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
 			break;
 		}
-		$data['element_types_dropdown'] = $this->_render_element_types_dropdown();
+		$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
 		
 		$html = $this->load->view('admin/admin_content_element_new', $data, true);
 
@@ -1139,19 +1223,19 @@ class Content extends CI_Controller {
 	/**
 	 * Content types HTML dropdown
 	 * @param integer $selected Selected content type (id)
-	 * @param string $id HTML element id
 	 * @return HTML content (html widget)
 	 */
-	function _render_content_types_dropdown_bak($selected = "1", $id = "content_type" )
-	{
-		$options = $this->cms->get_content_types();
-		$attributes = "id=\"" . $id . "\"";
-		return form_dropdown('content_types', $options, $selected, $attributes);
-	}
-	function _render_content_types_dropdown($selected = "1", $id = "element_type" )
+	function _render_content_types_dropdown($selected = NULL)
 	{
 		$types = $this->cms->get_content_types();
-		$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+		if ( (bool) $selected )
+		{
+			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_content_type_name($selected) . "</a>";
+		}
+		else
+		{
+			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+		}			
 		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
 		$dropdown .= "<div class=\"dropdown_items_listing\">";
 		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
@@ -1159,6 +1243,8 @@ class Content extends CI_Controller {
 		{
 			$dropdown .= "<li><a class=\"dropdown_items_listing_content_type_target\" href=\"" . $type_id . "\">" . $type . "</a></li>";
 		}
+		// "New" link
+		$dropdown .= "<li><a id=\"content_type_create\" class=\"dropdown_items_listing_content_type_target\" href=\"0\">Novo...</a></li>";
 		$dropdown .= "</ul>";
 		$dropdown .= "</div></div>";
 		$dropdown .= "</div>";
@@ -1168,13 +1254,19 @@ class Content extends CI_Controller {
 	/**
 	 * Element types HTML dropdown
 	 * @param integer $selected Selected content type (id)
-	 * @param string $id HTML element id
 	 * @return HTML content (html dropdown widget)
 	 */
-	function _render_element_types_dropdown($selected = "1", $id = "element_type" )
+	function _render_element_types_dropdown($selected = NULL )
 	{
 		$types = $this->cms->get_element_types();
-		$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+		if ( (bool) $selected )
+		{
+			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_element_type_name($selected) . "</a>";
+		}
+		else
+		{
+			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+		}			
 		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
 		$dropdown .= "<div class=\"dropdown_items_listing\">";
 		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
@@ -1182,6 +1274,8 @@ class Content extends CI_Controller {
 		{
 			$dropdown .= "<li><a class=\"dropdown_items_listing_element_type_target\" href=\"" . $type_id . "\">" . $type . "</a></li>";
 		}
+		// "New" link
+		$dropdown .= "<li><a id=\"element_type_create\" class=\"dropdown_items_listing_element_type_target\" href=\"0\">Novo...</a></li>";
 		$dropdown .= "</ul>";
 		$dropdown .= "</div></div>";
 		$dropdown .= "</div>";
@@ -1211,7 +1305,7 @@ class Content extends CI_Controller {
 	function _render_field_type_dropdown($selected = "1")
 	{
 		$options = array();
-		foreach ( $this->cms->get_content_field_types() as $option )
+		foreach ( $this->cms->get_field_types() as $option )
 		{
 			$options[$option['id']] = $option['name'];
 		}
@@ -1231,33 +1325,90 @@ class Content extends CI_Controller {
 		
 		$name = $this->input->post('name', TRUE);
 		
-		$name = htmlentities($name, ENT_QUOTES, "UTF-8");
+		$type_id = $this->cms->put_content_type($name);
 		
-		$type_id = $this->cms->put_type($name);
-		
-		/* 
-		 * Armazenar campos do tipo
-		 */
-		for ( $c = 0; $c < $count; $c++)
+		if ( (bool) $type_id )
 		{
-			$field = $this->input->post("field_" . $c, TRUE);
-			$sname = $this->common->normalize_string($field);
-			$field_type = $this->input->post("field_type_" . $c, TRUE);
-			if ( $field != "" )
+			/* 
+			 * Armazenar campos do tipo
+			 */
+			for ( $c = 0; $c < $count; $c++)
 			{
-				$this->cms->put_type_field($type_id, $field, $sname, $field_type);
+				$field = $this->input->post("field_" . $c, TRUE);
+				$sname = $this->common->normalize_string($field);
+				$field_type = $this->input->post("field_type_" . $c, TRUE);
+				if ( $field != "" )
+				{
+					$this->cms->put_content_type_field($type_id, $field, $sname, $field_type);
+				}
 			}
+			
+			/*
+			 * resposta
+			 */
+			$response = array(
+				'done' => TRUE,
+				'type_id' => $type_id
+			);
 		}
-		
-		/*
-		 * resposta
-		 */
-		$response = array(
-			'done' => TRUE
-		);
-		
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'error' => 'Nome inválido'
+			);
+		}
 		$this->common->ajax_response($response);
+	}
 
+	/**
+	 * Salvar novo tipo de elemento
+	 */
+	function xhr_write_element_type()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
+
+		$count = $this->input->post('field_count', TRUE);
+		
+		$name = $this->input->post('name', TRUE);
+
+		$sname = $this->common->normalize_string($name);
+
+		$type_id = $this->cms->put_element_type($name, $sname);
+		
+		if ( (bool) $type_id )
+		{
+			/* 
+			 * Armazenar campos do tipo
+			 */
+			for ( $c = 0; $c < $count; $c++)
+			{
+				$field = $this->input->post("field_" . $c, TRUE);
+				$sname = $this->common->normalize_string($field);
+				$field_type = $this->input->post("field_type_" . $c, TRUE);
+				if ( $field != "" )
+				{
+					$this->cms->put_element_type_field($type_id, $field, $sname, $field_type);
+				}
+			}
+			
+			/*
+			 * resposta
+			 */
+			$response = array(
+				'done' => TRUE,
+				'type_id' => $type_id
+			);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'error' => 'Nome inválido'
+			);
+		}
+		$this->common->ajax_response($response);
 	}
 
 	/**

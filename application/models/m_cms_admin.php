@@ -34,26 +34,40 @@ class M_cms_admin extends CI_Model {
 	/*
 	 * Gravar content type
 	 */
-	function put_type($name)
+	function put_content_type($name)
 	{
-		$data = array(
-			'name' => $name
-		);
-		$inserted = $this->db_cms->insert('content_type', $data);
-		if ($inserted)
+		/*
+		 * Verify existing name
+		 */
+		$this->db_cms->select('id');
+		$this->db_cms->from('content_type');
+		$this->db_cms->where('name', $name);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
 		{
-			return $this->db_cms->insert_id();
+			return FALSE;
 		}
 		else
 		{
-			return FALSE;
+			$data = array(
+				'name' => $name
+			);
+			$inserted = $this->db_cms->insert('content_type', $data);
+			if ($inserted)
+			{
+				return $this->db_cms->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 	}
 
 	/*
 	 * Gravar content type field
 	 */
-	function put_type_field($type_id, $name, $sname, $field_type_id)
+	function put_content_type_field($type_id, $name, $sname, $field_type_id)
 	{
 		$data = array(
 			'content_type_id' => $type_id,
@@ -62,6 +76,54 @@ class M_cms_admin extends CI_Model {
 			'field_type_id' => $field_type_id
 		);
 		$this->db_cms->insert('content_type_field', $data);
+	}
+
+	/*
+	 * Gravar element type
+	 */
+	function put_element_type($name, $sname)
+	{
+		/*
+		 * Verify existing name
+		 */
+		$this->db_cms->select('id');
+		$this->db_cms->from('element_type');
+		$this->db_cms->where('name', $name);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$data = array(
+				'name' => $name,
+				'sname' => $sname
+			);
+			$inserted = $this->db_cms->insert('element_type', $data);
+			if ($inserted)
+			{
+				return $this->db_cms->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
+	 * Gravar element type field
+	 */
+	function put_element_type_field($type_id, $name, $sname, $field_type_id)
+	{
+		$data = array(
+			'element_type_id' => $type_id,
+			'name' => $name,
+			'sname' => $sname,
+			'field_type_id' => $field_type_id
+		);
+		$this->db_cms->insert('element_type_field', $data);
 	}
 
 	/*
@@ -321,6 +383,25 @@ class M_cms_admin extends CI_Model {
 		}
 	}
 	
+	/*
+	 * get element type name
+	 */
+	function get_element_type_name($id)
+	{
+		$this->db_cms->select('name');
+		$this->db_cms->from('element_type');
+		$this->db_cms->where('id', $id);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->name;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
 	/*
 	 * get content sname (slug)
 	 */
