@@ -5,7 +5,10 @@
 <?php endif; ?>
 
 <?php if ( (bool) $content_id === FALSE ): ?>
-<p>Criar conteúdo do tipo <?php echo $content_types_dropdown; ?> <a id="choose_content_type" href="<?php echo $category_id; ?>" title="Criar conteúdo">Criar</a></p>
+<div>
+<span>Criar conteúdo do tipo </span><?php echo $content_types_dropdown; ?><span> <a id="choose_content_type" href="<?php echo $category_id; ?>" title="Criar conteúdo">Criar</a></span>
+</div>
+
 <?php endif; ?>
 <hr />
 <div style="display: none;" id="content_editor_form">

@@ -81,10 +81,10 @@ $(function() {
 		event.preventDefault();
 		
 		var type_id = $(this).attr("href");
-		var element_name = $(this).html();
+		var type_name = $(this).html();
 		
 		$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
-		$(this).parents(".dropdown_items_listing_inline").children("a:first").html(element_name);
+		$(this).parents(".dropdown_items_listing_inline").children("a:first").html(type_name);
 	});
 
 	// Criar formulário de novo elemento em categoria
@@ -190,6 +190,17 @@ $(function() {
 		}, "json");
 	});
 
+	// Selecao do tipo do conteúdo
+	$(".dropdown_items_listing_content_type_target").live('click', function(event) {
+		event.preventDefault();
+		
+		var type_id = $(this).attr("href");
+		var type_name = $(this).html();
+		
+		$(this).parents(".dropdown_items_listing_inline").children("a:first").attr("href", type_id);
+		$(this).parents(".dropdown_items_listing_inline").children("a:first").html(type_name);
+	});
+
 	// Criar conteúdo
 	$("a#choose_content_type").live('click', function(event) {
 		event.preventDefault();
@@ -198,7 +209,8 @@ $(function() {
 		$("#sections_blocker").fadeIn("fast");
 
 		var category_id = $(this).attr("href");
-		var type_id = $("#content_type").val();
+		//var type_id = $("#content_type").val();
+		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 		
 		$.post("/admin/content/xhr_render_content_form", { category_id : category_id, type_id : type_id }, function(data){
 			try {

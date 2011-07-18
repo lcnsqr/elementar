@@ -1140,44 +1140,54 @@ class Content extends CI_Controller {
 	 * Content types HTML dropdown
 	 * @param integer $selected Selected content type (id)
 	 * @param string $id HTML element id
-	 * @return HTML content (form element)
+	 * @return HTML content (html widget)
 	 */
-	function _render_content_types_dropdown($selected = "1", $id = "content_type" )
+	function _render_content_types_dropdown_bak($selected = "1", $id = "content_type" )
 	{
 		$options = $this->cms->get_content_types();
 		$attributes = "id=\"" . $id . "\"";
 		return form_dropdown('content_types', $options, $selected, $attributes);
 	}
-	
-	/**
-	 * Element types HTML dropdown
-	 * @param integer $selected Selected content type (id)
-	 * @param string $id HTML element id
-	 * @return HTML content (form element)
-	 */
-	function _render_element_types_dropdown($selected = "1", $id = "element_type" )
+	function _render_content_types_dropdown($selected = "1", $id = "element_type" )
 	{
-		$elements = $this->cms->get_element_types();
-		$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($elements) . "\">" . current($elements) . "</a>";
+		$types = $this->cms->get_content_types();
+		$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
 		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
 		$dropdown .= "<div class=\"dropdown_items_listing\">";
 		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
-		foreach ( $elements as $element_id => $element )
+		foreach ( $types as $type_id => $type )
 		{
-			$dropdown .= "<li><a class=\"dropdown_items_listing_element_type_target\" href=\"" . $element_id . "\">" . $element . "</a></li>";
+			$dropdown .= "<li><a class=\"dropdown_items_listing_content_type_target\" href=\"" . $type_id . "\">" . $type . "</a></li>";
 		}
 		$dropdown .= "</ul>";
 		$dropdown .= "</div></div>";
 		$dropdown .= "</div>";
 		return $dropdown;
 	}
-	function _render_element_types_dropdown_bak($selected = "1", $id = "element_type" )
-	{
-		$options = $this->cms->get_element_types();
-		$attributes = "id=\"" . $id . "\"";
-		return form_dropdown('element_types', $options, $selected, $attributes);
-	}
 	
+	/**
+	 * Element types HTML dropdown
+	 * @param integer $selected Selected content type (id)
+	 * @param string $id HTML element id
+	 * @return HTML content (html dropdown widget)
+	 */
+	function _render_element_types_dropdown($selected = "1", $id = "element_type" )
+	{
+		$types = $this->cms->get_element_types();
+		$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
+		$dropdown .= "<div class=\"dropdown_items_listing\">";
+		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
+		foreach ( $types as $type_id => $type )
+		{
+			$dropdown .= "<li><a class=\"dropdown_items_listing_element_type_target\" href=\"" . $type_id . "\">" . $type . "</a></li>";
+		}
+		$dropdown .= "</ul>";
+		$dropdown .= "</div></div>";
+		$dropdown .= "</div>";
+		return $dropdown;
+	}
+
 	/**
 	 * Status HTML dropdown
 	 * @param string $selected Selected item
