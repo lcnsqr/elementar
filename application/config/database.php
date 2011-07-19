@@ -61,9 +61,9 @@ $db['default']['stricton'] = FALSE;
  * account database
  */
 $db['account']['hostname'] = 'localhost';
-$db['account']['username'] = 'cms';
-$db['account']['password'] = 'Y8z6bE6SuyB2XcYH';
-$db['account']['database'] = 'account';
+$db['account']['username'] = '';
+$db['account']['password'] = '';
+$db['account']['database'] = '';
 $db['account']['dbdriver'] = 'mysql';
 $db['account']['dbprefix'] = '';
 $db['account']['pconnect'] = TRUE;
@@ -80,9 +80,9 @@ $db['account']['stricton'] = FALSE;
  * CMS database
  */
 $db['cms']['hostname'] = 'localhost';
-$db['cms']['username'] = 'cms';
-$db['cms']['password'] = 'Y8z6bE6SuyB2XcYH';
-$db['cms']['database'] = 'cms';
+$db['cms']['username'] = '';
+$db['cms']['password'] = '';
+$db['cms']['database'] = '';
 $db['cms']['dbdriver'] = 'mysql';
 $db['cms']['dbprefix'] = '';
 $db['cms']['pconnect'] = TRUE;

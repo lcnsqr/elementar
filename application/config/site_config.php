@@ -8,13 +8,16 @@
 | Nome do site para colocar no título
 |
 */
-$config['site_name'] = 'Elementar';
+$config['site_name'] = '';
 
 /*
 |--------------------------------------------------------------------------
 | Definições do servidor de email
 |--------------------------------------------------------------------------
 |
+*/
+/*
+| GMail sample config
 */
 $config['smtp_host'] = 'ssl://smtp.googlemail.com';
 $config['smtp_port'] = '465';
