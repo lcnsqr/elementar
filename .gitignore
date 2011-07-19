@@ -1,5 +1,2 @@
 img/upload/
 application/views/*php
-application/config/site_config.php
-application/config/database.php
-application/config/config.php
