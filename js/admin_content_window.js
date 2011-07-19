@@ -111,10 +111,11 @@ $(function() {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#element_editor_form").html(data.form).show();
-					// appropriate tinymce
-					$("#content_editor_form").find("textarea").each(function() {
-						make_editor($(this));
+					$("#element_editor_form").html(data.form).show(function(){
+						// appropriate tinymce
+						$("#content_editor_form").find("textarea").each(function() {
+							make_editor($(this));
+						});
 					});
 				}
 				else {
@@ -151,10 +152,11 @@ $(function() {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#element_editor_form").html(data.form).show();
-					// appropriate tinymce
-					$("#content_editor_form").find("textarea").each(function() {
-						make_editor($(this));
+					$("#element_editor_form").html(data.form).show(function(){
+						// appropriate tinymce
+						$("#content_editor_form").find("textarea").each(function() {
+							make_editor($(this));
+						});
 					});
 				}
 				else {
@@ -242,10 +244,11 @@ $(function() {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#content_editor_form").html(data.form).show();
-					// appropriate tinymce
-					$("#content_editor_form").find("textarea").each(function() {
-						make_editor($(this));
+					$("#content_editor_form").html(data.form).show(function(){
+						// appropriate tinymce
+						$("#content_editor_form").find("textarea").each(function() {
+							make_editor($(this));
+						});
 					});
 				}
 				else {
