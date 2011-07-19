@@ -1228,14 +1228,21 @@ class Content extends CI_Controller {
 	function _render_content_types_dropdown($selected = NULL)
 	{
 		$types = $this->cms->get_content_types();
-		if ( (bool) $selected )
+		if ( count($types) > 0 )
 		{
-			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_content_type_name($selected) . "</a>";
+			if ( (bool) $selected )
+			{
+				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_content_type_name($selected) . "</a>";
+			}
+			else
+			{
+				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+			}
 		}
 		else
 		{
-			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
-		}			
+			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"0\">Novo...</a>";			
+		}
 		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
 		$dropdown .= "<div class=\"dropdown_items_listing\">";
 		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
@@ -1259,14 +1266,21 @@ class Content extends CI_Controller {
 	function _render_element_types_dropdown($selected = NULL )
 	{
 		$types = $this->cms->get_element_types();
-		if ( (bool) $selected )
+		if ( count($types) > 0 )
 		{
-			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_element_type_name($selected) . "</a>";
+			if ( (bool) $selected )
+			{
+				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_element_type_name($selected) . "</a>";
+			}
+			else
+			{
+				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+			}
 		}
 		else
 		{
-			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
-		}			
+			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"0\">Novo...</a>";			
+		}
 		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
 		$dropdown .= "<div class=\"dropdown_items_listing\">";
 		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";

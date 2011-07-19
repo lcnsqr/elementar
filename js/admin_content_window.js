@@ -100,6 +100,12 @@ $(function() {
 		var parent_id = $(this).attr("href");
 		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 		
+		if ( type_id == "0" ) {
+			// No element type, create a new one
+			$("a#element_type_create").trigger('click');
+			return null;
+		}
+		
 		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
@@ -133,6 +139,12 @@ $(function() {
 		var parent = "content";
 		var parent_id = $(this).attr("href");
 		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
+
+		if ( type_id == "0" ) {
+			// No element type, create a new one
+			$("a#element_type_create").trigger('click');
+			return null;
+		}
 
 		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
 			try {
@@ -219,6 +231,12 @@ $(function() {
 		var category_id = $(this).attr("href");
 		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 		
+		if ( type_id == "0" ) {
+			// No element type, create a new one
+			$("a#content_type_create").trigger('click');
+			return null;
+		}
+
 		$.post("/admin/content/xhr_render_content_form", { category_id : category_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
