@@ -255,6 +255,47 @@ class Common {
 		$string = html_entity_decode($string, ENT_QUOTES, "UTF-8");
 		return $string;
 	}
+
+	function render_elements($elements) 
+	{
+		$CI =& get_instance();
+
+		$data = array();
+		if ( $elements !== NULL )
+		{
+			foreach ($elements as $element)
+			{
+
+				$element_type_id = $CI->cms->get_element_type($element['id']);
+				$element_type = $CI->cms->get_element_type_sname($element_type_id);
+				$data[$element_type][$element['sname']]['name'] = $element['name'];
+				$fields = $CI->cms->get_element_type_fields($element_type_id);
+				
+				foreach ($fields as $field)
+				{
+					if ( $field['type'] == "img")
+					{
+						$field_id = $CI->cms->get_element_field($element['id'], $field['id']);
+						$uri = $CI->cms->get_image_uri($field_id);
+						$width = $CI->cms->get_image_width($field_id);
+						$height = $CI->cms->get_image_height($field_id);
+						
+						$data[$element_type][$element['sname']][$field['sname']] = array(
+							'uri' => ( strval($uri) == "") ? "" : $uri,
+							'width' => ( strval($width) == "") ? "" : $width,
+							'height' => ( strval($height) == "") ? "" : $height
+						);
+					}
+					else
+					{
+						$value = $CI->cms->get_element_field($element['id'], $field['id']);
+						$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "" ) ? "" : $value;
+					}
+				}
+			}
+		}
+		return $data;
+	}
 	
 }
 

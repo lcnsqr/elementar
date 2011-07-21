@@ -198,7 +198,9 @@ class Upload extends CI_Controller {
 				 * Escrever imagem na tabela
 				 */
 				$uri_thumb = substr($uri, 0, strrpos($uri, ".")) . "_thumb" . substr($uri, strrpos($uri, ".") - strlen($uri), strlen($uri));
-				$image_id = $this->cms->put_image($name, $uri, $uri_thumb);
+				// Get image dimensions
+				list($width, $height, $type, $attr) = getimagesize("." . $uri);
+				$image_id = $this->cms->put_image($name, $uri, $uri_thumb, $width, $height);
 				$this->cms->put_upload_session($form_upload_session, "image_id", $image_id);
 			}
 		}

@@ -2149,12 +2149,14 @@ class M_cms_admin extends CI_Model {
 	/*
 	 * Gravar informações de imagem na tabela
 	 */
-	function put_image($alt, $uri, $uri_thumb)
+	function put_image($alt, $uri, $uri_thumb, $width = NULL, $height = NULL)
 	{
 		$data = array(
 			'alt' => $alt,
 			'uri' => $uri,
-			'uri_thumb' => $uri_thumb
+			'uri_thumb' => $uri_thumb,
+			'width' => $width,
+			'height' => $height
 		);
 		$inserted = $this->db_cms->insert('image', $data);
 		if ($inserted)

@@ -48,6 +48,11 @@ class Main extends CI_Controller {
 		$data = array_merge($data, $this->common->get_menus());
 
 		/*
+		 * Elementos
+		 */
+		$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category());
+
+		/*
 		 * Carregar view
 		 */
 		$this->load->view('main', $data);

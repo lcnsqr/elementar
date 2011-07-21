@@ -758,6 +758,48 @@ class M_cms extends CI_Model {
 	}
 
 	/*
+	 * Pegar largura de imagem
+	 */
+	function get_image_width($field_id)
+	{
+		$this->db_cms->select('width');
+		$this->db_cms->from('image');
+		$this->db_cms->where('id', $field_id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->width;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * Pegar altura de imagem
+	 */
+	function get_image_height($field_id)
+	{
+		$this->db_cms->select('height');
+		$this->db_cms->from('image');
+		$this->db_cms->where('id', $field_id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->height;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * Verifica se sname
 	 * é categoria
 	 */

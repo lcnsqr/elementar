@@ -110,7 +110,7 @@ class Parser extends CI_Controller {
 				case "category" :
 				$data['categories'] = $this->cms->get_category_children($id);
 				$data['contents'] = $this->cms->get_content_by_cat($id);
-				$data['elements'] = $this->_retrieve_elements($this->cms->get_element_by_category($id));
+				$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category($id));
 				break;
 	
 				case "content" :
@@ -121,8 +121,15 @@ class Parser extends CI_Controller {
 				{
 					if ( $field['type'] == "img")
 					{
-						$value = $this->cms->get_image_uri($this->cms->get_content_field($id, $field['id']));
-						$data[$field['sname']] = ( strval($value) == "") ? "" : $value;
+						$field_id = $this->cms->get_content_field($id, $field['id']);
+						$uri = $this->cms->get_image_uri($field_id);
+						$width = $this->cms->get_image_width($field_id);
+						$height = $this->cms->get_image_height($field_id);
+						$data[$field['sname']] = array(
+							'uri' => ( strval($uri) == "") ? "" : $uri,
+							'width' => ( strval($width) == "") ? "" : $width,
+							'height' =>( strval($height) == "") ? "" : $height
+						);
 					}
 					else
 					{
@@ -130,7 +137,7 @@ class Parser extends CI_Controller {
 						$data[$field['sname']] = ( strval($value) == "" ) ? "" : $value;
 					}
 				}
-				$data['elements'] = $this->_retrieve_elements($this->cms->get_element_by_content($id));
+				$data['elements'] = $this->common->render_elements($this->cms->get_element_by_content($id));
 
 				break;
 			}
@@ -152,36 +159,6 @@ class Parser extends CI_Controller {
 		}
 	}
 	
-	function _retrieve_elements($elements) 
-	{
-		$data = array();
-		if ( $elements !== NULL )
-		{
-			foreach ($elements as $element)
-			{
-
-				$element_type_id = $this->cms->get_element_type($element['id']);
-				$element_type = $this->cms->get_element_type_sname($element_type_id);
-				$data[$element_type][$element['sname']]['name'] = $element['name'];
-				$fields = $this->cms->get_element_type_fields($element_type_id);
-				
-				foreach ($fields as $field)
-				{
-					if ( $field['type'] == "img")
-					{
-						$value = $this->cms->get_image_uri($this->cms->get_element_field($element['id'], $field['id']));
-						$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "") ? "" : $value;
-					}
-					else
-					{
-						$value = $this->cms->get_element_field($element['id'], $field['id']);
-						$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "" ) ? "" : $value;
-					}
-				}
-			}
-		}
-		return $data;
-	}
 
 }
 
