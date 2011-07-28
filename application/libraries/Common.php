@@ -268,28 +268,43 @@ class Common {
 
 				$element_type_id = $CI->cms->get_element_type($element['id']);
 				$element_type = $CI->cms->get_element_type_sname($element_type_id);
-				$data[$element_type][$element['sname']]['name'] = $element['name'];
-				$fields = $CI->cms->get_element_type_fields($element_type_id);
 				
-				foreach ($fields as $field)
+				/*
+				 * Initialize element type inner array
+				 */
+				if ( ! array_key_exists($element_type, $data) )
 				{
-					if ( $field['type'] == "img")
+					$data[$element_type] = array();
+				}
+
+				/*
+				 * Do not overwrite same name element (from below)
+				 */
+				if ( ! array_key_exists($element['sname'], $data[$element_type]) )
+				{
+					$data[$element_type][$element['sname']]['name'] = $element['name'];
+					$fields = $CI->cms->get_element_type_fields($element_type_id);
+					
+					foreach ($fields as $field)
 					{
-						$field_id = $CI->cms->get_element_field($element['id'], $field['id']);
-						$uri = $CI->cms->get_image_uri($field_id);
-						$width = $CI->cms->get_image_width($field_id);
-						$height = $CI->cms->get_image_height($field_id);
-						
-						$data[$element_type][$element['sname']][$field['sname']] = array(
-							'uri' => ( strval($uri) == "") ? "" : $uri,
-							'width' => ( strval($width) == "") ? "" : $width,
-							'height' => ( strval($height) == "") ? "" : $height
-						);
-					}
-					else
-					{
-						$value = $CI->cms->get_element_field($element['id'], $field['id']);
-						$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "" ) ? "" : $value;
+						if ( $field['type'] == "img")
+						{
+							$field_id = $CI->cms->get_element_field($element['id'], $field['id']);
+							$uri = $CI->cms->get_image_uri($field_id);
+							$width = $CI->cms->get_image_width($field_id);
+							$height = $CI->cms->get_image_height($field_id);
+							
+							$data[$element_type][$element['sname']][$field['sname']] = array(
+								'uri' => ( strval($uri) == "") ? "" : $uri,
+								'width' => ( strval($width) == "") ? "" : $width,
+								'height' => ( strval($height) == "") ? "" : $height
+							);
+						}
+						else
+						{
+							$value = $CI->cms->get_element_field($element['id'], $field['id']);
+							$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "" ) ? "" : $value;
+						}
 					}
 				}
 			}

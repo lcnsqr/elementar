@@ -996,12 +996,27 @@ class Content extends CI_Controller {
 */
 
 			/*
+			 * spread
+			 */
+			$form .= "<div class=\"form_cont_field\">";
+			$attributes = array('class' => 'field_label');
+			$attributes = array(
+				'name'        => 'spread',
+				'id'          => 'spread',
+				'class' => 'noform',
+				'value'       => 'true',
+				'checked'     => $this->cms->get_element_spread($element_id)
+			);
+			$form .= form_checkbox($attributes);
+			$form .= form_label("Propagar", "spread", $attributes);
+			$form .= "</div> <!-- .form_cont_field -->";
+
+			/*
 			 * status
 			 */
 			$form .= "<div class=\"form_cont_field\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Status", "status", $attributes);
-			$form .= br(1);
 			$form .= $this->_render_status_dropdown($this->cms->get_element_status($element_id));
 			$form .= "</div> <!-- .form_cont_field -->";
 
@@ -1616,8 +1631,17 @@ class Content extends CI_Controller {
 		}
 		
 		/*
-		 * Armazenar categorias
+		 * Write spread option
 		 */
+		if ( $this->input->post('spread', TRUE) )
+		{
+			$this->cms->put_element_spread($element_id, TRUE);
+		}
+		else
+		{
+			$this->cms->put_element_spread($element_id, FALSE);
+		}
+		
 		switch ( $parent ) 
 		{
 			case "category" :
@@ -1632,6 +1656,9 @@ class Content extends CI_Controller {
 			break;
 		}
 			
+		/*
+		 * Armazenar categorias
+		 */
 /*
 		if ( $this->input->post('category', TRUE) )
 		{

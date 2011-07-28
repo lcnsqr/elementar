@@ -118,15 +118,13 @@ class M_cms extends CI_Model {
 	/*
 	 * List element by content
 	 */
-	function get_element_by_content($content_id = NULL)
+	function get_element_by_content($content_id = NULL, $elements = NULL)
 	{
-		$elements = NULL;
-		
 		/*
 		 * elemento não associado 
 		 * a conteúdo
 		 */
-		if ( $content_id === NULL )
+		if ( (bool) $content_id === FALSE )
 		{
 			$this->db_cms->select('element_id');
 			$this->db_cms->from('element_content');
@@ -140,10 +138,23 @@ class M_cms extends CI_Model {
 			$this->db_cms->select('id, name, sname');
 			$this->db_cms->from('element');
 			$this->db_cms->where_not_in('id', $rel);
+			if ( $elements !== NULL )
+			{
+				/*
+				 * It's a second run, ignore non spreaded elements
+				 */
+				$this->db_cms->where('spread', TRUE);
+			}
+			else
+			{
+				/*
+				 * First run, no upper level elements to join
+				 */
+				$elements = array();
+			}
 			$query = $this->db_cms->get();
 			if ($query->num_rows() > 0)
 			{
-				$elements = array();
 				foreach ($query->result() as $row)
 				{
 					$elements[] = array(
@@ -157,16 +168,29 @@ class M_cms extends CI_Model {
 		else
 		{
 			/*
-			 * elemento associado a conteúdo
+			 * elemento associado/herdado a conteúdo
 			 */
 			$this->db_cms->select('element.id, element.name, element.sname');
 			$this->db_cms->from('element');
 			$this->db_cms->join('element_content', 'element_content.element_id = element.id', 'inner');
 			$this->db_cms->where('element_content.content_id', $content_id);
+			if ( $elements !== NULL )
+			{
+				/*
+				 * It's a second run, ignore non spreaded elements
+				 */
+				$this->db_cms->where('element.spread', TRUE);
+			}
+			else
+			{
+				/*
+				 * First run, no upper level elements to join
+				 */
+				$elements = array();
+			}
 			$query = $this->db_cms->get();
 			if ($query->num_rows() > 0)
 			{
-				$elements = array();
 				foreach ($query->result() as $row)
 				{
 					$elements[] = array(
@@ -176,6 +200,10 @@ class M_cms extends CI_Model {
 					);
 				}
 			}
+			/*
+			 * Pull upper level elements
+			 */
+			$elements = $this->get_element_by_category($this->get_content_category($content_id), $elements);
 		}
 		return $elements;
 	}
@@ -183,16 +211,14 @@ class M_cms extends CI_Model {
 	/*
 	 * List element by category
 	 */
-	function get_element_by_category($category_id = NULL)
+	function get_element_by_category($category_id = NULL, $elements = NULL)
 	{
-		$elements = NULL;
-		
-		/*
-		 * elemento não associado 
-		 * a categoria
-		 */
-		if ( $category_id === NULL )
+		if ( (bool) $category_id === FALSE )
 		{
+			/*
+			 * elemento não associado 
+			 * a categoria
+			 */
 			$rel = array(0);
 
 			$this->db_cms->select('element_id');
@@ -214,10 +240,23 @@ class M_cms extends CI_Model {
 			$this->db_cms->select('id, name, sname');
 			$this->db_cms->from('element');
 			$this->db_cms->where_not_in('id', $rel);
+			if ( $elements !== NULL )
+			{
+				/*
+				 * It's a second run, ignore non spreaded elements
+				 */
+				$this->db_cms->where('spread', TRUE);
+			}
+			else
+			{
+				/*
+				 * First run, no upper level elements to join
+				 */
+				$elements = array();
+			}
 			$query = $this->db_cms->get();
 			if ($query->num_rows() > 0)
 			{
-				$elements = array();
 				foreach ($query->result() as $row)
 				{
 					$elements[] = array(
@@ -225,22 +264,35 @@ class M_cms extends CI_Model {
 						'name' => $row->name,
 						'sname' => $row->sname
 					);
-				}
+				}					
 			}
 		}
 		else
 		{
 			/*
-			 * elemento associado a categoria
+			 * elemento associado/herdado a categoria
 			 */
 			$this->db_cms->select('element.id, element.name, element.sname');
 			$this->db_cms->from('element');
 			$this->db_cms->join('element_category', 'element_category.element_id = element.id', 'inner');
 			$this->db_cms->where('element_category.category_id', $category_id);
+			if ( $elements !== NULL )
+			{
+				/*
+				 * It's a second run, ignore non spreaded elements
+				 */
+				$this->db_cms->where('spread', TRUE);
+			}
+			else
+			{
+				/*
+				 * First run, no upper level elements to join
+				 */
+				$elements = array();
+			}
 			$query = $this->db_cms->get();
 			if ($query->num_rows() > 0)
 			{
-				$elements = array();
 				foreach ($query->result() as $row)
 				{
 					$elements[] = array(
@@ -250,6 +302,10 @@ class M_cms extends CI_Model {
 					);
 				}
 			}
+			/*
+			 * Pull upper level elements
+			 */
+			$elements = $this->get_element_by_category($this->get_category_parent($category_id), $elements);
 		}
 		return $elements;
 	}
@@ -674,7 +730,7 @@ class M_cms extends CI_Model {
 	/*
 	 * List content by category
 	 */
-	function get_content_by_cat($category_id = NULL)
+	function get_content_by_category($category_id = NULL)
 	{
 		$contents = array();
 		

@@ -117,7 +117,7 @@ class Parser extends CI_Controller {
 				{
 					case "category" :
 					$data['categories'] = $this->cms->get_category_children($id);
-					$data['contents'] = $this->cms->get_content_by_cat($id);
+					$data['contents'] = $this->cms->get_content_by_category($id);
 					$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category($id));
 					break;
 		

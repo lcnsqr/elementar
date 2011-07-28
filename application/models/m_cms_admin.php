@@ -443,6 +443,26 @@ class M_cms_admin extends CI_Model {
 	}
 		
 	/*
+	 * get element spread status
+	 */
+	function get_element_spread($id)
+	{
+		$this->db_cms->select('spread');
+		$this->db_cms->from('element');
+		$this->db_cms->where('id', $id);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->spread;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/*
 	 * get element status
 	 */
 	function get_element_status($id)
@@ -647,6 +667,18 @@ class M_cms_admin extends CI_Model {
 	{
 		$data = array(
 			'status' => $status
+		);
+		$this->db_cms->where('id', $element_id);
+		$this->db_cms->update('element', $data); 
+	}
+
+	/*
+	 * Gravar spread do elemento
+	 */
+	function put_element_spread($element_id, $spread)
+	{
+		$data = array(
+			'spread' => $spread
 		);
 		$this->db_cms->where('id', $element_id);
 		$this->db_cms->update('element', $data); 
