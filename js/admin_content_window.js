@@ -6,7 +6,7 @@ $(function() {
 	$("body").click(function() {
 		// dropdown widget
 		var widget = $(".dropdown_items_listing").parents(".dropdown_items_listing_inline").first();
-		$(".dropdown_items_listing").fadeOut("fast");
+		$(".dropdown_items_listing:visible").fadeOut("fast");
 		$(widget).find("a.down").addClass("up").removeClass("down");
 	});
 	

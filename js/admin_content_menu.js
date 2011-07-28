@@ -112,8 +112,8 @@ $(function() {
 	
 	/*
 	 * Dropdown menu items
-	 */
-	$("#menu_target").live('focus', function(event) {
+	 */	
+	$("#menu_target").live('click', function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		
