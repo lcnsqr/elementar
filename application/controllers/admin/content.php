@@ -818,6 +818,7 @@ class Content extends CI_Controller {
 
 			case "p" :
 			case "hypertext" :
+			case "textarea" :
 			$attributes = array(
 				'class' => 'noform ' . $field['type'],
 				'name' => $field['sname'],

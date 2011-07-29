@@ -186,7 +186,8 @@ class Parser extends CI_Controller {
 			$metafields = $this->cms->get_meta_fields();
 	
 			$data = array(
-				'title' => $this->config->item('site_name'),
+				'site_name' => $this->config->item('site_name'),
+				'title' => 'Home',
 				'metafields' => $metafields,
 				'js' => $js
 			);
