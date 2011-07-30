@@ -17,7 +17,7 @@
 					<div class="dropdown tree_menu_dropdown">
 					<ul>
 						<li><a class="meta category" href="<?php echo $parent_id; ?>">Meta fields</a></li>
-						<li><a class="edit category" href="<?php echo $parent_id; ?>">Editar</a></li>
+						<!-- <li><a class="edit category" href="<?php echo $parent_id; ?>">Editar</a></li> -->
 						<li><hr /></li>
 						<li><a class="new category" href="<?php echo $parent_id; ?>">Criar categoria aqui</a></li>
 						<li><a class="new content" href="<?php echo $parent_id; ?>">Criar conteúdo aqui</a></li>

@@ -1000,15 +1000,24 @@ class Content extends CI_Controller {
 			 * spread
 			 */
 			$form .= "<div class=\"form_cont_field\">";
-			$attributes = array('class' => 'field_label');
+			if ( (bool) $element_id !== FALSE ) 
+			{
+				$checked = $this->cms->get_element_spread($element_id);
+			}
+			else
+			{
+				// Default new element to spread
+				$checked = TRUE;
+			}
 			$attributes = array(
 				'name'        => 'spread',
 				'id'          => 'spread',
 				'class' => 'noform',
 				'value'       => 'true',
-				'checked'     => $this->cms->get_element_spread($element_id)
+				'checked'     => $checked
 			);
 			$form .= form_checkbox($attributes);
+			$attributes = array('class' => 'field_label');
 			$form .= form_label("Propagar", "spread", $attributes);
 			$form .= "</div> <!-- .form_cont_field -->";
 
