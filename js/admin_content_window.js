@@ -112,10 +112,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#element_editor_form").html(data.form).show(function(){
-						// appropriate tinymce
-						$("#content_editor_form").find("textarea").each(function() {
-							make_editor($(this));
-						});
+						// ckeditor
+						$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 					});
 				}
 				else {
@@ -153,10 +151,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#element_editor_form").html(data.form).show(function(){
-						// appropriate tinymce
-						$("#content_editor_form").find("textarea").each(function() {
-							make_editor($(this));
-						});
+						// ckeditor
+						$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 					});
 				}
 				else {
@@ -245,10 +241,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editor_form").html(data.form).show(function(){
-						// appropriate tinymce
-						$("#content_editor_form").find("textarea").each(function() {
-							make_editor($(this));
-						});
+						// ckeditor
+						$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 					});
 				}
 				else {
@@ -569,59 +563,7 @@ $(function() {
 		
 	});
 
-
 });
 
-function make_editor(textarea) {
-	// .p	
-	if ( $(textarea).hasClass("p") ) {
-		$(textarea).tinymce({
-			// Location of TinyMCE script
-			script_url : '/js/tinymce/jscripts/tiny_mce/tiny_mce.js',
-			// General options
-			relative_urls : false,
-			width : "100%",
-			height : "80",
-			language : "pt",
-			theme : "advanced",
-			theme_advanced_toolbar_location : "top",
-			plugins : "xhtmlxtras",
-			theme_advanced_buttons1 : "link,unlink,|,bold,italic,cite,ins,del,abbr,acronym,|,sub,sup,|,charmap,|,undo,redo,code,cleanup",
-			theme_advanced_buttons2 : "",
-			theme_advanced_buttons3 : "",
-			theme_advanced_buttons4 : "",
-			// formatting
-			force_br_newlines : true,
-			force_p_newlines : false,
-			forced_root_block : ''
-		});
-	}
-
-	// .hypertext
-	if ( $(textarea).hasClass("hypertext") ) {
-		$(textarea).tinymce({
-			// Location of TinyMCE script
-			script_url : '/js/tinymce/jscripts/tiny_mce/tiny_mce.js',
-			// General options
-			relative_urls : false,
-			width : "100%",
-			height : "200",
-			language : "pt",
-			theme : "advanced",
-			theme_advanced_toolbar_location : "top",
-			theme_advanced_blockformats : "h1,h2,h3",
-			plugins : "xhtmlxtras",
-			theme_advanced_buttons1 : "formatselect,|,image,|,link,unlink,|,bold,italic,cite,ins,del,abbr,acronym,|,bullist,numlist,|,sub,sup,|,charmap,|,undo,redo,code,cleanup",
-			theme_advanced_buttons2 : "",
-			theme_advanced_buttons3 : "",
-			theme_advanced_buttons4 : "",
-			// formatting
-			force_br_newlines : false,
-			force_p_newlines : true,
-			forced_root_block : '',
-			external_image_list_url : "/js/admin_conteudo_imagelist.js"
-		});
-	}
-}
 
 //]]>

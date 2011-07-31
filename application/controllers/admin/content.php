@@ -110,15 +110,16 @@ class Content extends CI_Controller {
 			'/js/jquery-1.6.2.min.js',
 			'/js/jquery.easing.1.3.js',
 			'/js/jquery.timers-1.2.js',
+			'/ckeditor/ckeditor.js',
 			'/js/admin_client_warning.js',
 			'/js/admin_content_tree.js',
 			'/js/admin_content_window.js',
+			'/js/admin_content_ckeditor.js',
 			'/js/admin_content_menu.js',
 			'/js/admin_anchor.js',
 			'/js/admin_content_anchor_section.js',
 			'/js/admin_content_anchor_editor.js',
-			'/js/admin_upload.js',
-			'/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js'
+			'/js/admin_upload.js'
 		);
 		
 		/*

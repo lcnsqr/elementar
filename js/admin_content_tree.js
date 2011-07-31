@@ -163,10 +163,8 @@ $(function() {
 			try {
 				if ( data.done == true ) {
 					$("#content_editor_window").html(data.html).show();
-					// appropriate tinymce
-					$("#content_editor_window").find("textarea").each(function() {
-						make_editor($(this));
-					});
+					// ckeditor
+					$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 				}
 			}
 			catch (err) {
@@ -283,10 +281,8 @@ $(function() {
 			try {
 				if ( data.done == true ) {
 					$("#content_editor_window").html(data.form).show();
-					// appropriate tinymce
-					$("#content_editor_window").find("textarea").each(function() {
-						make_editor($(this));
-					});
+					// ckeditor
+					$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 				}
 			}
 			catch (err) {
@@ -313,10 +309,8 @@ $(function() {
 			try {
 				if ( data.done == true ) {
 					$("#content_editor_window").html(data.form).show();
-					// appropriate tinymce
-					$("#content_editor_window").find("textarea").each(function() {
-						make_editor($(this));
-					});
+					// ckeditor
+					$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 				}
 			}
 			catch (err) {
