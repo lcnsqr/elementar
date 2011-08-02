@@ -182,6 +182,13 @@ $(function() {
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
 
+		/*
+		 * Update CKEditor contents
+		 */
+		$.each(CKEDITOR.instances, function() {
+			this.updateElement();
+		});
+
 		$.post("/admin/content/xhr_write_element", $(".noform").serialize(), function(data){
 			try {
 				if ( data.done == true ) {
@@ -271,6 +278,13 @@ $(function() {
 		
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
+
+		/*
+		 * Update CKEditor contents
+		 */
+		$.each(CKEDITOR.instances, function() {
+			this.updateElement();
+		});
 
 		$.post("/admin/content/xhr_write_content", $(".noform").serialize(), function(data){
 			try {
