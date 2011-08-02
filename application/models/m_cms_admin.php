@@ -491,6 +491,7 @@ class M_cms_admin extends CI_Model {
 			'name' => htmlentities($name, ENT_QUOTES, "UTF-8"),
 			'sname' => $sname,
 			'content_type_id' => $content_type_id,
+			'html_template_id' => $this->get_content_type_html_template($content_type_id),
 			'created' => date("Y-m-d H:i:s")
 		);
 		$inserted = $this->db_cms->insert('content', $data);
@@ -1106,6 +1107,26 @@ class M_cms_admin extends CI_Model {
 		{
 			$row = $query->row();
 			return $row->name;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get content type html template
+	 */
+	function get_content_type_html_template($id)
+	{
+		$this->db_cms->select('html_template_id');
+		$this->db_cms->from('content_type');
+		$this->db_cms->where('id', $id);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->html_template_id;
 		}
 		else
 		{
