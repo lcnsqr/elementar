@@ -566,9 +566,10 @@ class M_cms extends CI_Model {
 
 	function get_category_template($id)
 	{
-		$this->db_cms->select('template');
-		$this->db_cms->from('category');
-		$this->db_cms->where('id', $id);
+		$this->db_cms->select('html_template.template');
+		$this->db_cms->from('html_template');
+		$this->db_cms->where('category.id', $id);
+		$this->db_cms->join('category', 'category.html_template_id = html_template.id', 'inner');
 		$this->db_cms->limit(1);
 		$query = $this->db_cms->get();
 		if ($query->num_rows() > 0)
@@ -711,9 +712,10 @@ class M_cms extends CI_Model {
 
 	function get_content_template($id)
 	{
-		$this->db_cms->select('template');
-		$this->db_cms->from('content');
-		$this->db_cms->where('id', $id);
+		$this->db_cms->select('html_template.template');
+		$this->db_cms->from('html_template');
+		$this->db_cms->where('content.id', $id);
+		$this->db_cms->join('content', 'content.html_template_id = html_template.id', 'inner');
 		$this->db_cms->limit(1);
 		$query = $this->db_cms->get();
 		if ($query->num_rows() > 0)
