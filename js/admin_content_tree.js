@@ -163,8 +163,6 @@ $(function() {
 			try {
 				if ( data.done == true ) {
 					$("#content_editor_window").html(data.html).show();
-					// ckeditor
-					$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
 				}
 			}
 			catch (err) {
@@ -280,9 +278,10 @@ $(function() {
 		$.post("/admin/content/xhr_render_content_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.form).show();
-					// ckeditor
-					$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
+					$("#content_editor_window").html(data.form).show(function() {
+						// CKEditor activation
+						ckeditor();
+					});
 				}
 			}
 			catch (err) {
@@ -308,9 +307,10 @@ $(function() {
 		$.post("/admin/content/xhr_render_element_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.form).show();
-					// ckeditor
-					$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
+					$("#content_editor_window").html(data.form).show(function() {
+						// CKEditor activation
+						ckeditor();
+					});
 				}
 			}
 			catch (err) {

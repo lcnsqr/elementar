@@ -112,8 +112,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#element_editor_form").html(data.form).show(function(){
-						// ckeditor
-						$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
+						// CKEditor activation
+						ckeditor();
 					});
 				}
 				else {
@@ -151,8 +151,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#element_editor_form").html(data.form).show(function(){
-						// ckeditor
-						$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
+						// CKEditor activation
+						ckeditor();
 					});
 				}
 				else {
@@ -248,8 +248,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editor_form").html(data.form).show(function(){
-						// ckeditor
-						$("#content_editor_window").everyTime(500, 'ckeditor', function() { ckeditor(); } );
+						// CKEditor activation
+						ckeditor();
 					});
 				}
 				else {

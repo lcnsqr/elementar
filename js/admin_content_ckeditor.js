@@ -1,24 +1,35 @@
 var ckeditorConfig = {
 	language: 'pt-br',
+	removePlugins: 'elementspath',
 	extraPlugins : 'uicolor',
 	toolbar:
 	[
 		['Link','Unlink','-','Bold','Italic','Underline','Strike','Subscript','Superscript','-','Source','RemoveFormat']
 	],
+	toolbarCanCollapse: false,
 	enterMode: CKEDITOR.ENTER_P,
 	shiftEnterMode: CKEDITOR.ENTER_BR
 };
 
 function ckeditor() {
-	$("#content_editor_window").find("textarea.p:visible").each(function(){
-		var instance = CKEDITOR.instances[$(this).attr("id")];
-		if (instance) {
-			CKEDITOR.remove(instance);
+	// Find proper textareas and convert them to ckeditor
+	$("#content_editor_window").find("textarea:visible").each(function(){
+		if ( $(this).hasClass('p') || $(this).hasClass('hypertext') ) {
+			var id = $(this).attr('id');
+			var exists = Object.keys(CKEDITOR.instances).some(function(element, index, array) {
+				return (element == id);
+			});
+			if ( exists ) {
+				eval("delete CKEDITOR.instances."+id);
+			}
+			CKEDITOR.replace(this, ckeditorConfig);
 		}
-		CKEDITOR.replace(this, ckeditorConfig);
 	});
-	if ( $("textarea.p:visible").length == 0 ) {
-		$("#content_editor_window").stopTime('ckeditor');
-	}
+	// Cleanup removed textareas from CKEDITOR instances
+	$(Object.keys(CKEDITOR.instances)).each(function(index, id){
+		if ( $('textarea#'+id).length == 0 ) {
+			eval("delete CKEDITOR.instances."+id);
+		}
+	});
 }
 
