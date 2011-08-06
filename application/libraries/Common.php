@@ -2,26 +2,32 @@
 
 class Common {
 
+	/**
+	 * CodeIgniter base object reference
+	 *
+	 * @var object
+	 */
+	private $CI;
+
 	function __construct()
 	{
-		
+		$this->CI =& get_instance();
 	}
 	
 	function ajax_response($response)
 	{
-		$CI =& get_instance();
 		// execution time
-		$elapsed = array('elapsed_time' => $CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end'));
+		$elapsed = array('elapsed_time' => $this->CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end'));
 		$response = array_merge($response, $elapsed);
 		
-		$CI->output->set_header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		$CI->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-		$CI->output->set_header("Cache-Control: post-check=0, pre-check=0");
-		$CI->output->set_header("Pragma: no-cache");
-		$CI->output->set_header("Content-type: application/json");
+		$this->CI->output->set_header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+		$this->CI->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
+		$this->CI->output->set_header("Cache-Control: post-check=0, pre-check=0");
+		$this->CI->output->set_header("Pragma: no-cache");
+		$this->CI->output->set_header("Content-type: application/json");
 		
 		$data = json_encode($response);
-		$CI->output->set_output($data);
+		$this->CI->output->set_output($data);
 	}
 	
 	/*
@@ -29,8 +35,7 @@ class Common {
 	 */
 	function get_menus() 
 	{	
-		$CI =& get_instance();
-		$menus = $CI->cms->get_menus();
+		$menus = $this->CI->cms->get_menus();
 		$data = array();
 		foreach ( $menus as $menu )
 		{
@@ -43,8 +48,6 @@ class Common {
 	{
 		if ( ! is_array($menus) )
 			return NULL;
-		
-		$CI =& get_instance();
 
 		$reduce = array();
 		foreach ( $menus as $menu )
@@ -53,15 +56,15 @@ class Common {
 			 * Identificar menu ativo (que fora invocado)
 			 */
 			$current = FALSE;
-			if ( $CI->uri->total_segments() == 0 && $menu['target'] == "/" )
+			if ( $this->CI->uri->total_segments() == 0 && $menu['target'] == "/" )
 			{
 				// home
-				$menu['target'] = $CI->uri->uri_string();
+				$menu['target'] = $this->CI->uri->uri_string();
 				$current = TRUE;
 			}
 			elseif ( $menu['target'] != "/" )
 			{
-				if (strpos("/" . $CI->uri->uri_string() . "/", $menu['target']) === 0 )
+				if (strpos("/" . $this->CI->uri->uri_string() . "/", $menu['target']) === 0 )
 				{
 					$current = TRUE;
 				}
@@ -80,8 +83,6 @@ class Common {
 	 */
 	function breadcrumb_category($category_id, $sep = "&raquo;", $previous = "")
 	{
-		$CI =& get_instance();
-
 		$breadcrumb = "";
 		
 		/*
@@ -89,19 +90,19 @@ class Common {
 		 */
 		if ( (bool)$category_id == NULL )
 		{
-			$breadcrumb = "<a href=\"/\" >" . $CI->config->item('site_name') . "</a>" ;
+			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" ;
 			return $breadcrumb;
 		}
 
-		$parent_id = $CI->cms->get_category_parent($category_id);
+		$parent_id = $this->CI->cms->get_category_parent($category_id);
 		
 		if ( $parent_id != NULL ) 
 		{
-			$breadcrumb = $this->breadcrumb_category($parent_id, $sep, " $sep <a href=\"" . $CI->cms->get_category_uri($category_id) . "/\">" . $CI->cms->get_category_name($category_id) . "</a>" . $previous);
+			$breadcrumb = $this->breadcrumb_category($parent_id, $sep, " $sep <a href=\"" . $this->CI->cms->get_category_uri($category_id) . "/\">" . $this->CI->cms->get_category_name($category_id) . "</a>" . $previous);
 		}
 		else
 		{
-			$breadcrumb = "<a href=\"/\" >" . $CI->config->item('site_name') . "</a>" .  " $sep <a href=\"" . $CI->cms->get_category_uri($category_id) . "/\">" . $CI->cms->get_category_name($category_id) . "</a>" . $previous;
+			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" .  " $sep <a href=\"" . $this->CI->cms->get_category_uri($category_id) . "/\">" . $this->CI->cms->get_category_name($category_id) . "</a>" . $previous;
 		}
 		
 		return $breadcrumb;
@@ -112,19 +113,17 @@ class Common {
 	 */
 	function breadcrumb_content($content_id, $sep = "&raquo;")
 	{
-		$CI =& get_instance();
-
 		$breadcrumb = "";
 		
-		$parent_id = $CI->cms->get_content_category($content_id);
+		$parent_id = $this->CI->cms->get_content_category($content_id);
 		
 		if ( $parent_id != NULL ) 
 		{
-			$breadcrumb = $this->breadcrumb_category($parent_id, $sep, " $sep <a href=\"" . $CI->cms->get_content_uri($content_id) . "\">" . $CI->cms->get_content_name($content_id) . "</a>");
+			$breadcrumb = $this->breadcrumb_category($parent_id, $sep, " $sep <a href=\"" . $this->CI->cms->get_content_uri($content_id) . "\">" . $this->CI->cms->get_content_name($content_id) . "</a>");
 		}
 		else
 		{
-			$breadcrumb = "<a href=\"/\" >" . $CI->config->item('site_name') . "</a>" .  " $sep <a href=\"" . $CI->cms->get_content_uri($content_id) . "\">" . $CI->cms->get_content_name($content_id) . "</a>";
+			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" .  " $sep <a href=\"" . $this->CI->cms->get_content_uri($content_id) . "\">" . $this->CI->cms->get_content_name($content_id) . "</a>";
 		}
 		
 		return $breadcrumb;
@@ -135,15 +134,13 @@ class Common {
 	 */
 	function breadcrumb_element($element_id, $sep = "&raquo;")
 	{
-		$CI =& get_instance();
-
 		$breadcrumb = "";
 		
-		$parent_id = $CI->cms->get_element_parent($element_id);
+		$parent_id = $this->CI->cms->get_element_parent($element_id);
 		
 		if ( $parent_id != NULL ) 
 		{
-			$parent = $CI->cms->get_element_parent_type($element_id);
+			$parent = $this->CI->cms->get_element_parent_type($element_id);
 			switch ($parent)
 			{
 				case "category" :
@@ -156,7 +153,7 @@ class Common {
 		}
 		else
 		{
-			$breadcrumb = "<a href=\"/\" >" . $CI->config->item('site_name') . "</a>";
+			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>";
 		}
 		
 		return $breadcrumb;
@@ -170,9 +167,7 @@ class Common {
 	 */
 	function render_form_upload_image($field_sname, $image_id = NULL)
 	{
-		$CI =& get_instance();
-
-		$form_upload_session = $CI->cms->put_upload_session();
+		$form_upload_session = $this->CI->cms->put_upload_session();
 		
 		$hidden = array('form_upload_session' => $form_upload_session, 'field_sname' => $field_sname);
 		
@@ -192,8 +187,8 @@ class Common {
 		/*
 		 * IE change event bug
 		 */
-		$CI->load->library('user_agent');
-		if( $CI->agent->browser() == 'Internet Explorer' )
+		$this->CI->load->library('user_agent');
+		if( $this->CI->agent->browser() == 'Internet Explorer' )
 		{
 			$attributes['onchange'] = 'this.form.submit(); this.blur();';
 		}
@@ -211,9 +206,9 @@ class Common {
 		$data['form_upload'] = $form;
 		$data['form_upload_session'] = $form_upload_session;
 		
-		$data['img_url'] = $CI->cms->get_image_uri_thumb($image_id);
+		$data['img_url'] = $this->CI->cms->get_image_uri_thumb($image_id);
 		
-		return $CI->load->view("admin/admin_content_upload_image", $data, TRUE);
+		return $this->CI->load->view("admin/admin_content_upload_image", $data, TRUE);
 		
 	}
 	/**
@@ -223,9 +218,7 @@ class Common {
 	 */
 	function normalize_string($string)
 	{
-		$CI =& get_instance();
-		
-		$CI->load->helper('url');
+		$this->CI->load->helper('url');
 
 		$acentos = array(
 			'A' => '/&Agrave;|&Aacute;|&Acirc;|&Atilde;|&Auml;|&Aring;/',
@@ -258,16 +251,14 @@ class Common {
 
 	function render_elements($elements) 
 	{
-		$CI =& get_instance();
-
 		$data = array();
 		if ( $elements !== NULL )
 		{
 			foreach ($elements as $element)
 			{
 
-				$element_type_id = $CI->cms->get_element_type($element['id']);
-				$element_type = $CI->cms->get_element_type_sname($element_type_id);
+				$element_type_id = $this->CI->cms->get_element_type($element['id']);
+				$element_type = $this->CI->cms->get_element_type_sname($element_type_id);
 				
 				/*
 				 * Initialize element type inner array
@@ -283,16 +274,16 @@ class Common {
 				if ( ! array_key_exists($element['sname'], $data[$element_type]) )
 				{
 					$data[$element_type][$element['sname']]['name'] = $element['name'];
-					$fields = $CI->cms->get_element_type_fields($element_type_id);
+					$fields = $this->CI->cms->get_element_type_fields($element_type_id);
 					
 					foreach ($fields as $field)
 					{
 						if ( $field['type'] == "img")
 						{
-							$field_id = $CI->cms->get_element_field($element['id'], $field['id']);
-							$uri = $CI->cms->get_image_uri($field_id);
-							$width = $CI->cms->get_image_width($field_id);
-							$height = $CI->cms->get_image_height($field_id);
+							$field_id = $this->CI->cms->get_element_field($element['id'], $field['id']);
+							$uri = $this->CI->cms->get_image_uri($field_id);
+							$width = $this->CI->cms->get_image_width($field_id);
+							$height = $this->CI->cms->get_image_height($field_id);
 							
 							$data[$element_type][$element['sname']][$field['sname']] = array(
 								'uri' => ( strval($uri) == "") ? "" : $uri,
@@ -302,7 +293,7 @@ class Common {
 						}
 						else
 						{
-							$value = $CI->cms->get_element_field($element['id'], $field['id']);
+							$value = $this->CI->cms->get_element_field($element['id'], $field['id']);
 							$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "" ) ? "" : $value;
 						}
 					}
