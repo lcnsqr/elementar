@@ -2,10 +2,8 @@
 
 class Common {
 
-	/**
-	 * CodeIgniter base object reference
-	 *
-	 * @var object
+	/*
+	 * CodeIgniter Instance
 	 */
 	private $CI;
 

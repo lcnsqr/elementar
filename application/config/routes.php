@@ -41,6 +41,10 @@
 $route['default_controller'] = 'parser';
 $route['404_override'] = 'parser';
 
+/*
+ * sitemap.xml 
+ */
+$route['sitemap.xml'] = 'parser/sitemap';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

@@ -17,6 +17,15 @@ class Parser extends CI_Controller {
 
 		// Site specific Library
 		$this->load->library('special');
+
+		// Sitemap library
+		$this->load->library('sitemap');
+		
+		// Parser
+		$this->load->library('parser');
+		
+		// Helper
+		$this->load->helper('url');
 	}
 
 	function index()
@@ -88,7 +97,7 @@ class Parser extends CI_Controller {
 				 * client controller (javascript)
 				 */
 				$js = array(
-					'/js/jquery-1.5.min.js',
+					'/js/jquery-1.6.2.min.js',
 					'/js/jquery.easing.1.3.js',
 					'/js/jquery.timers-1.2.js'
 				);
@@ -175,7 +184,7 @@ class Parser extends CI_Controller {
 			 * client controller (javascript)
 			 */
 			$js = array(
-				'/js/jquery-1.5.min.js',
+				'/js/jquery-1.6.2.min.js',
 				'/js/jquery.easing.1.3.js',
 				'/js/jquery.timers-1.2.js'
 			);
@@ -206,9 +215,56 @@ class Parser extends CI_Controller {
 			 * Carregar view
 			 */
 			$this->load->view('main', $data);
+			//$this->parser->parse('main', $data);
 			 
 		}
-	}	
+	}
+
+	function sitemap()
+	{
+		$urls = array();
+		
+		/*
+		 * Database contents
+		 */
+		foreach ( $this->cms->get_contents() as $content )
+		{
+			$urls[] = array(
+				'loc' => site_url($this->cms->get_content_uri($content['id'])),
+				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
+				'changefreq' => 'daily',
+				'priority' => '0.5'
+			);
+		}
+
+		/*
+		 * Other controllers
+		 */
+		foreach ( $this->sitemap->controllers(array('Parser','Rss','User')) as $url ) 
+		{
+			$urls[] = array(
+				'loc' => site_url($url['uri']),
+				'lastmod' => date("Y-m-d", $url['date']),
+				'changefreq' => 'daily',
+				'priority' => '0.5'
+			);
+			// Controller methods
+			if ( count($url['methods']) > 0 )
+			{
+				foreach ( $url['methods'] as $method ) 
+				{
+					$urls[] = array(
+						'loc' => site_url($method['uri']),
+						'lastmod' => date("Y-m-d", $url['date']),
+						'changefreq' => 'daily',
+						'priority' => '0.5'
+					);
+				}				
+			}
+		}
+		$this->output->set_header("Content-type: application/xml");
+		$this->load->view('sitemap', array('urls' => $urls));
+	}
 
 }
 

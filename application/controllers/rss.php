@@ -46,6 +46,7 @@ class Rss extends CI_Controller {
 	{
 		header("Content-Type: application/xml; charset=utf-8");
 
+/*
 			$details = '<?xml version="1.0" encoding="UTF-1" ?>
 				<rss version="2.0">
 					<channel>
@@ -68,6 +69,7 @@ class Rss extends CI_Controller {
 		}
 		$items .= '</channel>
 				</rss>';
+*/
 
 	}
 

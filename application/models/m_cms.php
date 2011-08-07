@@ -677,6 +677,21 @@ class M_cms extends CI_Model {
 		}
 	}
 
+	function get_contents()
+	{
+
+		$contents = array();
+
+		$this->db_cms->select('id, name, sname, modified');
+		$this->db_cms->from('content');
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$contents = $query->result_array();
+		}
+		return $contents;
+	}
+
 	/*
 	 * URI constructor for content
 	 */
