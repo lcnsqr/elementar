@@ -566,6 +566,22 @@ class M_cms_admin extends CI_Model {
 		$this->db_cms->where('id', $content_id);
 		$this->db_cms->update('content', $data); 
 	}
+		
+	/*
+	 * Gravar data de modificaçào do conteúdo
+	 */
+	function put_content_modified($content_id, $modified = NULL)
+	{
+		if ( ! (bool) $modified )
+		{
+			$modified = date("Y-m-d H:i:s");
+		}
+		$data = array(
+			'modified' => $modified
+		);
+		$this->db_cms->where('id', $content_id);
+		$this->db_cms->update('content', $data); 
+	}
 
 	/*
 	 * Gravar campo de conteúdo
@@ -588,7 +604,11 @@ class M_cms_admin extends CI_Model {
 			$this->db_cms->where('content_id', $content_id);
 			$this->db_cms->where('content_type_field_id', $content_type_field_id);
 			$this->db_cms->update('content_field', $data); 
-
+			/*
+			 * Update modified date in content table
+			 */
+			$this->put_content_modified($content_id);
+			
 			$row = $query->row();
 			return $row->id;
 		}
@@ -605,6 +625,11 @@ class M_cms_admin extends CI_Model {
 			$inserted = $this->db_cms->insert('content_field', $data);
 			if ($inserted)
 			{
+				/*
+				 * Update modified date in content table
+				 */
+				$this->put_content_modified($content_id);
+
 				return $this->db_cms->insert_id();
 			}
 			else
@@ -635,6 +660,10 @@ class M_cms_admin extends CI_Model {
 			$this->db_cms->where('element_id', $element_id);
 			$this->db_cms->where('element_type_field_id', $element_type_field_id);
 			$this->db_cms->update('element_field', $data); 
+			/*
+			 * Update modified date in element table
+			 */
+			$this->put_element_modified($element_id);
 
 			$row = $query->row();
 			return $row->id;
@@ -652,6 +681,10 @@ class M_cms_admin extends CI_Model {
 			$inserted = $this->db_cms->insert('element_field', $data);
 			if ($inserted)
 			{
+				/*
+				 * Update modified date in element table
+				 */
+				$this->put_element_modified($element_id);
 				return $this->db_cms->insert_id();
 			}
 			else
@@ -668,6 +701,22 @@ class M_cms_admin extends CI_Model {
 	{
 		$data = array(
 			'status' => $status
+		);
+		$this->db_cms->where('id', $element_id);
+		$this->db_cms->update('element', $data); 
+	}
+
+	/*
+	 * Gravar data de modificação do elemento
+	 */
+	function put_element_modified($element_id, $modified = NULL)
+	{
+		if ( ! (bool) $modified )
+		{
+			$modified = date("Y-m-d H:i:s");
+		}
+		$data = array(
+			'modified' => $modified
 		);
 		$this->db_cms->where('id', $element_id);
 		$this->db_cms->update('element', $data); 
