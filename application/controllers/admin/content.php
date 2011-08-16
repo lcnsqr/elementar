@@ -669,9 +669,38 @@ class Content extends CI_Controller {
 		 */
 		$listing = array();
 		$listing[] = "<p><strong>Destinos internos</strong></p>";
+		/*
+		 * Conteúdos
+		 */
 		foreach ( $this->cms->get_contents() as $content )
 		{
 			$listing[] = $this->common->breadcrumb_content($content['id']);
+		}
+		/*
+		 * Controllers
+		 */
+		$controllers = array();		
+		foreach( $this->common->controllers(array('Parser','Rss','User')) as $controller )
+		{
+			$controllers[] = array(
+				'path' => $controller['uri'],
+				'name' => $controller['name']
+			);
+			// Controller methods
+			if ( count($controller['methods']) > 0 )
+			{
+				foreach ( $controller['methods'] as $method ) 
+				{
+					$controllers[] = array(
+						'path' => $method['uri'],
+						'name' => $method['name']
+					);
+				}				
+			}
+		}
+		foreach( $controllers as $controller )
+		{
+			$listing[] = $this->common->breadcrumb_path($controller['path']);
 		}
 		$attributes = array(
 			'class' => 'dropdown_items_listing_targets'
@@ -918,9 +947,12 @@ class Content extends CI_Controller {
 			 * Element name
 			 */
 			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Nome", "name", $attributes);
 			$form .= br(1);
+			$form .= "</div> <!-- form_window_column_label -->";
+			$form .= "<div class=\"form_window_column_input\">";
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'name',
@@ -928,6 +960,7 @@ class Content extends CI_Controller {
 				'value' => $this->cms->get_element_name($element_id)
 			);
 			$form .= form_input($attributes);
+			$form .= "</div> <!-- form_window_column_input -->";
 			$form .= "</div> <!-- .form_content_field -->";
 
 			/*
@@ -970,14 +1003,18 @@ class Content extends CI_Controller {
 			foreach ( $fields as $field )
 			{
 				$form .= "<div class=\"form_content_field\">";
+				$form .= "<div class=\"form_window_column_label\">";
 				$attributes = array('class' => 'field_label');
 				$form .= form_label($field['name'], $field['sname'], $attributes);
 				$form .= br(1);
+				$form .= "</div> <!-- form_window_column_label -->";
 				
+				$form .= "<div class=\"form_window_column_input\">";
 				/*
 				 * Adequar ao tipo do campo
 				 */
 				$form .= $this->_render_form_custom_field($field, $this->cms->get_element_field($element_id, $field['id']));
+				$form .= "</div> <!-- form_window_column_input -->";
 
 				$form .= "</div> <!-- .form_content_field -->";
 			}
@@ -992,15 +1029,16 @@ class Content extends CI_Controller {
 			$cats = $this->cms->get_categories();
 			$checkbox .= $this->_render_form_get_children_cat($cats);
 			$checkbox .= form_fieldset_close(); 
-			$form .= "<div class=\"form_cont_field\">";
+			$form .= "<div class=\"form_content_field\">";
 			$form .= $checkbox;
-			$form .= "</div> <!-- .form_cont_field -->";
+			$form .= "</div> <!-- .form_content_field -->";
 */
 
 			/*
 			 * spread
 			 */
-			$form .= "<div class=\"form_cont_field\">";
+			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			if ( (bool) $element_id !== FALSE ) 
 			{
 				$checked = $this->cms->get_element_spread($element_id);
@@ -1010,6 +1048,11 @@ class Content extends CI_Controller {
 				// Default new element to spread
 				$checked = TRUE;
 			}
+			$attributes = array('class' => 'field_label');
+			$form .= form_label("Propagar", "spread", $attributes);
+			$form .= "</div> <!-- form_window_column_label -->";
+
+			$form .= "<div class=\"form_window_column_input\">";
 			$attributes = array(
 				'name'        => 'spread',
 				'id'          => 'spread',
@@ -1018,18 +1061,21 @@ class Content extends CI_Controller {
 				'checked'     => $checked
 			);
 			$form .= form_checkbox($attributes);
-			$attributes = array('class' => 'field_label');
-			$form .= form_label("Propagar", "spread", $attributes);
-			$form .= "</div> <!-- .form_cont_field -->";
+			$form .= "</div> <!-- form_window_column_input -->";
+			$form .= "</div> <!-- .form_content_field -->";
 
 			/*
 			 * status
 			 */
-			$form .= "<div class=\"form_cont_field\">";
+			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Status", "status", $attributes);
+			$form .= "</div> <!-- form_window_column_label -->";
+			$form .= "<div class=\"form_window_column_input\">";
 			$form .= $this->_render_status_dropdown($this->cms->get_element_status($element_id));
-			$form .= "</div> <!-- .form_cont_field -->";
+			$form .= "</div> <!-- form_window_column_input -->";
+			$form .= "</div> <!-- .form_content_field -->";
 
 			$form .= "<div class=\"form_control_buttons\">";
 
@@ -1126,9 +1172,13 @@ class Content extends CI_Controller {
 			 * Content name
 			 */
 			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Nome", "name", $attributes);
 			$form .= br(1);
+			$form .= "</div> <!-- form_window_column_label -->";
+			
+			$form .= "<div class=\"form_window_column_input\">";
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'name',
@@ -1136,26 +1186,32 @@ class Content extends CI_Controller {
 				'value' => $this->cms->get_content_name($content_id)
 			);
 			$form .= form_input($attributes);
+			$form .= "</div> <!-- form_window_column_input -->";
+
 			$form .= "</div> <!-- .form_content_field -->";
 
 			$fields = $this->cms->get_content_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
 				$form .= "<div class=\"form_content_field\">";
+				$form .= "<div class=\"form_window_column_label\">";
 				$attributes = array('class' => 'field_label');
 				$form .= form_label($field['name'], $field['sname'], $attributes);
 				
 				$form .= br(1);
+				$form .= "</div> <!-- form_window_column_label -->";
 				
+				$form .= "<div class=\"form_window_column_input\">";
 				/*
 				 * Adequar ao tipo do campo
 				 */
 				$form .= $this->_render_form_custom_field($field, $this->cms->get_content_field($content_id, $field['id']));
+				$form .= "</div> <!-- form_window_column_input -->";
 
 				$form .= "</div> <!-- .form_content_field -->";
 			}
 
-			$form .= br(1);
+			//$form .= br(1);
 			
 			/*
 			 * Categorias
@@ -1167,20 +1223,24 @@ class Content extends CI_Controller {
 			$cats = $this->cms->get_categories();
 			$checkbox .= $this->_render_form_get_children_cat($cats, $content_id);
 			$checkbox .= form_fieldset_close(); 
-			$form .= "<div class=\"form_cont_field\">";
+			$form .= "<div class=\"form_content_field\">";
 			$form .= $checkbox;
-			$form .= "</div> <!-- .form_cont_field -->";
+			$form .= "</div> <!-- .form_content_field -->";
 */
 
 			/*
 			 * status
 			 */
-			$form .= "<div class=\"form_cont_field\">";
+			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Status", "status", $attributes);
 			$form .= br(1);
+			$form .= "</div> <!-- form_window_column_label -->";
+			$form .= "<div class=\"form_window_column_input\">";
 			$form .= $this->_render_status_dropdown($this->cms->get_content_status($content_id));
-			$form .= "</div> <!-- .form_cont_field -->";
+			$form .= "</div> <!-- form_window_column_input -->";
+			$form .= "</div> <!-- .form_content_field -->";
 
 			$form .= "<div class=\"form_control_buttons\">";
 			/*
@@ -1194,7 +1254,7 @@ class Content extends CI_Controller {
 			);
 			$form .= form_button($attributes);
 
-			$form .= "</div>";
+			$form .= "</div> <!-- form_control_buttons -->";
 			
 			$response = array(
 				'done' => TRUE,

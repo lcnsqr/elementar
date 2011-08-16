@@ -156,6 +156,157 @@ class Common {
 		
 		return $breadcrumb;
 	}
+	
+	/*
+	 * Generate breadcrumb from some path
+	 */
+	function breadcrumb_path($path, $sep = "&raquo;")
+	{
+		$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" ;
+		$uri = "";
+		
+		/*
+		 * With no path, just return home link
+		 */
+		if ( (bool) $path == FALSE )
+		{
+			return $breadcrumb;
+		}
+
+		$segments = explode("/", substr($path, 1));
+
+		if ( count($segments) > 0 )
+		{
+			$breadcrumb .= " $sep ";
+		}
+
+		while ( $segment = current($segments) )
+		{
+			$uri .= "/" . $segment;
+			$breadcrumb .= "<a href=\"" . $uri . "\" >" . $segment . "</a>" ;
+			if ( next($segments) )
+			{
+				$breadcrumb .= " $sep ";
+			}
+		}
+		return $breadcrumb;
+	}
+
+    function get_controller_methods($class = null)
+    {
+        // Use the PHP5 Reflection class to introspect the controller
+        $controller = new ReflectionClass($class);
+        
+		$data = array();
+        foreach($controller->getMethods() as $method)
+        {
+            // skip methods that begin with '_'
+            if(substr($method->name, 0, 1) == '_') continue;
+
+            // skip globally ignored names
+            //if(in_array(strtolower($method->name), $this->ignore['*'])) continue;
+
+            // skip ignored controller methods
+            //if(isset($this->ignore[strtolower($class)]) AND in_array(strtolower($method->name), (array) $this->ignore[strtolower($class)])) continue;
+
+            // skip index page
+            if($method->name == 'index') continue;
+            
+            // skip get_instance method
+            if($method->name == 'get_instance') continue;
+
+			// skip XHR (ajax) methods
+            if(substr($method->name, 0, 4) == 'xhr_') continue;
+
+            // skip old-style constructor
+            if(strtolower($method->name) == strtolower($class)) continue;
+
+            // skip methods that aren't public
+            if(!$method->isPublic()) continue;
+
+            // build link data for parser class
+            $data[] = array(
+                'uri' => strtolower('/' . $class . '/' . $method->name),
+                'name'=> ucwords(strtr($method->name, array('_'=>' '))),
+            );
+        }
+
+        return $data;
+	}
+
+	function controllers($ignore = NULL)
+	{
+		$this->CI->load->helper('file');
+		
+		$data = array();
+		$controllers_path = APPPATH.'controllers/';
+		foreach(get_dir_file_info($controllers_path, TRUE) as $controller) 
+		{
+			// skip anything other than PHP files
+			if ( substr($controller['name'], -4) == '.php' )
+			{
+				list($class, $ext) = explode('.', ucfirst($controller['name']));
+				if ( in_array($class, $ignore) ) continue;
+				//if(isset($this->ignore[strtolower($class)]) AND $this->ignore[strtolower($class)] == '*') continue;    // skip controllers marked as 'ignore'
+				if(!class_exists($class)) { 
+					include($controller['relative_path'] . '/' . $controller['name']);  // include the class for access
+				}
+				$data[] = array(
+					'uri' => '/' . strtolower($class),
+					'name'=> $class,
+					'date' => $controller['date'],
+					'methods' => $this->get_controller_methods($class)
+				);
+			}
+		}
+		return $data;
+	}
+
+	function sitemap()
+	{
+		$urls = array();
+		
+		/*
+		 * Database contents
+		 */
+		foreach ( $this->CI->cms->get_contents() as $content )
+		{
+			$urls[] = array(
+				'loc' => site_url($this->CI->cms->get_content_uri($content['id'])),
+				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
+				'changefreq' => 'daily',
+				'priority' => '0.5'
+			);
+		}
+
+		/*
+		 * Other controllers
+		 */
+		foreach ( $this->controllers(array('Parser','Rss','User')) as $url ) 
+		{
+			$urls[] = array(
+				'loc' => site_url($url['uri']),
+				'lastmod' => date("Y-m-d", $url['date']),
+				'changefreq' => 'daily',
+				'priority' => '0.5'
+			);
+			// Controller methods
+			if ( count($url['methods']) > 0 )
+			{
+				foreach ( $url['methods'] as $method ) 
+				{
+					$urls[] = array(
+						'loc' => site_url($method['uri']),
+						'lastmod' => date("Y-m-d", $url['date']),
+						'changefreq' => 'daily',
+						'priority' => '0.5'
+					);
+				}				
+			}
+		}
+		$this->CI->output->set_header("Content-type: application/xml");
+		$this->CI->load->view('sitemap', array('urls' => $urls));
+	}
 
 	/**
 	 * Formulário para envio de imagem no campo imagem
