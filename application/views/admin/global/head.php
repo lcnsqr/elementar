@@ -13,7 +13,7 @@
 
 <link rel="stylesheet" href="/css/reset.css" type="text/css" />
 <link rel="stylesheet" href="/css/admin.css" type="text/css" />
-<link rel="stylesheet" href="/css/admin_tree.css" type="text/css" />
+<link rel="stylesheet" href="/css/admin/admin_tree.css" type="text/css" />
 <link rel="stylesheet" href="/css/admin_window.css" type="text/css" />
 <link rel="stylesheet" href="/css/admin_menu.css" type="text/css" />
 

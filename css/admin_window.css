@@ -1,9 +1,108 @@
+/*
+ * Visual decoration
+ */
+.white_board {
+	position: relative;
+	background-color: #fff;
+	margin: 0 0 0 230px;
+	padding: 14px;
+}
+.white_board .border {
+	position: absolute;
+}
+.white_board .top_side {
+	height: 14px;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
+}
+.white_board .right_side {
+	width: 14px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
+}
+.white_board .bottom_side {
+	height: 14px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
+	background-position: 0 -14px;
+}
+.white_board .left_side {
+	width: 14px;
+	bottom: 0;
+	left: 0;
+	top: 0;
+	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
+	background-position: -14px 0;
+}
+.white_board .corner {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	background: url('/css/admin/white_board_corners.png') no-repeat left top;
+}
+.white_board .top_left {
+	top: 0;
+	left: 0;
+}
+.white_board .top_right {
+	top: 0;
+	right: 0;
+	background-position: -14px 0;
+}
+.white_board .bottom_right {
+	bottom: 0;
+	right: 0;
+	background-position: -28px 0;
+}
+.white_board .bottom_left {
+	bottom: 0;
+	left: 0;
+	background-position: -42px 0;
+}
+
+/*
+ * Functional features
+ */
+
+#content_editor_window {
+	position: relative;
+}
+
 #content_editor_window hr {
 	border: 0; 
 	height: 1px;
-	background-color: #ccc;
+	background-color: #d3d7cf;
 }
 
+/*
+ * Form fields
+ */
+.form_window_column_label {
+	float: left;
+	width: 92px;
+	text-align: right;
+}
+.form_window_column_label .field_label {
+	font-size: 12px;
+	font-weight: bold;
+}
+.form_window_column_input {
+	margin-left: 108px;
+}
+.form_content_field {
+	padding-bottom: 8px;
+	margin-bottom: 8px;
+	border-bottom: 1px solid #eeeeec;
+}
+.form_control_buttons {
+	text-align: right;
+}
 
 /*
  * Dropdown input

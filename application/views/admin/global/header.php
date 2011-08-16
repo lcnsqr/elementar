@@ -19,4 +19,4 @@
 <div style="width: 100%; clear: both;"></div>
 
 </div> <!-- #header -->
-
+<div id="header_shadow"></div>

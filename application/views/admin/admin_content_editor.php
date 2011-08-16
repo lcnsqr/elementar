@@ -4,7 +4,18 @@
 
 <p class="page_subtitle">Edição dos conteúdos</p>
 
-<div id="content_editor_tree">
+<div id="content_editor_tree" class="aluminium_board">
+
+	<div class="border top_side"></div>
+	<div class="border right_side"></div>
+	<div class="border bottom_side"></div>
+	<div class="border left_side"></div>
+	<div class="corner top_left"></div>
+	<div class="corner top_right"></div>
+	<div class="corner bottom_right"></div>
+	<div class="corner bottom_left"></div>
+	<div class="face_light"></div>
+
 	<div id="tree_parent_0" class="tree_parent">
 
 		<div class="tree_listing_row">
@@ -40,10 +51,21 @@
 	</div> <!-- #tree_parent_0 -->
 
 </div> <!-- #content_editor_tree -->
-    
-<div id="content_editor_window" style="display: none;">
 
+<div id="content_editor_board" class="white_board">
+<div class="border top_side"></div>
+<div class="border right_side"></div>
+<div class="border bottom_side"></div>
+<div class="border left_side"></div>
+<div class="corner top_left"></div>
+<div class="corner top_right"></div>
+<div class="corner bottom_right"></div>
+<div class="corner bottom_left"></div>
+
+<div id="content_editor_window" style="display: none;">
 </div> <!-- #content_editor_window -->
+
+</div> <!-- #content_editor_board -->
 
 <hr style="clear: both; border: 0; height: 0;" />
 

@@ -56,14 +56,21 @@ a:visited {
 #header {
 	position: relative;
 	width: 100%;
+	/*
 	margin-bottom: 40px;
 	border-bottom: 1px solid #cccccc;
-	/*
 	background-color: #063368;
 	background-image: url("/img/header_bg.png");
 	background-repeat: no-repeat;
 	background-position: center bottom;
+	background: url('/css/admin/header_bg.png') repeat-x center top;
 	*/
+	background-color: #000;
+}
+#header_shadow {
+	margin-bottom: 40px;
+	background: url('/css/admin/header_bg.png') repeat-x center bottom;
+	height: 7px;
 }
 
 #resource_menu {
@@ -96,7 +103,7 @@ a:visited {
 	position: relative;
 	float: left;
 	margin-right: 4px;
-	color: #2d2d2d;
+	color: #eeeeec;
 }
 #user_menu ul li a, #resource_menu ul li a {
 	display: block;
@@ -106,6 +113,7 @@ a:visited {
 	*/
 	text-decoration: none;
 	padding: 0px;
+	color: #eeeeec;
 }
 #user_menu ul li a:hover, #resource_menu ul li a:hover {
 	text-decoration: underline;
@@ -149,7 +157,7 @@ a:visited {
  */
 #left_column {
 	float: left;
-	width: 150px;
+	width: 70px;
 }
 
 #logo {
@@ -173,7 +181,7 @@ a:visited {
 	text-decoration: none;
 }
 #left_menu li a.current {
-	background-color: #888888;
+	background-color: #d3d7cf;
 	font-weight: bold;
 	color: #fff;
 }
@@ -183,9 +191,9 @@ a:visited {
  */
 
 #main {
-	margin-left: 150px;
+	margin-left: 70px;
 	position: relative;
-	background-color: #888888;
+	background-color: #d3d7cf;
 	padding: 4px 0px 4px 4px;
 }
 
@@ -243,16 +251,6 @@ a:visited {
 #content_editor {
 	margin-top: 20px;
 	line-height: 16px;
-}
-#content_editor_tree {
-	float: left;
-	width: 200px;
-}
-
-#content_editor_window {
-	margin: 0 0 0 210px;
-	padding: 10px;
-	border: 1px solid #CCC;
 }
 
 /*
