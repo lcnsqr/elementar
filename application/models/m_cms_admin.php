@@ -2271,6 +2271,39 @@ class M_cms_admin extends CI_Model {
 		}
 	}
 	
+	/*
+	 * Gravar título (alt) de imagem na tabela
+	 */
+	function put_image_title($image_id, $title)
+	{
+		$data = array(
+			'alt' => htmlentities($title, ENT_QUOTES, "UTF-8")
+		);
+		
+		$this->db_cms->where('id', $image_id);
+		$this->db_cms->update('image', $data); 
+	}
+
+	/*
+	 * Pegar título de imagem
+	 */
+	function get_image_title($image_id)
+	{
+		$this->db_cms->select('alt');
+		$this->db_cms->from('image');
+		$this->db_cms->where('id', $image_id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return html_entity_decode($row->alt, ENT_QUOTES, "UTF-8");
+		}
+		else
+		{
+			return NULL;
+		}
+	}
 
 	/*
 	 * Remover relacionamentos da categoria

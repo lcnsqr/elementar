@@ -873,6 +873,27 @@ class M_cms extends CI_Model {
 	}
 
 	/*
+	 * Pegar título de imagem
+	 */
+	function get_image_title($field_id)
+	{
+		$this->db_cms->select('alt');
+		$this->db_cms->from('image');
+		$this->db_cms->where('id', $field_id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->alt;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * Verifica se sname
 	 * é categoria
 	 */

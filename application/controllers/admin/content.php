@@ -1556,6 +1556,20 @@ class Content extends CI_Controller {
 		{
 			$value = $this->input->post($type['sname'], TRUE);
 			$this->cms->put_content_field($content_id, $type['id'], $value);
+			/*
+			 * Extra fields for specific field types
+			 */
+			switch ( $type['type'] )
+			{
+				case 'img' :
+				$image_id = $value;
+				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
+				if ( (bool) $image_title )
+				{
+					$this->cms->put_image_title($image_id, $image_title);
+				}
+				break;
+			}
 		}
 		
 		/*
@@ -1699,6 +1713,20 @@ class Content extends CI_Controller {
 		{
 			$value = $this->input->post($type['sname'], TRUE);
 			$this->cms->put_element_field($element_id, $type['id'], $value);
+			/*
+			 * Extra fields for specific field types
+			 */
+			switch ( $type['type'] )
+			{
+				case 'img' :
+				$image_id = $value;
+				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
+				if ( (bool) $image_title )
+				{
+					$this->cms->put_image_title($image_id, $image_title);
+				}
+				break;
+			}
 		}
 		
 		/*

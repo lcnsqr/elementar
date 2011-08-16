@@ -1,5 +1,9 @@
 <div id="upload_image_<?php echo $form_upload_session; ?>" class="upload_image_container">
 
+<div class="upload_image_title">
+<?php echo $input_title; ?>
+</div> <!-- .upload_image_title -->
+
 <div class="upload_image_form" <?php echo ( $img_url == "" ) ? "style=\"display: block;\"" : ""; ?> >
 <?php echo $form_upload; ?>
 </div> <!-- .upload_image_form -->
@@ -16,5 +20,5 @@
 </div> <!-- .upload_image_display -->
 
 <iframe style="display: none;" class="iframeUpload_<?php echo $form_upload_session; ?>" name="iframeUpload_<?php echo $form_upload_session; ?>" scrolling="no" frameborder="0"></iframe>
-		
+
 </div> <!-- .upload_image_container -->

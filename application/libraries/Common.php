@@ -345,6 +345,7 @@ class Common {
 		$form .= form_label("Escolha a imagem", $attributes['id']);
 		$form .= br(1);
 		$form .= form_upload($attributes);
+
 		/*
 		$form .= br(1);
 		$form .= form_submit("submit", "Enviar imagem");
@@ -356,6 +357,19 @@ class Common {
 		$data['form_upload_session'] = $form_upload_session;
 		
 		$data['img_url'] = $this->CI->cms->get_image_uri_thumb($image_id);
+
+		/*
+		 * Título (alt text)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => $field_sname . '_title',
+			'id' => $field_sname . '_title',
+			'value' => $this->CI->cms->get_image_title($image_id)
+		);
+		$data['input_title'] = form_label("Título da imagem", $field_sname . '_title');
+		$data['input_title'] .= br(1);
+		$data['input_title'] .= form_input($attributes);
 		
 		return $this->CI->load->view("admin/admin_content_upload_image", $data, TRUE);
 		
@@ -433,11 +447,13 @@ class Common {
 							$uri = $this->CI->cms->get_image_uri($field_id);
 							$width = $this->CI->cms->get_image_width($field_id);
 							$height = $this->CI->cms->get_image_height($field_id);
+							$alt = $this->CI->cms->get_image_title($field_id);
 							
 							$data[$element_type][$element['sname']][$field['sname']] = array(
 								'uri' => ( strval($uri) == "") ? "" : $uri,
 								'width' => ( strval($width) == "") ? "" : $width,
-								'height' => ( strval($height) == "") ? "" : $height
+								'height' => ( strval($height) == "") ? "" : $height,
+								'alt' => ( strval($alt) == "") ? "" : $alt
 							);
 						}
 						else
