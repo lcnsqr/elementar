@@ -1,10 +1,35 @@
+<?php
+/*
+ *      main.php
+ *      
+ *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+?>
+
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Parser extends CI_Controller {
+class Main extends CI_Controller {
 
 	function __construct()
 	{
 		parent::__construct();
+		
+		$this->output->enable_profiler(TRUE);
 
 		// DB
 		$this->db_cms = $this->load->database('cms', TRUE);
@@ -216,5 +241,5 @@ class Parser extends CI_Controller {
 
 }
 
-/* End of file parser.php */
-/* Location: ./application/controllers/parser.php */
+/* End of file main.php */
+/* Location: ./application/controllers/main.php */

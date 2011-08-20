@@ -38,13 +38,13 @@
 |
 */
 
-$route['default_controller'] = 'parser';
-$route['404_override'] = 'parser';
+$route['default_controller'] = 'main';
+$route['404_override'] = 'main';
 
 /*
  * sitemap.xml 
  */
-$route['sitemap.xml'] = 'parser/sitemap';
+$route['sitemap.xml'] = 'main/sitemap';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
