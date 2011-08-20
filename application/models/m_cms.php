@@ -725,18 +725,75 @@ class M_cms extends CI_Model {
 		}
 	}
 
-	function get_content_template($id)
+	/*
+	 * get content html template id
+	 */
+	function get_content_template_id($id)
 	{
-		$this->db_cms->select('html_template.template');
-		$this->db_cms->from('html_template');
-		$this->db_cms->where('content.id', $id);
-		$this->db_cms->join('content', 'content.html_template_id = html_template.id', 'inner');
+		$this->db_cms->select('template_id, content_type_id');
+		$this->db_cms->from('content');
+		$this->db_cms->where('id', $id);
 		$this->db_cms->limit(1);
 		$query = $this->db_cms->get();
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->template;
+			$template_id = $row->template_id;
+			if ( (bool)$template_id )
+			{
+				return $template_id;
+			}
+			else
+			{
+				/*
+				 * Content don't have a exclusive template,
+				 * Get content_type template_id
+				 */
+				$content_type_id = $row->content_type_id;
+				return $this->get_content_type_template_id($content_type_id);
+			}
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get content html template 
+	 */
+	function get_content_template($id)
+	{
+		$template_id = $this->get_content_template_id($id);
+		$this->db_cms->select('html');
+		$this->db_cms->from('template');
+		$this->db_cms->where('id', $template_id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->html;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get content type html template id
+	 */
+	function get_content_type_template_id($id)
+	{
+		$this->db_cms->select('template_id');
+		$this->db_cms->from('content_type');
+		$this->db_cms->where('id', $id);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->template_id;
 		}
 		else
 		{

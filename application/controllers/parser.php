@@ -15,9 +15,6 @@ class Parser extends CI_Controller {
 		// CMS Common Library
 		$this->load->library('common');
 
-		// Site specific Library
-		$this->load->library('special');
-
 		// Parser
 		$this->load->library('parser');
 		
@@ -89,15 +86,6 @@ class Parser extends CI_Controller {
 					break;
 				}
 				$metafields = $this->cms->get_meta_fields($id, $type);
-				
-				/*
-				 * client controller (javascript)
-				 */
-				$js = array(
-					'/js/jquery-1.6.2.min.js',
-					'/js/jquery.easing.1.3.js',
-					'/js/jquery.timers-1.2.js'
-				);
 		
 				/*
 				 * tags padrão
@@ -106,8 +94,7 @@ class Parser extends CI_Controller {
 					'site_name' => $this->config->item('site_name'),
 					'title' => $title,
 					'metafields' => $metafields,
-					'breadcrumb' => $breadcrumb,
-					'js' => $js
+					'breadcrumb' => $breadcrumb
 				);
 		
 				/*
@@ -124,7 +111,8 @@ class Parser extends CI_Controller {
 					case "category" :
 					$data['categories'] = $this->cms->get_category_children($id);
 					$data['contents'] = $this->cms->get_content_by_category($id);
-					$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category($id));
+					$data = array_merge($data, $this->common->render_elements($this->cms->get_element_by_category($id)));
+					//$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category($id));
 					break;
 		
 					case "content" :
@@ -139,10 +127,12 @@ class Parser extends CI_Controller {
 							$uri = $this->cms->get_image_uri($field_id);
 							$width = $this->cms->get_image_width($field_id);
 							$height = $this->cms->get_image_height($field_id);
+							$alt = $this->cms->get_image_title($field_id);
 							$data[$field['sname']] = array(
 								'uri' => ( strval($uri) == "") ? "" : $uri,
 								'width' => ( strval($width) == "") ? "" : $width,
-								'height' =>( strval($height) == "") ? "" : $height
+								'height' => ( strval($height) == "") ? "" : $height,
+								'alt' => ( strval($alt) == "") ? "" : $alt
 							);
 						}
 						else
@@ -152,11 +142,13 @@ class Parser extends CI_Controller {
 						}
 					}
 					$data['elements'] = $this->common->render_elements($this->cms->get_element_by_content($id));
-	
+					$data = array_merge($data, $this->common->render_elements($this->cms->get_element_by_content($id)));
 					break;
 				}
 	
-				$this->load->view($template, $data);	
+				$data['body'] = $this->parser->parse_string($template, $data, TRUE);
+				
+				$this->load->view('content', $data);
 			}
 			else
 			{

@@ -70,11 +70,6 @@ class Content extends CI_Controller {
 		$this->load->library('common');
 
 		/*
-		 * Site specific library
-		 */
-		$this->load->library('special');
-
-		/*
 		 * Verificar sessão autenticada
 		 * de usuário autorizado no admin
 		 */
@@ -264,7 +259,7 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 			
-		$form = "<hr /><p class=\"page_subtitle\">Defini&ccedil;&atilde;o de novo tipo</p>";
+		$form = "<hr /><p class=\"page_subtitle\">Campos do Modelo</p>";
 		
 		$attributes = array('class' => 'content_type_define_new_form', 'id' => 'content_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -274,14 +269,18 @@ class Content extends CI_Controller {
 		 * Type name
 		 */
 		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
 		$attributes = array('class' => 'field_label');
 		$form .= form_label("Nome do tipo", "name", $attributes);
 		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
 		$attributes = array(
 			'name' => 'name',
 			'id' => 'name'
 		);
 		$form .= form_input($attributes);
+		$form .= "</div> <!-- form_window_column_input -->";
 		$form .= "</div> <!-- .form_content_field -->";
 		
 		/*
@@ -292,24 +291,32 @@ class Content extends CI_Controller {
 		/*
 		 * field name
 		 */
-		$form .= "<p>";
+		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
 		$form .= form_label("Nome do campo", "field_0");
 		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
 		$attributes = array(
 			"id" => "field_0",
 			"name" => "field_0"
 		);
 		$form .= form_input($attributes);
-		$form .= "</p>";
+		$form .= "</div> <!-- form_window_column_input -->";
+		$form .= "</div> <!-- .form_content_field -->";
 
 		/*
 		 * field type
 		 */
-		$form .= "<p>";
+		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
 		$form .= form_label("Tipo do campo", "field_type_0");
 		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
 		$form .= $this->_render_field_type_dropdown();
-		$form .= "</p>";
+		$form .= "</div> <!-- form_window_column_input -->";
+		$form .= "</div> <!-- .form_content_field -->";
 
 		/*
 		 * close div field model
@@ -318,6 +325,28 @@ class Content extends CI_Controller {
 
 		$form .= "<p><a href=\"add_type_field\" id=\"add_type_field\">Incluir outro campo</a></p>";
 		
+		/*
+		 * HTML template
+		 */
+		$form .= "<hr /><p class=\"page_subtitle\">Markup do Modelo</p>";
+
+		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
+		$form .= form_label("Template", "template");
+		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
+		$attributes = array(
+			'name' => 'template',
+			'id' => 'template',
+			'rows' => 8,
+			'cols' => 32,
+			'value' => ''
+		);
+		$form .= form_textarea($attributes);
+		$form .= "</div> <!-- form_window_column_input -->";
+		$form .= "</div> <!-- .form_content_field -->";
+
 		$form .= "<div class=\"form_control_buttons\">";
 
 		$form .= form_submit('type_save', 'Salvar');
@@ -353,14 +382,18 @@ class Content extends CI_Controller {
 		 * Type name
 		 */
 		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
 		$attributes = array('class' => 'field_label');
 		$form .= form_label("Nome do tipo", "name", $attributes);
 		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
 		$attributes = array(
 			'name' => 'name',
 			'id' => 'name'
 		);
 		$form .= form_input($attributes);
+		$form .= "</div> <!-- form_window_column_input -->";
 		$form .= "</div> <!-- .form_content_field -->";
 		
 		/*
@@ -371,24 +404,32 @@ class Content extends CI_Controller {
 		/*
 		 * field name
 		 */
-		$form .= "<p>";
+		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
 		$form .= form_label("Nome do campo", "field_0");
 		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
 		$attributes = array(
 			"id" => "field_0",
 			"name" => "field_0"
 		);
 		$form .= form_input($attributes);
-		$form .= "</p>";
+		$form .= "</div> <!-- form_window_column_input -->";
+		$form .= "</div> <!-- .form_content_field -->";
 
 		/*
 		 * field type
 		 */
-		$form .= "<p>";
+		$form .= "<div class=\"form_content_field\">";
+		$form .= "<div class=\"form_window_column_label\">";
 		$form .= form_label("Tipo do campo", "field_type_0");
 		$form .= br(1);
+		$form .= "</div> <!-- form_window_column_label -->";
+		$form .= "<div class=\"form_window_column_input\">";
 		$form .= $this->_render_field_type_dropdown();
-		$form .= "</p>";
+		$form .= "</div> <!-- form_window_column_input -->";
+		$form .= "</div> <!-- .form_content_field -->";
 
 		/*
 		 * close div field model
@@ -506,9 +547,12 @@ class Content extends CI_Controller {
 		foreach ( $fields as $label => $name )
 		{
 			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label($label, $name, $attributes);
 			$form .= br(1);
+			$form .= "</div> <!-- form_window_column_label -->";
+			$form .= "<div class=\"form_window_column_input\">";
 			$attributes = array(
 				'class' => 'noform',
 				'name' => $name,
@@ -516,6 +560,7 @@ class Content extends CI_Controller {
 				'value' => $this->cms->get_meta_field($id, $type, $name)
 			);
 			$form .= form_input($attributes);
+			$form .= "</div> <!-- form_window_column_input -->";
 			$form .= "</div> <!-- .form_content_field -->";
 		}
 
@@ -561,15 +606,19 @@ class Content extends CI_Controller {
 			 * Category name
 			 */
 			$form .= "<div class=\"form_content_field\">";
+			$form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Nome", "name", $attributes);
 			$form .= br(1);
+			$form .= "</div> <!-- form_window_column_label -->";
+			$form .= "<div class=\"form_window_column_input\">";
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'name',
 				'id' => 'name'
 			);
 			$form .= form_input($attributes);
+			$form .= "</div> <!-- form_window_column_input -->";
 			$form .= "</div> <!-- .form_content_field -->";
 
 			/*
@@ -853,8 +902,8 @@ class Content extends CI_Controller {
 				'class' => 'noform ' . $field['type'],
 				'name' => $field['sname'],
 				'id' => $field['sname'],
-				'rows' => 8,
-				'cols' => 60,
+				'rows' => 16,
+				'cols' => 32,
 				'value' => $value
 			);
 			$form .= form_textarea($attributes);
@@ -918,7 +967,7 @@ class Content extends CI_Controller {
 				$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
 				break;
 			}
-			$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
+			//$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
 			$form = $this->load->view('admin/admin_content_element_new', $data, true);
 		}
 		else
@@ -1120,28 +1169,91 @@ class Content extends CI_Controller {
 		 * Create or update? Check for incoming content ID
 		 */
 		$content_id = $this->input->post('id', TRUE);
+		$data = array();
+
 		if ( (bool) $content_id ) 
 		{
 			/*
-			 * Update. Render breadcrumb and type form too
+			 * Update
 			 */
 			$category_id = $this->cms->get_content_category($content_id);
 			$type_id = $this->cms->get_content_type($content_id);
-			$data = array();
-			$data['content_id'] = $content_id;
-			$data['category_id'] = $category_id;
-			$data['breadcrumb'] = $this->common->breadcrumb_category($category_id);
-			$data['content_types_dropdown'] = $this->_render_content_types_dropdown($type_id);
-			
-			$form = $this->load->view('admin/admin_content_new', $data, true);
+			$template_id = $this->cms->get_content_template_id($content_id);
+			$template = $this->cms->get_content_template($content_id);
 		}
 		else
 		{
-			$form = "";
+			/*
+			 * Create
+			 */
 			$category_id = $this->input->post('category_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
+			$template_id = $this->cms->get_content_type_template_id($type_id);
+			$template = $this->cms->get_content_type_template($type_id);
 		}
 
+		//$data['category_id'] = $category_id;
+		$data['breadcrumb'] = $this->common->breadcrumb_category($category_id);
+
+
+		$template_form = '';
+		$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
+		$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
+		$template_form .= form_open('/admin/content/xhr_write_template', $attributes, $hidden);
+
+		/*
+		 * Sole template
+		 */
+		$template_form .= "<div class=\"form_content_field\">";
+		$template_form .= "<div class=\"form_window_column_label\">";
+		$attributes = array('class' => 'field_label');
+		$template_form .= form_label("Exclusivo", "sole", $attributes);
+		$template_form .= "</div> <!-- form_window_column_label -->";
+		$template_form .= "<div class=\"form_window_column_input\">";
+		$checked = $this->cms->get_content_type_template_id($type_id) != $this->cms->get_content_template_id($content_id) ;
+		$attributes = array(
+			'name'        => 'sole',
+			'id'          => 'sole_' . $content_id,
+			'class' => 'template_form',
+			'value'       => 'true',
+			'checked'     => (bool) $checked
+		);
+		$template_form .= form_checkbox($attributes);
+		$template_form .= "</div> <!-- form_window_column_input -->";
+		$template_form .= "</div> <!-- .form_content_field -->";
+
+		$template_form .= "<div class=\"form_content_field\">";
+		$template_form .= "<div class=\"form_window_column_label\">";
+		$attributes = array('class' => 'field_label');
+		$template_form .= form_label("Template", 'template_' . $content_id, $attributes);
+		$template_form .= br(1);
+		$template_form .= "</div> <!-- form_window_column_label -->";
+		$template_form .= "<div class=\"form_window_column_input\">";
+		$attributes = array(
+			'name' => 'template',
+			'class' => 'template_textarea',
+			'id' => 'template_' . $content_id,
+			'rows' => 16,
+			'cols' => 32,
+			'value' => $template
+		);
+		$template_form .= form_textarea($attributes);
+		$template_form .= "</div> <!-- form_window_column_input -->";
+		$template_form .= "</div> <!-- .form_content_field -->";
+		$template_form .= "<div class=\"form_control_buttons\">";
+		$attributes = array(
+		    'name' => 'button_template_save',
+		    'id' => 'button_template_save',
+		    'value' => 'Salvar'
+		);
+		$template_form .= form_submit($attributes);
+		$template_form .= "</div> <!-- form_control_buttons -->";
+		$template_form .= form_close();
+		$data['template_form'] = $template_form;
+
+
+		$content_form = "";
+		
 		if ( $type_id != "" ) 
 		{
 			$attributes = array(
@@ -1150,7 +1262,7 @@ class Content extends CI_Controller {
 				'value'=> $content_id,
 				'type' => 'hidden'
 			);
-			$form .= form_input($attributes);
+			$content_form .= form_input($attributes);
 
 			$attributes = array(
 				'class' => 'noform',
@@ -1158,7 +1270,7 @@ class Content extends CI_Controller {
 				'value'=> $type_id,
 				'type' => 'hidden'
 			);
-			$form .= form_input($attributes);
+			$content_form .= form_input($attributes);
 
 			$attributes = array(
 				'class' => 'noform',
@@ -1166,83 +1278,66 @@ class Content extends CI_Controller {
 				'value'=> $category_id,
 				'type' => 'hidden'
 			);
-			$form .= form_input($attributes);
+			$content_form .= form_input($attributes);
 
 			/*
 			 * Content name
 			 */
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
+			$content_form .= "<div class=\"form_content_field\">";
+			$content_form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
-			$form .= form_label("Nome", "name", $attributes);
-			$form .= br(1);
-			$form .= "</div> <!-- form_window_column_label -->";
+			$content_form .= form_label("Nome", "name", $attributes);
+			$content_form .= br(1);
+			$content_form .= "</div> <!-- form_window_column_label -->";
 			
-			$form .= "<div class=\"form_window_column_input\">";
+			$content_form .= "<div class=\"form_window_column_input\">";
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'name',
 				'id' => 'name',
 				'value' => $this->cms->get_content_name($content_id)
 			);
-			$form .= form_input($attributes);
-			$form .= "</div> <!-- form_window_column_input -->";
+			$content_form .= form_input($attributes);
+			$content_form .= "</div> <!-- form_window_column_input -->";
 
-			$form .= "</div> <!-- .form_content_field -->";
+			$content_form .= "</div> <!-- .form_content_field -->";
 
 			$fields = $this->cms->get_content_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
-				$form .= "<div class=\"form_content_field\">";
-				$form .= "<div class=\"form_window_column_label\">";
+				$content_form .= "<div class=\"form_content_field\">";
+				$content_form .= "<div class=\"form_window_column_label\">";
 				$attributes = array('class' => 'field_label');
-				$form .= form_label($field['name'], $field['sname'], $attributes);
+				$content_form .= form_label($field['name'], $field['sname'], $attributes);
 				
-				$form .= br(1);
-				$form .= "</div> <!-- form_window_column_label -->";
+				$content_form .= br(1);
+				$content_form .= "</div> <!-- form_window_column_label -->";
 				
-				$form .= "<div class=\"form_window_column_input\">";
+				$content_form .= "<div class=\"form_window_column_input\">";
 				/*
 				 * Adequar ao tipo do campo
 				 */
-				$form .= $this->_render_form_custom_field($field, $this->cms->get_content_field($content_id, $field['id']));
-				$form .= "</div> <!-- form_window_column_input -->";
+				$content_form .= $this->_render_form_custom_field($field, $this->cms->get_content_field($content_id, $field['id']));
+				$content_form .= "</div> <!-- form_window_column_input -->";
 
-				$form .= "</div> <!-- .form_content_field -->";
+				$content_form .= "</div> <!-- .form_content_field -->";
 			}
-
-			//$form .= br(1);
-			
-			/*
-			 * Categorias
-			 */
-/*
-			$checkbox = "";
-			$attributes = array("id" => "category_fieldset");
-			$checkbox .= form_fieldset('Categorias', $attributes);
-			$cats = $this->cms->get_categories();
-			$checkbox .= $this->_render_form_get_children_cat($cats, $content_id);
-			$checkbox .= form_fieldset_close(); 
-			$form .= "<div class=\"form_content_field\">";
-			$form .= $checkbox;
-			$form .= "</div> <!-- .form_content_field -->";
-*/
 
 			/*
 			 * status
 			 */
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
+			$content_form .= "<div class=\"form_content_field\">";
+			$content_form .= "<div class=\"form_window_column_label\">";
 			$attributes = array('class' => 'field_label');
-			$form .= form_label("Status", "status", $attributes);
-			$form .= br(1);
-			$form .= "</div> <!-- form_window_column_label -->";
-			$form .= "<div class=\"form_window_column_input\">";
-			$form .= $this->_render_status_dropdown($this->cms->get_content_status($content_id));
-			$form .= "</div> <!-- form_window_column_input -->";
-			$form .= "</div> <!-- .form_content_field -->";
+			$content_form .= form_label("Status", "status", $attributes);
+			$content_form .= br(1);
+			$content_form .= "</div> <!-- form_window_column_label -->";
+			$content_form .= "<div class=\"form_window_column_input\">";
+			$content_form .= $this->_render_status_dropdown($this->cms->get_content_status($content_id));
+			$content_form .= "</div> <!-- form_window_column_input -->";
+			$content_form .= "</div> <!-- .form_content_field -->";
 
-			$form .= "<div class=\"form_control_buttons\">";
+			$content_form .= "<div class=\"form_control_buttons\">";
 			/*
 			 *  Botão envio
 			 */
@@ -1252,20 +1347,24 @@ class Content extends CI_Controller {
 			    'class' => 'noform',
 			    'content' => 'Salvar'
 			);
-			$form .= form_button($attributes);
+			$content_form .= form_button($attributes);
 
-			$form .= "</div> <!-- form_control_buttons -->";
+			$content_form .= "</div> <!-- form_control_buttons -->";
+			
+			$data['content_form'] = $content_form;
+			
+			$html = $this->load->view('admin/admin_content_form', $data, true);
 			
 			$response = array(
 				'done' => TRUE,
-				'form' => $form
+				'html' => $html
 			);
 		}
 		else 
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => "Forneça o nome para o conteúdo"
+				'error' => "Erro na criação do conteúdo"
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1422,10 +1521,10 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 
 		$count = $this->input->post('field_count', TRUE);
-		
-		$name = $this->input->post('name', TRUE);
-		
-		$type_id = $this->cms->put_content_type($name);
+		$template = $this->input->post('template');
+		$name = $this->input->post('name', TRUE);		
+		$template_id = $this->cms->put_template($template);
+		$type_id = $this->cms->put_content_type($name, $template_id);
 		
 		if ( (bool) $type_id )
 		{
@@ -2135,6 +2234,75 @@ class Content extends CI_Controller {
 				'error' => "Erro ao gravar campos"
 			);
 		}
+		$this->common->ajax_response($response);
+
+	}
+
+	/**
+	 * Salvar template
+	 */
+	function xhr_write_template()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
+
+		$content_id = $this->input->post('content_id', TRUE);
+		$template_id = $this->input->post('template_id', TRUE);		
+		$template = $this->input->post('template', TRUE);
+		
+		/*
+		 * Exclusive template ?
+		 */
+		if ( $this->input->post('sole', TRUE) )
+		{
+			if ( (bool) $content_id ) 
+			{
+				/*
+				 * content_id received, means that 
+				 * it's not a new content
+				 */
+				$content_type_template_id = $this->cms->get_content_type_template_id($this->cms->get_content_type($content_id));
+				if ( $content_type_template_id != $template_id )
+				{
+					/*
+					 * Content already have exclusive template, update it!
+					 */
+					$this->cms->put_template($template, $template_id);
+				}
+				else
+				{
+					/*
+					 * Add a new template for this content
+					 */
+					$content_template_id = $this->cms->put_template($template);
+					$this->cms->put_content_template_id($content_id, $content_template_id);
+				}
+			}
+		}
+		else
+		{
+			if ( (bool) $content_id ) 
+			{
+				/*
+				 * Ensure that content has no exclusive template
+				 */
+				$content_template_id = $this->cms->get_content_template_id($content_id);
+				if ( $content_template_id != $template_id )
+				{
+					$this->cms->put_content_template_id($content_id, NULL);
+					$this->cms->delete_template($content_template_id);
+				}
+			}
+			$this->cms->put_template($template, $template_id);
+		}
+
+		/*
+		 * resposta
+		 */
+		$response = array(
+			'done' => TRUE
+		);
+		
 		$this->common->ajax_response($response);
 
 	}

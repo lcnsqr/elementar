@@ -81,6 +81,16 @@
 }
 
 /*
+ * Content type choice for content/element creation
+ */
+#type_choice_header {
+	border-bottom: 1px solid #eeeeec; 
+	padding-bottom: 8px;
+	margin-bottom: 8px;
+}
+
+
+/*
  * Form fields
  */
 .form_window_column_label {
@@ -94,6 +104,7 @@
 }
 .form_window_column_input {
 	margin-left: 108px;
+	padding-right: 8px;
 }
 .form_content_field {
 	padding-bottom: 8px;
@@ -157,4 +168,34 @@
 	border-width: 0;
 	height: 1px;
 	background-color: #666;
+}
+
+/*
+ * Content/template menu links
+ */
+#content_editors_header {
+	border-bottom: 1px solid #d3d7cf; 
+	margin-bottom: 8px;
+}
+#content_editors_menu {
+	float: right; 
+}
+#content_editors_menu ul li {
+	position: relative;
+	float: left;
+}
+#content_editors_menu ul li a {
+	display: block;
+}
+#content_editors_menu ul li a:hover {
+}
+#content_editors_menu ul li a.current {
+	font-weight: bold;
+}
+
+/*
+ * Template editor
+ */
+.textarea, .template_textarea {
+	width: 100%;
 }

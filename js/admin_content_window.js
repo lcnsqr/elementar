@@ -247,7 +247,7 @@ $(function() {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#content_editor_form").html(data.form).show(function(){
+					$("#content_editors_container").replaceWith(data.html).show(function(){
 						// CKEditor activation
 						ckeditor();
 					});
@@ -449,6 +449,7 @@ $(function() {
 		event.preventDefault();
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
+
 		$.post("/admin/content/xhr_write_content_type", $(this).serialize(), function(data){
 			try {
 				if ( data.done == true ) {
@@ -575,6 +576,49 @@ $(function() {
 		var count = $("#type_define_new_container").find(".type_define_new_field").length;
 		$("#type_define_new_container").find("input[name='field_count']").val(count);
 		
+	});
+	
+	/*
+	 * Content/template editor tabs
+	 */
+	$("a.content_editors_menu_item").live('click', function(event) {
+		event.preventDefault();
+		var target = $(this).attr('href');
+		
+		$("a.content_editors_menu_item[href!='"+target+"']").removeClass("current");
+		$(this).addClass("current");
+		
+		$("div.editor_form[id!='"+target+"']").hide();
+		$("div.editor_form[id='"+target+"']").show();
+	});
+	
+	/*
+	 * Template form
+	 */
+	$("form.template_form").live('submit', function(event) {
+		event.preventDefault();
+		// Bloqueio
+		$("#sections_blocker").fadeIn("fast");
+
+		$.post("/admin/content/xhr_write_template", $(this).serialize(), function(data){
+			try {
+				if ( data.done == true ) {
+					showClientWarning("Template salvo com sucesso");
+				}
+				else {
+					showClientWarning(data.error);
+					// Bloqueio
+					$("#sections_blocker").fadeOut("fast");
+				}
+			}
+			catch (err) {
+				showClientWarning("Erro de comunicação com o servidor");
+				// Bloqueio
+				$("#sections_blocker").fadeOut("fast");
+			}
+			// Bloqueio
+			$("#sections_blocker").fadeOut("fast");
+		}, "json");
 	});
 
 });

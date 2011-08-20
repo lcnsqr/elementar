@@ -47,11 +47,6 @@ class Upload extends CI_Controller {
 		$this->load->library('common');
 
 		/*
-		 * Site specific library
-		 */
-		$this->load->library('special');
-
-		/*
 		 * Verificar sessão autenticada
 		 * de usuário autorizado no admin
 		 */

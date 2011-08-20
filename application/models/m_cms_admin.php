@@ -32,9 +32,67 @@ class M_cms_admin extends CI_Model {
 	}
 
 	/*
+	 * Write html template
+	 */
+	function put_template($html, $id = NULL)
+	{
+		if ( (bool) $id )
+		{
+			/*
+			 * Update
+			 */
+			$data = array(
+				'html' => $html
+			);
+			$this->db_cms->where('id', $id);
+			$this->db_cms->update('template', $data);
+			return $id;
+		}
+		else
+		{
+			/*
+			 * Insert
+			 */
+			$data = array(
+				'html' => $html,
+				'created' => date("Y-m-d H:i:s")
+			);
+			$inserted = $this->db_cms->insert('template', $data);
+			if ($inserted)
+			{
+				return $this->db_cms->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
+	 * Gravar template_id do conteúdo
+	 */
+	function put_content_template_id($id, $template_id)
+	{
+		$data = array(
+			'template_id' => $template_id
+		);
+		$this->db_cms->where('id', $id);
+		$this->db_cms->update('content', $data); 
+	}
+
+	/*
+	 * Remover template
+	 */
+	function delete_template($id)
+	{
+		$this->db_cms->delete('template', array('id' => $id)); 
+	}
+
+	/*
 	 * Gravar content type
 	 */
-	function put_content_type($name)
+	function put_content_type($name, $template_id)
 	{
 		/*
 		 * Verify existing name
@@ -50,7 +108,8 @@ class M_cms_admin extends CI_Model {
 		else
 		{
 			$data = array(
-				'name' => $name
+				'name' => $name,
+				'template_id' => $template_id
 			);
 			$inserted = $this->db_cms->insert('content_type', $data);
 			if ($inserted)
@@ -491,7 +550,6 @@ class M_cms_admin extends CI_Model {
 			'name' => htmlentities($name, ENT_QUOTES, "UTF-8"),
 			'sname' => $sname,
 			'content_type_id' => $content_type_id,
-			'html_template_id' => $this->get_content_type_html_template($content_type_id),
 			'created' => date("Y-m-d H:i:s")
 		);
 		$inserted = $this->db_cms->insert('content', $data);
@@ -1164,18 +1222,96 @@ class M_cms_admin extends CI_Model {
 	}
 
 	/*
-	 * get content type html template
+	 * get content type html template id
 	 */
-	function get_content_type_html_template($id)
+	function get_content_type_template_id($id)
 	{
-		$this->db_cms->select('html_template_id');
+		$this->db_cms->select('template_id');
 		$this->db_cms->from('content_type');
 		$this->db_cms->where('id', $id);
 		$query = $this->db_cms->get();
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->html_template_id;
+			return $row->template_id;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get content type html template
+	 */
+	function get_content_type_template($id)
+	{
+		$this->db_cms->select('template.html');
+		$this->db_cms->from('template');
+		$this->db_cms->where('content_type.id', $id);
+		$this->db_cms->join('content_type', 'content_type.template_id = template.id', 'inner');
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->html;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get content html template id
+	 */
+	function get_content_template_id($id)
+	{
+		$this->db_cms->select('template_id, content_type_id');
+		$this->db_cms->from('content');
+		$this->db_cms->where('id', $id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$template_id = $row->template_id;
+			if ( (bool)$template_id )
+			{
+				return $template_id;
+			}
+			else
+			{
+				/*
+				 * Content don't have a exclusive template,
+				 * Get content_type template_id
+				 */
+				$content_type_id = $row->content_type_id;
+				return $this->get_content_type_template_id($content_type_id);
+			}
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get content html template 
+	 */
+	function get_content_template($id)
+	{
+		$template_id = $this->get_content_template_id($id);
+		$this->db_cms->select('html');
+		$this->db_cms->from('template');
+		$this->db_cms->where('id', $template_id);
+		$this->db_cms->limit(1);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->html;
 		}
 		else
 		{

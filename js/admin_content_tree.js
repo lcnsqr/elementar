@@ -278,7 +278,7 @@ $(function() {
 		$.post("/admin/content/xhr_render_content_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.form).show(function() {
+					$("#content_editor_window").html(data.html).show(function() {
 						// CKEditor activation
 						ckeditor();
 					});

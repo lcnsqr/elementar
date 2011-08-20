@@ -1,10 +1,11 @@
 var ckeditorConfig = {
 	language: 'pt-br',
+	skin: 'elementar',
 	removePlugins: 'elementspath',
 	extraPlugins : 'uicolor',
 	toolbar:
 	[
-		['Link','Unlink','-','Bold','Italic','Underline','Strike','Subscript','Superscript','-','Source','RemoveFormat']
+		['Link','Unlink','-','Bold','Italic','Underline','Strike','Subscript','Superscript']
 	],
 	toolbarCanCollapse: false,
 	enterMode: CKEDITOR.ENTER_P,

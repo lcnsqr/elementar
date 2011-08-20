@@ -38,11 +38,6 @@ class Account extends CI_Controller {
 		 */
 		$this->load->library('common');
 
-		/*
-		 * Site specific library
-		 */
-		$this->load->library('special');
-
 		$this->load->helper(array('form', 'html', 'text', 'url'));
 		
 		// montar tabela
