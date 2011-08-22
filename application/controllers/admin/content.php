@@ -62,7 +62,7 @@ class Content extends CI_Controller {
 		/*
 		 * Content model (admin)
 		 */
-		$this->load->model('M_cms_admin', 'cms');
+		$this->load->model('Elementar', 'elementar');
 		
 		/*
 		 * CMS Common Library
@@ -120,7 +120,7 @@ class Content extends CI_Controller {
 		/*
 		 * Resource menu
 		 */
-		$resource_menu = "<ul><li><a href=\"/admin/account\" title=\"Usuários\">Usuários</a></li><li>|</li><li><strong>Conteúdo</strong></li></ul>";
+		$resource_menu = "<ul><li><a href=\"/admin/account\" title=\"Usuários\">Usuários</a></li><li><span class=\"diams\">&diams;</span></li><li><strong>Conteúdo</strong></li></ul>";
 
 		$data = array(
 			'title' => $this->config->item('site_name'),
@@ -150,18 +150,15 @@ class Content extends CI_Controller {
 				/*
 				 * Administração de menus
 				 */
-				$data['menus'] = $this->cms->get_menus();
+				$data['menus'] = $this->elementar->get_menus();
 				$html = $this->load->view('admin/admin_content_menu', $data, true);
 				break;
 				
 				case "editor" :
 				$data['parent_id'] = 0;
 				$data['parent'] = $this->config->item('site_name');
-				$data['content_hierarchy_category'] = $this->cms->get_categories_by_parent();
-				$data['content_hierarchy_content'] = $this->cms->get_contents_by_category();
-				$data['content_hierarchy_element'] = $this->cms->get_element_by_category();
-				$data['category_listing_id'] = NULL;
-				$data['category_listing'] = NULL;
+				$data['content_hierarchy_content'] = $this->elementar->get_contents_by_parent();
+				$data['content_hierarchy_element'] = $this->elementar->get_elements_by_parent();
 				$data['content_listing_id'] = NULL;
 				$data['content_listing'] = NULL;
 				$html = $this->load->view('admin/admin_content_editor', $data, true);
@@ -199,37 +196,25 @@ class Content extends CI_Controller {
 			switch ( $request )
 			{
 				case "content" :
-				$parent_id = $this->cms->get_content_category($id);
-				$tree_request = "category";
-				$tree = $this->_render_tree_listing($parent_id, $tree_request);
+				$parent_id = $this->elementar->get_content_parent_id($id);
+				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
 				while ( (bool) $tree_id )
 				{
-					$parent_id = $this->cms->get_category_parent($tree_id);
-					$tree = $this->_render_tree_listing($parent_id, $tree_request, $tree, $tree_id);
+					$parent_id = $this->elementar->get_content_parent_id($tree_id);
+					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
 					$tree_id = $parent_id;
 				}
 				break;
 				
 				case "element" : 
-				$parent_id = $this->cms->get_element_parent($id);
-				$tree_request = $this->cms->get_element_parent_type($id);
-				$tree = $this->_render_tree_listing($parent_id, $tree_request);
+				$parent_id = $this->elementar->get_element_parent_id($id);
+				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
 				while ( (bool) $tree_id )
 				{
-					switch ( $tree_request )
-					{
-						case "category" :
-						$parent_id = $this->cms->get_category_parent($tree_id);
-						break;
-						
-						case "content" :
-						$parent_id = $this->cms->get_content_category($tree_id);
-						break;
-					}
-					$tree_request = "category";
-					$tree = $this->_render_tree_listing($parent_id, $tree_request, $tree, $tree_id);
+					$parent_id = $this->elementar->get_content_parent_id($tree_id);
+					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
 					$tree_id = $parent_id;
 				}
 				break;
@@ -465,8 +450,8 @@ class Content extends CI_Controller {
 
 		$type_id = $this->input->post('type_id', TRUE);
 
-		$tags = "<p>Tags de " . $this->cms->get_content_type_name($type_id) . ":</p>";
-		$fields = $this->cms->get_content_type_fields($type_id);
+		$tags = "<p>Tags de " . $this->elementar->get_content_type_name($type_id) . ":</p>";
+		$fields = $this->elementar->get_content_type_fields($type_id);
 		$list = array();
 		foreach ( $fields as $field )
 		{
@@ -494,20 +479,9 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 
 		$id = $this->input->post('id', TRUE);
-		$type = $this->input->post('request', TRUE);
 
-		switch ( $type )
-		{
-			case "category" :
-			$name = $this->cms->get_category_name($id);
-			$breadcrumb = $this->common->breadcrumb_category($id);
-			break;
-			
-			case "content" :
-			$name = $this->cms->get_content_name($id);
-			$breadcrumb = $this->common->breadcrumb_content($id);
-			break;
-		}
+		$name = $this->elementar->get_content_name($id);
+		$breadcrumb = $this->common->breadcrumb_content($id);
 
 		if ( $id == "0" ) {
 			$name = "Home";
@@ -521,14 +495,6 @@ class Content extends CI_Controller {
 			'class' => 'noform',
 			'name' => 'id',
 			'value'=> $id,
-			'type' => 'hidden'
-		);
-		$form .= form_input($attributes);
-
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'type',
-			'value'=> $type,
 			'type' => 'hidden'
 		);
 		$form .= form_input($attributes);
@@ -557,7 +523,7 @@ class Content extends CI_Controller {
 				'class' => 'noform',
 				'name' => $name,
 				'id' => $name,
-				'value' => $this->cms->get_meta_field($id, $type, $name)
+				'value' => $this->elementar->get_meta_field($id, $name)
 			);
 			$form .= form_input($attributes);
 			$form .= "</div> <!-- form_window_column_input -->";
@@ -585,86 +551,6 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 
 	}
-
-	/**
-	 * Gerar formulário para inserção/edicão de categoria
-	 */
-	function xhr_render_category_form()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$parent_id = $this->input->post("parent_id", TRUE);
-		if ( $parent_id !== FALSE )
-		{
-			$data = array();
-			$data['breadcrumb'] = $this->common->breadcrumb_category($parent_id);
-			$data['parent_id'] = $parent_id;
-			
-			$form = "";
-			/*
-			 * Category name
-			 */
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
-			$attributes = array('class' => 'field_label');
-			$form .= form_label("Nome", "name", $attributes);
-			$form .= br(1);
-			$form .= "</div> <!-- form_window_column_label -->";
-			$form .= "<div class=\"form_window_column_input\">";
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'name',
-				'id' => 'name'
-			);
-			$form .= form_input($attributes);
-			$form .= "</div> <!-- form_window_column_input -->";
-			$form .= "</div> <!-- .form_content_field -->";
-
-			/*
-			 * Category parent_id (hidden)
-			 */
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'parent_id',
-				'value'=> $parent_id,
-				'type' => 'hidden'
-			);
-			$form .= form_input($attributes);
-
-			$form .= "<div class=\"form_control_buttons\">";
-
-			/*
-			 *  Botão envio
-			 */
-			$attributes = array(
-			    'name' => 'button_category_save',
-			    'id' => 'button_category_save',
-			    'class' => 'noform',
-			    'content' => 'Salvar'
-			);
-			$form .= form_button($attributes);
-
-			$form .= "</div>";
-
-			$data['form'] = $form;
-			$html = $this->load->view('admin/admin_content_category', $data, true);
-
-			$response = array(
-				'done' => TRUE,
-				'html' => $html
-			);
-		}
-		else 
-		{
-			$response = array(
-				'done' => FALSE,
-				'error' => "Forneça o nome para a categoria"
-			);
-		}
-		$this->common->ajax_response($response);
-
-	}
 	
 	/**
 	 * Gerar formulário para inserção/edicão de menu
@@ -679,7 +565,7 @@ class Content extends CI_Controller {
 		
 		$data = array(
 			'id' => $id,
-			'target' => $this->cms->get_menu_target($id)
+			'target' => $this->elementar->get_menu_target($id)
 		);		
 			
 		$form = "";
@@ -694,7 +580,7 @@ class Content extends CI_Controller {
 			'class' => 'noform',
 			'name' => 'name',
 			'id' => 'name',
-			'value' => $this->cms->get_menu_name($id)
+			'value' => $this->elementar->get_menu_name($id)
 		);
 		$form .= form_input($attributes);
 		$form .= "</div> <!-- .form_content_field -->";
@@ -710,7 +596,7 @@ class Content extends CI_Controller {
 			'class' => 'noform',
 			'name' => 'target',
 			'id' => 'menu_target',
-			'value' => $this->cms->get_menu_target($id)
+			'value' => $this->elementar->get_menu_target($id)
 		);
 		$form .= form_input($attributes);
 		/*
@@ -721,7 +607,7 @@ class Content extends CI_Controller {
 		/*
 		 * Conteúdos
 		 */
-		foreach ( $this->cms->get_contents() as $content )
+		foreach ( $this->elementar->get_contents() as $content )
 		{
 			$listing[] = $this->common->breadcrumb_content($content['id']);
 		}
@@ -817,14 +703,18 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 
-		$category_id = $this->input->post('id', TRUE);
+		$parent_id = $this->input->post('id', TRUE);
 		
-		$type_id = (int) $this->input->post('type_id', TRUE);
-
+		/*
+		 * After creation of a new type, it's new id
+		 * is posted to be selected by default
+		 */
+		$type_id = $this->input->post('type_id', TRUE);;
+		
 		$data = array();
 		$data['content_id'] = NULL;
-		$data['category_id'] = $category_id;
-		$data['breadcrumb'] = $this->common->breadcrumb_category($category_id);
+		$data['parent_id'] = $parent_id;
+		$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
 		$data['content_types_dropdown'] = $this->_render_content_types_dropdown($type_id);
 		
 		$html = $this->load->view('admin/admin_content_new', $data, true);
@@ -845,27 +735,20 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 
 		/*
-		 * Determine if it's for a category or element 
+		 * Determine parent id
 		 */
-
-		$parent = $this->input->post('parent', TRUE);
 		$parent_id = $this->input->post('id', TRUE);
 
-		$type_id = (int) $this->input->post('type_id', TRUE);
+		/*
+		 * After creation of a new type, it's new id
+		 * is posted to be selected by default
+		 */
+		$type_id = $this->input->post('type_id', TRUE);;
 
 		$data = array();
 		$data['element_id'] = NULL;
 		$data['parent_id'] = $parent_id;
-		$data['parent'] = $parent;
-		switch ($parent)
-		{
-			case "category" :
-			$data['breadcrumb'] = $this->common->breadcrumb_category($parent_id);
-			break;
-			case "content" :
-			$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
-			break;
-		}
+		$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
 		$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
 		
 		$html = $this->load->view('admin/admin_content_element_new', $data, true);
@@ -950,30 +833,18 @@ class Content extends CI_Controller {
 			/*
 			 * Update. Render breadcrumb and type form too
 			 */
-			$parent = $this->cms->get_element_parent_type($element_id);
-			$parent_id = $this->cms->get_element_parent($element_id);
-			$type_id = $this->cms->get_element_type($element_id);		
+			$parent_id = $this->elementar->get_element_parent_id($element_id);
+			$type_id = $this->elementar->get_element_type_id($element_id);		
 
 			$data = array();
 			$data['element_id'] = $element_id;
 			$data['parent_id'] = intval($parent_id);
-			$data['parent'] = $parent;
-			switch ($parent)
-			{
-				case "category" :
-				$data['breadcrumb'] = $this->common->breadcrumb_category($parent_id);
-				break;
-				case "content" :
-				$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
-				break;
-			}
-			//$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
+			$data['breadcrumb'] = $this->common->breadcrumb_element($element_id);
 			$form = $this->load->view('admin/admin_content_element_new', $data, true);
 		}
 		else
 		{
 			$form = "";
-			$parent = $this->input->post('parent', TRUE);
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
 		}
@@ -1006,22 +877,11 @@ class Content extends CI_Controller {
 				'class' => 'noform',
 				'name' => 'name',
 				'id' => 'name',
-				'value' => $this->cms->get_element_name($element_id)
+				'value' => $this->elementar->get_element_name($element_id)
 			);
 			$form .= form_input($attributes);
 			$form .= "</div> <!-- form_window_column_input -->";
 			$form .= "</div> <!-- .form_content_field -->";
-
-			/*
-			 * Element parent (hidden)
-			 */
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'parent',
-				'value'=> $parent,
-				'type' => 'hidden'
-			);
-			$form .= form_input($attributes);
 
 			/*
 			 * Element parent_id (hidden)
@@ -1048,7 +908,7 @@ class Content extends CI_Controller {
 			/*
 			 * Element type fields
 			 */
-			$fields = $this->cms->get_element_type_fields($type_id);
+			$fields = $this->elementar->get_element_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
 				$form .= "<div class=\"form_content_field\">";
@@ -1062,26 +922,11 @@ class Content extends CI_Controller {
 				/*
 				 * Adequar ao tipo do campo
 				 */
-				$form .= $this->_render_form_custom_field($field, $this->cms->get_element_field($element_id, $field['id']));
+				$form .= $this->_render_form_custom_field($field, $this->elementar->get_element_field($element_id, $field['id']));
 				$form .= "</div> <!-- form_window_column_input -->";
 
 				$form .= "</div> <!-- .form_content_field -->";
 			}
-			
-			/*
-			 * Categorias
-			 */
-/*
-			$checkbox = "";
-			$attributes = array("id" => "category_fieldset");
-			$checkbox .= form_fieldset('Categorias', $attributes);
-			$cats = $this->cms->get_categories();
-			$checkbox .= $this->_render_form_get_children_cat($cats);
-			$checkbox .= form_fieldset_close(); 
-			$form .= "<div class=\"form_content_field\">";
-			$form .= $checkbox;
-			$form .= "</div> <!-- .form_content_field -->";
-*/
 
 			/*
 			 * spread
@@ -1090,7 +935,7 @@ class Content extends CI_Controller {
 			$form .= "<div class=\"form_window_column_label\">";
 			if ( (bool) $element_id !== FALSE ) 
 			{
-				$checked = $this->cms->get_element_spread($element_id);
+				$checked = $this->elementar->get_element_spread($element_id);
 			}
 			else
 			{
@@ -1122,7 +967,7 @@ class Content extends CI_Controller {
 			$form .= form_label("Status", "status", $attributes);
 			$form .= "</div> <!-- form_window_column_label -->";
 			$form .= "<div class=\"form_window_column_input\">";
-			$form .= $this->_render_status_dropdown($this->cms->get_element_status($element_id));
+			$form .= $this->_render_status_dropdown($this->elementar->get_element_status($element_id));
 			$form .= "</div> <!-- form_window_column_input -->";
 			$form .= "</div> <!-- .form_content_field -->";
 
@@ -1176,25 +1021,23 @@ class Content extends CI_Controller {
 			/*
 			 * Update
 			 */
-			$category_id = $this->cms->get_content_category($content_id);
-			$type_id = $this->cms->get_content_type($content_id);
-			$template_id = $this->cms->get_content_template_id($content_id);
-			$template = $this->cms->get_content_template($content_id);
+			$parent_id = $this->elementar->get_content_parent_id($content_id);
+			$type_id = $this->elementar->get_content_type_id($content_id);
+			$template_id = $this->elementar->get_content_template_id($content_id);
+			$template = $this->elementar->get_content_template($content_id);
+			$data['breadcrumb'] = $this->common->breadcrumb_content($content_id);
 		}
 		else
 		{
 			/*
 			 * Create
 			 */
-			$category_id = $this->input->post('category_id', TRUE);
+			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
-			$template_id = $this->cms->get_content_type_template_id($type_id);
-			$template = $this->cms->get_content_type_template($type_id);
+			$template_id = $this->elementar->get_content_type_template_id($type_id);
+			$template = $this->elementar->get_content_type_template($type_id);
+			$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
 		}
-
-		//$data['category_id'] = $category_id;
-		$data['breadcrumb'] = $this->common->breadcrumb_category($category_id);
-
 
 		$template_form = '';
 		$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
@@ -1210,7 +1053,13 @@ class Content extends CI_Controller {
 		$template_form .= form_label("Exclusivo", "sole", $attributes);
 		$template_form .= "</div> <!-- form_window_column_label -->";
 		$template_form .= "<div class=\"form_window_column_input\">";
-		$checked = $this->cms->get_content_type_template_id($type_id) != $this->cms->get_content_template_id($content_id) ;
+		if ( (bool) $content_id ) {
+			$checked = $this->elementar->get_content_type_template_id($type_id) != $this->elementar->get_content_template_id($content_id) ;
+		}
+		else 
+		{
+			$checked = FALSE;
+		}
 		$attributes = array(
 			'name'        => 'sole',
 			'id'          => 'sole_' . $content_id,
@@ -1274,8 +1123,8 @@ class Content extends CI_Controller {
 
 			$attributes = array(
 				'class' => 'noform',
-				'name' => 'category_id',
-				'value'=> $category_id,
+				'name' => 'parent_id',
+				'value'=> $parent_id,
 				'type' => 'hidden'
 			);
 			$content_form .= form_input($attributes);
@@ -1295,14 +1144,14 @@ class Content extends CI_Controller {
 				'class' => 'noform',
 				'name' => 'name',
 				'id' => 'name',
-				'value' => $this->cms->get_content_name($content_id)
+				'value' => $this->elementar->get_content_name($content_id)
 			);
 			$content_form .= form_input($attributes);
 			$content_form .= "</div> <!-- form_window_column_input -->";
 
 			$content_form .= "</div> <!-- .form_content_field -->";
 
-			$fields = $this->cms->get_content_type_fields($type_id);
+			$fields = $this->elementar->get_content_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
 				$content_form .= "<div class=\"form_content_field\">";
@@ -1317,7 +1166,7 @@ class Content extends CI_Controller {
 				/*
 				 * Adequar ao tipo do campo
 				 */
-				$content_form .= $this->_render_form_custom_field($field, $this->cms->get_content_field($content_id, $field['id']));
+				$content_form .= $this->_render_form_custom_field($field, $this->elementar->get_content_field($content_id, $field['id']));
 				$content_form .= "</div> <!-- form_window_column_input -->";
 
 				$content_form .= "</div> <!-- .form_content_field -->";
@@ -1333,7 +1182,7 @@ class Content extends CI_Controller {
 			$content_form .= br(1);
 			$content_form .= "</div> <!-- form_window_column_label -->";
 			$content_form .= "<div class=\"form_window_column_input\">";
-			$content_form .= $this->_render_status_dropdown($this->cms->get_content_status($content_id));
+			$content_form .= $this->_render_status_dropdown($this->elementar->get_content_status($content_id));
 			$content_form .= "</div> <!-- form_window_column_input -->";
 			$content_form .= "</div> <!-- .form_content_field -->";
 
@@ -1370,40 +1219,6 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 
 	}
-
-	/**
-	 * Listar subcategorias no form 
-	 * de criação/atualização de conteúdo
-	 * (checkbox)
-	 * @param array $cats Categorias/Subcategorias
-	 * @param integer $content_id The associated content
-	 * @return HTML content (list of checkboxes)
-	 */
-	function _render_form_get_children_cat($cats, $content_id = NULL)
-	{
-		$checkbox = "";
-		foreach ( $cats as $cat )
-		{
-			$attributes = array(
-				'class'       => 'noform',
-			    'name'        => 'category[]',
-			    'id'          => $cat['sname']."_".$cat['id'],
-			    'value'       => $cat['id'],
-			    'checked'     => $this->cms->get_category_has_content($cat['id'], $content_id),
-			    'style'       => "margin-left: " . (15 * $cat['level']) . "px"
-		    );
-		    
-			$checkbox .= form_checkbox($attributes);
-			
-			$checkbox .= form_label($cat['name'], $cat['sname']."_".$cat['id']);
-			$checkbox .= br(1);
-
-			if ( isset($cat['children']) )
-				$checkbox .= $this->_render_form_get_children_cat($cat['children'], $content_id);
-
-		}
-		return $checkbox;
-	}
 	
 	/**
 	 * Content types HTML dropdown
@@ -1412,12 +1227,12 @@ class Content extends CI_Controller {
 	 */
 	function _render_content_types_dropdown($selected = NULL)
 	{
-		$types = $this->cms->get_content_types();
+		$types = $this->elementar->get_content_types();
 		if ( count($types) > 0 )
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_content_type_name($selected) . "</a>";
+				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->elementar->get_content_type_name($selected) . "</a>";
 			}
 			else
 			{
@@ -1450,12 +1265,12 @@ class Content extends CI_Controller {
 	 */
 	function _render_element_types_dropdown($selected = NULL )
 	{
-		$types = $this->cms->get_element_types();
+		$types = $this->elementar->get_element_types();
 		if ( count($types) > 0 )
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->cms->get_element_type_name($selected) . "</a>";
+				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->elementar->get_element_type_name($selected) . "</a>";
 			}
 			else
 			{
@@ -1504,7 +1319,7 @@ class Content extends CI_Controller {
 	function _render_field_type_dropdown($selected = "1")
 	{
 		$options = array();
-		foreach ( $this->cms->get_field_types() as $option )
+		foreach ( $this->elementar->get_field_types() as $option )
 		{
 			$options[$option['id']] = $option['name'];
 		}
@@ -1523,8 +1338,8 @@ class Content extends CI_Controller {
 		$count = $this->input->post('field_count', TRUE);
 		$template = $this->input->post('template');
 		$name = $this->input->post('name', TRUE);		
-		$template_id = $this->cms->put_template($template);
-		$type_id = $this->cms->put_content_type($name, $template_id);
+		$template_id = $this->elementar->put_template($template);
+		$type_id = $this->elementar->put_content_type($name, $template_id);
 		
 		if ( (bool) $type_id )
 		{
@@ -1538,7 +1353,7 @@ class Content extends CI_Controller {
 				$field_type = $this->input->post("field_type_" . $c, TRUE);
 				if ( $field != "" )
 				{
-					$this->cms->put_content_type_field($type_id, $field, $sname, $field_type);
+					$this->elementar->put_content_type_field($type_id, $field, $sname, $field_type);
 				}
 			}
 			
@@ -1574,7 +1389,7 @@ class Content extends CI_Controller {
 
 		$sname = $this->common->normalize_string($name);
 
-		$type_id = $this->cms->put_element_type($name, $sname);
+		$type_id = $this->elementar->put_element_type($name, $sname);
 		
 		if ( (bool) $type_id )
 		{
@@ -1588,7 +1403,7 @@ class Content extends CI_Controller {
 				$field_type = $this->input->post("field_type_" . $c, TRUE);
 				if ( $field != "" )
 				{
-					$this->cms->put_element_type_field($type_id, $field, $sname, $field_type);
+					$this->elementar->put_element_type_field($type_id, $field, $sname, $field_type);
 				}
 			}
 			
@@ -1640,21 +1455,21 @@ class Content extends CI_Controller {
 			/*
 			 * Content ID not found, create new content
 			 */
-			$content_id = $this->cms->put_content($name, $sname, $type_id);
+			$content_id = $this->elementar->put_content($name, $sname, $type_id);
 		}
 		elseif ( $name != "" ) 
 		{
 			// Renomear
-			$this->cms->put_content_name($content_id, $name, $sname);
+			$this->elementar->put_content_name($content_id, $name, $sname);
 		}
 		
 		/* 
 		 * Armazenar campos
 		 */
-		foreach ( $this->cms->get_content_type_fields($type_id) as $type)
+		foreach ( $this->elementar->get_content_type_fields($type_id) as $type)
 		{
 			$value = $this->input->post($type['sname'], TRUE);
-			$this->cms->put_content_field($content_id, $type['id'], $value);
+			$this->elementar->put_content_field($content_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
 			 */
@@ -1665,43 +1480,22 @@ class Content extends CI_Controller {
 				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
 				if ( (bool) $image_title )
 				{
-					$this->cms->put_image_title($image_id, $image_title);
+					$this->elementar->put_image_title($image_id, $image_title);
 				}
 				break;
 			}
 		}
 		
 		/*
-		 * Categoria
+		 * Parent
 		 */
-		$parent_id = $this->input->post('category_id', TRUE);
-		if ( (bool) $parent_id ) 
-		{
-			$this->cms->put_content_category($content_id, $parent_id);
-		}
-		
-		/*
-		 * Armazenar categorias
-		 */
-/*
-		if ( $this->input->post('category', TRUE) )
-		{
-			$this->cms->delete_content_rel($content_id);
-			foreach ( $this->input->post('category', TRUE) as $cat)
-			{
-				$this->cms->put_content_category($content_id, $cat);
-			}
-		}
-		else 
-		{
-			$this->cms->delete_content_rel($content_id);
-		}
+		$parent_id = (int) $this->input->post('parent_id', TRUE);
+		$this->elementar->put_content_parent($content_id, $parent_id);
 
-*/
 		/* 
 		 * Armazenar status
 		 */
-		$this->cms->put_content_status($content_id, $this->input->post('status', TRUE));
+		$this->elementar->put_content_status($content_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * resposta
@@ -1728,7 +1522,7 @@ class Content extends CI_Controller {
 		/*
 		 * remover conteúdo
 		 */
-		$this->cms->delete_content($content_id);
+		$this->elementar->delete_content($content_id);
 
 		/*
 		 * resposta
@@ -1754,7 +1548,7 @@ class Content extends CI_Controller {
 		/*
 		 * remover elemento
 		 */
-		$this->cms->delete_element($element_id);
+		$this->elementar->delete_element($element_id);
 
 		/*
 		 * resposta
@@ -1776,7 +1570,6 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 
 		$type_id = $this->input->post('type_id', TRUE);
-		$parent = $this->input->post('parent', TRUE);
 		$parent_id = $this->input->post('parent_id', TRUE);
 		$name = $this->input->post('name', TRUE);
 		$sname = $this->common->normalize_string($name);
@@ -1797,21 +1590,21 @@ class Content extends CI_Controller {
 			/*
 			 * Element ID not found, create new element
 			 */
-			$element_id = $this->cms->put_element($name, $sname, $type_id);
+			$element_id = $this->elementar->put_element($name, $sname, $type_id);
 		}
 		elseif ( $name != "" ) 
 		{
 			// Renomear
-			$this->cms->put_element_name($element_id, $name, $sname);
+			$this->elementar->put_element_name($element_id, $name, $sname);
 		}
 
 		/* 
 		 * Armazenar campos
 		 */
-		foreach ( $this->cms->get_element_type_fields($type_id) as $type)
+		foreach ( $this->elementar->get_element_type_fields($type_id) as $type)
 		{
 			$value = $this->input->post($type['sname'], TRUE);
-			$this->cms->put_element_field($element_id, $type['id'], $value);
+			$this->elementar->put_element_field($element_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
 			 */
@@ -1822,7 +1615,7 @@ class Content extends CI_Controller {
 				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
 				if ( (bool) $image_title )
 				{
-					$this->cms->put_image_title($image_id, $image_title);
+					$this->elementar->put_image_title($image_id, $image_title);
 				}
 				break;
 			}
@@ -1833,44 +1626,22 @@ class Content extends CI_Controller {
 		 */
 		if ( $this->input->post('spread', TRUE) )
 		{
-			$this->cms->put_element_spread($element_id, TRUE);
+			$this->elementar->put_element_spread($element_id, TRUE);
 		}
 		else
 		{
-			$this->cms->put_element_spread($element_id, FALSE);
+			$this->elementar->put_element_spread($element_id, FALSE);
 		}
-		
-		switch ( $parent ) 
-		{
-			case "category" :
-			if ( (bool) $parent_id ) 
-			{
-				$this->cms->put_element_category($element_id, $parent_id);
-			}
-			break;
-			
-			case "content" :
-			$this->cms->put_element_content($element_id, $parent_id);
-			break;
-		}
-			
+
 		/*
-		 * Armazenar categorias
+		 * Parent
 		 */
-/*
-		if ( $this->input->post('category', TRUE) )
-		{
-			foreach ( $this->input->post('category', TRUE) as $cat)
-			{
-				$this->cms->put_content_category($content_id, $cat);
-			}
-		}
-*/
+		$this->elementar->put_element_parent($element_id, $parent_id);
 
 		/* 
 		 * Armazenar status
 		 */
-		$this->cms->put_element_status($element_id, $this->input->post('status', TRUE));
+		$this->elementar->put_element_status($element_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * resposta
@@ -1885,7 +1656,7 @@ class Content extends CI_Controller {
 	}
 
 	/**
-	 * Listar categorias/conteúdos
+	 * Listar conteúdos/elementos
 	 */
 	function xhr_render_tree_listing()
 	{
@@ -1900,10 +1671,8 @@ class Content extends CI_Controller {
 		{
 			$id = NULL;
 		}
-		
-		$request = $this->input->post('request');
 
-		$html = $this->_render_tree_listing($id, $request);
+		$html = $this->_render_tree_listing($id);
 
 		$response = array(
 			'done' => TRUE,
@@ -1914,78 +1683,20 @@ class Content extends CI_Controller {
 		
 	}
 	
-	function _render_tree_listing($id, $request, $listing = NULL, $listing_id = NULL)
+	function _render_tree_listing($id, $listing = NULL, $listing_id = NULL)
 	{
 		$data['parent_id'] = $id;
 
-		/*
-		 * Categoria ou conteúdo
-		 */
-		switch ( $request )
-		{
-			case 'category' :
-			$data['parent'] = $this->cms->get_category_name($id);
-			$data['content_hierarchy_category'] = $this->cms->get_categories_by_parent($id);
-			$data['content_hierarchy_content'] = $this->cms->get_contents_by_category($id);
-			$data['content_hierarchy_element'] = $this->cms->get_element_by_category($id);
-			// Inner listings, if any
-			$data['category_listing_id'] = $listing_id;
-			$data['category_listing'] = $listing;
-			$data['content_listing_id'] = NULL;
-			$data['content_listing'] = NULL;
-			break;
-
-			case 'content' :
-			$data['parent'] = $this->cms->get_content_name($id);
-			$data['content_hierarchy_category'] = NULL;
-			$data['content_hierarchy_content'] = NULL;
-			$data['content_hierarchy_element'] = $this->cms->get_element_by_content($id);
-			// Inner listings, if any
-			$data['category_listing_id'] = NULL;
-			$data['category_listing'] = NULL;
-			$data['content_listing_id'] = $listing_id;
-			$data['content_listing'] = $listing;
-			break;
-		}
+		$data['parent'] = $this->elementar->get_content_name($id);
+		$data['content_hierarchy_content'] = $this->elementar->get_contents_by_parent($id);
+		$data['content_hierarchy_element'] = $this->elementar->get_elements_by_parent($id);
+		// Inner listings, if any
+		$data['content_listing_id'] = $listing_id;
+		$data['content_listing'] = $listing;
 		
 		$html = $this->load->view('admin/admin_content_editor_tree', $data, true);
 		
 		return $html;
-	}
-	
-	/**
-	 * renomear categoria
-	 */
-	function xhr_rename_category() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$id = $this->input->post('id', TRUE);
-		
-		$name = $this->input->post('name', TRUE);
-
-		if ($id != "" && $name != "" ) 
-		{
-			$sname = $this->common->normalize_string($name);
-
-			$this->cms->put_category_name($id, $name, $sname);
-
-			$response = array(
-				'done' => TRUE,
-				'sname' => $sname
-			);
-		}
-		else {
-			$response = array(
-				'done' => FALSE,
-				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->cms->get_category_name($id), ENT_QUOTES, "UTF-8")
-			);
-		}			
-
-		$this->common->ajax_response($response);
-
 	}
 
 	/**
@@ -2004,7 +1715,7 @@ class Content extends CI_Controller {
 		{
 			$sname = $this->common->normalize_string($name);
 
-			$this->cms->put_content_name($id, $name, $sname);
+			$this->elementar->put_content_name($id, $name, $sname);
 
 			$response = array(
 				'done' => TRUE,
@@ -2015,7 +1726,7 @@ class Content extends CI_Controller {
 			$response = array(
 				'done' => FALSE,
 				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->cms->get_content_name($id), ENT_QUOTES, "UTF-8")
+				'name' => html_entity_decode($this->elementar->get_content_name($id), ENT_QUOTES, "UTF-8")
 			);
 		}			
 
@@ -2039,7 +1750,7 @@ class Content extends CI_Controller {
 		{
 			$sname = $this->common->normalize_string($name);
 
-			$this->cms->put_element_name($id, $name, $sname);
+			$this->elementar->put_element_name($id, $name, $sname);
 
 			$response = array(
 				'done' => TRUE,
@@ -2050,7 +1761,7 @@ class Content extends CI_Controller {
 			$response = array(
 				'done' => FALSE,
 				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->cms->get_element_name($id), ENT_QUOTES, "UTF-8")
+				'name' => html_entity_decode($this->elementar->get_element_name($id), ENT_QUOTES, "UTF-8")
 			);
 		}			
 
@@ -2074,33 +1785,11 @@ class Content extends CI_Controller {
 		{
 			$sname = $this->common->normalize_string($name);
 
-			$this->cms->put_menu_name($menu_id, $name, $sname);
+			$this->elementar->put_menu_name($menu_id, $name, $sname);
 
 			$response = array(
 				'done' => TRUE,
 				'sname' => $sname
-			);
-			$this->common->ajax_response($response);
-		}
-
-	}
-
-	/**
-	 * Remover categoria
-	 */
-	function xhr_erase_category() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$category_id = $this->input->post('id', TRUE);
-		
-		if ($category_id != "" ) 
-		{
-			$this->cms->delete_category($category_id);
-
-			$response = array(
-				'done' => TRUE
 			);
 			$this->common->ajax_response($response);
 		}
@@ -2119,68 +1808,13 @@ class Content extends CI_Controller {
 		
 		if ( (bool) $menu_id ) 
 		{
-			$this->cms->delete_menu($menu_id);
+			$this->elementar->delete_menu($menu_id);
 
 			$response = array(
 				'done' => TRUE
 			);
 			$this->common->ajax_response($response);
 		}
-
-	}
-
-	/**
-	 * Criar categoria
-	 */
-	function xhr_write_category() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$name = $this->input->post('name', TRUE);
-		
-		if ($name != "" ) 
-		{
-			$sname = $this->common->normalize_string($name);
-			
-			if ( $this->input->post('parent_id', TRUE) ) 
-			{
-				$parent_id = $this->input->post('parent_id', TRUE);
-				$level = $this->cms->get_category_level($parent_id) + 1;
-			}
-			else {
-				$parent_id = NULL;
-				$level = 0;
-			}
-			
-			$id = $this->cms->put_category($name, $sname, $parent_id, $level);
-			
-			if ( $id )
-			{
-				$response = array(
-					'done' => TRUE,
-					'name' => $name,
-					'sname' => $sname,
-					'id' => $id,
-					'level' => $level
-				);
-			}
-			else 
-			{
-				$response = array(
-					'done' => FALSE,
-					'error' => "Erro ao inserir a categoria"
-				);
-			}
-		}
-		else 
-		{
-			$response = array(
-				'done' => FALSE,
-				'error' => "Forneça o nome da categoria"
-			);
-		}
-		$this->common->ajax_response($response);
 
 	}
 
@@ -2193,49 +1827,36 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 
 		$id = $this->input->post('id', TRUE);
-		$type = $this->input->post('type', TRUE);
 		
-		if ( (bool) $type ) 
-		{
+		/*
+		 * Meta fields
+		 */
+		$fields = array(
+			'Keywords' => 'keywords',
+			'Description' => 'description',
+			'Url' => 'url',
+			'Author' => 'author',
+			'Copyright' => 'copyright'
+		);
 
-			/*
-			 * Meta fields
-			 */
-			$fields = array(
-				'Keywords' => 'keywords',
-				'Description' => 'description',
-				'Url' => 'url',
-				'Author' => 'author',
-				'Copyright' => 'copyright'
-			);
-	
-			foreach ( $fields as $label => $name )
+		foreach ( $fields as $label => $name )
+		{
+			$value = $this->input->post($name, TRUE);
+			if ( (bool) $value )
 			{
-				$content = $this->input->post($name, TRUE);
-				if ( (bool) $content )
-				{
-					$this->cms->put_meta_field($id, $type, $name, $content);
-				}
-				else
-				{
-					// Remove meta field
-					$this->cms->delete_meta_field($id, $type, $name);
-				}
+				$this->elementar->put_meta_field($id, $name, $value);
 			}
-			
-			$response = array(
-				'done' => TRUE
-			);
+			else
+			{
+				// Remove meta field
+				$this->elementar->delete_meta_field($id, $name);
+			}
 		}
-		else 
-		{
-			$response = array(
-				'done' => FALSE,
-				'error' => "Erro ao gravar campos"
-			);
-		}
+		
+		$response = array(
+			'done' => TRUE
+		);
 		$this->common->ajax_response($response);
-
 	}
 
 	/**
@@ -2261,21 +1882,21 @@ class Content extends CI_Controller {
 				 * content_id received, means that 
 				 * it's not a new content
 				 */
-				$content_type_template_id = $this->cms->get_content_type_template_id($this->cms->get_content_type($content_id));
+				$content_type_template_id = $this->elementar->get_content_type_template_id($this->elementar->get_content_type_id($content_id));
 				if ( $content_type_template_id != $template_id )
 				{
 					/*
 					 * Content already have exclusive template, update it!
 					 */
-					$this->cms->put_template($template, $template_id);
+					$this->elementar->put_template($template, $template_id);
 				}
 				else
 				{
 					/*
 					 * Add a new template for this content
 					 */
-					$content_template_id = $this->cms->put_template($template);
-					$this->cms->put_content_template_id($content_id, $content_template_id);
+					$content_template_id = $this->elementar->put_template($template);
+					$this->elementar->put_content_template_id($content_id, $content_template_id);
 				}
 			}
 		}
@@ -2286,14 +1907,14 @@ class Content extends CI_Controller {
 				/*
 				 * Ensure that content has no exclusive template
 				 */
-				$content_template_id = $this->cms->get_content_template_id($content_id);
+				$content_template_id = $this->elementar->get_content_template_id($content_id);
 				if ( $content_template_id != $template_id )
 				{
-					$this->cms->put_content_template_id($content_id, NULL);
-					$this->cms->delete_template($content_template_id);
+					$this->elementar->put_content_template_id($content_id, NULL);
+					$this->elementar->delete_template($content_template_id);
 				}
 			}
-			$this->cms->put_template($template, $template_id);
+			$this->elementar->put_template($template, $template_id);
 		}
 
 		/*
@@ -2329,13 +1950,13 @@ class Content extends CI_Controller {
 				/*
 				 * Update
 				 */
-				$this->cms->put_menu_name($id, $name, $sname);
-				$this->cms->put_menu_target($id, $target);
+				$this->elementar->put_menu_name($id, $name, $sname);
+				$this->elementar->put_menu_target($id, $target);
 			}
 			else {
-				$level = $this->cms->get_menu_level($parent_id) + 1;
-				$id = $this->cms->put_menu($name, $sname, $parent_id, $level);
-				$this->cms->put_menu_target($id, $target);
+				$level = $this->elementar->get_menu_level($parent_id) + 1;
+				$id = $this->elementar->put_menu($name, $sname, $parent_id, $level);
+				$this->elementar->put_menu_target($id, $target);
 			}
 			$response = array(
 				'done' => TRUE
@@ -2364,7 +1985,7 @@ class Content extends CI_Controller {
 		
 		$target = $this->input->post('target', TRUE);
 		
-		$this->cms->put_menu_target($menu_id, $target);
+		$this->elementar->put_menu_target($menu_id, $target);
 
 		/*
 		 * resposta
@@ -2386,14 +2007,14 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 		
 		$parent_id = $this->input->post("parent_id", TRUE);
-		$level = $this->cms->get_menu_level($parent_id) + 1;
+		$level = $this->elementar->get_menu_level($parent_id) + 1;
 		$menus = $this->input->post("menus", TRUE);
 		
 		// Atualizar parent, order & level
 		foreach ( $menus as $order => $menu_id ) {
-			$this->cms->put_menu_parent($menu_id, $parent_id);
-			$this->cms->put_menu_level($menu_id, $level);
-			$this->cms->put_menu_order($menu_id, $order);
+			$this->elementar->put_menu_parent($menu_id, $parent_id);
+			$this->elementar->put_menu_level($menu_id, $level);
+			$this->elementar->put_menu_order($menu_id, $order);
 		}
 		
 		/*

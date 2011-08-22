@@ -51,31 +51,6 @@ $(function() {
 		}, "json");
 	});
 
-	// Salvar nova categoria
-	$("#button_category_save").live('click', function(event) {
-		event.preventDefault();
-		
-		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
-
-		$.post("/admin/content/xhr_write_category", $(".noform").serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					showClientWarning("Categoria salva com sucesso");
-				}
-				else {
-					showClientWarning(data.error);
-				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-
-			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
-		}, "json");
-	});
-
 	// Selecao do tipo do elemento
 	$(".dropdown_items_listing_element_type_target").live('click', function(event) {
 		event.preventDefault();
@@ -89,53 +64,13 @@ $(function() {
 		}
 	});
 
-	// Criar formulário de novo elemento em categoria
-	$("a#choose_category_element_type").live('click', function(event) {
-		event.preventDefault();
-
-		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
-
-		var parent = "category";
-		var parent_id = $(this).attr("href");
-		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
-		
-		if ( type_id == "0" ) {
-			// No element type, create a new one
-			$("a#element_type_create").trigger('click');
-			return null;
-		}
-		
-		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
-			try {
-				if ( data.done == true ) {
-					// Close type editor (if visible)
-					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#element_editor_form").html(data.form).show(function(){
-						// CKEditor activation
-						ckeditor();
-					});
-				}
-				else {
-					showClientWarning(data.error);
-				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
-		}, "json");
-	});
-
 	// Criar formulário de novo elemento em conteúdo
-	$("a#choose_content_element_type").live('click', function(event) {
+	$("a#choose_element_type_for_parent_id").live('click', function(event) {
 		event.preventDefault();
 
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
 
-		var parent = "content";
 		var parent_id = $(this).attr("href");
 		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 
@@ -145,7 +80,7 @@ $(function() {
 			return null;
 		}
 
-		$.post("/admin/content/xhr_render_element_form", { parent : parent, parent_id : parent_id, type_id : type_id }, function(data){
+		$.post("/admin/content/xhr_render_element_form", { parent_id : parent_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
@@ -227,13 +162,13 @@ $(function() {
 	});
 
 	// Criar conteúdo
-	$("a#choose_content_type").live('click', function(event) {
+	$("a#choose_content_type_for_parent_id").live('click', function(event) {
 		event.preventDefault();
 
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
 
-		var category_id = $(this).attr("href");
+		var parent_id = $(this).attr("href");
 		var type_id = $(this).parents("div:first").find(".dropdown_items_listing_inline").find("a:first").attr("href");
 		
 		if ( type_id == "0" ) {
@@ -242,7 +177,7 @@ $(function() {
 			return null;
 		}
 
-		$.post("/admin/content/xhr_render_content_form", { category_id : category_id, type_id : type_id }, function(data){
+		$.post("/admin/content/xhr_render_content_form", { parent_id : parent_id, type_id : type_id }, function(data){
 			try {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
@@ -319,10 +254,10 @@ $(function() {
 		$("#sections_blocker").fadeIn("fast");
 
 		// content id
-		cont_id = $(this).attr("href");
+		var content_id = $(this).attr("href");
 		
 		// remover
-		$.post("/admin/content/xhr_erase_content", { id : cont_id }, function(data){
+		$.post("/admin/content/xhr_erase_content", { id : content_id }, function(data){
 			try {
 				if ( data.done == true ) {
 					showClientWarning("Item removido");
@@ -457,7 +392,7 @@ $(function() {
 					$("#type_define_new_container").hide('slow', function() {
 
 						// Reload types dropdown widget with new value
-						var id = $("#choose_content_type").attr('href');
+						var id = $("#choose_content_type_for_parent_id").attr('href');
 				
 						$.post("/admin/content/xhr_render_content_new", { id : id, type_id : data.type_id }, function(data){
 							try {
@@ -505,19 +440,9 @@ $(function() {
 					});
 					
 					// Reload types dropdown widget with new value
-					/*
-					 * Resend parent type for proper rendering
-					 */
-					if ( $("#choose_element_type > a").attr("id") == "choose_category_element_type" ) {
-						var parent = "category";
-					}
-					else if ( $("#choose_element_type > a").attr("id") == "choose_content_element_type" ) {
-						var parent = "content";
-					}
-
-					var id = $("#choose_element_type > a").attr("href");
+					var id = $("#choose_element_type_for_parent_id").attr("href");
 			
-					$.post("/admin/content/xhr_render_element_new", { parent : parent, id : id, type_id : data.type_id }, function(data){
+					$.post("/admin/content/xhr_render_element_new", { id : id, type_id : data.type_id }, function(data){
 						try {
 							if ( data.done == true ) {
 								$("#content_editor_window").html(data.html).show();

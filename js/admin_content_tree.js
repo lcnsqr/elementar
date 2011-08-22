@@ -20,20 +20,12 @@ $(function() {
 	 */
 	$("a.fold.folder_switch").live("click", function(event) {
 		event.preventDefault();
-		/*
-		 * Request type
-		 */
-		if ( $(this).hasClass("category") ) {
-			var request = "category";
-		}
-		else if ( $(this).hasClass("content") ) {
-			var request = "content";
-		}
+
 		var id = $(this).attr("href");
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		var bullet = $(this);
 
-		$.post("/admin/content/xhr_render_tree_listing", { request : request, id : id }, function(data){
+		$.post("/admin/content/xhr_render_tree_listing", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
 					$(listing).html(data.html);
@@ -73,7 +65,7 @@ $(function() {
 	});
 	
 	/*
-	 * Show/hide category/content/element menu
+	 * Show/hide content/element menu
 	 */
 	$(".tree_menu_dropdown_button").live('click', function(event) {
 		event.preventDefault();
@@ -82,7 +74,7 @@ $(function() {
 	});
 
 	/*
-	 * Activate rename category/content/element
+	 * Activate rename content/element
 	 */
 	$("form.label").find("input[type='text']").live("click", function(event) {
 		event.preventDefault();		
@@ -105,10 +97,7 @@ $(function() {
 		/*
 		 * Request type
 		 */
-		if ( $(form).hasClass("category") ) {
-			var action = "/admin/content/xhr_rename_category";
-		}
-		else if ( $(form).hasClass("content") ) {
+		if ( $(form).hasClass("content") ) {
 			var action = "/admin/content/xhr_rename_content";
 		}
 		else if ( $(form).hasClass("element") ) {
@@ -175,45 +164,17 @@ $(function() {
 	});
 
 	/*
-	 * Mostrar formulário de criação de elemento em categoria
+	 * Mostrar formulário de criação de elemento
 	 */
-	$("a.new.category_element").live('click', function(event) {
+	$("a.new.element").live('click', function(event) {
 		event.preventDefault();
 
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
-		var parent = "category";
 
-		$.post("/admin/content/xhr_render_element_new", { parent : parent, id : id }, function(data){
-			try {
-				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show();
-				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-
-			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
-		}, "json");
-	});
-
-	/*
-	 * Mostrar formulário de criação de elemento em conteúdo
-	 */
-	$("a.new.content_element").live('click', function(event) {
-		event.preventDefault();
-
-		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
-
-		var id = $(this).attr('href');
-		var parent = "content";
-
-		$.post("/admin/content/xhr_render_element_new", { parent : parent, id : id }, function(data){
+		$.post("/admin/content/xhr_render_element_new", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
 					$("#content_editor_window").html(data.html).show();
@@ -237,19 +198,9 @@ $(function() {
 		// Bloqueio
 		$("#sections_blocker").fadeIn("fast");
 
-		/*
-		 * Item type
-		 */
-		if ( $(this).hasClass("category") ) {
-			var request = "category";
-		}
-		else if ( $(this).hasClass("content") ) {
-			var request = "content";
-		}
-
 		var id = $(this).attr('href');
 
-		$.post("/admin/content/xhr_render_meta_form", { request : request, id : id }, function(data){
+		$.post("/admin/content/xhr_render_meta_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
 					$("#content_editor_window").html(data.html).show();
@@ -323,33 +274,6 @@ $(function() {
 	});
 	
 	/*
-	 * Criação de categoria
-	 */
-	$("a.new.category").live('click', function(event) {
-		event.preventDefault();
-
-		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
-
-		var id = $(this).attr('href');
-
-		$.post("/admin/content/xhr_render_category_form", { parent_id : id }, function(data){
-			try {
-				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show();
-				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-
-			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
-		}, "json");
-
-	});
-	
-	/*
 	 * Item removal
 	 */
 	$("a.remove").live('click', function(event) {
@@ -357,10 +281,7 @@ $(function() {
 		/*
 		 * Item type
 		 */
-		if ( $(this).hasClass("category") ) {
-			var action = "/admin/content/xhr_erase_category";
-		}
-		else if ( $(this).hasClass("content") ) {
+		if ( $(this).hasClass("content") ) {
 			var action = "/admin/content/xhr_erase_content";
 		}
 		else if ( $(this).hasClass("element") ) {

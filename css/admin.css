@@ -21,6 +21,10 @@ a:visited {
 	text-decoration: none;
 }
 
+.diams {
+	color: #555753;
+}
+
 /*
  * Top warning messages
  */

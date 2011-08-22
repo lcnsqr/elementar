@@ -33,7 +33,7 @@ class Common {
 	 */
 	function get_menus() 
 	{	
-		$menus = $this->CI->cms->get_menus();
+		$menus = $this->CI->elementar->get_menus();
 		$data = array();
 		foreach ( $menus as $menu )
 		{
@@ -77,77 +77,49 @@ class Common {
 	}
 
 	/**
-	 * Clickable category path (breadcrumb) for category
+	 * Clickable path (breadcrumb) for content
 	 */
-	function breadcrumb_category($category_id, $sep = "&raquo;", $previous = "")
+	function breadcrumb_content($content_id, $sep = "&raquo;", $previous = "")
 	{
 		$breadcrumb = "";
 		
 		/*
-		 * With no category, just return home link
+		 * With no content_id, just return home link
 		 */
-		if ( (bool)$category_id == NULL )
+		if ( $content_id === 0 )
 		{
 			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" ;
 			return $breadcrumb;
 		}
 
-		$parent_id = $this->CI->cms->get_category_parent($category_id);
+		$content = (array) $this->CI->elementar->get_content($content_id);
 		
-		if ( $parent_id != NULL ) 
+		if ( count( $content ) > 0 )
 		{
-			$breadcrumb = $this->breadcrumb_category($parent_id, $sep, " $sep <a href=\"" . $this->CI->cms->get_category_uri($category_id) . "/\">" . $this->CI->cms->get_category_name($category_id) . "</a>" . $previous);
+			if ( (bool) $content['parent_id'] ) 
+			{
+				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $this->CI->elementar->get_content_uri($content_id) . "\">" . $content['name'] . "</a>" . $previous);
+			}
+			else
+			{
+				$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a> $sep <a href=\"" . $this->CI->elementar->get_content_uri($content_id) . "\">" . $content['name'] . "</a>" . $previous;
+			}
 		}
-		else
-		{
-			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" .  " $sep <a href=\"" . $this->CI->cms->get_category_uri($category_id) . "/\">" . $this->CI->cms->get_category_name($category_id) . "</a>" . $previous;
-		}
-		
 		return $breadcrumb;
 	}
 
 	/**
-	 * Clickable category path (breadcrumb) for content
-	 */
-	function breadcrumb_content($content_id, $sep = "&raquo;")
-	{
-		$breadcrumb = "";
-		
-		$parent_id = $this->CI->cms->get_content_category($content_id);
-		
-		if ( $parent_id != NULL ) 
-		{
-			$breadcrumb = $this->breadcrumb_category($parent_id, $sep, " $sep <a href=\"" . $this->CI->cms->get_content_uri($content_id) . "\">" . $this->CI->cms->get_content_name($content_id) . "</a>");
-		}
-		else
-		{
-			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" .  " $sep <a href=\"" . $this->CI->cms->get_content_uri($content_id) . "\">" . $this->CI->cms->get_content_name($content_id) . "</a>";
-		}
-		
-		return $breadcrumb;
-	}
-
-	/**
-	 * Clickable category path (breadcrumb) for element
+	 * Clickable path (breadcrumb) for element's parent content
 	 */
 	function breadcrumb_element($element_id, $sep = "&raquo;")
 	{
 		$breadcrumb = "";
 		
-		$parent_id = $this->CI->cms->get_element_parent($element_id);
+		$parent_id = $this->CI->elementar->get_element_parent_id($element_id);
 		
 		if ( $parent_id != NULL ) 
 		{
-			$parent = $this->CI->cms->get_element_parent_type($element_id);
-			switch ($parent)
-			{
-				case "category" :
-				$breadcrumb = $this->breadcrumb_category($parent_id);
-				break;
-				case "content" :
-				$breadcrumb = $this->breadcrumb_content($parent_id);
-				break;
-			}
+			$breadcrumb = $this->breadcrumb_content($parent_id);
 		}
 		else
 		{
@@ -269,10 +241,10 @@ class Common {
 		/*
 		 * Database contents
 		 */
-		foreach ( $this->CI->cms->get_contents() as $content )
+		foreach ( $this->CI->elementar->get_contents() as $content )
 		{
 			$urls[] = array(
-				'loc' => site_url($this->CI->cms->get_content_uri($content['id'])),
+				'loc' => site_url($this->CI->elementar->get_content_uri($content['id'])),
 				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
 				'changefreq' => 'daily',
 				'priority' => '0.5'
@@ -316,7 +288,7 @@ class Common {
 	 */
 	function render_form_upload_image($field_sname, $image_id = NULL)
 	{
-		$form_upload_session = $this->CI->cms->put_upload_session();
+		$form_upload_session = $this->CI->elementar->put_upload_session();
 		
 		$hidden = array('form_upload_session' => $form_upload_session, 'field_sname' => $field_sname);
 		
@@ -356,7 +328,7 @@ class Common {
 		$data['form_upload'] = $form;
 		$data['form_upload_session'] = $form_upload_session;
 		
-		$data['img_url'] = $this->CI->cms->get_image_uri_thumb($image_id);
+		$data['img_url'] = $this->CI->elementar->get_image_uri_thumb($image_id);
 
 		/*
 		 * Título (alt text)
@@ -365,7 +337,7 @@ class Common {
 			'class' => 'noform',
 			'name' => $field_sname . '_title',
 			'id' => $field_sname . '_title',
-			'value' => $this->CI->cms->get_image_title($image_id)
+			'value' => $this->CI->elementar->get_image_title($image_id)
 		);
 		$data['input_title'] = form_label("Título da imagem", $field_sname . '_title');
 		$data['input_title'] .= br(1);
@@ -411,63 +383,124 @@ class Common {
 		$string = html_entity_decode($string, ENT_QUOTES, "UTF-8");
 		return $string;
 	}
-
-	function render_elements($elements) 
+	
+	function render_field($field_type, $field_value)
 	{
-		$data = array();
-		if ( $elements !== NULL )
+		switch ( $field_type )
 		{
-			foreach ($elements as $element)
+			case 'img' :
+			$file_id = $field_value;
+			$image = (array) $this->CI->elementar->get_image($file_id);
+			if ( count( $image ) > 0 )
 			{
+				return array(
+					'uri' => (string) $image['uri'],
+					'width' => (string) $image['width'],
+					'height' => (string) $image['height'],
+					'alt' => (string) $image['alt']
+				);
+			}
+			else 
+			{
+				return NULL;
+			}
+			break;
 
-				$element_type_id = $this->CI->cms->get_element_type($element['id']);
-				$element_type = $this->CI->cms->get_element_type_sname($element_type_id);
-				
-				/*
-				 * Initialize element type inner array
-				 */
-				if ( ! array_key_exists($element_type, $data) )
-				{
-					$data[$element_type] = array();
-				}
+			default:
+			return (string) $field_value;
+			break;
+		}
+	}
 
+	function render_content($content_id)
+	{
+		$content = array();
+		
+		// Default fields
+		$content['breadcrumb'] = $this->breadcrumb_content($content_id);
+		
+		// Content fields
+		$fields = $this->CI->elementar->get_content_fields($content_id);
+		foreach ($fields as $field)
+		{
+			$content[$field['sname']] = $this->render_field($field['type'], $field['value']);			
+		}
+		
+		return $content;
+	}
+
+	function render_elements($content_id = 0) 
+	{
+		$elements = $this->CI->elementar->get_elements_by_parent_spreaded($content_id);
+		$data = array();
+		foreach ($elements as $element)
+		{
+			$element_id = $element['id'];
+			$element_type_id = $element['type_id'];
+			$element_type = $element['type'];
+			
+			/*
+			 * Initialize element type inner array
+			 */
+			if ( ! array_key_exists($element_type, $data) )
+			{
+				$data[$element_type] = array();
+			}
+
+			/*
+			 * Render loop entries by element type sname
+			 */
+			$fields = $this->CI->elementar->get_element_fields($element_id);
+
+			/*
+			 * To be added in the element type array
+			 */
+			$entry = array();
+			
+			foreach ($fields as $field)
+			{
 				/*
-				 * Do not overwrite same name element (from below)
+				 * Format field value depending on field type
 				 */
-				if ( ! array_key_exists($element['sname'], $data[$element_type]) )
+				$rendered_value = $this->render_field($field['type'], $field['value']);
+
+				if ( is_array($rendered_value) )
 				{
-					$data[$element_type][$element['sname']]['name'] = $element['name'];
-					$fields = $this->CI->cms->get_element_type_fields($element_type_id);
-					
-					foreach ($fields as $field)
+					foreach ( $rendered_value as $key => $value )
 					{
-						if ( $field['type'] == "img")
+						$entry[$field['sname'] . '.' . $key] = $value ;
+					}
+				}
+				else
+				{
+					$entry[$field['sname']] = $rendered_value;
+				}
+				
+				// Add element direct access (without a template loop)
+				if ( ! array_key_exists($element['sname'], $data) )
+				{
+					// Adapt to template pseudo variables
+					if ( is_array($rendered_value) )
+					{
+						foreach ( $rendered_value as $key => $value )
 						{
-							$field_id = $this->CI->cms->get_element_field($element['id'], $field['id']);
-							$uri = $this->CI->cms->get_image_uri($field_id);
-							$width = $this->CI->cms->get_image_width($field_id);
-							$height = $this->CI->cms->get_image_height($field_id);
-							$alt = $this->CI->cms->get_image_title($field_id);
-							
-							$data[$element_type][$element['sname']][$field['sname']] = array(
-								'uri' => ( strval($uri) == "") ? "" : $uri,
-								'width' => ( strval($width) == "") ? "" : $width,
-								'height' => ( strval($height) == "") ? "" : $height,
-								'alt' => ( strval($alt) == "") ? "" : $alt
-							);
+							$data[$element['sname'] . '.' . $field['sname'] . '.' . $key] = $value ;
 						}
-						else
-						{
-							$value = $this->CI->cms->get_element_field($element['id'], $field['id']);
-							$data[$element_type][$element['sname']][$field['sname']] = ( strval($value) == "" ) ? "" : $value;
-						}
+					}
+					else
+					{
+						$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;
 					}
 				}
 			}
+			/*
+			 * Add element entry as a pseudo variable pair
+			 */
+			$data[$element_type][] = $entry;
 		}
 		return $data;
 	}
-	
+
 }
 
 /* End of file Common.php */

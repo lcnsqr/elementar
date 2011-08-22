@@ -30,12 +30,15 @@ class Main extends CI_Controller {
 		parent::__construct();
 		
 		$this->output->enable_profiler(TRUE);
+		
+		// View cache
+		//$this->output->cache(1);
 
 		// DB
 		$this->db_cms = $this->load->database('cms', TRUE);
 
 		// Client model 
-		$this->load->model('M_cms', 'cms', TRUE);
+		$this->load->model('Elementar', 'elementar');
 		
 		// CMS Common Library
 		$this->load->library('common');
@@ -50,188 +53,97 @@ class Main extends CI_Controller {
 	function index()
 	{
 		/*
-		 * Check for URI
+		 * Default values
 		 */
-		if ( $this->uri->total_segments() > 0 )
-		{
-			/*
-			 * Tomar último segmento do URI
-			 */
-			$sname = $this->uri->segment($this->uri->total_segments());
-			
-			/*
-			 * Identificar nível a partir
-			 * da posição do segmento na URI
-			 */
-			$level = $this->uri->total_segments() - 1;
-			
-			/*
-			 * Identificar solicitacão (categoria ou conteúdo)
-			 */
-			$id = NULL; // 404
-			if ( $this->cms->is_category($sname, $level) )
-			{
-				$type = "category";
-				$id = $this->cms->get_category_id($sname, $level);
-			}
-			else
-			{
-				$type = "content";
-				if ( $this->uri->total_segments() > 1 ) 
-				{
-					/*
-					 * Identificar categoria
-					 */
-					$parent_sname = $this->uri->segment($this->uri->total_segments() - 1);
-					$parent_id = $this->cms->get_category_id($parent_sname, $level - 1);
-				}
-				else
-				{
-					$parent_id = NULL;
-				}
-				$id = $this->cms->get_content_id($sname, $parent_id);
-			}
-	
-			if ( (bool) $id === TRUE )
-			{
-				/*
-				 * Identificar o tipo e definir título, template, metafields e breadcrumb
-				 */
-				switch ( $type )
-				{
-					case "category" :
-					$title = $this->cms->get_category_name($id);
-					$template = $this->cms->get_category_template($id);
-					$breadcrumb = $this->common->breadcrumb_category($id);
-					break;
-					case "content" :
-					$title = $this->cms->get_content_name($id);
-					$template = $this->cms->get_content_template($id);
-					$breadcrumb = $this->common->breadcrumb_content($id);
-					break;
-				}
-				$metafields = $this->cms->get_meta_fields($id, $type);
+		$data = array();
+		$data['site'] = $this->config->item('site_name');
+		$template = ''; // HTML template in database
+		$content = array(); // Content fields & Content elements
 		
-				/*
-				 * tags padrão
-				 */
-				$data = array(
-					'site_name' => $this->config->item('site_name'),
-					'title' => $title,
-					'metafields' => $metafields,
-					'breadcrumb' => $breadcrumb
-				);
-		
-				/*
-				 * Carregar menus
-				 */
-				$data = array_merge($data, $this->common->get_menus());
-		
-				/*
-				 * Atribuir tags e campos
-				 * específicas para a requisição
-				 */
-				switch ( $type )
-				{
-					case "category" :
-					$data['categories'] = $this->cms->get_category_children($id);
-					$data['contents'] = $this->cms->get_content_by_category($id);
-					$data = array_merge($data, $this->common->render_elements($this->cms->get_element_by_category($id)));
-					//$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category($id));
-					break;
-		
-					case "content" :
-					$content_type_id = $this->cms->get_content_type($id);
-					$fields = $this->cms->get_content_type_fields($content_type_id);
-					
-					foreach ($fields as $field)
-					{
-						if ( $field['type'] == "img")
-						{
-							$field_id = $this->cms->get_content_field($id, $field['id']);
-							$uri = $this->cms->get_image_uri($field_id);
-							$width = $this->cms->get_image_width($field_id);
-							$height = $this->cms->get_image_height($field_id);
-							$alt = $this->cms->get_image_title($field_id);
-							$data[$field['sname']] = array(
-								'uri' => ( strval($uri) == "") ? "" : $uri,
-								'width' => ( strval($width) == "") ? "" : $width,
-								'height' => ( strval($height) == "") ? "" : $height,
-								'alt' => ( strval($alt) == "") ? "" : $alt
-							);
-						}
-						else
-						{
-							$value = $this->cms->get_content_field($id, $field['id']);
-							$data[$field['sname']] = ( strval($value) == "" ) ? "" : $value;
-						}
-					}
-					$data['elements'] = $this->common->render_elements($this->cms->get_element_by_content($id));
-					$data = array_merge($data, $this->common->render_elements($this->cms->get_element_by_content($id)));
-					break;
-				}
-	
-				$data['body'] = $this->parser->parse_string($template, $data, TRUE);
-				
-				$this->load->view('content', $data);
-			}
-			else
-			{
-				/*
-				 * tags padrão (404)
-				 */
-				$data = array(
-					'site_name' => $this->config->item('site_name'),
-					'title' => "Página Não Encontrada"
-				);
-	
-				$this->output->set_status_header('404');
-				$this->load->view("404", $data);
-			}
-		}
-		else
+		/*
+		 * Parse URI
+		 */
+		if ( ! $this->uri->total_segments() > 0 )
 		{
 			/*
 			 * No URI, show home page
 			 */
-			/*
-			 * client controller (javascript)
-			 */
-			$js = array(
-				'/js/jquery-1.6.2.min.js',
-				'/js/jquery.easing.1.3.js',
-				'/js/jquery.timers-1.2.js'
-			);
 			
 			/*
 			 * Metafields
 			 */
-			$metafields = $this->cms->get_meta_fields();
-	
-			$data = array(
-				'site_name' => $this->config->item('site_name'),
-				'title' => 'Home',
-				'metafields' => $metafields,
-				'js' => $js
-			);
-	
+			$data['title'] = 'Home';
+			$data['metafields'] = (array) $this->elementar->get_meta_fields();
+			
 			/*
-			 * Carregar menus
+			 * Render elements
 			 */
-			$data = array_merge($data, $this->common->get_menus());
-	
-			/*
-			 * Elementos
-			 */
-			$data['elements'] = $this->common->render_elements($this->cms->get_element_by_category());
-	
-			/*
-			 * Carregar view
-			 */
-			$this->load->view('main', $data);
-			//$this->parser->parse('main', $data);
-			 
+			$content = array_merge($content, $this->common->render_elements());
+
 		}
+		else
+		{
+			/*
+			 * Identify content ID from URI
+			 */
+			$content_id = 0;
+			for ( $c = 1; $c <= $this->uri->total_segments(); $c++ )
+			{
+				$sname = $this->uri->segment($c);
+				$segment = (array) $this->elementar->get_content_by_parent($content_id, $sname);
+				if ( count($segment) > 0 )
+				{
+					$content_id = $segment['id'];
+					$content_name = $segment['name'];
+				}
+				else
+				{
+					/*
+					 * Invalid request (404)
+					 */
+					$content_id = NULL;
+					continue;
+				}
+			}
+			if ( (bool) $content_id )
+			{
+				/*
+				 * Metafields
+				 */
+				$data['title'] = $content_name;
+				$data['metafields'] = (array) $this->elementar->get_meta_fields($content_id);
+
+				$template = $this->elementar->get_content_template($content_id);
+
+				/*
+				 * Content fields
+				 */
+				$content['name'] = $content_name;
+				$content = array_merge($content, $this->common->render_content($content_id));
+
+				/*
+				 * Render elements
+				 */
+				$content = array_merge($content, $this->common->render_elements($content_id));
+			}
+			else
+			{
+				/*
+				 * 404
+				 */
+				$data['title'] = 'Página não encontrada';
+				$data['metafields'] = array();
+			}
+		}
+
+		/*
+		 * Parse the template
+		 */
+		$data['content'] = $this->parser->parse_string($template, $content, TRUE);
+		/*
+		 * Build final view and display the results
+		 */
+		$this->load->view('content', $data);
 	}
 
 	function sitemap()
