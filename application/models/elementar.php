@@ -307,6 +307,33 @@ class Elementar extends CI_Model {
 	}
 	
 	/*
+	 * get element general details 
+	 * return array
+	 */
+	function get_element($element_id)
+	{
+		$this->db_cms->select('element.name as name, element.sname as sname, element_parent.parent_id as parent_id');
+		$this->db_cms->from('element');
+		$this->db_cms->join('element_parent', 'element_parent.element_id = element.id', 'inner');
+		$this->db_cms->where('element.id', $element_id);
+		$query = $this->db_cms->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$element = array(
+				'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
+				'sname' => $row->sname,
+				'parent_id' => $row->parent_id
+			);
+			return $element;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * get element name (title)
 	 */
 	function get_element_name($element_id)

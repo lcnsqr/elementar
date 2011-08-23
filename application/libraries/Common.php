@@ -109,17 +109,17 @@ class Common {
 	}
 
 	/**
-	 * Clickable path (breadcrumb) for element's parent content
+	 * Clickable path (breadcrumb) for element
 	 */
 	function breadcrumb_element($element_id, $sep = "&raquo;")
 	{
 		$breadcrumb = "";
 		
-		$parent_id = $this->CI->elementar->get_element_parent_id($element_id);
+		$element = $this->CI->elementar->get_element($element_id);
 		
-		if ( $parent_id != NULL ) 
+		if ( is_array($element) ) 
 		{
-			$breadcrumb = $this->breadcrumb_content($parent_id);
+			$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $this->CI->elementar->get_content_uri($element['parent_id']) . "#" . $element['sname'] . "\" >" . $element['name'] . "</a>");
 		}
 		else
 		{
