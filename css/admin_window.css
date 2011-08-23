@@ -111,6 +111,10 @@
 	margin-bottom: 8px;
 	border-bottom: 1px solid #eeeeec;
 }
+.form_content_field input[type="text"] {
+	border-width: 1px;
+	margin: 0;
+}
 .form_control_buttons {
 	text-align: right;
 }
