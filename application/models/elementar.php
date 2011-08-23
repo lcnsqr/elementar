@@ -1574,7 +1574,7 @@ class Elementar extends CI_Model {
 
 		$contents = array();
 
-		$this->db_cms->select('id, name, sname');
+		$this->db_cms->select('id, name, sname, modified');
 		$this->db_cms->from('content');
 		$query = $this->db_cms->get();
 		if ($query->num_rows() > 0)
