@@ -178,11 +178,14 @@
  * Content/template menu links
  */
 #content_editors_header {
-	border-bottom: 1px solid #d3d7cf; 
+	position: relative;
+	border-bottom: 1px solid #888a85; 
 	margin-bottom: 8px;
 }
 #content_editors_menu {
-	float: right; 
+	position: absolute;
+	right: 0;
+	bottom: 0;
 }
 #content_editors_menu ul li {
 	position: relative;
@@ -190,11 +193,16 @@
 }
 #content_editors_menu ul li a {
 	display: block;
+	padding: 0 4px;
 }
 #content_editors_menu ul li a:hover {
 }
 #content_editors_menu ul li a.current {
-	font-weight: bold;
+	background-color: #888a85;
+	color: #fff;
+}
+#content_editors_menu ul li a.current:hover {
+	text-decoration: none;
 }
 
 /*

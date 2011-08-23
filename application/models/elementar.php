@@ -1437,7 +1437,7 @@ class Elementar extends CI_Model {
 	{
 		$elements = NULL;
 
-		$this->db_cms->select('element.id, element.name, element.sname');
+		$this->db_cms->select('element.id, element.name, element.sname, element.modified');
 		$this->db_cms->from('element');
 		$this->db_cms->join('element_parent', 'element_parent.element_id = element.id', 'inner');
 		$this->db_cms->where('element_parent.parent_id', $parent_id);

@@ -216,7 +216,7 @@ $(function() {
 	});
 	
 	/*
-	 * Mostrar formulário de atualização de conteúdo
+	 * Mostrar formulário de edição de conteúdo
 	 */
 	$("a.edit.content").live('click', function(event) {
 		event.preventDefault();
@@ -245,7 +245,7 @@ $(function() {
 	});
 	
 	/*
-	 * Mostrar formulário de atualização de elemento
+	 * Mostrar formulário de edição de elemento
 	 */
 	$("a.edit.element").live('click', function(event) {
 		event.preventDefault();
@@ -258,7 +258,7 @@ $(function() {
 		$.post("/admin/content/xhr_render_element_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.form).show(function() {
+					$("#content_editor_window").html(data.html).show(function() {
 						// CKEditor activation
 						ckeditor();
 					});

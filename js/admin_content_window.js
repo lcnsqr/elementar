@@ -85,7 +85,7 @@ $(function() {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#element_editor_form").html(data.form).show(function(){
+					$("#content_editors_container").replaceWith(data.html).show(function(){
 						// CKEditor activation
 						ckeditor();
 					});

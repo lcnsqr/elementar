@@ -96,13 +96,14 @@ class Common {
 		
 		if ( count( $content ) > 0 )
 		{
+			$content_uri = $this->CI->elementar->get_content_uri($content_id);
 			if ( (bool) $content['parent_id'] ) 
 			{
-				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $this->CI->elementar->get_content_uri($content_id) . "\">" . $content['name'] . "</a>" . $previous);
+				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $content_uri . "\">" . $content['name'] . "</a>" . $previous);
 			}
 			else
 			{
-				$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a> $sep <a href=\"" . $this->CI->elementar->get_content_uri($content_id) . "\">" . $content['name'] . "</a>" . $previous;
+				$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a> $sep <a href=\"" . $content_uri . "\">" . $content['name'] . "</a>" . $previous;
 			}
 		}
 		return $breadcrumb;
@@ -117,15 +118,18 @@ class Common {
 		
 		$element = $this->CI->elementar->get_element($element_id);
 		
-		if ( is_array($element) ) 
+		if ( count($element) > 0 )
 		{
-			$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $this->CI->elementar->get_content_uri($element['parent_id']) . "#" . $element['sname'] . "\" >" . $element['name'] . "</a>");
+			$element_uri = $this->CI->elementar->get_content_uri($element['parent_id']) . "#" . $element['sname'];
+			if ( (bool) $element['parent_id'] )
+			{ 
+				$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $element_uri . "\" >" . $element['name'] . "</a>");
+			}
+			else
+			{
+				$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a> $sep <a href=\"/" . $element_uri . "\" >" . $element['name'] . "</a>";
+			}
 		}
-		else
-		{
-			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>";
-		}
-		
 		return $breadcrumb;
 	}
 	

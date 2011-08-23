@@ -3,7 +3,6 @@
 		<div id="content_editors_menu">
 			<ul>
 				<li><a class="content_editors_menu_item current" href="content_editor_form">Conteúdo</a></li>
-				<li><span class="diams">&diams;</span></li>
 				<li><a class="content_editors_menu_item" href="template_editor_form">Template</a></li>
 			</ul>
 		</div>

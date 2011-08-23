@@ -828,27 +828,29 @@ class Content extends CI_Controller {
 		 * Create or update? Check for incoming element ID
 		 */
 		$element_id = $this->input->post('id', TRUE);
+		$data = array();
+
 		if ( (bool) $element_id !== FALSE ) 
 		{
 			/*
-			 * Update. Render breadcrumb and type form too
+			 * Update
 			 */
 			$parent_id = $this->elementar->get_element_parent_id($element_id);
 			$type_id = $this->elementar->get_element_type_id($element_id);		
-
-			$data = array();
-			$data['element_id'] = $element_id;
-			$data['parent_id'] = intval($parent_id);
 			$data['breadcrumb'] = $this->common->breadcrumb_element($element_id);
-			$form = $this->load->view('admin/admin_content_element_new', $data, true);
 		}
 		else
 		{
-			$form = "";
+			/*
+			 * Create
+			 */
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
+			$data['breadcrumb'] = $this->common->breadcrumb_element($parent_id);
 		}
 		
+		$form = "";
+
 		if ( (bool) $type_id ) 
 		{
 
@@ -986,9 +988,13 @@ class Content extends CI_Controller {
 
 			$form .= "</div>";
 			
+			$data['element_form'] = $form;
+			
+			$html = $this->load->view('admin/admin_content_element_form', $data, true);
+
 			$response = array(
 				'done' => TRUE,
-				'form' => $form
+				'html' => $html
 			);
 		}
 		else 
