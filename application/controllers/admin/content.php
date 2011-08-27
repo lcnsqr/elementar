@@ -47,7 +47,7 @@ class Content extends CI_Controller {
 		/*
 		 * Content database
 		 */
-		$this->db_cms = $this->load->database('cms', TRUE);
+		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
 		 * Session model
@@ -60,9 +60,9 @@ class Content extends CI_Controller {
 		$this->load->model('M_account', 'account');
 
 		/*
-		 * Content model (admin)
+		 * Create, read, update and delete Model
 		 */
-		$this->load->model('Elementar', 'elementar');
+		$this->load->model('Crud', 'crud');
 		
 		/*
 		 * CMS Common Library
@@ -110,70 +110,37 @@ class Content extends CI_Controller {
 			'/js/admin_content_tree.js',
 			'/js/admin_content_window.js',
 			'/js/admin_content_ckeditor.js',
-			'/js/admin_content_menu.js',
+			'/js/admin_content_menu_field.js',
+			'/js/jquery.json-2.2.min.js',
 			'/js/admin_anchor.js',
-			'/js/admin_content_anchor_section.js',
-			'/js/admin_content_anchor_editor.js',
 			'/js/admin_upload.js'
 		);
 		
 		/*
 		 * Resource menu
 		 */
-		$resource_menu = "<ul><li><a href=\"/admin/account\" title=\"Usuários\">Usuários</a></li><li><span class=\"diams\">&diams;</span></li><li><strong>Conteúdo</strong></li></ul>";
+		$resource_menu = array(
+			anchor("Usuários", array('href' => '/admin/account', 'title' => 'Usuários')),
+			span("&diams;", array('class' => 'diams')),
+			"<strong>Conteúdo</strong>"
+		);
 
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
 			'is_logged' => $is_logged,
 			'username' => $username,
-			'resource_menu' => $resource_menu
+			'resource_menu' => ul($resource_menu)
 		);
 
-		$this->load->view('admin/admin_content', $data);
-
-	}
-	
-	/**
-	 * Atualizar conteúdo da seção
-	 */
-	function xhr_render_section()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+		$data['parent_id'] = 0;
+		$data['parent'] = $this->config->item('site_name');
+		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent();
+		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent();
+		$data['content_listing_id'] = NULL;
+		$data['content_listing'] = NULL;
 		
-			$section = $this->input->post('section', TRUE);
-			
-			switch ($section)
-			{				
-				case "menu" : 
-				/*
-				 * Administração de menus
-				 */
-				$data['menus'] = $this->elementar->get_menus();
-				$html = $this->load->view('admin/admin_content_menu', $data, true);
-				break;
-				
-				case "editor" :
-				$data['parent_id'] = 0;
-				$data['parent'] = $this->config->item('site_name');
-				$data['content_hierarchy_content'] = $this->elementar->get_contents_by_parent();
-				$data['content_hierarchy_element'] = $this->elementar->get_elements_by_parent();
-				$data['content_listing_id'] = NULL;
-				$data['content_listing'] = NULL;
-				$html = $this->load->view('admin/admin_content_editor', $data, true);
-				break;
-				
-				default :
-				$html = "";
-				break;
-			}
-
-		$response = array(
-			'done' => TRUE,
-			'html' => $html
-		);
-		$this->common->ajax_response($response);
+		$this->load->view('admin/admin_content', $data);
 
 	}
 	
@@ -196,24 +163,24 @@ class Content extends CI_Controller {
 			switch ( $request )
 			{
 				case "content" :
-				$parent_id = $this->elementar->get_content_parent_id($id);
+				$parent_id = $this->crud->get_content_parent_id($id);
 				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
 				while ( (bool) $tree_id )
 				{
-					$parent_id = $this->elementar->get_content_parent_id($tree_id);
+					$parent_id = $this->crud->get_content_parent_id($tree_id);
 					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
 					$tree_id = $parent_id;
 				}
 				break;
 				
 				case "element" : 
-				$parent_id = $this->elementar->get_element_parent_id($id);
+				$parent_id = $this->crud->get_element_parent_id($id);
 				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
 				while ( (bool) $tree_id )
 				{
-					$parent_id = $this->elementar->get_content_parent_id($tree_id);
+					$parent_id = $this->crud->get_content_parent_id($tree_id);
 					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
 					$tree_id = $parent_id;
 				}
@@ -244,7 +211,7 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 			
-		$form = "<hr /><p class=\"page_subtitle\">Campos do Modelo</p>";
+		$form = paragraph("Campos do Modelo", array('class' => 'page_subtitle'));
 		
 		$attributes = array('class' => 'content_type_define_new_form', 'id' => 'content_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -253,90 +220,91 @@ class Content extends CI_Controller {
 		/*
 		 * Type name
 		 */
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
 		$form .= form_label("Nome do tipo", "name", $attributes);
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$attributes = array(
 			'name' => 'name',
 			'id' => 'name'
 		);
 		$form .= form_input($attributes);
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 		
 		/*
 		 * div field model
 		 */
-		$form .= "<div id=\"type_define_new_field_0\" class=\"type_define_new_field\" >";
+		$form .= div_open(array('id' => 'type_define_new_field_0', 'class' => 'type_define_new_field'));
 		
 		/*
 		 * field name
 		 */
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$form .= form_label("Nome do campo", "field_0");
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$attributes = array(
 			"id" => "field_0",
 			"name" => "field_0"
 		);
 		$form .= form_input($attributes);
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 
 		/*
 		 * field type
 		 */
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$form .= form_label("Tipo do campo", "field_type_0");
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$form .= $this->_render_field_type_dropdown();
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 
 		/*
 		 * close div field model
 		 */
-		$form .= "</div> <!-- #type_define_new_field_0 -->";
+		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= "<p><a href=\"add_type_field\" id=\"add_type_field\">Incluir outro campo</a></p>";
+		$form .= paragraph(anchor("Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		/*
 		 * HTML template
 		 */
-		$form .= "<hr /><p class=\"page_subtitle\">Markup do Modelo</p>";
+		$form .= paragraph("Markup do Modelo", array('class' => 'page_subtitle'));
 
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$form .= form_label("Template", "template");
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$attributes = array(
 			'name' => 'template',
 			'id' => 'template',
+			'class' => 'template_textarea',
 			'rows' => 8,
 			'cols' => 32,
 			'value' => ''
 		);
 		$form .= form_textarea($attributes);
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 
-		$form .= "<div class=\"form_control_buttons\">";
+		$form .= div_open(array('class' => 'form_control_buttons'));
 
 		$form .= form_submit('type_save', 'Salvar');
 		
-		$form .= "</div>";
+		$form .= div_close();
 
 		$form .= form_close();
 		
@@ -357,7 +325,7 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 			
-		$form = "<hr /><p class=\"page_subtitle\">Defini&ccedil;&atilde;o de novo tipo</p>";
+		$form = paragraph("Defini&ccedil;&atilde;o de novo tipo", array('class' => 'page_subtitle'));
 		
 		$attributes = array('class' => 'element_type_define_new_form', 'id' => 'element_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -366,68 +334,68 @@ class Content extends CI_Controller {
 		/*
 		 * Type name
 		 */
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
 		$form .= form_label("Nome do tipo", "name", $attributes);
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$attributes = array(
 			'name' => 'name',
 			'id' => 'name'
 		);
 		$form .= form_input($attributes);
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 		
 		/*
 		 * div field model
 		 */
-		$form .= "<div id=\"type_define_new_field_0\" class=\"type_define_new_field\" >";
+		$form .= div_open(array('id' => 'type_define_new_field_0', 'class' => 'type_define_new_field'));
 		
 		/*
 		 * field name
 		 */
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$form .= form_label("Nome do campo", "field_0");
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$attributes = array(
 			"id" => "field_0",
 			"name" => "field_0"
 		);
 		$form .= form_input($attributes);
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 
 		/*
 		 * field type
 		 */
-		$form .= "<div class=\"form_content_field\">";
-		$form .= "<div class=\"form_window_column_label\">";
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
 		$form .= form_label("Tipo do campo", "field_type_0");
 		$form .= br(1);
-		$form .= "</div> <!-- form_window_column_label -->";
-		$form .= "<div class=\"form_window_column_input\">";
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
 		$form .= $this->_render_field_type_dropdown();
-		$form .= "</div> <!-- form_window_column_input -->";
-		$form .= "</div> <!-- .form_content_field -->";
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
 
 		/*
 		 * close div field model
 		 */
-		$form .= "</div> <!-- #type_define_new_field_0 -->";
+		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= "<p><a href=\"add_type_field\" id=\"add_type_field\">Incluir outro campo</a></p>";
+		$form .= paragraph(anchor("Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
-		$form .= "<div class=\"form_control_buttons\">";
+		$form .= div_open(array('class' => 'form_control_buttons'));
 
 		$form .= form_submit('type_save', 'Salvar');
 		
-		$form .= "</div>";
+		$form .= div_close();
 
 		$form .= form_close();
 		
@@ -442,6 +410,7 @@ class Content extends CI_Controller {
 
 	/**
 	 * Listar campos/snames (tags) do tipo
+	 * Need rewrite to work with templates
 	 */
 	function xhr_render_content_type_tags()
 	{
@@ -450,8 +419,8 @@ class Content extends CI_Controller {
 
 		$type_id = $this->input->post('type_id', TRUE);
 
-		$tags = "<p>Tags de " . $this->elementar->get_content_type_name($type_id) . ":</p>";
-		$fields = $this->elementar->get_content_type_fields($type_id);
+		$tags = paragraph("Tags de " . $this->crud->get_content_type_name($type_id) . ":");
+		$fields = $this->crud->get_content_type_fields($type_id);
 		$list = array();
 		foreach ( $fields as $field )
 		{
@@ -480,17 +449,13 @@ class Content extends CI_Controller {
 
 		$id = $this->input->post('id', TRUE);
 
-		$name = $this->elementar->get_content_name($id);
-		$breadcrumb = $this->common->breadcrumb_content($id);
-
-		if ( $id == "0" ) {
-			$name = "Home";
-		}
-		else
-		{
-			$name = "“" . $name . "”";
-		}
-		$form = "<p class=\"page_subtitle\">" . $name . " Meta Fields</p><p>" . $breadcrumb . "</p><hr>";
+		$data = array(
+			'name' => $this->crud->get_content_name($id),
+			'breadcrumb' => $this->common->breadcrumb_content((int)$id)
+		);
+		
+		$form = '';
+		
 		$attributes = array(
 			'class' => 'noform',
 			'name' => 'id',
@@ -505,35 +470,61 @@ class Content extends CI_Controller {
 		$fields = array(
 			'Keywords' => 'keywords',
 			'Description' => 'description',
-			'Url' => 'url',
 			'Author' => 'author',
 			'Copyright' => 'copyright'
 		);
 
 		foreach ( $fields as $label => $name )
 		{
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
+			$form .= div_open(array('class' => 'form_content_field'));
+			$form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
 			$form .= form_label($label, $name, $attributes);
 			$form .= br(1);
-			$form .= "</div> <!-- form_window_column_label -->";
-			$form .= "<div class=\"form_window_column_input\">";
+			$form .= div_close("<!-- form_window_column_label -->");
+			$form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'class' => 'noform',
 				'name' => $name,
 				'id' => $name,
-				'value' => $this->elementar->get_meta_field($id, $name)
+				'value' => $this->crud->get_meta_field($id, $name)
 			);
 			$form .= form_input($attributes);
-			$form .= "</div> <!-- form_window_column_input -->";
-			$form .= "</div> <!-- .form_content_field -->";
+			$form .= div_close("<!-- form_window_column_input -->");
+			$form .= div_close("<!-- .form_content_field -->");
 		}
+
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
+		$attributes = array('class' => 'field_label');
+		$form .= form_label('Prioridade', 'priority', $attributes);
+		$form .= br(1);
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
+		$values = array(
+			'0.0' => '0.0',
+			'0.1' => '0.1',
+			'0.2' => '0.2',
+			'0.3' => '0.3',
+			'0.4' => '0.4',
+			'0.5' => '0.5',
+			'0.6' => '0.6',
+			'0.7' => '0.7',
+			'0.8' => '0.8',
+			'0.9' => '0.9',
+			'1.0' => '1.0'
+		);
+		$value = $this->crud->get_meta_field($id, 'priority');
+		$selected = ( (bool) $value ) ? $value : '0.5';
+		$form .= form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
+
 
 		/*
 		 *  Botão envio
 		 */
-		$form .= "<div class=\"form_control_buttons\">";
+		$form .= div_open(array('class' => 'form_control_buttons'));
 		$attributes = array(
 		    'name' => 'button_meta_save',
 		    'id' => 'button_meta_save',
@@ -542,159 +533,20 @@ class Content extends CI_Controller {
 		);
 		$form .= form_button($attributes);
 
-		$form .= "</div>";
+		$form .= div_close();
 		
-		$response = array(
-			'done' => TRUE,
-			'html' => $form
-		);
-		$this->common->ajax_response($response);
-
-	}
-	
-	/**
-	 * Gerar formulário para inserção/edicão de menu
-	 */
-	function xhr_render_menu_form()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$parent_id = $this->input->post("parent_id", TRUE);
-		$id = $this->input->post("id", TRUE);
+		$data['meta_form'] = $form;
 		
-		$data = array(
-			'id' => $id,
-			'target' => $this->elementar->get_menu_target($id)
-		);		
-			
-		$form = "";
-		/*
-		 * Menu name
-		 */
-		$form .= "<div class=\"form_content_field\">";
-		$attributes = array('class' => 'field_label');
-		$form .= form_label("Nome", "name", $attributes);
-		$form .= br(1);
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'name',
-			'id' => 'name',
-			'value' => $this->elementar->get_menu_name($id)
-		);
-		$form .= form_input($attributes);
-		$form .= "</div> <!-- .form_content_field -->";
-
-		/*
-		 * Menu target
-		 */
-		$form .= "<div class=\"form_content_field\">";
-		$attributes = array('class' => 'field_label');
-		$form .= form_label("Destino", "target", $attributes);
-		$form .= br(1);
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'target',
-			'id' => 'menu_target',
-			'value' => $this->elementar->get_menu_target($id)
-		);
-		$form .= form_input($attributes);
-		/*
-		 * dropdown target listing
-		 */
-		$listing = array();
-		$listing[] = "<p><strong>Destinos internos</strong></p>";
-		/*
-		 * Conteúdos
-		 */
-		foreach ( $this->elementar->get_contents() as $content )
-		{
-			$listing[] = $this->common->breadcrumb_content($content['id']);
-		}
-		/*
-		 * Controllers
-		 */
-		$controllers = array();		
-		foreach( $this->common->controllers(array('Parser','Rss','User')) as $controller )
-		{
-			$controllers[] = array(
-				'path' => $controller['uri'],
-				'name' => $controller['name']
-			);
-			// Controller methods
-			if ( count($controller['methods']) > 0 )
-			{
-				foreach ( $controller['methods'] as $method ) 
-				{
-					$controllers[] = array(
-						'path' => $method['uri'],
-						'name' => $method['name']
-					);
-				}				
-			}
-		}
-		foreach( $controllers as $controller )
-		{
-			$listing[] = $this->common->breadcrumb_path($controller['path']);
-		}
-		$attributes = array(
-			'class' => 'dropdown_items_listing_targets'
-		);
-		$form .= "<div class=\"dropdown_items_listing_position\"><div class=\"dropdown_items_listing\">";
-		$form .= ul($listing, $attributes);
-		$form .= "</div></div>";
-
-		$form .= "</div> <!-- .form_content_field -->"; // target
-
-		/*
-		 * Menu parent id (hidden)
-		 */
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'parent_id',
-			'value'=> $parent_id,
-			'type' => 'hidden'
-		);
-		$form .= form_input($attributes);
-
-		/*
-		 * Menu id (hidden)
-		 */
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'id',
-			'value'=> $id,
-			'type' => 'hidden'
-		);
-		$form .= form_input($attributes);
-
-		$form .= "<div class=\"form_control_buttons\">";
-
-		/*
-		 *  Botão envio
-		 */
-		$attributes = array(
-		    'name' => 'button_menu_save',
-		    'id' => 'button_menu_save',
-		    'class' => 'noform',
-		    'content' => 'Salvar'
-		);
-		$form .= form_button($attributes);
-
-		$form .= "</div>";
-
-		$data['form'] = $form;
-		$html = $this->load->view('admin/admin_content_menu_form', $data, true);
-
+		$html = $this->load->view('admin/admin_content_meta_form', $data, TRUE);
+		
 		$response = array(
 			'done' => TRUE,
 			'html' => $html
 		);
-
 		$this->common->ajax_response($response);
 
 	}
-	
+
 	/**
 	 * Gerar formulário para inserção de conteúdo
 	 */
@@ -714,7 +566,7 @@ class Content extends CI_Controller {
 		$data = array();
 		$data['content_id'] = NULL;
 		$data['parent_id'] = $parent_id;
-		$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
+		$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		$data['content_types_dropdown'] = $this->_render_content_types_dropdown($type_id);
 		
 		$html = $this->load->view('admin/admin_content_new', $data, true);
@@ -748,7 +600,7 @@ class Content extends CI_Controller {
 		$data = array();
 		$data['element_id'] = NULL;
 		$data['parent_id'] = $parent_id;
-		$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
+		$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
 		
 		$html = $this->load->view('admin/admin_content_element_new', $data, true);
@@ -762,7 +614,13 @@ class Content extends CI_Controller {
 
 	function _render_form_custom_field($field, $value = NULL)
 	{
-		$form = "";
+		$form = div_open(array('class' => 'form_window_column_label'));
+		$attributes = array('class' => 'field_label');
+		$form .= form_label($field['name'], $field['sname'], $attributes);
+		$form .= br(1);
+		$form .= div_close("<!-- form_window_column_label -->");		
+		$form .= div_open(array('class' => 'form_window_column_input'));
+
 		/*
 		 * Adequar ao tipo do campo
 		 */
@@ -791,6 +649,30 @@ class Content extends CI_Controller {
 			);
 			$form .= form_textarea($attributes);
 			break;
+			
+			case "menu" :
+			$form .= div_open(array('class' => 'menu_field'));
+			/*
+			 * Render menu field
+			 */
+			$data = array(
+				'menu' => json_decode($value, TRUE), // decode as associative array
+				'targets' => $this->_render_target_listing()
+			);
+			$form .= $this->load->view('admin/admin_content_menu_field', $data, true);
+			/*
+			 * The actual field
+			 */
+			$attributes = array(
+				'class' => 'noform menu_actual_field',
+				'type' => 'hidden',
+				'name' => $field['sname'],
+				'id' => $field['sname'],
+				'value' => $value
+			);
+			$form .= form_input($attributes);
+			$form .= div_close();
+			break;
 
 			case "img" : 
 			$attributes = array(
@@ -813,9 +695,62 @@ class Content extends CI_Controller {
 			$form .= form_input($attributes);
 			break;
 		}
+		$form .= div_close("<!-- form_window_column_input -->");
+
 		return $form;
 	}
-
+	
+	function _render_target_listing()
+	{
+		/*
+		 * dropdown target listing
+		 */
+		$listing = array();
+		$listing[] = paragraph("<strong>Destinos internos</strong>");
+		/*
+		 * Conteúdos
+		 */
+		foreach ( $this->crud->get_contents() as $content )
+		{
+			$listing[] = $this->common->breadcrumb_content($content['id']);
+		}
+		/*
+		 * Controllers
+		 */
+		$controllers = array();		
+		foreach( $this->common->controllers(array('Main','Rss','User')) as $controller )
+		{
+			$controllers[] = array(
+				'path' => $controller['uri'],
+				'name' => $controller['name']
+			);
+			// Controller methods
+			if ( count($controller['methods']) > 0 )
+			{
+				foreach ( $controller['methods'] as $method ) 
+				{
+					$controllers[] = array(
+						'path' => $method['uri'],
+						'name' => $method['name']
+					);
+				}				
+			}
+		}
+		foreach( $controllers as $controller )
+		{
+			$listing[] = $this->common->breadcrumb_path($controller['path']);
+		}
+		$targets = div_open(array('class' => 'dropdown_items_listing_position'));
+		$targets .= div_open(array('class' => 'dropdown_items_listing'));
+		$attributes = array(
+			'class' => 'dropdown_items_listing_targets'
+		);
+		$targets .= ul($listing, $attributes);
+		$targets .= div_close();
+		$targets .= div_close();
+		return $targets;
+	}
+	
 	/**
 	 * Gerar formulário para inserção de elemento
 	 */
@@ -835,8 +770,8 @@ class Content extends CI_Controller {
 			/*
 			 * Update
 			 */
-			$parent_id = $this->elementar->get_element_parent_id($element_id);
-			$type_id = $this->elementar->get_element_type_id($element_id);		
+			$parent_id = $this->crud->get_element_parent_id($element_id);
+			$type_id = $this->crud->get_element_type_id($element_id);		
 			$data['breadcrumb'] = $this->common->breadcrumb_element($element_id);
 		}
 		else
@@ -846,7 +781,7 @@ class Content extends CI_Controller {
 			 */
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
-			$data['breadcrumb'] = $this->common->breadcrumb_element($parent_id);
+			$data['breadcrumb'] = $this->common->breadcrumb_element((int)$parent_id);
 		}
 		
 		$form = "";
@@ -868,22 +803,22 @@ class Content extends CI_Controller {
 			/*
 			 * Element name
 			 */
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
+			$form .= div_open(array('class' => 'form_content_field'));
+			$form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Nome", "name", $attributes);
 			$form .= br(1);
-			$form .= "</div> <!-- form_window_column_label -->";
-			$form .= "<div class=\"form_window_column_input\">";
+			$form .= div_close("<!-- form_window_column_label -->");
+			$form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'name',
 				'id' => 'name',
-				'value' => $this->elementar->get_element_name($element_id)
+				'value' => $this->crud->get_element_name($element_id)
 			);
 			$form .= form_input($attributes);
-			$form .= "</div> <!-- form_window_column_input -->";
-			$form .= "</div> <!-- .form_content_field -->";
+			$form .= div_close("<!-- form_window_column_input -->");
+			$form .= div_close("<!-- .form_content_field -->");
 
 			/*
 			 * Element parent_id (hidden)
@@ -910,34 +845,22 @@ class Content extends CI_Controller {
 			/*
 			 * Element type fields
 			 */
-			$fields = $this->elementar->get_element_type_fields($type_id);
+			$fields = $this->crud->get_element_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
-				$form .= "<div class=\"form_content_field\">";
-				$form .= "<div class=\"form_window_column_label\">";
-				$attributes = array('class' => 'field_label');
-				$form .= form_label($field['name'], $field['sname'], $attributes);
-				$form .= br(1);
-				$form .= "</div> <!-- form_window_column_label -->";
-				
-				$form .= "<div class=\"form_window_column_input\">";
-				/*
-				 * Adequar ao tipo do campo
-				 */
-				$form .= $this->_render_form_custom_field($field, $this->elementar->get_element_field($element_id, $field['id']));
-				$form .= "</div> <!-- form_window_column_input -->";
-
-				$form .= "</div> <!-- .form_content_field -->";
+				$form .= div_open(array('class' => 'form_content_field'));
+				$form .= $this->_render_form_custom_field($field, $this->crud->get_element_field($element_id, $field['id']));
+				$form .= div_close("<!-- .form_content_field -->");
 			}
 
 			/*
-			 * spread
+			 * Spread
 			 */
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
+			$form .= div_open(array('class' => 'form_content_field'));
+			$form .= div_open(array('class' => 'form_window_column_label'));
 			if ( (bool) $element_id !== FALSE ) 
 			{
-				$checked = $this->elementar->get_element_spread($element_id);
+				$checked = $this->crud->get_element_spread($element_id);
 			}
 			else
 			{
@@ -946,9 +869,9 @@ class Content extends CI_Controller {
 			}
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Propagar", "spread", $attributes);
-			$form .= "</div> <!-- form_window_column_label -->";
+			$form .= div_close("<!-- form_window_column_label -->");
 
-			$form .= "<div class=\"form_window_column_input\">";
+			$form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'name'        => 'spread',
 				'id'          => 'spread',
@@ -957,23 +880,23 @@ class Content extends CI_Controller {
 				'checked'     => $checked
 			);
 			$form .= form_checkbox($attributes);
-			$form .= "</div> <!-- form_window_column_input -->";
-			$form .= "</div> <!-- .form_content_field -->";
+			$form .= div_close("<!-- form_window_column_input -->");
+			$form .= div_close("<!-- .form_content_field -->");
 
 			/*
 			 * status
 			 */
-			$form .= "<div class=\"form_content_field\">";
-			$form .= "<div class=\"form_window_column_label\">";
+			$form .= div_open(array('class' => 'form_content_field'));
+			$form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
 			$form .= form_label("Status", "status", $attributes);
-			$form .= "</div> <!-- form_window_column_label -->";
-			$form .= "<div class=\"form_window_column_input\">";
-			$form .= $this->_render_status_dropdown($this->elementar->get_element_status($element_id));
-			$form .= "</div> <!-- form_window_column_input -->";
-			$form .= "</div> <!-- .form_content_field -->";
+			$form .= div_close("<!-- form_window_column_label -->");
+			$form .= div_open(array('class' => 'form_window_column_input'));
+			$form .= $this->_render_status_dropdown($this->crud->get_element_status($element_id));
+			$form .= div_close("<!-- form_window_column_input -->");
+			$form .= div_close("<!-- .form_content_field -->");
 
-			$form .= "<div class=\"form_control_buttons\">";
+			$form .= div_open(array('class' => 'form_control_buttons'));
 
 			/*
 			 *  Botão envio
@@ -986,7 +909,7 @@ class Content extends CI_Controller {
 			);
 			$form .= form_button($attributes);
 
-			$form .= "</div>";
+			$form .= div_close();
 			
 			$data['element_form'] = $form;
 			
@@ -1027,10 +950,10 @@ class Content extends CI_Controller {
 			/*
 			 * Update
 			 */
-			$parent_id = $this->elementar->get_content_parent_id($content_id);
-			$type_id = $this->elementar->get_content_type_id($content_id);
-			$template_id = $this->elementar->get_content_template_id($content_id);
-			$template = $this->elementar->get_content_template($content_id);
+			$parent_id = $this->crud->get_content_parent_id($content_id);
+			$type_id = $this->crud->get_content_type_id($content_id);
+			$template_id = $this->crud->get_content_template_id($content_id);
+			$template = $this->crud->get_content_template($content_id);
 			$data['breadcrumb'] = $this->common->breadcrumb_content($content_id);
 		}
 		else
@@ -1040,9 +963,9 @@ class Content extends CI_Controller {
 			 */
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
-			$template_id = $this->elementar->get_content_type_template_id($type_id);
-			$template = $this->elementar->get_content_type_template($type_id);
-			$data['breadcrumb'] = $this->common->breadcrumb_content($parent_id);
+			$template_id = $this->crud->get_content_type_template_id($type_id);
+			$template = $this->crud->get_content_type_template($type_id);
+			$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		}
 
 		$template_form = '';
@@ -1053,14 +976,14 @@ class Content extends CI_Controller {
 		/*
 		 * Sole template
 		 */
-		$template_form .= "<div class=\"form_content_field\">";
-		$template_form .= "<div class=\"form_window_column_label\">";
+		$template_form .= div_open(array('class' => 'form_content_field'));
+		$template_form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
 		$template_form .= form_label("Exclusivo", "sole", $attributes);
-		$template_form .= "</div> <!-- form_window_column_label -->";
-		$template_form .= "<div class=\"form_window_column_input\">";
+		$template_form .= div_close("<!-- form_window_column_label -->");
+		$template_form .= div_open(array('class' => 'form_window_column_input'));
 		if ( (bool) $content_id ) {
-			$checked = $this->elementar->get_content_type_template_id($type_id) != $this->elementar->get_content_template_id($content_id) ;
+			$checked = $this->crud->get_content_type_template_id($type_id) != $this->crud->get_content_template_id($content_id) ;
 		}
 		else 
 		{
@@ -1074,16 +997,16 @@ class Content extends CI_Controller {
 			'checked'     => (bool) $checked
 		);
 		$template_form .= form_checkbox($attributes);
-		$template_form .= "</div> <!-- form_window_column_input -->";
-		$template_form .= "</div> <!-- .form_content_field -->";
+		$template_form .= div_close("<!-- form_window_column_input -->");
+		$template_form .= div_close("<!-- .form_content_field -->");
 
-		$template_form .= "<div class=\"form_content_field\">";
-		$template_form .= "<div class=\"form_window_column_label\">";
+		$template_form .= div_open(array('class' => 'form_content_field'));
+		$template_form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
 		$template_form .= form_label("Template", 'template_' . $content_id, $attributes);
 		$template_form .= br(1);
-		$template_form .= "</div> <!-- form_window_column_label -->";
-		$template_form .= "<div class=\"form_window_column_input\">";
+		$template_form .= div_close("<!-- form_window_column_label -->");
+		$template_form .= div_open(array('class' => 'form_window_column_input'));
 		$attributes = array(
 			'name' => 'template',
 			'class' => 'template_textarea',
@@ -1093,16 +1016,16 @@ class Content extends CI_Controller {
 			'value' => $template
 		);
 		$template_form .= form_textarea($attributes);
-		$template_form .= "</div> <!-- form_window_column_input -->";
-		$template_form .= "</div> <!-- .form_content_field -->";
-		$template_form .= "<div class=\"form_control_buttons\">";
+		$template_form .= div_close("<!-- form_window_column_input -->");
+		$template_form .= div_close("<!-- .form_content_field -->");
+		$template_form .= div_open(array('class' => 'form_control_buttons'));
 		$attributes = array(
 		    'name' => 'button_template_save',
 		    'id' => 'button_template_save',
 		    'value' => 'Salvar'
 		);
 		$template_form .= form_submit($attributes);
-		$template_form .= "</div> <!-- form_control_buttons -->";
+		$template_form .= div_close("<!-- form_control_buttons -->");
 		$template_form .= form_close();
 		$data['template_form'] = $template_form;
 
@@ -1138,73 +1061,60 @@ class Content extends CI_Controller {
 			/*
 			 * Content name
 			 */
-			$content_form .= "<div class=\"form_content_field\">";
-			$content_form .= "<div class=\"form_window_column_label\">";
+			$content_form .= div_open(array('class' => 'form_content_field'));
+			$content_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
 			$content_form .= form_label("Nome", "name", $attributes);
 			$content_form .= br(1);
-			$content_form .= "</div> <!-- form_window_column_label -->";
+			$content_form .= div_close("<!-- form_window_column_label -->");
 			
-			$content_form .= "<div class=\"form_window_column_input\">";
+			$content_form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'name',
 				'id' => 'name',
-				'value' => $this->elementar->get_content_name($content_id)
+				'value' => $this->crud->get_content_name($content_id)
 			);
 			$content_form .= form_input($attributes);
-			$content_form .= "</div> <!-- form_window_column_input -->";
+			$content_form .= div_close("<!-- form_window_column_input -->");
 
-			$content_form .= "</div> <!-- .form_content_field -->";
+			$content_form .= div_close("<!-- .form_content_field -->");
 
-			$fields = $this->elementar->get_content_type_fields($type_id);
+			$fields = $this->crud->get_content_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
-				$content_form .= "<div class=\"form_content_field\">";
-				$content_form .= "<div class=\"form_window_column_label\">";
-				$attributes = array('class' => 'field_label');
-				$content_form .= form_label($field['name'], $field['sname'], $attributes);
-				
-				$content_form .= br(1);
-				$content_form .= "</div> <!-- form_window_column_label -->";
-				
-				$content_form .= "<div class=\"form_window_column_input\">";
-				/*
-				 * Adequar ao tipo do campo
-				 */
-				$content_form .= $this->_render_form_custom_field($field, $this->elementar->get_content_field($content_id, $field['id']));
-				$content_form .= "</div> <!-- form_window_column_input -->";
-
-				$content_form .= "</div> <!-- .form_content_field -->";
+				$content_form .= div_open(array('class' => 'form_content_field'));
+				$content_form .= $this->_render_form_custom_field($field, $this->crud->get_content_field($content_id, $field['id']));
+				$content_form .= div_close("<!-- .form_content_field -->");
 			}
 
 			/*
 			 * status
 			 */
-			$content_form .= "<div class=\"form_content_field\">";
-			$content_form .= "<div class=\"form_window_column_label\">";
+			$content_form .= div_open(array('class' => 'form_content_field'));
+			$content_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
 			$content_form .= form_label("Status", "status", $attributes);
 			$content_form .= br(1);
-			$content_form .= "</div> <!-- form_window_column_label -->";
-			$content_form .= "<div class=\"form_window_column_input\">";
-			$content_form .= $this->_render_status_dropdown($this->elementar->get_content_status($content_id));
-			$content_form .= "</div> <!-- form_window_column_input -->";
-			$content_form .= "</div> <!-- .form_content_field -->";
+			$content_form .= div_close("<!-- form_window_column_label -->");
+			$content_form .= div_open(array('class' => 'form_window_column_input'));
+			$content_form .= $this->_render_status_dropdown($this->crud->get_content_status($content_id));
+			$content_form .= div_close("<!-- form_window_column_input -->");
+			$content_form .= div_close("<!-- .form_content_field -->");
 
-			$content_form .= "<div class=\"form_control_buttons\">";
+			$content_form .= div_open(array('class' => 'form_control_buttons'));
 			/*
 			 *  Botão envio
 			 */
 			$attributes = array(
-			    'name' => 'button_cont_save',
-			    'id' => 'button_cont_save',
+			    'name' => 'button_content_save',
+			    'id' => 'button_content_save',
 			    'class' => 'noform',
 			    'content' => 'Salvar'
 			);
 			$content_form .= form_button($attributes);
 
-			$content_form .= "</div> <!-- form_control_buttons -->";
+			$content_form .= div_close("<!-- form_control_buttons -->");
 			
 			$data['content_form'] = $content_form;
 			
@@ -1233,34 +1143,36 @@ class Content extends CI_Controller {
 	 */
 	function _render_content_types_dropdown($selected = NULL)
 	{
-		$types = $this->elementar->get_content_types();
+		$dropdown = div_open(array('class' => 'dropdown_items_listing_inline'));
+		$types = $this->crud->get_content_types();
 		if ( count($types) > 0 )
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->elementar->get_content_type_name($selected) . "</a>";
+				$dropdown .= anchor($this->crud->get_content_type_name($selected), array('class' => 'up', 'href' => $selected));
 			}
 			else
 			{
-				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+				$dropdown .= anchor(current($types), array('class' => 'up', 'href' => key($types)));
 			}
 		}
 		else
 		{
-			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"0\">Novo...</a>";			
+			$dropdown .= anchor("Novo...", array('class' => 'up', 'href' => '0'));
 		}
-		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
-		$dropdown .= "<div class=\"dropdown_items_listing\">";
-		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
+		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
+		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
+		$dropdown_items = array();
 		foreach ( $types as $type_id => $type )
 		{
-			$dropdown .= "<li><a class=\"dropdown_items_listing_content_type_target\" href=\"" . $type_id . "\">" . $type . "</a></li>";
+			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_content_type_target', 'href' => $type_id));
 		}
 		// "New" link
-		$dropdown .= "<li><a id=\"content_type_create\" class=\"dropdown_items_listing_content_type_target\" href=\"0\">Novo...</a></li>";
-		$dropdown .= "</ul>";
-		$dropdown .= "</div></div>";
-		$dropdown .= "</div>";
+		$dropdown_items[] = anchor("Novo...", array('id' => 'content_type_create', 'class' => 'dropdown_items_listing_content_type_target', 'href' => '0'));
+		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
+		$dropdown .= div_close();
+		$dropdown .= div_close();
+		$dropdown .= div_close();
 		return $dropdown;
 	}
 	
@@ -1271,34 +1183,36 @@ class Content extends CI_Controller {
 	 */
 	function _render_element_types_dropdown($selected = NULL )
 	{
-		$types = $this->elementar->get_element_types();
+		$dropdown = div_open(array('class' => 'dropdown_items_listing_inline'));
+		$types = $this->crud->get_element_types();
 		if ( count($types) > 0 )
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . $selected . "\">" . $this->elementar->get_element_type_name($selected) . "</a>";
+				$dropdown .= anchor($this->crud->get_element_type_name($selected), array('class' => 'up', 'href' => $selected));
 			}
 			else
 			{
-				$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"" . key($types) . "\">" . current($types) . "</a>";
+				$dropdown .= anchor(current($types), array('class' => 'up', 'href' => key($types)));
 			}
 		}
 		else
 		{
-			$dropdown = "<div class=\"dropdown_items_listing_inline\"><a class=\"up\" href=\"0\">Novo...</a>";			
+			$dropdown .= anchor("Novo...", array('class' => 'up', 'href' => '0'));
 		}
-		$dropdown .= "<div class=\"dropdown_items_listing_position\">";
-		$dropdown .= "<div class=\"dropdown_items_listing\">";
-		$dropdown .= "<ul class=\"dropdown_items_listing_targets\">";
+		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
+		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
+		$dropdown_items = array();
 		foreach ( $types as $type_id => $type )
 		{
-			$dropdown .= "<li><a class=\"dropdown_items_listing_element_type_target\" href=\"" . $type_id . "\">" . $type . "</a></li>";
+			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_element_type_target', 'href' => $type_id));
 		}
 		// "New" link
-		$dropdown .= "<li><a id=\"element_type_create\" class=\"dropdown_items_listing_element_type_target\" href=\"0\">Novo...</a></li>";
-		$dropdown .= "</ul>";
-		$dropdown .= "</div></div>";
-		$dropdown .= "</div>";
+		$dropdown_items[] = anchor("Novo...", array('id' => 'element_type_create', 'class' => 'dropdown_items_listing_element_type_target', 'href' => '0'));
+		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
+		$dropdown .= div_close();
+		$dropdown .= div_close();
+		$dropdown .= div_close();
 		return $dropdown;
 	}
 
@@ -1313,7 +1227,7 @@ class Content extends CI_Controller {
 			"draft" => "Rascunho",
 			"published" => "Publicado"
 		); 
-		$attributes = "id=\"new_cont_status\" class=\"noform\"";
+		$attributes = "id=\"new_content_status\" class=\"noform\"";
 		return form_dropdown('status', $options, $selected, $attributes);
 	}
 
@@ -1325,7 +1239,7 @@ class Content extends CI_Controller {
 	function _render_field_type_dropdown($selected = "1")
 	{
 		$options = array();
-		foreach ( $this->elementar->get_field_types() as $option )
+		foreach ( $this->crud->get_field_types() as $option )
 		{
 			$options[$option['id']] = $option['name'];
 		}
@@ -1344,8 +1258,8 @@ class Content extends CI_Controller {
 		$count = $this->input->post('field_count', TRUE);
 		$template = $this->input->post('template');
 		$name = $this->input->post('name', TRUE);		
-		$template_id = $this->elementar->put_template($template);
-		$type_id = $this->elementar->put_content_type($name, $template_id);
+		$template_id = $this->crud->put_template($template);
+		$type_id = $this->crud->put_content_type($name, $template_id);
 		
 		if ( (bool) $type_id )
 		{
@@ -1359,7 +1273,7 @@ class Content extends CI_Controller {
 				$field_type = $this->input->post("field_type_" . $c, TRUE);
 				if ( $field != "" )
 				{
-					$this->elementar->put_content_type_field($type_id, $field, $sname, $field_type);
+					$this->crud->put_content_type_field($type_id, $field, $sname, $field_type);
 				}
 			}
 			
@@ -1395,7 +1309,7 @@ class Content extends CI_Controller {
 
 		$sname = $this->common->normalize_string($name);
 
-		$type_id = $this->elementar->put_element_type($name, $sname);
+		$type_id = $this->crud->put_element_type($name, $sname);
 		
 		if ( (bool) $type_id )
 		{
@@ -1409,7 +1323,7 @@ class Content extends CI_Controller {
 				$field_type = $this->input->post("field_type_" . $c, TRUE);
 				if ( $field != "" )
 				{
-					$this->elementar->put_element_type_field($type_id, $field, $sname, $field_type);
+					$this->crud->put_element_type_field($type_id, $field, $sname, $field_type);
 				}
 			}
 			
@@ -1461,21 +1375,21 @@ class Content extends CI_Controller {
 			/*
 			 * Content ID not found, create new content
 			 */
-			$content_id = $this->elementar->put_content($name, $sname, $type_id);
+			$content_id = $this->crud->put_content($name, $sname, $type_id);
 		}
 		elseif ( $name != "" ) 
 		{
 			// Renomear
-			$this->elementar->put_content_name($content_id, $name, $sname);
+			$this->crud->put_content_name($content_id, $name, $sname);
 		}
 		
 		/* 
 		 * Armazenar campos
 		 */
-		foreach ( $this->elementar->get_content_type_fields($type_id) as $type)
+		foreach ( $this->crud->get_content_type_fields($type_id) as $type)
 		{
 			$value = $this->input->post($type['sname'], TRUE);
-			$this->elementar->put_content_field($content_id, $type['id'], $value);
+			$this->crud->put_content_field($content_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
 			 */
@@ -1486,7 +1400,7 @@ class Content extends CI_Controller {
 				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
 				if ( (bool) $image_title )
 				{
-					$this->elementar->put_image_title($image_id, $image_title);
+					$this->crud->put_image_title($image_id, $image_title);
 				}
 				break;
 			}
@@ -1496,12 +1410,12 @@ class Content extends CI_Controller {
 		 * Parent
 		 */
 		$parent_id = (int) $this->input->post('parent_id', TRUE);
-		$this->elementar->put_content_parent($content_id, $parent_id);
+		$this->crud->put_content_parent($content_id, $parent_id);
 
 		/* 
 		 * Armazenar status
 		 */
-		$this->elementar->put_content_status($content_id, $this->input->post('status', TRUE));
+		$this->crud->put_content_status($content_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * resposta
@@ -1528,7 +1442,7 @@ class Content extends CI_Controller {
 		/*
 		 * remover conteúdo
 		 */
-		$this->elementar->delete_content($content_id);
+		$this->crud->delete_content($content_id);
 
 		/*
 		 * resposta
@@ -1554,7 +1468,7 @@ class Content extends CI_Controller {
 		/*
 		 * remover elemento
 		 */
-		$this->elementar->delete_element($element_id);
+		$this->crud->delete_element($element_id);
 
 		/*
 		 * resposta
@@ -1596,21 +1510,21 @@ class Content extends CI_Controller {
 			/*
 			 * Element ID not found, create new element
 			 */
-			$element_id = $this->elementar->put_element($name, $sname, $type_id);
+			$element_id = $this->crud->put_element($name, $sname, $type_id);
 		}
 		elseif ( $name != "" ) 
 		{
 			// Renomear
-			$this->elementar->put_element_name($element_id, $name, $sname);
+			$this->crud->put_element_name($element_id, $name, $sname);
 		}
 
 		/* 
 		 * Armazenar campos
 		 */
-		foreach ( $this->elementar->get_element_type_fields($type_id) as $type)
+		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
 			$value = $this->input->post($type['sname'], TRUE);
-			$this->elementar->put_element_field($element_id, $type['id'], $value);
+			$this->crud->put_element_field($element_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
 			 */
@@ -1621,7 +1535,7 @@ class Content extends CI_Controller {
 				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
 				if ( (bool) $image_title )
 				{
-					$this->elementar->put_image_title($image_id, $image_title);
+					$this->crud->put_image_title($image_id, $image_title);
 				}
 				break;
 			}
@@ -1632,22 +1546,22 @@ class Content extends CI_Controller {
 		 */
 		if ( $this->input->post('spread', TRUE) )
 		{
-			$this->elementar->put_element_spread($element_id, TRUE);
+			$this->crud->put_element_spread($element_id, TRUE);
 		}
 		else
 		{
-			$this->elementar->put_element_spread($element_id, FALSE);
+			$this->crud->put_element_spread($element_id, FALSE);
 		}
 
 		/*
 		 * Parent
 		 */
-		$this->elementar->put_element_parent($element_id, $parent_id);
+		$this->crud->put_element_parent($element_id, $parent_id);
 
 		/* 
 		 * Armazenar status
 		 */
-		$this->elementar->put_element_status($element_id, $this->input->post('status', TRUE));
+		$this->crud->put_element_status($element_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * resposta
@@ -1693,14 +1607,14 @@ class Content extends CI_Controller {
 	{
 		$data['parent_id'] = $id;
 
-		$data['parent'] = $this->elementar->get_content_name($id);
-		$data['content_hierarchy_content'] = $this->elementar->get_contents_by_parent($id);
-		$data['content_hierarchy_element'] = $this->elementar->get_elements_by_parent($id);
+		$data['parent'] = $this->crud->get_content_name($id);
+		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent($id);
+		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent($id);
 		// Inner listings, if any
 		$data['content_listing_id'] = $listing_id;
 		$data['content_listing'] = $listing;
 		
-		$html = $this->load->view('admin/admin_content_editor_tree', $data, true);
+		$html = $this->load->view('admin/admin_content_tree', $data, true);
 		
 		return $html;
 	}
@@ -1721,7 +1635,7 @@ class Content extends CI_Controller {
 		{
 			$sname = $this->common->normalize_string($name);
 
-			$this->elementar->put_content_name($id, $name, $sname);
+			$this->crud->put_content_name($id, $name, $sname);
 
 			$response = array(
 				'done' => TRUE,
@@ -1732,7 +1646,7 @@ class Content extends CI_Controller {
 			$response = array(
 				'done' => FALSE,
 				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->elementar->get_content_name($id), ENT_QUOTES, "UTF-8")
+				'name' => html_entity_decode($this->crud->get_content_name($id), ENT_QUOTES, "UTF-8")
 			);
 		}			
 
@@ -1756,7 +1670,7 @@ class Content extends CI_Controller {
 		{
 			$sname = $this->common->normalize_string($name);
 
-			$this->elementar->put_element_name($id, $name, $sname);
+			$this->crud->put_element_name($id, $name, $sname);
 
 			$response = array(
 				'done' => TRUE,
@@ -1767,60 +1681,11 @@ class Content extends CI_Controller {
 			$response = array(
 				'done' => FALSE,
 				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->elementar->get_element_name($id), ENT_QUOTES, "UTF-8")
+				'name' => html_entity_decode($this->crud->get_element_name($id), ENT_QUOTES, "UTF-8")
 			);
 		}			
 
 		$this->common->ajax_response($response);
-
-	}
-
-	/**
-	 * renomear menu
-	 */
-	function xhr_rename_menu() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$menu_id = $this->input->post('id', TRUE);
-		
-		$name = $this->input->post('name', TRUE);
-		
-		if ($menu_id != "" && $name != "" ) 
-		{
-			$sname = $this->common->normalize_string($name);
-
-			$this->elementar->put_menu_name($menu_id, $name, $sname);
-
-			$response = array(
-				'done' => TRUE,
-				'sname' => $sname
-			);
-			$this->common->ajax_response($response);
-		}
-
-	}
-
-	/**
-	 * Remover menu
-	 */
-	function xhr_erase_menu() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$menu_id = $this->input->post('id', TRUE);
-		
-		if ( (bool) $menu_id ) 
-		{
-			$this->elementar->delete_menu($menu_id);
-
-			$response = array(
-				'done' => TRUE
-			);
-			$this->common->ajax_response($response);
-		}
 
 	}
 
@@ -1840,9 +1705,9 @@ class Content extends CI_Controller {
 		$fields = array(
 			'Keywords' => 'keywords',
 			'Description' => 'description',
-			'Url' => 'url',
 			'Author' => 'author',
-			'Copyright' => 'copyright'
+			'Copyright' => 'copyright',
+			'Priority' => 'priority'
 		);
 
 		foreach ( $fields as $label => $name )
@@ -1850,12 +1715,12 @@ class Content extends CI_Controller {
 			$value = $this->input->post($name, TRUE);
 			if ( (bool) $value )
 			{
-				$this->elementar->put_meta_field($id, $name, $value);
+				$this->crud->put_meta_field($id, $name, $value);
 			}
 			else
 			{
 				// Remove meta field
-				$this->elementar->delete_meta_field($id, $name);
+				$this->crud->delete_meta_field($id, $name);
 			}
 		}
 		
@@ -1888,21 +1753,21 @@ class Content extends CI_Controller {
 				 * content_id received, means that 
 				 * it's not a new content
 				 */
-				$content_type_template_id = $this->elementar->get_content_type_template_id($this->elementar->get_content_type_id($content_id));
+				$content_type_template_id = $this->crud->get_content_type_template_id($this->crud->get_content_type_id($content_id));
 				if ( $content_type_template_id != $template_id )
 				{
 					/*
 					 * Content already have exclusive template, update it!
 					 */
-					$this->elementar->put_template($template, $template_id);
+					$this->crud->put_template($template, $template_id);
 				}
 				else
 				{
 					/*
 					 * Add a new template for this content
 					 */
-					$content_template_id = $this->elementar->put_template($template);
-					$this->elementar->put_content_template_id($content_id, $content_template_id);
+					$content_template_id = $this->crud->put_template($template);
+					$this->crud->put_content_template_id($content_id, $content_template_id);
 				}
 			}
 		}
@@ -1913,14 +1778,14 @@ class Content extends CI_Controller {
 				/*
 				 * Ensure that content has no exclusive template
 				 */
-				$content_template_id = $this->elementar->get_content_template_id($content_id);
+				$content_template_id = $this->crud->get_content_template_id($content_id);
 				if ( $content_template_id != $template_id )
 				{
-					$this->elementar->put_content_template_id($content_id, NULL);
-					$this->elementar->delete_template($content_template_id);
+					$this->crud->put_content_template_id($content_id, NULL);
+					$this->crud->delete_template($content_template_id);
 				}
 			}
-			$this->elementar->put_template($template, $template_id);
+			$this->crud->put_template($template, $template_id);
 		}
 
 		/*
@@ -1929,108 +1794,7 @@ class Content extends CI_Controller {
 		$response = array(
 			'done' => TRUE
 		);
-		
-		$this->common->ajax_response($response);
-
-	}
-
-	/**
-	 * Criar menu
-	 */
-	function xhr_write_menu() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$id = $this->input->post('id', TRUE);
-		$parent_id = $this->input->post('parent_id', TRUE);
-		$name = $this->input->post('name', TRUE);
-		$target = $this->input->post('target', TRUE);
-		
-		if ( (bool) $name ) 
-		{
-			$sname = $this->common->normalize_string($name);
-			
-			if ( (bool) $id ) 
-			{
-				/*
-				 * Update
-				 */
-				$this->elementar->put_menu_name($id, $name, $sname);
-				$this->elementar->put_menu_target($id, $target);
-			}
-			else {
-				$level = $this->elementar->get_menu_level($parent_id) + 1;
-				$id = $this->elementar->put_menu($name, $sname, $parent_id, $level);
-				$this->elementar->put_menu_target($id, $target);
-			}
-			$response = array(
-				'done' => TRUE
-			);
-		}
-		else 
-		{
-			$response = array(
-				'done' => FALSE,
-				'error' => "Forneça o nome do menu"
-			);
-		}
-		$this->common->ajax_response($response);
-
-	}
-
-	/**
-	 * Salvar menu target
-	 */
-	function xhr_write_menu_target()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$menu_id = $this->input->post('menu_id', TRUE);
-		
-		$target = $this->input->post('target', TRUE);
-		
-		$this->elementar->put_menu_target($menu_id, $target);
-
-		/*
-		 * resposta
-		 */
-		$response = array(
-			'done' => TRUE
-		);
-		
-		$this->common->ajax_response($response);
-
-	}
-	
-	/**
-	 * Atualizar árvore de menus
-	 */
-	function xhr_write_menu_tree() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-		
-		$parent_id = $this->input->post("parent_id", TRUE);
-		$level = $this->elementar->get_menu_level($parent_id) + 1;
-		$menus = $this->input->post("menus", TRUE);
-		
-		// Atualizar parent, order & level
-		foreach ( $menus as $order => $menu_id ) {
-			$this->elementar->put_menu_parent($menu_id, $parent_id);
-			$this->elementar->put_menu_level($menu_id, $level);
-			$this->elementar->put_menu_order($menu_id, $order);
-		}
-		
-		/*
-		 * resposta
-		 */
-		$response = array(
-			'done' => TRUE
-		);
-		
 		$this->common->ajax_response($response);
 	}
-	
+
 }

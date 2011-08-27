@@ -112,7 +112,7 @@ class Contato extends CI_Controller {
 	/*
 	 * Formulário de contato
 	 */
-    function send_contato()
+    function xhr_send_contato()
     {
 		$required = array(
 			'Nome' => array('value' => $this->input->post('Nome', TRUE), 'name' => 'Nome'),

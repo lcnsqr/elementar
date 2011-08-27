@@ -14,7 +14,7 @@ var ckeditorConfig = {
 
 function ckeditor() {
 	// Find proper textareas and convert them to ckeditor
-	$("#content_editor_window").find("textarea:visible").each(function(){
+	$("#content_window").find("textarea:visible").each(function(){
 		if ( $(this).hasClass('p') || $(this).hasClass('hypertext') ) {
 			var id = $(this).attr('id');
 			var exists = Object.keys(CKEDITOR.instances).some(function(element, index, array) {

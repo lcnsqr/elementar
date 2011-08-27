@@ -35,10 +35,10 @@ class Main extends CI_Controller {
 		//$this->output->cache(1);
 
 		// DB
-		$this->db_cms = $this->load->database('cms', TRUE);
+		$this->elementar = $this->load->database('elementar', TRUE);
 
 		// Client model 
-		$this->load->model('Elementar', 'elementar');
+		$this->load->model('Crud', 'crud');
 		
 		// CMS Common Library
 		$this->load->library('common');
@@ -73,7 +73,7 @@ class Main extends CI_Controller {
 			 * Metafields
 			 */
 			$data['title'] = 'Home';
-			$data['metafields'] = (array) $this->elementar->get_meta_fields();
+			$data['metafields'] = (array) $this->crud->get_meta_fields();
 			
 			/*
 			 * Render elements
@@ -90,7 +90,7 @@ class Main extends CI_Controller {
 			for ( $c = 1; $c <= $this->uri->total_segments(); $c++ )
 			{
 				$sname = $this->uri->segment($c);
-				$segment = (array) $this->elementar->get_content_by_parent($content_id, $sname);
+				$segment = (array) $this->crud->get_content_by_parent($content_id, $sname);
 				if ( count($segment) > 0 )
 				{
 					$content_id = $segment['id'];
@@ -111,9 +111,9 @@ class Main extends CI_Controller {
 				 * Metafields
 				 */
 				$data['title'] = $content_name;
-				$data['metafields'] = (array) $this->elementar->get_meta_fields($content_id);
+				$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
 
-				$template = $this->elementar->get_content_template($content_id);
+				$template = $this->crud->get_content_template($content_id);
 
 				/*
 				 * Content fields

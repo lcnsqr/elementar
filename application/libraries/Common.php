@@ -10,6 +10,15 @@ class Common {
 	function __construct()
 	{
 		$this->CI =& get_instance();
+
+		/*
+		 * BUG: By default
+		 * Code Igniter don't load
+		 * in libraries MY_* helpers 
+		 * requested from controller,
+		 * so we need to load it again
+		 */
+		$this->CI->load->helper('html');
 	}
 	
 	function ajax_response($response)
@@ -29,51 +38,77 @@ class Common {
 	}
 	
 	/*
-	 * Carregar menus
+	 * Is an URI the current location ?
 	 */
-	function get_menus() 
-	{	
-		$menus = $this->CI->elementar->get_menus();
-		$data = array();
-		foreach ( $menus as $menu )
-		{
-			$data[$menu['sname']] = $this->_make_menu($menu['children']);
-		}
-		return $data;
-	}
-		
-	function _make_menu($menus)
+	function _uri_is_current($uri)
 	{
-		if ( ! is_array($menus) )
-			return NULL;
-
-		$reduce = array();
-		foreach ( $menus as $menu )
+		if ( $this->CI->uri->total_segments() == 0 )
 		{
 			/*
-			 * Identificar menu ativo (que fora invocado)
+			 * No URI segments, it's the home page
 			 */
-			$current = FALSE;
-			if ( $this->CI->uri->total_segments() == 0 && $menu['target'] == "/" )
+			if ( '/' == $uri ) 
 			{
-				// home
-				$menu['target'] = $this->CI->uri->uri_string();
-				$current = TRUE;
+				return TRUE;
 			}
-			elseif ( $menu['target'] != "/" )
-			{
-				if (strpos("/" . $this->CI->uri->uri_string() . "/", $menu['target']) === 0 )
-				{
-					$current = TRUE;
-				}
-			}
-			$reduce[$menu['name']] = array(
-				'target' => $menu['target'],
-				'menu' => $this->_make_menu($menu['children']),
-				'current' => $current
-			);
 		}
-		return $reduce;
+		else
+		{
+			/*
+			 * Consider true if current 
+			 * location begins with the URI
+			 */
+			if (strpos("/" . $this->CI->uri->uri_string() . "/", $uri) === 0 )
+			{
+				return TRUE;
+			}
+		}
+		/*
+		 * Defaults to false
+		 */
+		return FALSE;
+	}
+
+	/*
+	 * Render menu
+	 */
+	function _make_menu($menu)
+	{
+		if ( ! is_array($menu) )
+		{
+			return NULL;
+		}
+		$menu_links = array();
+		foreach ( $menu as $menu_item )
+		{
+			/*
+			 * Build menu item link
+			 */
+			$class = ( $this->_uri_is_current($menu_item['target']) ) ? 'menu_item current' : 'menu_item';
+			$attributes = array(
+				'href' => $menu_item['target'],
+				'title' => $menu_item['name'],
+				'class' => $class
+			);
+			$link = anchor($menu_item['name'], $attributes);
+			$submenu = $menu_item['menu'];
+			if ( ! (bool) $submenu )
+			{
+				/*
+				 * No submenu
+				 */
+				$menu_links[] = $link;
+			}
+			else
+			{
+				/*
+				 * Recursive 
+				 * through submenu
+				 */
+				$menu_links[$link] = $this->_make_menu($submenu);
+			}
+		}
+		return $menu_links;
 	}
 
 	/**
@@ -92,11 +127,11 @@ class Common {
 			return $breadcrumb;
 		}
 
-		$content = (array) $this->CI->elementar->get_content($content_id);
+		$content = (array) $this->CI->crud->get_content($content_id);
 		
 		if ( count( $content ) > 0 )
 		{
-			$content_uri = $this->CI->elementar->get_content_uri($content_id);
+			$content_uri = $this->CI->crud->get_content_uri($content_id);
 			if ( (bool) $content['parent_id'] ) 
 			{
 				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $content_uri . "\">" . $content['name'] . "</a>" . $previous);
@@ -116,11 +151,11 @@ class Common {
 	{
 		$breadcrumb = "";
 		
-		$element = $this->CI->elementar->get_element($element_id);
+		$element = $this->CI->crud->get_element($element_id);
 		
 		if ( count($element) > 0 )
 		{
-			$element_uri = $this->CI->elementar->get_content_uri($element['parent_id']) . "#" . $element['sname'];
+			$element_uri = $this->CI->crud->get_content_uri($element['parent_id']) . "#" . $element['sname'];
 			if ( (bool) $element['parent_id'] )
 			{ 
 				$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $element_uri . "\" >" . $element['name'] . "</a>");
@@ -245,20 +280,22 @@ class Common {
 		/*
 		 * Database contents
 		 */
-		foreach ( $this->CI->elementar->get_contents() as $content )
+		foreach ( $this->CI->crud->get_contents() as $content )
 		{
+			$priority = $this->CI->crud->get_meta_field($content['id'], 'priority');
+			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
-				'loc' => site_url($this->CI->elementar->get_content_uri($content['id'])),
+				'loc' => site_url($this->CI->crud->get_content_uri($content['id'])),
 				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
 				'changefreq' => 'daily',
-				'priority' => '0.5'
+				'priority' => $priority
 			);
 		}
 
 		/*
 		 * Other controllers
 		 */
-		foreach ( $this->controllers(array('Parser','Rss','User')) as $url ) 
+		foreach ( $this->controllers(array('Main','Rss','User')) as $url ) 
 		{
 			$urls[] = array(
 				'loc' => site_url($url['uri']),
@@ -292,7 +329,7 @@ class Common {
 	 */
 	function render_form_upload_image($field_sname, $image_id = NULL)
 	{
-		$form_upload_session = $this->CI->elementar->put_upload_session();
+		$form_upload_session = $this->CI->crud->put_upload_session();
 		
 		$hidden = array('form_upload_session' => $form_upload_session, 'field_sname' => $field_sname);
 		
@@ -332,7 +369,7 @@ class Common {
 		$data['form_upload'] = $form;
 		$data['form_upload_session'] = $form_upload_session;
 		
-		$data['img_url'] = $this->CI->elementar->get_image_uri_thumb($image_id);
+		$data['img_url'] = $this->CI->crud->get_image_uri_thumb($image_id);
 
 		/*
 		 * Título (alt text)
@@ -341,7 +378,7 @@ class Common {
 			'class' => 'noform',
 			'name' => $field_sname . '_title',
 			'id' => $field_sname . '_title',
-			'value' => $this->CI->elementar->get_image_title($image_id)
+			'value' => $this->CI->crud->get_image_title($image_id)
 		);
 		$data['input_title'] = form_label("Título da imagem", $field_sname . '_title');
 		$data['input_title'] .= br(1);
@@ -394,7 +431,7 @@ class Common {
 		{
 			case 'img' :
 			$file_id = $field_value;
-			$image = (array) $this->CI->elementar->get_image($file_id);
+			$image = (array) $this->CI->crud->get_image($file_id);
 			if ( count( $image ) > 0 )
 			{
 				return array(
@@ -410,6 +447,13 @@ class Common {
 			}
 			break;
 
+			case 'menu' :
+			/*
+			 * Render as HTML unordered list
+			 */
+			return ul($this->_make_menu(json_decode($field_value, TRUE)));
+			break;
+			
 			default:
 			return (string) $field_value;
 			break;
@@ -424,7 +468,7 @@ class Common {
 		$content['breadcrumb'] = $this->breadcrumb_content($content_id);
 		
 		// Content fields
-		$fields = $this->CI->elementar->get_content_fields($content_id);
+		$fields = $this->CI->crud->get_content_fields($content_id);
 		foreach ($fields as $field)
 		{
 			$content[$field['sname']] = $this->render_field($field['type'], $field['value']);			
@@ -435,7 +479,7 @@ class Common {
 
 	function render_elements($content_id = 0) 
 	{
-		$elements = $this->CI->elementar->get_elements_by_parent_spreaded($content_id);
+		$elements = $this->CI->crud->get_elements_by_parent_spreaded($content_id);
 		$data = array();
 		foreach ($elements as $element)
 		{
@@ -454,7 +498,7 @@ class Common {
 			/*
 			 * Render loop entries by element type sname
 			 */
-			$fields = $this->CI->elementar->get_element_fields($element_id);
+			$fields = $this->CI->crud->get_element_fields($element_id);
 
 			/*
 			 * To be added in the element type array

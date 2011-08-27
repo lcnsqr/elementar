@@ -90,7 +90,7 @@ $(function() {
 		event.preventDefault();
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 		
 		var form = $(this);
 
@@ -102,9 +102,6 @@ $(function() {
 		}
 		else if ( $(form).hasClass("element") ) {
 			var action = "/admin/content/xhr_rename_element";
-		}
-		else if ( $(form).hasClass("menu") ) {
-			var action = "/admin/content/xhr_rename_menu";
 		}
 		else {
 			return false;
@@ -132,7 +129,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 
 	});
@@ -144,14 +141,14 @@ $(function() {
 		event.preventDefault();
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
 
 		$.post("/admin/content/xhr_render_content_new", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show();
+					$("#content_window").html(data.html).show();
 				}
 			}
 			catch (err) {
@@ -159,7 +156,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 
@@ -170,14 +167,14 @@ $(function() {
 		event.preventDefault();
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
 
 		$.post("/admin/content/xhr_render_element_new", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show();
+					$("#content_window").html(data.html).show();
 				}
 			}
 			catch (err) {
@@ -185,7 +182,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 
@@ -196,14 +193,14 @@ $(function() {
 		event.preventDefault();
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
 
 		$.post("/admin/content/xhr_render_meta_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show();
+					$("#content_window").html(data.html).show();
 				}
 			}
 			catch (err) {
@@ -211,7 +208,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 	
@@ -222,14 +219,14 @@ $(function() {
 		event.preventDefault();
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
 
 		$.post("/admin/content/xhr_render_content_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show(function() {
+					$("#content_window").html(data.html).show(function() {
 						// CKEditor activation
 						ckeditor();
 					});
@@ -240,7 +237,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 	
@@ -251,14 +248,14 @@ $(function() {
 		event.preventDefault();
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
 
 		$.post("/admin/content/xhr_render_element_form", { id : id }, function(data){
 			try {
 				if ( data.done == true ) {
-					$("#content_editor_window").html(data.html).show(function() {
+					$("#content_window").html(data.html).show(function() {
 						// CKEditor activation
 						ckeditor();
 					});
@@ -269,7 +266,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 	
@@ -287,12 +284,9 @@ $(function() {
 		else if ( $(this).hasClass("element") ) {
 			var action = "/admin/content/xhr_erase_element";
 		}
-		else if ( $(this).hasClass("menu") ) {
-			var action = "/admin/content/xhr_erase_menu";
-		}
 
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 		
 		if (confirm($(this).attr("title") + "?")) { 
 
@@ -318,12 +312,12 @@ $(function() {
 				}
 	
 				// Bloqueio
-				$("#sections_blocker").fadeOut("fast");
+				$("#blocker").fadeOut("fast");
 			}, "json");
 		}
 		else {
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}
 	});
 
