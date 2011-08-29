@@ -29,7 +29,7 @@ class Main extends CI_Controller {
 	{
 		parent::__construct();
 		
-		$this->output->enable_profiler(TRUE);
+		//$this->output->enable_profiler(TRUE);
 		
 		// View cache
 		//$this->output->cache(1);
@@ -68,25 +68,33 @@ class Main extends CI_Controller {
 			/*
 			 * No URI, show home page
 			 */
+			$content_id = 1;
 			
 			/*
 			 * Metafields
 			 */
 			$data['title'] = 'Home';
-			$data['metafields'] = (array) $this->crud->get_meta_fields();
+			$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
 			
+			/*
+			 * Content fields
+			 */
+			$content['name'] = $data['site'];
+			$content = array_merge($content, $this->common->render_content($content_id));
+
 			/*
 			 * Render elements
 			 */
-			$content = array_merge($content, $this->common->render_elements());
+			$content = array_merge($content, $this->common->render_elements($content_id));
 
+			$template = $this->crud->get_content_template($content_id);
 		}
 		else
 		{
 			/*
 			 * Identify content ID from URI
 			 */
-			$content_id = 0;
+			$content_id = 1; // The primeval parent
 			for ( $c = 1; $c <= $this->uri->total_segments(); $c++ )
 			{
 				$sname = $this->uri->segment($c);

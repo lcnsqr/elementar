@@ -670,7 +670,7 @@ class Crud extends CI_Model {
 	/*
 	 * Read all content meta fields
 	 */
-	function get_meta_fields($content_id = 0)
+	function get_meta_fields($content_id = 1)
 	{
 		$this->elementar->select('name, value');
 		$this->elementar->from('html_meta');
@@ -1405,7 +1405,7 @@ class Crud extends CI_Model {
 	/*
 	 * List all own and spreaded elements from upper parents
 	 */
-	function get_elements_by_parent_spreaded($content_id = 0, $elements = NULL)
+	function get_elements_by_parent_spreaded($content_id = 1, $elements = NULL)
 	{
 		/*
 		 * Elemento associado/herdado a conteúdo
@@ -1579,6 +1579,7 @@ class Crud extends CI_Model {
 			$this->elementar->select('parent_id');
 			$this->elementar->from('content_parent');
 			$this->elementar->where('content_id', $content_id);
+			$this->elementar->where('parent_id >', 1);
 			$this->elementar->limit(1);
 			$query = $this->elementar->get();
 			if ($query->num_rows() > 0)

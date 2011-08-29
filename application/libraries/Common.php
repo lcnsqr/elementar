@@ -119,9 +119,9 @@ class Common {
 		$breadcrumb = "";
 		
 		/*
-		 * With no content_id, just return home link
+		 * With content_id = 1, just return home link
 		 */
-		if ( $content_id === 0 )
+		if ( (int)$content_id === 1 )
 		{
 			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" ;
 			return $breadcrumb;
@@ -132,7 +132,7 @@ class Common {
 		if ( count( $content ) > 0 )
 		{
 			$content_uri = $this->CI->crud->get_content_uri($content_id);
-			if ( (bool) $content['parent_id'] ) 
+			if ( (int) $content['parent_id'] > 1 ) 
 			{
 				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $content_uri . "\">" . $content['name'] . "</a>" . $previous);
 			}
@@ -460,7 +460,7 @@ class Common {
 		}
 	}
 
-	function render_content($content_id)
+	function render_content($content_id = 1)
 	{
 		$content = array();
 		
@@ -477,7 +477,7 @@ class Common {
 		return $content;
 	}
 
-	function render_elements($content_id = 0) 
+	function render_elements($content_id = 1) 
 	{
 		$elements = $this->CI->crud->get_elements_by_parent_spreaded($content_id);
 		$data = array();

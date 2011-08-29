@@ -38,7 +38,7 @@ $(".upload_image").live("submit", function(event) {
 					$(form).stopTime('SessionStatus');
 					// escrever id da imagem enviada
 					var field_sname = $(form).find("input[name='field_sname']").first().val();
-					$("#content_editor_window").find("input[name='"+field_sname+"']").val(data.image_id);
+					$("#content_editor_form").find("input[name='"+field_sname+"']").val(data.image_id);
 					$("#upload_image_"+form_upload_session).find(".upload_image_display_thumb").attr("alt", data.name);
 					$("#upload_image_"+form_upload_session).find(".upload_image_display_thumb").attr("src", data.thumb_uri);
 					$(upload_image_loading).hide("slow", "easeOutSine", function() {

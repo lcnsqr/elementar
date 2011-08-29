@@ -24,7 +24,7 @@ class Upload extends CI_Controller {
 		/*
 		 * Content database
 		 */
-		$this->db_cms = $this->load->database('cms', TRUE);
+		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
 		 * Session model
@@ -37,9 +37,9 @@ class Upload extends CI_Controller {
 		$this->load->model('M_account', 'account');
 
 		/*
-		 * Content model (admin)
+		 * Content model
 		 */
-		$this->load->model('M_cms_admin', 'cms');
+		$this->load->model('Crud', 'crud');
 		
 		/*
 		 * CMS Common Library
@@ -56,7 +56,7 @@ class Upload extends CI_Controller {
 			$data = array(
 				'is_logged' => FALSE,
 				'title' => $this->config->item('site_name'),
-				'js' => array('/js/jquery-1.5.min.js', '/js/admin_session.js', '/js/jquery.timers-1.2.js', '/js/admin_client_warning.js'),
+				'js' => array('/js/jquery-1.6.2.min.js', '/js/admin_session.js', '/js/jquery.timers-1.2.js', '/js/admin_client_warning.js'),
 				'action' => '/' . uri_string(),
 				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
 			);
@@ -80,26 +80,19 @@ class Upload extends CI_Controller {
 		 * client controller (javascript)
 		 */
 		$js = array(
-			'/js/jquery-1.5.min.js',
+			'/js/jquery-1.6.2.min.js',
 			'/js/jquery.easing.1.3.js',
 			'/js/jquery.timers-1.2.js',
 			'/js/admin_client_warning.js',
-			'/js/admin_upload.js',
-			'/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js',
-			'/js/jquery-ui-1.8.11.custom/js/jquery-ui-1.8.11.custom.min.js'
+			'/js/admin_upload.js'
 		);
 		
-		/*
-		 * Resource menu
-		 */
-		$resource_menu = "<ul><li><a href=\"/admin/account\" title=\"Usuários\">Usuários</a></li><li>|</li><li><strong>Conteúdo</strong></li></ul>";
 
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
 			'is_logged' => $is_logged,
-			'username' => $username,
-			'resource_menu' => $resource_menu
+			'username' => $username
 		);
 
 		$data['upload'] = $this->common->render_form_upload_image("9999");
@@ -118,15 +111,15 @@ class Upload extends CI_Controller {
 		
 		$form_upload_session = $this->input->post('form_upload_session', TRUE);
 
-		$done = $this->cms->get_upload_session_done($form_upload_session);
+		$done = $this->crud->get_upload_session_done($form_upload_session);
 		
 		if ( $done )
 		{
-			$uri = $this->cms->get_upload_session_uri($form_upload_session);
-			$name = $this->cms->get_upload_session_name($form_upload_session);
+			$uri = $this->crud->get_upload_session_uri($form_upload_session);
+			$name = $this->crud->get_upload_session_name($form_upload_session);
 			$response = array(
 				'done' => TRUE,
-				'image_id' => $this->cms->get_upload_session_image_id($form_upload_session),
+				'image_id' => $this->crud->get_upload_session_image_id($form_upload_session),
 				'name' => $name,
 				'uri' => $uri,
 				'thumb_uri' => substr($uri, 0, strrpos($uri, ".")) . "_thumb" . substr($uri, strrpos($uri, ".") - strlen($uri), strlen($uri))
@@ -158,7 +151,7 @@ class Upload extends CI_Controller {
 				/*
 				echo "Error: " . $_FILES["file"]["error"] . "<br />";
 				*/
-				$this->cms->put_upload_session($form_upload_session, "error", TRUE);
+				$this->crud->put_upload_session($form_upload_session, "error", TRUE);
 			}
 			else
 			{
@@ -185,9 +178,9 @@ class Upload extends CI_Controller {
 				$this->load->library('image_lib', $config); 
 				$this->image_lib->resize();
 				
-				$this->cms->put_upload_session($form_upload_session, "name", $name);
-				$this->cms->put_upload_session($form_upload_session, "uri", $uri);
-				$this->cms->put_upload_session($form_upload_session, "done", TRUE);
+				$this->crud->put_upload_session($form_upload_session, "name", $name);
+				$this->crud->put_upload_session($form_upload_session, "uri", $uri);
+				$this->crud->put_upload_session($form_upload_session, "done", TRUE);
 				
 				/*
 				 * Escrever imagem na tabela
@@ -195,13 +188,13 @@ class Upload extends CI_Controller {
 				$uri_thumb = substr($uri, 0, strrpos($uri, ".")) . "_thumb" . substr($uri, strrpos($uri, ".") - strlen($uri), strlen($uri));
 				// Get image dimensions
 				list($width, $height, $type, $attr) = getimagesize("." . $uri);
-				$image_id = $this->cms->put_image($name, $uri, $uri_thumb, $width, $height);
-				$this->cms->put_upload_session($form_upload_session, "image_id", $image_id);
+				$image_id = $this->crud->put_image($name, $uri, $uri_thumb, $width, $height);
+				$this->crud->put_upload_session($form_upload_session, "image_id", $image_id);
 			}
 		}
 		else
 		{
-			$this->cms->put_upload_session($form_upload_session, "error", TRUE);
+			$this->crud->put_upload_session($form_upload_session, "error", TRUE);
 		}
 	}
 		

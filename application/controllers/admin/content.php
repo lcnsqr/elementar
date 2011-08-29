@@ -119,9 +119,14 @@ class Content extends CI_Controller {
 		/*
 		 * Resource menu
 		 */
+		/*
 		$resource_menu = array(
 			anchor("Usuários", array('href' => '/admin/account', 'title' => 'Usuários')),
 			span("&diams;", array('class' => 'diams')),
+			"<strong>Conteúdo</strong>"
+		);
+		*/
+		$resource_menu = array(
 			"<strong>Conteúdo</strong>"
 		);
 
@@ -133,10 +138,10 @@ class Content extends CI_Controller {
 			'resource_menu' => ul($resource_menu)
 		);
 
-		$data['parent_id'] = 0;
+		$data['parent_id'] = 1;
 		$data['parent'] = $this->config->item('site_name');
-		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent();
-		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent();
+		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent(1);
+		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent(1);
 		$data['content_listing_id'] = NULL;
 		$data['content_listing'] = NULL;
 		
@@ -471,7 +476,8 @@ class Content extends CI_Controller {
 			'Keywords' => 'keywords',
 			'Description' => 'description',
 			'Author' => 'author',
-			'Copyright' => 'copyright'
+			'Copyright' => 'copyright',
+			'Google Site Verification' => 'google-site-verification'
 		);
 
 		foreach ( $fields as $label => $name )
@@ -973,33 +979,36 @@ class Content extends CI_Controller {
 		$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
 		$template_form .= form_open('/admin/content/xhr_write_template', $attributes, $hidden);
 
-		/*
-		 * Sole template
-		 */
-		$template_form .= div_open(array('class' => 'form_content_field'));
-		$template_form .= div_open(array('class' => 'form_window_column_label'));
-		$attributes = array('class' => 'field_label');
-		$template_form .= form_label("Exclusivo", "sole", $attributes);
-		$template_form .= div_close("<!-- form_window_column_label -->");
-		$template_form .= div_open(array('class' => 'form_window_column_input'));
-		if ( (bool) $content_id ) {
-			$checked = $this->crud->get_content_type_template_id($type_id) != $this->crud->get_content_template_id($content_id) ;
-		}
-		else 
+		if ( (int) $content_id > 1 )
 		{
-			$checked = FALSE;
+			/*
+			 * Show Sole template checkbox
+			 */
+			$template_form .= div_open(array('class' => 'form_content_field'));
+			$template_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$template_form .= form_label("Exclusivo", "sole", $attributes);
+			$template_form .= div_close("<!-- form_window_column_label -->");
+			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			if ( (bool) $content_id ) {
+				$checked = $this->crud->get_content_type_template_id($type_id) != $this->crud->get_content_template_id($content_id) ;
+			}
+			else 
+			{
+				$checked = FALSE;
+			}
+			$attributes = array(
+				'name'        => 'sole',
+				'id'          => 'sole_' . $content_id,
+				'class' => 'template_form',
+				'value'       => 'true',
+				'checked'     => (bool) $checked
+			);
+			$template_form .= form_checkbox($attributes);
+			$template_form .= div_close("<!-- form_window_column_input -->");
+			$template_form .= div_close("<!-- .form_content_field -->");
 		}
-		$attributes = array(
-			'name'        => 'sole',
-			'id'          => 'sole_' . $content_id,
-			'class' => 'template_form',
-			'value'       => 'true',
-			'checked'     => (bool) $checked
-		);
-		$template_form .= form_checkbox($attributes);
-		$template_form .= div_close("<!-- form_window_column_input -->");
-		$template_form .= div_close("<!-- .form_content_field -->");
-
+		
 		$template_form .= div_open(array('class' => 'form_content_field'));
 		$template_form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');

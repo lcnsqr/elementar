@@ -18,7 +18,7 @@
 		<div class="corner bottom_left"></div>
 		<div class="face_light"></div>
 	
-		<div id="tree_parent_0" class="tree_parent">
+		<div id="tree_parent_1" class="tree_parent">
 	
 			<div class="tree_listing_row">
 				<div class="tree_listing_icon">
@@ -30,6 +30,7 @@
 						<div class="dropdown tree_menu_dropdown">
 						<ul>
 							<li><a class="meta" href="<?php echo $parent_id; ?>">Meta fields</a></li>
+							<li><a class="edit content" href="<?php echo $parent_id; ?>">Editar</a></li>
 							<li><hr /></li>
 							<li><a class="new content" href="<?php echo $parent_id; ?>">Criar conteúdo aqui</a></li>
 							<li><a class="new element" href="<?php echo $parent_id; ?>">Criar elemento aqui</a></li>
@@ -42,7 +43,7 @@
 				</div>
 			</div> <!-- .tree_listing_row -->
 			
-			<div id="tree_listing_0" class="tree_listing">
+			<div id="tree_listing_1" class="tree_listing">
 			
 			<?php include("admin_content_tree.php"); ?>
 			
