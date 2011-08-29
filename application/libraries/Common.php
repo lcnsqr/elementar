@@ -87,10 +87,10 @@ class Common {
 			$class = ( $this->_uri_is_current($menu_item['target']) ) ? 'menu_item current' : 'menu_item';
 			$attributes = array(
 				'href' => $menu_item['target'],
-				'title' => $menu_item['name'],
+				'title' => htmlspecialchars( $menu_item['name'] ),
 				'class' => $class
 			);
-			$link = anchor($menu_item['name'], $attributes);
+			$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$submenu = $menu_item['menu'];
 			if ( ! (bool) $submenu )
 			{
@@ -276,22 +276,25 @@ class Common {
 	function sitemap()
 	{
 		$urls = array();
-		
 		/*
 		 * Database contents
 		 */
 		foreach ( $this->CI->crud->get_contents() as $content )
 		{
 			$priority = $this->CI->crud->get_meta_field($content['id'], 'priority');
+			$uri = $this->CI->crud->get_content_uri($content['id']);
+			/*
+			 * Change "/home" to "/"
+			 */
+			$uri = ( $uri == '/home' ) ? '/' : $uri;
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
-				'loc' => site_url($this->CI->crud->get_content_uri($content['id'])),
+				'loc' => site_url($uri),
 				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
 				'changefreq' => 'daily',
 				'priority' => $priority
 			);
 		}
-
 		/*
 		 * Other controllers
 		 */
@@ -438,7 +441,7 @@ class Common {
 					'uri' => (string) $image['uri'],
 					'width' => (string) $image['width'],
 					'height' => (string) $image['height'],
-					'alt' => (string) $image['alt']
+					'alt' => htmlspecialchars( (string) $image['alt'] )
 				);
 			}
 			else 

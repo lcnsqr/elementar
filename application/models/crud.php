@@ -19,9 +19,7 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
-?>
 
-<?php 
 
 /*
  * Create, read, update and delete contents & elements
@@ -747,7 +745,7 @@ class Crud extends CI_Model {
 			$data = array(
 				'content_id' => $content_id,
 				'name' => $name,
-				'value' => $value
+				'value' => htmlentities($value, ENT_QUOTES, "UTF-8")
 			);
 			$inserted = $this->elementar->insert('html_meta', $data);
 			if ($inserted)

@@ -19,9 +19,9 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
-?>
 
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 
 class Main extends CI_Controller {
 
@@ -56,7 +56,7 @@ class Main extends CI_Controller {
 		 * Default values
 		 */
 		$data = array();
-		$data['site'] = $this->config->item('site_name');
+		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
 		$template = ''; // HTML template in database
 		$content = array(); // Content fields & Content elements
 		
@@ -66,14 +66,14 @@ class Main extends CI_Controller {
 		if ( ! $this->uri->total_segments() > 0 )
 		{
 			/*
-			 * No URI, show home page
+			 * No URI, show home page (content_id = 1)
 			 */
 			$content_id = 1;
 			
 			/*
 			 * Metafields
 			 */
-			$data['title'] = 'Home';
+			$data['title'] = htmlspecialchars( $this->crud->get_content_name($content_id) );
 			$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
 			
 			/*
@@ -102,7 +102,7 @@ class Main extends CI_Controller {
 				if ( count($segment) > 0 )
 				{
 					$content_id = $segment['id'];
-					$content_name = $segment['name'];
+					$content_name = htmlspecialchars($segment['name']);
 				}
 				else
 				{
