@@ -1,11 +1,13 @@
 <div id="content_editors_container">
 	<div id="content_editors_header">
+<?php if ( $show_template ) : ?>
 		<div id="content_editors_menu">
 			<ul>
 				<li><a class="content_editors_menu_item current" href="content_editor_form">Conteúdo</a></li>
 				<li><a class="content_editors_menu_item" href="template_editor_form">Template</a></li>
 			</ul>
 		</div>
+<?php endif; ?>
 		<p><?php echo $breadcrumb; ?></p>
 	</div>
 

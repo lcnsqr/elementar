@@ -973,13 +973,14 @@ class Content extends CI_Controller {
 			$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		}
 
-		$template_form = '';
-		$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
-		$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
-		$template_form .= form_open('/admin/content/xhr_write_template', $attributes, $hidden);
-
-		if ( (int) $content_id > 1 )
+		$data['show_template'] = (bool) $content_id;
+		if ( $data['show_template'] )
 		{
+			$template_form = '';
+			$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
+			$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
+			$template_form .= form_open('/admin/content/xhr_write_template', $attributes, $hidden);
+
 			/*
 			 * Show Sole template checkbox
 			 */
@@ -1006,37 +1007,36 @@ class Content extends CI_Controller {
 			$template_form .= form_checkbox($attributes);
 			$template_form .= div_close("<!-- form_window_column_input -->");
 			$template_form .= div_close("<!-- .form_content_field -->");
-		}
 		
-		$template_form .= div_open(array('class' => 'form_content_field'));
-		$template_form .= div_open(array('class' => 'form_window_column_label'));
-		$attributes = array('class' => 'field_label');
-		$template_form .= form_label("Template", 'template_' . $content_id, $attributes);
-		$template_form .= br(1);
-		$template_form .= div_close("<!-- form_window_column_label -->");
-		$template_form .= div_open(array('class' => 'form_window_column_input'));
-		$attributes = array(
-			'name' => 'template',
-			'class' => 'template_textarea',
-			'id' => 'template_' . $content_id,
-			'rows' => 16,
-			'cols' => 32,
-			'value' => $template
-		);
-		$template_form .= form_textarea($attributes);
-		$template_form .= div_close("<!-- form_window_column_input -->");
-		$template_form .= div_close("<!-- .form_content_field -->");
-		$template_form .= div_open(array('class' => 'form_control_buttons'));
-		$attributes = array(
-		    'name' => 'button_template_save',
-		    'id' => 'button_template_save',
-		    'value' => 'Salvar'
-		);
-		$template_form .= form_submit($attributes);
-		$template_form .= div_close("<!-- form_control_buttons -->");
-		$template_form .= form_close();
-		$data['template_form'] = $template_form;
-
+			$template_form .= div_open(array('class' => 'form_content_field'));
+			$template_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$template_form .= form_label("Template", 'template_' . $content_id, $attributes);
+			$template_form .= br(1);
+			$template_form .= div_close("<!-- form_window_column_label -->");
+			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$attributes = array(
+				'name' => 'template',
+				'class' => 'template_textarea',
+				'id' => 'template_' . $content_id,
+				'rows' => 16,
+				'cols' => 32,
+				'value' => $template
+			);
+			$template_form .= form_textarea($attributes);
+			$template_form .= div_close("<!-- form_window_column_input -->");
+			$template_form .= div_close("<!-- .form_content_field -->");
+			$template_form .= div_open(array('class' => 'form_control_buttons'));
+			$attributes = array(
+			    'name' => 'button_template_save',
+			    'id' => 'button_template_save',
+			    'value' => 'Salvar'
+			);
+			$template_form .= form_submit($attributes);
+			$template_form .= div_close("<!-- form_control_buttons -->");
+			$template_form .= form_close();
+			$data['template_form'] = $template_form;
+		}
 
 		$content_form = "";
 		

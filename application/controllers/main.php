@@ -29,7 +29,7 @@ class Main extends CI_Controller {
 	{
 		parent::__construct();
 		
-		//$this->output->enable_profiler(TRUE);
+		$this->output->enable_profiler(TRUE);
 		
 		// View cache
 		//$this->output->cache(1);
@@ -73,7 +73,7 @@ class Main extends CI_Controller {
 			/*
 			 * Metafields
 			 */
-			$data['title'] = htmlspecialchars( $this->crud->get_content_name($content_id) );
+			$data['title'] = $this->crud->get_content_name($content_id);
 			$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
 			
 			/*
@@ -102,7 +102,7 @@ class Main extends CI_Controller {
 				if ( count($segment) > 0 )
 				{
 					$content_id = $segment['id'];
-					$content_name = htmlspecialchars($segment['name']);
+					$content_name = $segment['name'];
 				}
 				else
 				{

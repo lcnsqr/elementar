@@ -1452,7 +1452,7 @@ class Crud extends CI_Model {
 			 */
 			$parent_id = $this->get_content_parent_id($content_id);
 		}
-		if ( $content_id != 0 )
+		if ( $content_id != 1 ) // if not the home page
 		{
 			/*
 			 * Pull upper parents elements
