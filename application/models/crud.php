@@ -1326,7 +1326,7 @@ class Crud extends CI_Model {
 	/*
 	 * List contents by parent
 	 */
-	function get_contents_by_parent($parent_id = 0)
+	function get_contents_by_parent($parent_id = 1)
 	{
 		$contents = NULL;
 		
@@ -1375,7 +1375,7 @@ class Crud extends CI_Model {
 	/*
 	 * List element by parent
 	 */
-	function get_elements_by_parent($parent_id = 0)
+	function get_elements_by_parent($parent_id = 1)
 	{
 		$elements = NULL;
 

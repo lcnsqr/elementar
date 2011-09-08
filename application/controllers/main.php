@@ -29,7 +29,7 @@ class Main extends CI_Controller {
 	{
 		parent::__construct();
 		
-		$this->output->enable_profiler(TRUE);
+		//$this->output->enable_profiler(TRUE);
 		
 		// View cache
 		//$this->output->cache(1);
@@ -83,9 +83,10 @@ class Main extends CI_Controller {
 			$content = array_merge($content, $this->common->render_content($content_id));
 
 			/*
-			 * Render elements
+			 * Render elements and allow them to be hard coded in template
 			 */
-			$content = array_merge($content, $this->common->render_elements($content_id));
+			$data['elements'] = $this->common->render_elements($content_id);
+			$content = array_merge($content, $data['elements']);
 
 			$template = $this->crud->get_content_template($content_id);
 		}
@@ -130,9 +131,10 @@ class Main extends CI_Controller {
 				$content = array_merge($content, $this->common->render_content($content_id));
 
 				/*
-				 * Render elements
+				 * Render elements and allow them to be hard coded in template
 				 */
-				$content = array_merge($content, $this->common->render_elements($content_id));
+				$data['elements'] = $this->common->render_elements($content_id);
+				$content = array_merge($content, $data['elements']);
 			}
 			else
 			{

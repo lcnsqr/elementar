@@ -142,7 +142,7 @@ $(function() {
 					 * Reload Tree
 					 */
 					$.post("/admin/content/xhr_render_tree_unfold", { request : 'element', id : data.element_id }, function(data) {
-						$("#tree_listing_0").html(data.html);
+						$("#tree_listing_1").html(data.html);
 					}, "json");
 				}
 				else {
@@ -248,7 +248,7 @@ $(function() {
 					 * Reload Tree
 					 */
 					$.post("/admin/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
-						$("#tree_listing_0").html(data.html);
+						$("#tree_listing_1").html(data.html);
 					}, "json");
 				}
 				else {
@@ -265,34 +265,77 @@ $(function() {
 	});
 	
 	/*
-	 * Exibir tags do tipo
+	 * Show content's available pseudo variables
 	 */
-	/*
-	 * Deprecated. Rewrite to use in templates
-	 */
-	$("#cont_type").live('change', function(event) {
-		// Bloqueio
-		$("#blocker").fadeIn("fast");
-
-		type_id = $(this).val();
-		$.post("/admin/content/xhr_render_content_type_tags", { type_id : type_id }, function(data){
-			try {
-				if ( data.done == true ) {
-					$('div#type_define').fadeOut("fast", function() {
-						$('div#type_define').html(data.html);
-						$('div#type_define').fadeIn("slow");
-					});
-				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-			// Bloqueio
-			$("#blocker").fadeOut("fast");
-		}, "json");
-		
+	$('.pseudo_variables_menu_switcher').live('click', function(event){
+		event.preventDefault();
+		var accordion = $(this).parents('.pseudo_variables_menu').first().find('.pseudo_variables_accordion').first();
+		if ( $(this).hasClass('collapsed') ) {
+			$(accordion).slideDown('fast', 'easeOutSine');
+			$(this).removeClass('collapsed');
+			$(this).addClass('expanded');
+		}
+		else {
+			$(accordion).slideUp('fast', 'easeOutSine');
+			$(this).removeClass('expanded');
+			$(this).addClass('collapsed');
+		}
 	});
+	
+	/*
+	 * Add pseudo variable to template
+	 */
+	$('.add_variable_single').live('click', function(event) {
+		event.preventDefault();
+		var textarea = $(this).parents('.form_window_column_input').first().find('.template_textarea');
+		var variable = $(this).attr('href');
+		$(textarea).insertAtCursor(variable);
+	});
+	
+	/*
+	 * insertAtCursor: jQuery extended function to insert text at cursor
+	 */
+	$.fn.extend({
+		insertAtCursor: function (value) {
+			/*
+			 * Based on code found in
+			 * http://alexking.org/blog/2003/06/02/inserting-at-the-cursor-using-javascript
+			 */
+			// IE support
+			if (document.selection) {
+				$(this)[0].focus();
+				sel = document.selection.createRange();
+				sel.text = value;
+			}
+			// Other browsers
+			else if ($(this)[0].selectionStart || $(this)[0].selectionStart == '0') {
+				var startPos = $(this)[0].selectionStart;
+				var endPos = $(this)[0].selectionEnd;
+				$(this)[0].value = $(this)[0].value.substring(0, startPos)
+				+ value
+				+ $(this)[0].value.substring(endPos, $(this)[0].value.length);
+			} 
+			else {
+				$(this)[0].value += value;
+			}
 
+			var CaretPos = $(this)[0].value.substring(0, startPos).length + value.length;	
+
+			if($(this)[0].setSelectionRange)
+			{
+				$(this)[0].focus();
+				$(this)[0].setSelectionRange(CaretPos,CaretPos);
+			}
+			else if ($(this)[0].createTextRange) {
+				var range = $(this)[0].createTextRange();
+				range.collapse(true);
+				range.moveEnd('character', CaretPos);
+				range.moveStart('character', CaretPos);
+				range.select();
+			}
+		}
+	});
+	
 	/* 
 	 * Carregar formulário new content_type
 	 */

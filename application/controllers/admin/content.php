@@ -170,7 +170,7 @@ class Content extends CI_Controller {
 				$parent_id = $this->crud->get_content_parent_id($id);
 				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
-				while ( (bool) $tree_id )
+				while ( $tree_id > 1 )
 				{
 					$parent_id = $this->crud->get_content_parent_id($tree_id);
 					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
@@ -182,7 +182,7 @@ class Content extends CI_Controller {
 				$parent_id = $this->crud->get_element_parent_id($id);
 				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
-				while ( (bool) $tree_id )
+				while ( $tree_id > 1 )
 				{
 					$parent_id = $this->crud->get_content_parent_id($tree_id);
 					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
@@ -410,37 +410,6 @@ class Content extends CI_Controller {
 
 		$this->common->ajax_response($response);
 
-	}
-
-	/**
-	 * Listar campos/snames (tags) do tipo
-	 * Need rewrite to work with templates
-	 */
-	function xhr_render_content_type_tags()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$type_id = $this->input->post('type_id', TRUE);
-
-		$tags = paragraph("Tags de " . $this->crud->get_content_type_name($type_id) . ":");
-		$fields = $this->crud->get_content_type_fields($type_id);
-		$list = array();
-		foreach ( $fields as $field )
-		{
-			$list[] = "<strong>" . $field['sname'] . "</strong>: " . $field['name'] . " (" . $field['description'] . ")";
-		}
-		$attributes = array(
-			'class' => 'content_type_tags',
-			'id'    => 'content_type_tags_' . $field['sname']
-		);
-		$tags .= ul($list, $attributes);
-
-		$response = array(
-			'done' => TRUE,
-			'html' => $tags
-		);
-		$this->common->ajax_response($response);
 	}
 
 	/**
@@ -975,39 +944,96 @@ class Content extends CI_Controller {
 
 		$data['show_template'] = (bool) $content_id;
 		if ( $data['show_template'] )
-		{
+		{			
+			/*
+			 * Template editor
+			 */
 			$template_form = '';
 			$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
 			$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
 			$template_form .= form_open('/admin/content/xhr_write_template', $attributes, $hidden);
 
 			/*
-			 * Show Sole template checkbox
+			 * Show Sole template checkbox (if not home)
 			 */
-			$template_form .= div_open(array('class' => 'form_content_field'));
-			$template_form .= div_open(array('class' => 'form_window_column_label'));
-			$attributes = array('class' => 'field_label');
-			$template_form .= form_label("Exclusivo", "sole", $attributes);
-			$template_form .= div_close("<!-- form_window_column_label -->");
-			$template_form .= div_open(array('class' => 'form_window_column_input'));
-			if ( (bool) $content_id ) {
-				$checked = $this->crud->get_content_type_template_id($type_id) != $this->crud->get_content_template_id($content_id) ;
-			}
-			else 
+			if ( $content_id != 1 )
 			{
-				$checked = FALSE;
+				$template_form .= div_open(array('class' => 'form_content_field'));
+				$template_form .= div_open(array('class' => 'form_window_column_label'));
+				$attributes = array('class' => 'field_label');
+				$template_form .= form_label("Exclusivo", "sole", $attributes);
+				$template_form .= div_close("<!-- form_window_column_label -->");
+				$template_form .= div_open(array('class' => 'form_window_column_input'));
+				if ( (bool) $content_id ) 
+				{
+					$checked = $this->crud->get_content_type_template_id($type_id) != $this->crud->get_content_template_id($content_id) ;
+				}
+				else 
+				{
+					$checked = FALSE;
+				}
+				$attributes = array(
+					'name'        => 'sole',
+					'id'          => 'sole_' . $content_id,
+					'class' => 'template_form',
+					'value'       => 'true',
+					'checked'     => (bool) $checked
+				);
+				$template_form .= form_checkbox($attributes);
+				$template_form .= div_close("<!-- form_window_column_input -->");
+				$template_form .= div_close("<!-- .form_content_field -->");
 			}
-			$attributes = array(
-				'name'        => 'sole',
-				'id'          => 'sole_' . $content_id,
-				'class' => 'template_form',
-				'value'       => 'true',
-				'checked'     => (bool) $checked
+			
+			/*
+			 * Template pseudo variables available for this content
+			 */
+			$template_variables = array(
+				'content_singles' => array(),
+				'element_singles' => array(),
+				'element_pairs' => array()
 			);
-			$template_form .= form_checkbox($attributes);
-			$template_form .= div_close("<!-- form_window_column_input -->");
-			$template_form .= div_close("<!-- .form_content_field -->");
-		
+			/*
+			 * Default single variables
+			 */
+			$template_variables['content_singles'][] = array(
+				'sname' => '{name}',
+				'name' => 'Name'
+			);
+			$template_variables['content_singles'][] = array(
+				'sname' => '{breadcrumb}',
+				'name' => 'Breadcrumb'
+			);
+			/*
+			 * Content single variables
+			 */
+			foreach ( $this->crud->get_content_type_fields($type_id) as $content_field )
+			{
+				$template_variables['content_singles'][] = array(
+					'sname' => '{' . $content_field['sname'] . '}',
+					'name' => $content_field['name']
+				);
+			}
+			/*
+			 * Available elements variables
+			 */
+			foreach ( $this->crud->get_elements_by_parent_spreaded($content_id) as $element )
+			{
+				foreach ( $this->crud->get_element_fields($element['id']) as $element_field )
+				{
+					$template_variables['element_singles'][] = array(
+						'sname' => '{' . $element['sname'] . '.' . $element_field['sname'] . '}',
+						'name' => $element['name'] . ' &rarr; ' . $element_field['name']
+					);
+					$template_variables['element_pairs'][$element['type']] = array(
+						'sname' => $element_field['sname'],
+						'name' => $element_field['name']
+					);
+				}
+			}
+
+			/*
+			 * HTML Template editor
+			 */
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
@@ -1015,6 +1041,7 @@ class Content extends CI_Controller {
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$template_form .= $this->load->view('admin/admin_content_form_variables', $template_variables, true);			
 			$attributes = array(
 				'name' => 'template',
 				'class' => 'template_textarea',
