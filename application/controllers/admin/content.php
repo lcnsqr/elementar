@@ -444,9 +444,13 @@ class Content extends CI_Controller {
 			'Keywords' => 'keywords',
 			'Description' => 'description',
 			'Author' => 'author',
-			'Copyright' => 'copyright',
-			'Google Site Verification' => 'google-site-verification'
+			'Copyright' => 'copyright'
 		);
+		
+		if ( (int) $id == 1 )
+		{
+			$fields['Google Site Verification'] = 'google-site-verification';
+		}
 
 		foreach ( $fields as $label => $name )
 		{
@@ -1744,6 +1748,11 @@ class Content extends CI_Controller {
 			'Copyright' => 'copyright',
 			'Priority' => 'priority'
 		);
+
+		if ( (int) $id == 1 )
+		{
+			$fields['Google Site Verification'] = 'google-site-verification';
+		}
 
 		foreach ( $fields as $label => $name )
 		{

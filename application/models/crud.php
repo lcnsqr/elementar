@@ -673,6 +673,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('name, value');
 		$this->elementar->from('html_meta');
 		$this->elementar->where('content_id', $content_id);
+		/*
+		 * Priority used only in sitemap.xml
+		 */
+		$this->elementar->where('name !=', 'priority');
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1790,6 +1794,11 @@ class Crud extends CI_Model {
 		$this->elementar->delete('content_parent', array('content_id' => $content_id)); 
 		$this->elementar->delete('content_field', array('content_id' => $content_id)); 
 		$this->elementar->delete('content', array('id' => $content_id));
+		
+		/*
+		 * Delete associated meta fields
+		 */
+		$this->elementar->delete('html_meta', array('content_id' => $content_id));
 	}
 	
 	/*

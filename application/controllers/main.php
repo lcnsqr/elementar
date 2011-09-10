@@ -121,6 +121,13 @@ class Main extends CI_Controller {
 				 */
 				$data['title'] = $content_name;
 				$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
+				/*
+				 * Common meta fields
+				 */
+				$data['metafields'][] = array(
+					'name' => 'google-site-verification',
+					'value' => $this->crud->get_meta_field(1, 'google-site-verification')
+				);
 
 				$template = $this->crud->get_content_template($content_id);
 

@@ -276,7 +276,7 @@ $(function() {
 			$(this).addClass('expanded');
 		}
 		else {
-			$(accordion).slideUp('fast', 'easeOutSine');
+			$(accordion).slideUp('fast', 'easeInSine');
 			$(this).removeClass('expanded');
 			$(this).addClass('collapsed');
 		}
@@ -537,7 +537,7 @@ $(function() {
 	});
 	
 	/*
-	 * Template form
+	 * Template save
 	 */
 	$("form.template_form").live('submit', function(event) {
 		event.preventDefault();
