@@ -543,10 +543,26 @@ $(function() {
 		event.preventDefault();
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
+		
+		/*
+		 * Requires confirmation if default
+		 * template is about to be overwritten
+		 */
+		var overwrite = true;
+		var sole = $(this).find('input[name="template_sole"]').first();
+		if ( ! $(sole).attr('checked') && $(sole).length > 0 ) {
+			overwrite = confirm("Sobrescrever template padrão?");
+		}
+		
+		/*
+		 * Template textarea
+		 */
+		var template_textarea = $(this).find('.template_textarea');
 
-		$.post("/admin/content/xhr_write_template", $(this).serialize(), function(data){
+		$.post("/admin/content/xhr_write_template", $(this).serialize() + '&overwrite=' + overwrite, function(data){
 			try {
 				if ( data.done == true ) {
+					$(template_textarea).val(data.template);
 					showClientWarning("Template salvo com sucesso");
 				}
 				else {

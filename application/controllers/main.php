@@ -71,6 +71,11 @@ class Main extends CI_Controller {
 			$content_id = 1;
 			
 			/*
+			 * Standard values informed to raw template
+			 */
+			$data['content_id'] = $content_id;
+			
+			/*
 			 * Metafields
 			 */
 			$data['title'] = $this->crud->get_content_name($content_id);
@@ -88,7 +93,7 @@ class Main extends CI_Controller {
 			$data['elements'] = $this->common->render_elements($content_id);
 			$content = array_merge($content, $data['elements']);
 
-			$template = $this->crud->get_content_template($content_id);
+			$template = $this->crud->get_content_template_html($content_id);
 		}
 		else
 		{
@@ -117,6 +122,11 @@ class Main extends CI_Controller {
 			if ( (bool) $content_id )
 			{
 				/*
+				 * Standard values informed to raw template
+				 */
+				$data['content_id'] = $content_id;
+			
+				/*
 				 * Metafields
 				 */
 				$data['title'] = $content_name;
@@ -129,7 +139,7 @@ class Main extends CI_Controller {
 					'value' => $this->crud->get_meta_field(1, 'google-site-verification')
 				);
 
-				$template = $this->crud->get_content_template($content_id);
+				$template = $this->crud->get_content_template_html($content_id);
 
 				/*
 				 * Content fields
@@ -163,9 +173,34 @@ class Main extends CI_Controller {
 		$this->load->view('content', $data);
 	}
 
+	/*
+	 * Generate sitemap.xml
+	 */
 	function sitemap()
 	{
 		$this->common->sitemap();
+	}
+	
+	/*
+	 * Load CSS from database
+	 */
+	function css()
+	{
+		$content_id = (int) $this->uri->segment($this->uri->total_segments());
+		$css = $this->crud->get_content_template_css($content_id);
+		$this->output->set_header("Content-type: text/css");
+		$this->output->set_output($css);
+	}
+
+	/*
+	 * Load Javascript from database
+	 */
+	function javascript()
+	{
+		$content_id = (int) $this->uri->segment($this->uri->total_segments());
+		$css = $this->crud->get_content_template_javascript($content_id);
+		$this->output->set_header("Content-type: text/javascript");
+		$this->output->set_output($css);
 	}
 
 }

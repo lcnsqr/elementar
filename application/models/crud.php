@@ -36,7 +36,7 @@ class Crud extends CI_Model {
 	/*
 	 * Write html template
 	 */
-	function put_template($html, $template_id = NULL)
+	function put_template_html($template_id = NULL, $html)
 	{
 		if ( (bool) $template_id )
 		{
@@ -761,6 +761,148 @@ class Crud extends CI_Model {
 	}
 
 	/*
+	 * Read content CSS
+	 */
+	function get_content_template_css($content_id)
+	{
+		$template_id = $this->get_content_template_id($content_id);
+		$this->elementar->select('css');
+		$this->elementar->from('template');
+		$this->elementar->limit(1);
+		$this->elementar->where('id', $template_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->css;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * Write content CSS
+	 */
+	function put_template_css($template_id = NULL, $css)
+	{
+		if ( (bool) $template_id )
+		{
+			/*
+			 * Update
+			 */
+			$data = array(
+				'css' => $css
+			);
+			$this->elementar->where('id', $template_id);
+			$this->elementar->update('template', $data);
+			return $template_id;
+		}
+		else
+		{
+			/*
+			 * Insert
+			 */
+			$data = array(
+				'css' => $css,
+				'created' => date("Y-m-d H:i:s")
+			);
+			$inserted = $this->elementar->insert('template', $data);
+			if ($inserted)
+			{
+				return $this->elementar->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
+	 * Read content javascript
+	 */
+	function get_content_template_javascript($content_id)
+	{
+		$template_id = $this->get_content_template_id($content_id);
+		$this->elementar->select('javascript');
+		$this->elementar->from('template');
+		$this->elementar->limit(1);
+		$this->elementar->where('id', $template_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->javascript;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * Write content javascript
+	 */
+	function put_template_javascript($template_id = NULL, $javascript)
+	{
+		if ( (bool) $template_id )
+		{
+			/*
+			 * Update
+			 */
+			$data = array(
+				'javascript' => $javascript
+			);
+			$this->elementar->where('id', $template_id);
+			$this->elementar->update('template', $data);
+			return $template_id;
+		}
+		else
+		{
+			/*
+			 * Insert
+			 */
+			$data = array(
+				'javascript' => $javascript,
+				'created' => date("Y-m-d H:i:s")
+			);
+			$inserted = $this->elementar->insert('template', $data);
+			if ($inserted)
+			{
+				return $this->elementar->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
+	 * Read content HTML
+	 */
+	function get_content_template_html($content_id)
+	{
+		$template_id = $this->get_content_template_id($content_id);
+		$this->elementar->select('html');
+		$this->elementar->from('template');
+		$this->elementar->limit(1);
+		$this->elementar->where('id', $template_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->html;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * Pegar todos campos de um conteúdo
 	 */
 	function get_content_fields($content_id)
@@ -1164,7 +1306,7 @@ class Crud extends CI_Model {
 	}
 
 	/*
-	 * get content html template id
+	 * get content template id
 	 */
 	function get_content_template_id($content_id)
 	{
@@ -1198,12 +1340,12 @@ class Crud extends CI_Model {
 	}
 
 	/*
-	 * get content html template 
+	 * get content template html, css, javascript 
 	 */
 	function get_content_template($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
-		$this->elementar->select('html');
+		$this->elementar->select('html, css, javascript');
 		$this->elementar->from('template');
 		$this->elementar->where('id', $template_id);
 		$this->elementar->limit(1);
@@ -1211,7 +1353,12 @@ class Crud extends CI_Model {
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->html;
+			$template = array(
+				'html' => $row->html,
+				'css' => $row->css,
+				'javascript' => $row->javascript
+			);
+			return $template;
 		}
 		else
 		{

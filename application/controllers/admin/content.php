@@ -465,7 +465,7 @@ class Content extends CI_Controller {
 				'class' => 'noform',
 				'name' => $name,
 				'id' => $name,
-				'value' => $this->crud->get_meta_field($id, $name)
+				'value' => html_entity_decode($this->crud->get_meta_field($id, $name), ENT_QUOTES, "UTF-8")
 			);
 			$form .= form_input($attributes);
 			$form .= div_close("<!-- form_window_column_input -->");
@@ -932,6 +932,10 @@ class Content extends CI_Controller {
 			$type_id = $this->crud->get_content_type_id($content_id);
 			$template_id = $this->crud->get_content_template_id($content_id);
 			$template = $this->crud->get_content_template($content_id);
+			$template_html = $template['html'];
+			$template_css = $template['css'];
+			$template_javascript = $template['javascript'];
+
 			$data['breadcrumb'] = $this->common->breadcrumb_content($content_id);
 		}
 		else
@@ -943,11 +947,18 @@ class Content extends CI_Controller {
 			$type_id = $this->input->post('type_id', TRUE);
 			$template_id = $this->crud->get_content_type_template_id($type_id);
 			$template = $this->crud->get_content_type_template($type_id);
+			$template_html = $template['html'];
+			$template_css = $template['css'];
+			$template_javascript = $template['javascript'];
+
 			$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		}
 
-		$data['show_template'] = (bool) $content_id;
-		if ( $data['show_template'] )
+		/*
+		 * Show template tab only to existing contents
+		 */
+		$data['show_tabs'] = (bool) $content_id;
+		if ( $data['show_tabs'] )
 		{			
 			/*
 			 * Template editor
@@ -977,8 +988,8 @@ class Content extends CI_Controller {
 					$checked = FALSE;
 				}
 				$attributes = array(
-					'name'        => 'sole',
-					'id'          => 'sole_' . $content_id,
+					'name'        => 'template_sole',
+					'id'          => 'template_sole_' . $content_id,
 					'class' => 'template_form',
 					'value'       => 'true',
 					'checked'     => (bool) $checked
@@ -1052,11 +1063,56 @@ class Content extends CI_Controller {
 				'id' => 'template_' . $content_id,
 				'rows' => 16,
 				'cols' => 32,
-				'value' => $template
+				'value' => $template_html
 			);
 			$template_form .= form_textarea($attributes);
 			$template_form .= div_close("<!-- form_window_column_input -->");
 			$template_form .= div_close("<!-- .form_content_field -->");
+
+			/*
+			 * CSS editor
+			 */
+			$template_form .= div_open(array('class' => 'form_content_field'));
+			$template_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$template_form .= form_label("Style Sheet", 'css_' . $content_id, $attributes);
+			$template_form .= br(1);
+			$template_form .= div_close("<!-- form_window_column_label -->");
+			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$attributes = array(
+				'name' => 'css',
+				'class' => 'css_textarea',
+				'id' => 'css_' . $content_id,
+				'rows' => 16,
+				'cols' => 32,
+				'value' => $template_css
+			);
+			$template_form .= form_textarea($attributes);
+			$template_form .= div_close("<!-- form_window_column_input -->");
+			$template_form .= div_close("<!-- .form_content_field -->");
+
+			/*
+			 * Javascript editor
+			 */
+			$template_form .= div_open(array('class' => 'form_content_field'));
+			$template_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$template_form .= form_label("Javascript", 'css_' . $content_id, $attributes);
+			$template_form .= br(1);
+			$template_form .= div_close("<!-- form_window_column_label -->");
+			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$attributes = array(
+				'name' => 'javascript',
+				'class' => 'javascript_textarea',
+				'id' => 'javascript_' . $content_id,
+				'rows' => 16,
+				'cols' => 32,
+				'value' => $template_javascript
+			);
+			$template_form .= form_textarea($attributes);
+			$template_form .= div_close("<!-- form_window_column_input -->");
+			$template_form .= div_close("<!-- .form_content_field -->");
+
 			$template_form .= div_open(array('class' => 'form_control_buttons'));
 			$attributes = array(
 			    'name' => 'button_template_save',
@@ -1067,6 +1123,7 @@ class Content extends CI_Controller {
 			$template_form .= div_close("<!-- form_control_buttons -->");
 			$template_form .= form_close();
 			$data['template_form'] = $template_form;
+
 		}
 
 		$content_form = "";
@@ -1297,7 +1354,7 @@ class Content extends CI_Controller {
 		$count = $this->input->post('field_count', TRUE);
 		$template = $this->input->post('template');
 		$name = $this->input->post('name', TRUE);		
-		$template_id = $this->crud->put_template($template);
+		$template_id = $this->crud->put_template_html(NULL, $template);
 		$type_id = $this->crud->put_content_type($name, $template_id);
 		
 		if ( (bool) $type_id )
@@ -1562,7 +1619,17 @@ class Content extends CI_Controller {
 		 */
 		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
-			$value = $this->input->post($type['sname'], TRUE);
+			if ( $this->crud->get_element_type_sname($type_id) == 'head_element' )
+			{
+				/*
+				 * Ignore XSS filter for Head element fields
+				 */
+				$value = $this->input->post($type['sname']);
+			}
+			else
+			{
+				$value = $this->input->post($type['sname'], TRUE);
+			}
 			$this->crud->put_element_field($element_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
@@ -1784,18 +1851,28 @@ class Content extends CI_Controller {
 
 		$content_id = $this->input->post('content_id', TRUE);
 		$template_id = $this->input->post('template_id', TRUE);		
+
 		$template = $this->input->post('template', TRUE);
+		$css = $this->input->post('css', TRUE);
+		$javascript = $this->input->post('javascript'); // dont use xss filter for javascript code
+
+		$overwrite = ( $this->input->post('overwrite', TRUE) == 'true' ) ? TRUE : FALSE;
 		
-		/*
-		 * Exclusive template ?
-		 */
-		if ( $this->input->post('sole', TRUE) )
+		if ( (int) $content_id == 1 )
 		{
-			if ( (bool) $content_id ) 
+			/*
+			 * Home, always write template
+			 */
+			$this->crud->put_template_html($template_id, $template);
+			$this->crud->put_template_css($template_id, $css);
+			$this->crud->put_template_javascript($template_id, $javascript);
+		}
+		else
+		{
+			if ( $this->input->post('template_sole', TRUE) )
 			{
 				/*
-				 * content_id received, means that 
-				 * it's not a new content
+				 * Exclusive template
 				 */
 				$content_type_template_id = $this->crud->get_content_type_template_id($this->crud->get_content_type_id($content_id));
 				if ( $content_type_template_id != $template_id )
@@ -1803,40 +1880,60 @@ class Content extends CI_Controller {
 					/*
 					 * Content already have exclusive template, update it!
 					 */
-					$this->crud->put_template($template, $template_id);
+					$this->crud->put_template_html($template_id, $template);
+					$this->crud->put_template_css($template_id, $css);
+					$this->crud->put_template_javascript($template_id, $javascript);
 				}
 				else
 				{
 					/*
 					 * Add a new template for this content
 					 */
-					$content_template_id = $this->crud->put_template($template);
+					$content_template_id = $this->crud->put_template_html($template);
+					$this->crud->put_template_css($content_template_id, $css);
+					$this->crud->put_template_javascript($content_template_id, $javascript);
 					$this->crud->put_content_template_id($content_id, $content_template_id);
 				}
 			}
-		}
-		else
-		{
-			if ( (bool) $content_id ) 
+			else
 			{
 				/*
 				 * Ensure that content has no exclusive template
 				 */
+				$content_type_template_id = $this->crud->get_content_type_template_id($this->crud->get_content_type_id($content_id));
 				$content_template_id = $this->crud->get_content_template_id($content_id);
-				if ( $content_template_id != $template_id )
+				if ( $content_template_id != $content_type_template_id )
 				{
 					$this->crud->put_content_template_id($content_id, NULL);
 					$this->crud->delete_template($content_template_id);
 				}
+	
+				/*
+				 * Overwrite type template upon confirmation only
+				 */
+				if ( $overwrite ) 
+				{
+					/*
+					 * Overwrite type template
+					 */
+					$this->crud->put_template_html($content_type_template_id, $template);
+					$this->crud->put_template_css($content_type_template_id, $css);
+					$this->crud->put_template_javascript($content_type_template_id, $javascript);
+				}
 			}
-			$this->crud->put_template($template, $template_id);
 		}
+		
+		/*
+		 * Reload content's template
+		 */
+		$template = $this->crud->get_content_template($content_id);
 
 		/*
 		 * resposta
 		 */
 		$response = array(
-			'done' => TRUE
+			'done' => TRUE,
+			'template' => $template['html']
 		);
 		$this->common->ajax_response($response);
 	}
