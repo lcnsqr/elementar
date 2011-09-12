@@ -34,6 +34,50 @@ class Crud extends CI_Model {
 	}
 
 	/*
+	 * Write content template
+	 */
+	function put_template($template_id = NULL, $html, $css, $javascript, $head)
+	{
+		if ( (bool) $template_id )
+		{
+			/*
+			 * Update
+			 */
+			$data = array(
+				'html' => $html,
+				'css' => $css,
+				'javascript' => $javascript,
+				'head' => $head
+			);
+			$this->elementar->where('id', $template_id);
+			$this->elementar->update('template', $data);
+			return $template_id;
+		}
+		else
+		{
+			/*
+			 * Insert
+			 */
+			$data = array(
+				'html' => $html,
+				'css' => $css,
+				'javascript' => $javascript,
+				'head' => $head,
+				'created' => date("Y-m-d H:i:s")
+			);
+			$inserted = $this->elementar->insert('template', $data);
+			if ($inserted)
+			{
+				return $this->elementar->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
 	 * Write html template
 	 */
 	function put_template_html($template_id = NULL, $html)
@@ -881,6 +925,66 @@ class Crud extends CI_Model {
 	}
 
 	/*
+	 * Read content head 
+	 */
+	function get_content_template_head($content_id)
+	{
+		$template_id = $this->get_content_template_id($content_id);
+		$this->elementar->select('head');
+		$this->elementar->from('template');
+		$this->elementar->limit(1);
+		$this->elementar->where('id', $template_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->head;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * Write content head
+	 */
+	function put_template_head($template_id = NULL, $head)
+	{
+		if ( (bool) $template_id )
+		{
+			/*
+			 * Update
+			 */
+			$data = array(
+				'head' => $head
+			);
+			$this->elementar->where('id', $template_id);
+			$this->elementar->update('template', $data);
+			return $template_id;
+		}
+		else
+		{
+			/*
+			 * Insert
+			 */
+			$data = array(
+				'head' => $head,
+				'created' => date("Y-m-d H:i:s")
+			);
+			$inserted = $this->elementar->insert('template', $data);
+			if ($inserted)
+			{
+				return $this->elementar->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
 	 * Read content HTML
 	 */
 	function get_content_template_html($content_id)
@@ -1219,6 +1323,7 @@ class Crud extends CI_Model {
 		$types = array();
 		$this->elementar->select('id, name');
 		$this->elementar->from('content_type');
+		$this->elementar->where('name !=', 'Home');
 		$query = $this->elementar->get();
 		foreach ($query->result() as $row)
 		{
@@ -1345,7 +1450,7 @@ class Crud extends CI_Model {
 	function get_content_template($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
-		$this->elementar->select('html, css, javascript');
+		$this->elementar->select('html, css, javascript, head');
 		$this->elementar->from('template');
 		$this->elementar->where('id', $template_id);
 		$this->elementar->limit(1);
@@ -1356,7 +1461,8 @@ class Crud extends CI_Model {
 			$template = array(
 				'html' => $row->html,
 				'css' => $row->css,
-				'javascript' => $row->javascript
+				'javascript' => $row->javascript,
+				'head' => $row->head
 			);
 			return $template;
 		}

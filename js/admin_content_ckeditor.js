@@ -5,7 +5,7 @@ var ckeditorConfig = {
 	extraPlugins : 'uicolor',
 	toolbar:
 	[
-		['Link','Unlink','-','Bold','Italic','Underline','Strike','Subscript','Superscript']
+		['Link','Unlink','-','Bold','Italic','Underline','Strike','Subscript','Superscript','Source']
 	],
 	toolbarCanCollapse: false,
 	enterMode: CKEDITOR.ENTER_P,

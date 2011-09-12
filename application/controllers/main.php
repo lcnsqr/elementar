@@ -62,7 +62,7 @@ class Main extends CI_Controller {
 		 */
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
-		$template = ''; // HTML template in database
+		$html_template = ''; // HTML template in database
 		$content = array(); // Content fields & Content elements
 		
 		/*
@@ -98,7 +98,10 @@ class Main extends CI_Controller {
 			$data['elements'] = $this->common->render_elements($content_id);
 			$content = array_merge($content, $data['elements']);
 
-			$template = $this->crud->get_content_template_html($content_id);
+			/*
+			 * Template
+			 */
+			$template = $this->crud->get_content_template($content_id);
 		}
 		else
 		{
@@ -144,7 +147,10 @@ class Main extends CI_Controller {
 					'value' => $this->crud->get_meta_field(1, 'google-site-verification')
 				);
 
-				$template = $this->crud->get_content_template_html($content_id);
+				/*
+				 * Template
+				 */
+				$template = $this->crud->get_content_template($content_id);
 
 				/*
 				 * Content fields
@@ -171,7 +177,9 @@ class Main extends CI_Controller {
 		/*
 		 * Parse the template
 		 */
-		$data['content'] = $this->parser->parse_string($template, $content, TRUE);
+		$data['extra_head'] = $template['head'];
+		$data['content'] = $this->parser->parse_string($template['html'], $content, TRUE);
+
 		/*
 		 * Build final view and display the results
 		 */

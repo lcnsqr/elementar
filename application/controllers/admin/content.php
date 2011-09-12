@@ -940,6 +940,7 @@ class Content extends CI_Controller {
 			$template_html = $template['html'];
 			$template_css = $template['css'];
 			$template_javascript = $template['javascript'];
+			$template_head = $template['head'];
 
 			$data['breadcrumb'] = $this->common->breadcrumb_content($content_id);
 		}
@@ -955,6 +956,7 @@ class Content extends CI_Controller {
 			$template_html = $template['html'];
 			$template_css = $template['css'];
 			$template_javascript = $template['javascript'];
+			$template_head = $template['head'];
 
 			$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		}
@@ -1113,6 +1115,28 @@ class Content extends CI_Controller {
 				'rows' => 16,
 				'cols' => 32,
 				'value' => $template_javascript
+			);
+			$template_form .= form_textarea($attributes);
+			$template_form .= div_close("<!-- form_window_column_input -->");
+			$template_form .= div_close("<!-- .form_content_field -->");
+
+			/*
+			 * Extra Head editor
+			 */
+			$template_form .= div_open(array('class' => 'form_content_field'));
+			$template_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$template_form .= form_label("Extra Head Content", 'head_' . $content_id, $attributes);
+			$template_form .= br(1);
+			$template_form .= div_close("<!-- form_window_column_label -->");
+			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$attributes = array(
+				'name' => 'head',
+				'class' => 'head_textarea',
+				'id' => 'head_' . $content_id,
+				'rows' => 16,
+				'cols' => 32,
+				'value' => $template_head
 			);
 			$template_form .= form_textarea($attributes);
 			$template_form .= div_close("<!-- form_window_column_input -->");
@@ -1857,10 +1881,14 @@ class Content extends CI_Controller {
 		$content_id = $this->input->post('content_id', TRUE);
 		$template_id = $this->input->post('template_id', TRUE);		
 
-		$template = $this->input->post('template', TRUE);
+		$template = $this->input->post('template');  // dont use xss filter for template code
 		$css = $this->input->post('css', TRUE);
 		$javascript = $this->input->post('javascript'); // dont use xss filter for javascript code
+		$head = $this->input->post('head'); // dont use xss filter for head code
 
+		/*
+		 * HTTP post sends boolean value as string
+		 */
 		$overwrite = ( $this->input->post('overwrite', TRUE) == 'true' ) ? TRUE : FALSE;
 		
 		if ( (int) $content_id == 1 )
@@ -1868,9 +1896,7 @@ class Content extends CI_Controller {
 			/*
 			 * Home, always write template
 			 */
-			$this->crud->put_template_html($template_id, $template);
-			$this->crud->put_template_css($template_id, $css);
-			$this->crud->put_template_javascript($template_id, $javascript);
+			$this->crud->put_template($template_id, $template, $css, $javascript, $head);
 		}
 		else
 		{
@@ -1885,18 +1911,14 @@ class Content extends CI_Controller {
 					/*
 					 * Content already have exclusive template, update it!
 					 */
-					$this->crud->put_template_html($template_id, $template);
-					$this->crud->put_template_css($template_id, $css);
-					$this->crud->put_template_javascript($template_id, $javascript);
+					$this->crud->put_template($template_id, $template, $css, $javascript, $head);
 				}
 				else
 				{
 					/*
 					 * Add a new template for this content
 					 */
-					$content_template_id = $this->crud->put_template_html($template);
-					$this->crud->put_template_css($content_template_id, $css);
-					$this->crud->put_template_javascript($content_template_id, $javascript);
+					$content_template_id = $this->crud->put_template(NULL, $template, $css, $javascript, $head);
 					$this->crud->put_content_template_id($content_id, $content_template_id);
 				}
 			}
@@ -1921,9 +1943,7 @@ class Content extends CI_Controller {
 					/*
 					 * Overwrite type template
 					 */
-					$this->crud->put_template_html($content_type_template_id, $template);
-					$this->crud->put_template_css($content_type_template_id, $css);
-					$this->crud->put_template_javascript($content_type_template_id, $javascript);
+					$this->crud->put_template($content_type_template_id, $template, $css, $javascript, $head);
 				}
 			}
 		}
@@ -1938,7 +1958,10 @@ class Content extends CI_Controller {
 		 */
 		$response = array(
 			'done' => TRUE,
-			'template' => $template['html']
+			'template' => $template['html'],
+			'css' => $template['css'],
+			'javascript' => $template['javascript'],
+			'head' => $template['head']
 		);
 		$this->common->ajax_response($response);
 	}

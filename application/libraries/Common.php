@@ -441,12 +441,17 @@ class Common {
 					'uri' => (string) $image['uri'],
 					'width' => (string) $image['width'],
 					'height' => (string) $image['height'],
-					'alt' => htmlspecialchars( (string) $image['alt'] )
+					'alt' => (string) $image['alt'] 
 				);
 			}
 			else 
 			{
-				return NULL;
+				return array(
+					'uri' => '',
+					'width' => '',
+					'height' => '',
+					'alt' => '' 
+				);
 			}
 			break;
 

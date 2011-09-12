@@ -245,11 +245,13 @@ $(function() {
 				if ( data.done == true ) {
 					showClientWarning("Conteúdo salvo com sucesso");
 					/*
-					 * Reload Tree
+					 * Reload Tree if not home
 					 */
-					$.post("/admin/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
-						$("#tree_listing_1").html(data.html);
-					}, "json");
+					if ( data.content_id != 1 ) {
+						$.post("/admin/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
+							$("#tree_listing_1").html(data.html);
+						}, "json");
+					}
 				}
 				else {
 					showClientWarning(data.error);
