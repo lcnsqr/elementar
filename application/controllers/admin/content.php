@@ -29,6 +29,11 @@ class Content extends CI_Controller {
 		parent::__construct();
 		
 		/*
+		 * Site configuration
+		 */
+		$this->config->load('site_config');
+		
+		/*
 		 *  CI helpers
 		 */
 		$this->load->helper(array('string', 'security', 'cookie', 'form', 'html', 'text', 'url'));

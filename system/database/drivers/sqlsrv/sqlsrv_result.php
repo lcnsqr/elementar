@@ -16,7 +16,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * MS SQL Result Class
+ * SQLSRV Result Class
  *
  * This class extends the parent result class: CI_DB_result
  *
@@ -24,7 +24,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
-class CI_DB_mssql_result extends CI_DB_result {
+class CI_DB_sqlsrv_result extends CI_DB_result {
 
 	/**
 	 * Number of rows in the result set
@@ -34,7 +34,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 	 */
 	function num_rows()
 	{
-		return @mssql_num_rows($this->result_id);
+		return @sqlsrv_num_rows($this->result_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -47,7 +47,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 	 */
 	function num_fields()
 	{
-		return @mssql_num_fields($this->result_id);
+		return @sqlsrv_num_fields($this->result_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -63,11 +63,11 @@ class CI_DB_mssql_result extends CI_DB_result {
 	function list_fields()
 	{
 		$field_names = array();
-		while ($field = mssql_fetch_field($this->result_id))
+		foreach(sqlsrv_field_metadata($this->result_id) as $offset => $field)
 		{
-			$field_names[] = $field->name;
+			$field_names[] = $field['Name'];
 		}
-
+		
 		return $field_names;
 	}
 
@@ -84,18 +84,18 @@ class CI_DB_mssql_result extends CI_DB_result {
 	function field_data()
 	{
 		$retval = array();
-		while ($field = mssql_fetch_field($this->result_id))
+		foreach(sqlsrv_field_metadata($this->result_id) as $offset => $field)
 		{
-			$F				= new stdClass();
-			$F->name		= $field->name;
-			$F->type		= $field->type;
-			$F->max_length	= $field->max_length;
+			$F 				= new stdClass();
+			$F->name 		= $field['Name'];
+			$F->type 		= $field['Type'];
+			$F->max_length	= $field['Size'];
 			$F->primary_key = 0;
 			$F->default		= '';
-
+			
 			$retval[] = $F;
 		}
-
+		
 		return $retval;
 	}
 
@@ -110,7 +110,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 	{
 		if (is_resource($this->result_id))
 		{
-			mssql_free_result($this->result_id);
+			sqlsrv_free_stmt($this->result_id);
 			$this->result_id = FALSE;
 		}
 	}
@@ -129,7 +129,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 	 */
 	function _data_seek($n = 0)
 	{
-		return mssql_data_seek($this->result_id, $n);
+		// Not implemented
 	}
 
 	// --------------------------------------------------------------------
@@ -144,7 +144,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 	 */
 	function _fetch_assoc()
 	{
-		return mssql_fetch_assoc($this->result_id);
+		return sqlsrv_fetch_array($this->result_id, SQLSRV_FETCH_ASSOC);
 	}
 
 	// --------------------------------------------------------------------
@@ -159,7 +159,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 	 */
 	function _fetch_object()
 	{
-		return mssql_fetch_object($this->result_id);
+		return sqlsrv_fetch_object($this->result_id);
 	}
 
 }

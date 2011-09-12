@@ -37,7 +37,7 @@
 |
 */
 
-$autoload['packages'] = array(APPPATH.'third_party');
+$autoload['packages'] = array();
 
 
 /*
@@ -80,7 +80,7 @@ $autoload['helper'] = array();
 |
 */
 
-$autoload['config'] = array('site_config');
+$autoload['config'] = array();
 
 
 /*

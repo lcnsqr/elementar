@@ -34,6 +34,11 @@ class Main extends CI_Controller {
 		// View cache
 		//$this->output->cache(1);
 
+		/*
+		 * Site configuration
+		 */
+		$this->config->load('site_config');
+		
 		// DB
 		$this->elementar = $this->load->database('elementar', TRUE);
 
