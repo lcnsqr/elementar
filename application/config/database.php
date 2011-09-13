@@ -26,6 +26,12 @@
 |	['cachedir'] The path to the folder where cache files should be stored
 |	['char_set'] The character set used in communicating with the database
 |	['dbcollat'] The character collation used in communicating with the database
+|				 NOTE: For MySQL and MySQLi databases, this setting is only used
+| 				 as a backup if your server is running PHP < 5.2.3 or MySQL < 5.0.7.
+| 				 There is an incompatibility in PHP with mysql_real_escape_string() which
+| 				 can make your site vulnerable to SQL injection if you are using a
+| 				 multi-byte character set and are running versions lower than these.
+| 				 Sites using Latin-1 or UTF-8 database character set and collation are unaffected.
 |	['swap_pre'] A default table prefix that should be swapped with the dbprefix
 |	['autoinit'] Whether or not to automatically initialize the database.
 |	['stricton'] TRUE/FALSE - forces 'Strict Mode' connections
@@ -61,9 +67,9 @@ $db['default']['stricton'] = FALSE;
  * account database
  */
 $db['account']['hostname'] = 'localhost';
-$db['account']['username'] = '';
-$db['account']['password'] = '';
-$db['account']['database'] = '';
+$db['account']['username'] = 'cms';
+$db['account']['password'] = 'Y8z6bE6SuyB2XcYH';
+$db['account']['database'] = 'account';
 $db['account']['dbdriver'] = 'mysql';
 $db['account']['dbprefix'] = '';
 $db['account']['pconnect'] = TRUE;
@@ -77,23 +83,23 @@ $db['account']['autoinit'] = FALSE;
 $db['account']['stricton'] = FALSE;
 
 /*
- * CMS database
+ * Elementar database
  */
-$db['cms']['hostname'] = 'localhost';
-$db['cms']['username'] = '';
-$db['cms']['password'] = '';
-$db['cms']['database'] = '';
-$db['cms']['dbdriver'] = 'mysql';
-$db['cms']['dbprefix'] = '';
-$db['cms']['pconnect'] = TRUE;
-$db['cms']['db_debug'] = TRUE;
-$db['cms']['cache_on'] = FALSE;
-$db['cms']['cachedir'] = '';
-$db['cms']['char_set'] = 'utf8';
-$db['cms']['dbcollat'] = 'utf8_general_ci';
-$db['cms']['swap_pre'] = '';
-$db['cms']['autoinit'] = FALSE;
-$db['cms']['stricton'] = FALSE;
+$db['elementar']['hostname'] = 'localhost';
+$db['elementar']['username'] = 'elementar';
+$db['elementar']['password'] = 'CDq6UsjFyaA57XwH';
+$db['elementar']['database'] = 'elementar';
+$db['elementar']['dbdriver'] = 'mysql';
+$db['elementar']['dbprefix'] = '';
+$db['elementar']['pconnect'] = TRUE;
+$db['elementar']['db_debug'] = TRUE;
+$db['elementar']['cache_on'] = FALSE;
+$db['elementar']['cachedir'] = 'application/cache';
+$db['elementar']['char_set'] = 'utf8';
+$db['elementar']['dbcollat'] = 'utf8_general_ci';
+$db['elementar']['swap_pre'] = '';
+$db['elementar']['autoinit'] = FALSE;
+$db['elementar']['stricton'] = FALSE;
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

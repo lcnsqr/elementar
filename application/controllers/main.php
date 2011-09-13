@@ -29,16 +29,22 @@ class Main extends CI_Controller {
 	{
 		parent::__construct();
 		
+		/*
+		 * Settings
+		 */
+		$this->config->set_item('encryption_key', 'YQn0F2QVKB6UAaH45l1hqh1rctUQiNaK');
+		$this->config->set_item('site_name', 'Elementar');
+
+		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
+		$this->config->set_item('smtp_port', '465');
+		$this->config->set_item('smtp_user', 'lcnsqr@gmail.com');
+		$this->config->set_item('smtp_pass', '');
+
 		//$this->output->enable_profiler(TRUE);
 		
 		// View cache
 		//$this->output->cache(1);
 
-		/*
-		 * Site configuration
-		 */
-		$this->config->load('site_config');
-		
 		// DB
 		$this->elementar = $this->load->database('elementar', TRUE);
 

@@ -29,9 +29,16 @@ class Content extends CI_Controller {
 		parent::__construct();
 		
 		/*
-		 * Site configuration
+		 * Settings
 		 */
-		$this->config->load('site_config');
+		$this->config->set_item('encryption_key', 'YQn0F2QVKB6UAaH45l1hqh1rctUQiNaK');
+		$this->config->set_item('site_name', 'Elementar');
+
+		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
+		$this->config->set_item('smtp_port', '465');
+		$this->config->set_item('smtp_user', 'lcnsqr@gmail.com');
+		$this->config->set_item('smtp_pass', '');
+
 		
 		/*
 		 *  CI helpers
