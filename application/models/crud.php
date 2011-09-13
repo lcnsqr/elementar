@@ -807,7 +807,7 @@ class Crud extends CI_Model {
 	/*
 	 * Read content CSS
 	 */
-	function get_content_template_css($content_id)
+	function get_template_css($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
 		$this->elementar->select('css');
@@ -867,7 +867,7 @@ class Crud extends CI_Model {
 	/*
 	 * Read content javascript
 	 */
-	function get_content_template_javascript($content_id)
+	function get_template_javascript($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
 		$this->elementar->select('javascript');
@@ -927,7 +927,7 @@ class Crud extends CI_Model {
 	/*
 	 * Read content head 
 	 */
-	function get_content_template_head($content_id)
+	function get_template_head($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
 		$this->elementar->select('head');
@@ -987,7 +987,7 @@ class Crud extends CI_Model {
 	/*
 	 * Read content HTML
 	 */
-	function get_content_template_html($content_id)
+	function get_template_html($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
 		$this->elementar->select('html');
@@ -1447,7 +1447,7 @@ class Crud extends CI_Model {
 	/*
 	 * get content template html, css, javascript 
 	 */
-	function get_content_template($content_id)
+	function get_template($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
 		$this->elementar->select('html, css, javascript, head');

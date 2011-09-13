@@ -936,7 +936,7 @@ class Content extends CI_Controller {
 			$parent_id = $this->crud->get_content_parent_id($content_id);
 			$type_id = $this->crud->get_content_type_id($content_id);
 			$template_id = $this->crud->get_content_template_id($content_id);
-			$template = $this->crud->get_content_template($content_id);
+			$template = $this->crud->get_template($content_id);
 			$template_html = $template['html'];
 			$template_css = $template['css'];
 			$template_javascript = $template['javascript'];
@@ -1951,7 +1951,7 @@ class Content extends CI_Controller {
 		/*
 		 * Reload content's template
 		 */
-		$template = $this->crud->get_content_template($content_id);
+		$template = $this->crud->get_template($content_id);
 
 		/*
 		 * resposta

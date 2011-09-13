@@ -101,7 +101,7 @@ class Main extends CI_Controller {
 			/*
 			 * Template
 			 */
-			$template = $this->crud->get_content_template($content_id);
+			$template = $this->crud->get_template($content_id);
 		}
 		else
 		{
@@ -150,7 +150,7 @@ class Main extends CI_Controller {
 				/*
 				 * Template
 				 */
-				$template = $this->crud->get_content_template($content_id);
+				$template = $this->crud->get_template($content_id);
 
 				/*
 				 * Content fields
@@ -200,7 +200,7 @@ class Main extends CI_Controller {
 	function css()
 	{
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
-		$css = $this->crud->get_content_template_css($content_id);
+		$css = $this->crud->get_template_css($content_id);
 		$this->output->set_header("Content-type: text/css");
 		$this->output->set_output($css);
 	}
@@ -211,7 +211,7 @@ class Main extends CI_Controller {
 	function javascript()
 	{
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
-		$css = $this->crud->get_content_template_javascript($content_id);
+		$css = $this->crud->get_template_javascript($content_id);
 		$this->output->set_header("Content-type: text/javascript");
 		$this->output->set_output($css);
 	}
