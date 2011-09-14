@@ -32,7 +32,6 @@ class Main extends CI_Controller {
 		/*
 		 * Settings
 		 */
-		$this->config->set_item('encryption_key', 'YQn0F2QVKB6UAaH45l1hqh1rctUQiNaK');
 		$this->config->set_item('site_name', 'Elementar');
 
 		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
