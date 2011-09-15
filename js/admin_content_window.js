@@ -144,17 +144,44 @@ $(function() {
 					$.post("/admin/content/xhr_render_tree_unfold", { request : 'element', id : data.element_id }, function(data) {
 						$("#tree_listing_1").html(data.html);
 					}, "json");
+					/*
+					 * Reload editor window
+					 */
+					$.post("/admin/content/xhr_render_element_form", { id : data.element_id }, function(data){
+						try {
+							if ( data.done == true ) {
+								$("#content_window").html(data.html).show(function() {
+									// CKEditor activation
+									ckeditor();
+
+									// Bloqueio
+									$("#blocker").fadeOut("fast");
+								});
+							}
+							else {
+								// Bloqueio
+								$("#blocker").fadeOut("fast");
+								showClientWarning("Erro ao salvar");
+							}
+						}
+						catch (err) {
+							// Bloqueio
+							$("#blocker").fadeOut("fast");
+							showClientWarning("Erro de comunicação com o servidor");
+						}
+					}, "json");
 				}
 				else {
+					// Bloqueio
+					$("#blocker").fadeOut("fast");
 					showClientWarning(data.error);
 				}
 			}
 			catch (err) {
+				// Bloqueio
+				$("#blocker").fadeOut("fast");
 				showClientWarning("Erro de comunicação com o servidor");
 			}
-
-			// Bloqueio
-			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 
@@ -187,7 +214,7 @@ $(function() {
 			return null;
 		}
 
-		$.post("/admin/content/xhr_render_content_form", { parent_id : parent_id, type_id : type_id }, function(data){
+		$.post("/admin/content/xhr_render_content_form", { parent_id : parent_id, type_id : type_id, editor : 'content' }, function(data){
 			try {
 				if ( data.done == true ) {
 					// Close type editor (if visible)
@@ -245,24 +272,48 @@ $(function() {
 				if ( data.done == true ) {
 					showClientWarning("Conteúdo salvo com sucesso");
 					/*
-					 * Reload Tree if not home
+					 * Reload Tree & editor window if not home
 					 */
 					if ( data.content_id != 1 ) {
 						$.post("/admin/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
 							$("#tree_listing_1").html(data.html);
 						}, "json");
+
+						$.post("/admin/content/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
+							try {
+								if ( data.done == true ) {
+									$("#content_window").html(data.html).show(function() {
+										// CKEditor activation
+										ckeditor();
+										// Bloqueio
+										$("#blocker").fadeOut("fast");
+									});
+								}
+								else {
+									// Bloqueio
+									$("#blocker").fadeOut("fast");
+									showClientWarning("Erro ao salvar");
+								}
+							}
+							catch (err) {
+								// Bloqueio
+								$("#blocker").fadeOut("fast");
+								showClientWarning("Erro de comunicação com o servidor");
+							}
+						}, "json");
 					}
 				}
 				else {
+					// Bloqueio
+					$("#blocker").fadeOut("fast");
 					showClientWarning(data.error);
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
+				// Bloqueio
+				$("#blocker").fadeOut("fast");
 			}
-
-			// Bloqueio
-			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 	

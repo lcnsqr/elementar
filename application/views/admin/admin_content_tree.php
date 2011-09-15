@@ -16,6 +16,7 @@
 					<div class="dropdown tree_menu_dropdown">
 					<ul>
 						<li><a class="edit element" href="<?php echo $element['id']; ?>">Editar</a></li>
+						<li><hr /></li>
 						<li><a class="remove element" href="<?php echo $element['id']; ?>" title="Remover “<?php echo $element['name']; ?>”">Excluir</a></li>
 					</ul>
 					</div>
@@ -57,8 +58,10 @@
 				<div class="tree_menu">
 					<div class="dropdown tree_menu_dropdown">
 					<ul>
-						<li><a class="meta content" href="<?php echo $content['id']; ?>">Meta fields</a></li>
-						<li><a class="edit content" href="<?php echo $content['id']; ?>">Editar</a></li>
+						<li><a class="edit content" href="<?php echo $content['id']; ?>">Editar Conteúdo</a></li>
+						<li><a class="edit template" href="<?php echo $content['id']; ?>">Editar Template</a></li>
+						<li><a class="edit meta" href="<?php echo $content['id']; ?>">Meta Fields</a></li>
+						<li><hr /></li>
 						<li><a class="remove content" href="<?php echo $content['id']; ?>" title="Remover “<?php echo $content['name']; ?>” e elementos associados">Excluir</a></li>
 						<li><hr /></li>
 						<li><a class="new content" href="<?php echo $content['id']; ?>">Criar conteúdo aqui</a></li>

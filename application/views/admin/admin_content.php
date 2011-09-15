@@ -29,8 +29,9 @@
 					<div class="tree_menu">
 						<div class="dropdown tree_menu_dropdown">
 						<ul>
-							<li><a class="meta" href="<?php echo $parent_id; ?>">Meta fields</a></li>
-							<li><a class="edit content" href="<?php echo $parent_id; ?>">Editar</a></li>
+							<li><a class="edit content" href="<?php echo $parent_id; ?>">Editar Conteúdo</a></li>
+							<li><a class="edit template" href="<?php echo $parent_id; ?>">Editar Template</a></li>
+							<li><a class="edit meta" href="<?php echo $parent_id; ?>">Meta Fields</a></li>
 							<li><hr /></li>
 							<li><a class="new content" href="<?php echo $parent_id; ?>">Criar conteúdo aqui</a></li>
 							<li><a class="new element" href="<?php echo $parent_id; ?>">Criar elemento aqui</a></li>

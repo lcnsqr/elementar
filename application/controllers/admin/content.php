@@ -424,119 +424,6 @@ class Content extends CI_Controller {
 	}
 
 	/**
-	 * Gerar formulário edição de meta fields
-	 */
-	function xhr_render_meta_form()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$id = $this->input->post('id', TRUE);
-
-		$data = array(
-			'name' => $this->crud->get_content_name($id),
-			'breadcrumb' => $this->common->breadcrumb_content((int)$id)
-		);
-		
-		$form = '';
-		
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'id',
-			'value'=> $id,
-			'type' => 'hidden'
-		);
-		$form .= form_input($attributes);
-
-		/*
-		 * Meta fields
-		 */
-		$fields = array(
-			'Keywords' => 'keywords',
-			'Description' => 'description',
-			'Author' => 'author',
-			'Copyright' => 'copyright'
-		);
-		
-		if ( (int) $id == 1 )
-		{
-			$fields['Google Site Verification'] = 'google-site-verification';
-		}
-
-		foreach ( $fields as $label => $name )
-		{
-			$form .= div_open(array('class' => 'form_content_field'));
-			$form .= div_open(array('class' => 'form_window_column_label'));
-			$attributes = array('class' => 'field_label');
-			$form .= form_label($label, $name, $attributes);
-			$form .= br(1);
-			$form .= div_close("<!-- form_window_column_label -->");
-			$form .= div_open(array('class' => 'form_window_column_input'));
-			$attributes = array(
-				'class' => 'noform',
-				'name' => $name,
-				'id' => $name,
-				'value' => html_entity_decode($this->crud->get_meta_field($id, $name), ENT_QUOTES, "UTF-8")
-			);
-			$form .= form_input($attributes);
-			$form .= div_close("<!-- form_window_column_input -->");
-			$form .= div_close("<!-- .form_content_field -->");
-		}
-
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$attributes = array('class' => 'field_label');
-		$form .= form_label('Prioridade', 'priority', $attributes);
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
-		$values = array(
-			'0.0' => '0.0',
-			'0.1' => '0.1',
-			'0.2' => '0.2',
-			'0.3' => '0.3',
-			'0.4' => '0.4',
-			'0.5' => '0.5',
-			'0.6' => '0.6',
-			'0.7' => '0.7',
-			'0.8' => '0.8',
-			'0.9' => '0.9',
-			'1.0' => '1.0'
-		);
-		$value = $this->crud->get_meta_field($id, 'priority');
-		$selected = ( (bool) $value ) ? $value : '0.5';
-		$form .= form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
-
-
-		/*
-		 *  Botão envio
-		 */
-		$form .= div_open(array('class' => 'form_control_buttons'));
-		$attributes = array(
-		    'name' => 'button_meta_save',
-		    'id' => 'button_meta_save',
-		    'class' => 'noform',
-		    'content' => 'Salvar'
-		);
-		$form .= form_button($attributes);
-
-		$form .= div_close();
-		
-		$data['meta_form'] = $form;
-		
-		$html = $this->load->view('admin/admin_content_meta_form', $data, TRUE);
-		
-		$response = array(
-			'done' => TRUE,
-			'html' => $html
-		);
-		$this->common->ajax_response($response);
-
-	}
-
-	/**
 	 * Gerar formulário para inserção de conteúdo
 	 */
 	function xhr_render_content_new()
@@ -933,6 +820,10 @@ class Content extends CI_Controller {
 		 */
 		$content_id = $this->input->post('id', TRUE);
 		$data = array();
+		/*
+		 * Which editor to display
+		 */
+		$data['editor'] = $this->input->post('editor', TRUE);
 
 		if ( (bool) $content_id ) 
 		{
@@ -1177,6 +1068,89 @@ class Content extends CI_Controller {
 			$template_form .= div_close("<!-- form_control_buttons -->");
 			$template_form .= form_close();
 			$data['template_form'] = $template_form;
+
+			/* 
+			 * Meta fields editor tab
+			 */
+			$meta_form = '';
+			$attributes = array(
+				'class' => 'noform',
+				'name' => 'id',
+				'value'=> $content_id,
+				'type' => 'hidden'
+			);
+			$meta_form .= form_input($attributes);
+			/*
+			 * Meta fields
+			 */
+			$fields = array(
+				'Keywords' => 'keywords',
+				'Description' => 'description',
+				'Author' => 'author',
+				'Copyright' => 'copyright'
+			);
+			
+			if ( (int) $content_id == 1 )
+			{
+				$fields['Google Site Verification'] = 'google-site-verification';
+			}
+			foreach ( $fields as $label => $name )
+			{
+				$meta_form .= div_open(array('class' => 'form_content_field'));
+				$meta_form .= div_open(array('class' => 'form_window_column_label'));
+				$attributes = array('class' => 'field_label');
+				$meta_form .= form_label($label, $name, $attributes);
+				$meta_form .= br(1);
+				$meta_form .= div_close("<!-- form_window_column_label -->");
+				$meta_form .= div_open(array('class' => 'form_window_column_input'));
+				$attributes = array(
+					'class' => 'noform',
+					'name' => $name,
+					'id' => $name,
+					'value' => html_entity_decode($this->crud->get_meta_field($content_id, $name), ENT_QUOTES, "UTF-8")
+				);
+				$meta_form .= form_input($attributes);
+				$meta_form .= div_close("<!-- form_window_column_input -->");
+				$meta_form .= div_close("<!-- .form_content_field -->");
+			}
+			$meta_form .= div_open(array('class' => 'form_content_field'));
+			$meta_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$meta_form .= form_label('Prioridade', 'priority', $attributes);
+			$meta_form .= br(1);
+			$meta_form .= div_close("<!-- form_window_column_label -->");
+			$meta_form .= div_open(array('class' => 'form_window_column_input'));
+			$values = array(
+				'0.0' => '0.0',
+				'0.1' => '0.1',
+				'0.2' => '0.2',
+				'0.3' => '0.3',
+				'0.4' => '0.4',
+				'0.5' => '0.5',
+				'0.6' => '0.6',
+				'0.7' => '0.7',
+				'0.8' => '0.8',
+				'0.9' => '0.9',
+				'1.0' => '1.0'
+			);
+			$value = $this->crud->get_meta_field($content_id, 'priority');
+			$selected = ( (bool) $value ) ? $value : '0.5';
+			$meta_form .= form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
+			$meta_form .= div_close("<!-- form_window_column_input -->");
+			$meta_form .= div_close("<!-- .form_content_field -->");
+			/*
+			 *  Botão envio
+			 */
+			$meta_form .= div_open(array('class' => 'form_control_buttons'));
+			$attributes = array(
+			    'name' => 'button_meta_save',
+			    'id' => 'button_meta_save',
+			    'class' => 'noform',
+			    'content' => 'Salvar'
+			);
+			$meta_form .= form_button($attributes);
+			$meta_form .= div_close();
+			$data['meta_form'] = $meta_form;
 
 		}
 
