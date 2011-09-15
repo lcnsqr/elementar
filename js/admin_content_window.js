@@ -131,7 +131,7 @@ $(function() {
 		$(".menu_field").each(function() {
 			var menu = prepare_menu_field(this);
 			$(this).find('input.menu_actual_field').val($.toJSON(menu));
-			console.log($.toJSON(menu));
+			//console.log($.toJSON(menu));
 		});
 
 		$.post("/admin/content/xhr_write_element", $(".noform").serialize(), function(data){
@@ -289,13 +289,24 @@ $(function() {
 	 */
 	$('.add_variable_single').live('click', function(event) {
 		event.preventDefault();
+		var variable = unescape($(this).attr('href'));
 		var textarea = $(this).parents('.form_window_column_input').first().find('.template_textarea');
-		var variable = $(this).attr('href');
 		$(textarea).insertAtCursor(variable);
 	});
 	
 	/*
-	 * insertAtCursor: jQuery extended function to insert text at cursor
+	 * Add pseudo variable pair (loop) to template
+	 */
+	$('.add_variable_pair').live('click', function(event) {
+		event.preventDefault();
+		var variable = unescape($(this).attr('href'));
+		var textarea = $(this).parents('.form_window_column_input').first().find('.template_textarea');
+		$(textarea).insertAtCursor(variable);
+	});
+	
+	/*
+	 * insertAtCursor: jQuery extended function to 
+	 * insert text at cursor on input
 	 */
 	$.fn.extend({
 		insertAtCursor: function (value) {

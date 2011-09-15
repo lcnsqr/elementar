@@ -300,9 +300,13 @@
 	float: left;
 	margin-right: 12px;
 }
+.pseudo_variables_element_list {
+	margin-left: 10px;
+}
 .pseudo_variables_menu_switcher_footer {
 	text-align: center;
 	margin: 2px;
+	padding-top: 4px;
 }
 .pseudo_variables_menu_switcher {
 	display: block;

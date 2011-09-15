@@ -58,7 +58,7 @@ class Common {
 			 * Consider true if current 
 			 * location begins with the URI
 			 */
-			if (strpos("/" . $this->CI->uri->uri_string() . "/", $uri) === 0 )
+			if ( $uri != '/' && strpos("/" . $this->CI->uri->uri_string() . "/", $uri) === 0 )
 			{
 				return TRUE;
 			}
@@ -78,13 +78,21 @@ class Common {
 		{
 			return NULL;
 		}
+		/*
+		 * Build menu items links
+		 */
 		$menu_links = array();
-		foreach ( $menu as $menu_item )
+		while ( $menu_item = current($menu) )
 		{
 			/*
-			 * Build menu item link
+			 * Mark current menu
 			 */
 			$class = ( $this->_uri_is_current($menu_item['target']) ) ? 'menu_item current' : 'menu_item';
+			/*
+			 * Set first and last menu for styling
+			 */
+			$class .= ( key($menu) == 0 ) ? ' first' : '';
+			$class .= ( key($menu) == ( count($menu) - 1 ) ) ? ' last' : '';
 			$attributes = array(
 				'href' => $menu_item['target'],
 				'title' => htmlspecialchars( $menu_item['name'] ),
@@ -107,6 +115,7 @@ class Common {
 				 */
 				$menu_links[$link] = $this->_make_menu($submenu);
 			}
+			next($menu);
 		}
 		return $menu_links;
 	}

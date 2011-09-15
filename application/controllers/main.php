@@ -205,7 +205,18 @@ class Main extends CI_Controller {
 	function css()
 	{
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
-		$css = $this->crud->get_template_css($content_id);
+		$css = '';
+		if ( $content_id != 1 )
+		{
+			/*
+			 * Load main CSS too
+			 */
+			$css = $this->crud->get_template_css(1);
+		}
+		/*
+		 * Load individual CSS
+		 */
+		$css .= $this->crud->get_template_css($content_id);
 		$this->output->set_header("Content-type: text/css");
 		$this->output->set_output($css);
 	}
@@ -216,9 +227,20 @@ class Main extends CI_Controller {
 	function javascript()
 	{
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
-		$css = $this->crud->get_template_javascript($content_id);
+		$javascript = '';
+		if ( $content_id != 1 )
+		{
+			/*
+			 * Load main Javascript too
+			 */
+			$javascript = $this->crud->get_template_javascript(1);
+		}
+		/*
+		 * Load individual Javascript
+		 */
+		$javascript .= $this->crud->get_template_javascript($content_id);
 		$this->output->set_header("Content-type: text/javascript");
-		$this->output->set_output($css);
+		$this->output->set_output($javascript);
 	}
 
 }

@@ -1016,7 +1016,9 @@ class Content extends CI_Controller {
 			 * Template pseudo variables available for this content
 			 */
 			$template_variables = array(
+				'content_singles_title' => $this->crud->get_content_name($content_id),
 				'content_singles' => array(),
+				'element_singles_title' => 'Elementos',
 				'element_singles' => array(),
 				'element_pairs' => array()
 			);
@@ -1046,17 +1048,34 @@ class Content extends CI_Controller {
 			 */
 			foreach ( $this->crud->get_elements_by_parent_spreaded($content_id) as $element )
 			{
-				foreach ( $this->crud->get_element_fields($element['id']) as $element_field )
+				if ( ! isset($template_variables['element_singles'][$element['type_name']] ) )
 				{
-					$template_variables['element_singles'][] = array(
-						'sname' => '{' . $element['sname'] . '.' . $element_field['sname'] . '}',
-						'name' => $element['name'] . ' &rarr; ' . $element_field['name']
-					);
-					$template_variables['element_pairs'][$element['type']] = array(
-						'sname' => $element_field['sname'],
-						'name' => $element_field['name']
+					/*
+					 * Variable pair with element type fields
+					 */
+					$pair = '{' . $element['type'] . '}'  . "\n" ;
+					foreach( $this->crud->get_element_type_fields($element['type_id']) as $type_field )
+					{
+						$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
+					}
+					$pair .= '{/' . $element['type'] . '}'  . "\n" ;
+					$template_variables['element_singles'][$element['type_name']] = array(
+						'pair' => urlencode($pair),
+						'elements' => array()
 					);
 				}
+				/*
+				 * Join element fields for unique insert
+				 */
+				$fields = '';
+				foreach ( $this->crud->get_element_fields($element['id']) as $element_field )
+				{
+					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
+				}
+				$template_variables['element_singles'][$element['type_name']]['elements'][] = array(
+					'sname' => urlencode($fields),
+					'name' => $element['name']
+				);
 			}
 
 			/*

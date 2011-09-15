@@ -1,6 +1,10 @@
 body {
+/*
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-	font-size: 12px;
+*/
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	
+	font-size: 13px;
 	/*
 	background-image: url("/img/body_bg.gif");
 	background-repeat: repeat-x; 
