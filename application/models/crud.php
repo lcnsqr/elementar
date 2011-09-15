@@ -1393,7 +1393,7 @@ class Crud extends CI_Model {
 	 */
 	function get_content_type_template($content_type_id)
 	{
-		$this->elementar->select('template.html');
+		$this->elementar->select('template.html, template.css, template.javascript, template.head');
 		$this->elementar->from('template');
 		$this->elementar->where('content_type.id', $content_type_id);
 		$this->elementar->join('content_type', 'content_type.template_id = template.id', 'inner');
@@ -1402,7 +1402,13 @@ class Crud extends CI_Model {
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->html;
+			$template = array(
+				'html' => $row->html,
+				'css' => $row->css,
+				'javascript' => $row->javascript,
+				'head' => $row->head
+			);
+			return $template;
 		}
 		else
 		{
