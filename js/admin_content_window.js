@@ -7,8 +7,6 @@ $(function() {
 		// dropdown widget
 		var widget = $(".dropdown_items_listing").parents(".dropdown_items_listing_inline").first();
 		$(".dropdown_items_listing:visible").fadeOut("fast");
-		$(widget).find("a.down").addClass("up").removeClass("down");
-		// Discard labels being edited
 	});
 	
 	// Dropdown widget
@@ -17,13 +15,9 @@ $(function() {
 		var listing = $(this).parent().find(".dropdown_items_listing").first();
 		if ( ! $(listing).is(":visible") ) {
 			$(listing).fadeIn("fast");
-			$(this).addClass("down");
-			$(this).removeClass("up");
 		}
 		else {
 			$(listing).fadeOut("fast");
-			$(this).addClass("up");
-			$(this).removeClass("down");
 		}
 	});
 

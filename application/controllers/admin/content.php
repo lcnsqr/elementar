@@ -290,7 +290,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor("Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor("&rarr; Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		/*
 		 * HTML template
@@ -404,7 +404,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor("Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor("&rarr; Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		$form .= div_open(array('class' => 'form_control_buttons'));
 
@@ -1273,16 +1273,16 @@ class Content extends CI_Controller {
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown .= anchor($this->crud->get_content_type_name($selected), array('class' => 'up', 'href' => $selected));
+				$dropdown .= anchor($this->crud->get_content_type_name($selected), array('href' => $selected));
 			}
 			else
 			{
-				$dropdown .= anchor(current($types), array('class' => 'up', 'href' => key($types)));
+				$dropdown .= anchor(current($types), array('href' => key($types)));
 			}
 		}
 		else
 		{
-			$dropdown .= anchor("Novo...", array('class' => 'up', 'href' => '0'));
+			$dropdown .= anchor("Novo...", array('href' => '0'));
 		}
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
@@ -1313,16 +1313,16 @@ class Content extends CI_Controller {
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown .= anchor($this->crud->get_element_type_name($selected), array('class' => 'up', 'href' => $selected));
+				$dropdown .= anchor($this->crud->get_element_type_name($selected), array('href' => $selected));
 			}
 			else
 			{
-				$dropdown .= anchor(current($types), array('class' => 'up', 'href' => key($types)));
+				$dropdown .= anchor(current($types), array('href' => key($types)));
 			}
 		}
 		else
 		{
-			$dropdown .= anchor("Novo...", array('class' => 'up', 'href' => '0'));
+			$dropdown .= anchor("Novo...", array('href' => '0'));
 		}
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
