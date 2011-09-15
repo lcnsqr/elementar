@@ -275,7 +275,7 @@
 /*
  * Template editor
  */
-.textarea, .template_textarea, .css_textarea, .javascript_textarea, .head_textarea {
+.textarea, .hypertext, .template_textarea, .css_textarea, .javascript_textarea, .head_textarea {
 	width: 98%;
 }
 

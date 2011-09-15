@@ -2,6 +2,79 @@
 
 class MY_Parser extends CI_Parser {
 
+	// --------------------------------------------------------------------
+
+	/**
+	 *  Parse a String
+	 *
+	 * Parses pseudo-variables contained in the specified string,
+	 * replacing them with the data in the second param
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	array
+	 * @param	bool
+	 * @return	string
+	 */
+	function parse_string($template, $data, $return = FALSE)
+	{
+		return $this->_parse($template, $data, $return);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 *  Parse a template
+	 *
+	 * Parses pseudo-variables contained in the specified template,
+	 * replacing them with the data in the second param
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	array
+	 * @param	bool
+	 * @return	string
+	 */
+	function _parse($template, $data, $return = FALSE)
+	{
+		if ($template == '')
+		{
+			return FALSE;
+		}
+
+		foreach ($data as $key => $val)
+		{
+			if (is_array($val))
+			{
+				/*
+				 * Check if it's not a composite field
+				 */
+				if ( isset($val['_composite']) )
+				{
+					foreach ( $val as $attr => $attr_val )
+					{
+						$template = $this->_parse_single($key . '.' . $attr, (string)$attr_val, $template);
+					}
+				}
+				else
+				{
+					$template = $this->_parse_pair($key, $val, $template);
+				}
+			}
+			else
+			{
+				$template = $this->_parse_single($key, (string)$val, $template);
+			}
+		}
+
+		if ($return == FALSE)
+		{
+			$CI =& get_instance();
+			$CI->output->append_output($template);
+		}
+
+		return $template;
+	}
 
 	// --------------------------------------------------------------------
 

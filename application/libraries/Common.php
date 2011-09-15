@@ -456,7 +456,11 @@ class Common {
 			$image = (array) $this->CI->crud->get_image($file_id);
 			if ( count( $image ) > 0 )
 			{
+				/*
+				 * Mark as composite field
+				 */
 				return array(
+					'_composite' => TRUE,
 					'uri' => (string) $image['uri'],
 					'width' => (string) $image['width'],
 					'height' => (string) $image['height'],
@@ -466,6 +470,7 @@ class Common {
 			else 
 			{
 				return array(
+					'_composite' => TRUE,
 					'uri' => '',
 					'width' => '',
 					'height' => '',
@@ -511,6 +516,7 @@ class Common {
 		foreach ($elements as $element)
 		{
 			$element_id = $element['id'];
+			$element_name = $element['name'];
 			$element_type_id = $element['type_id'];
 			$element_type = $element['type'];
 			
@@ -530,8 +536,11 @@ class Common {
 			/*
 			 * To be added in the element type array
 			 */
-			$entry = array();
+			$entry = array($element_type . '.name' => $element_name);
 			
+			/*
+			 * Custom fields
+			 */
 			foreach ($fields as $field)
 			{
 				/*
@@ -539,22 +548,26 @@ class Common {
 				 */
 				$rendered_value = $this->render_field($field['type'], $field['value']);
 
+				/*
+				 * element type array item
+				 */
 				if ( is_array($rendered_value) )
 				{
 					foreach ( $rendered_value as $key => $value )
 					{
-						$entry[$field['sname'] . '.' . $key] = $value ;
+						$entry[$element_type . '.'. $field['sname'] . '.' . $key] = $value ;
 					}
 				}
 				else
 				{
-					$entry[$field['sname']] = $rendered_value;
+					$entry[$element_type . '.'. $field['sname']] = $rendered_value;
 				}
 				
 				// Add element direct access (without a template loop)
 				if ( ! array_key_exists($element['sname'], $data) )
 				{
 					// Adapt to template pseudo variables
+					$data[$element['sname'] . '.name'] = $element_name;
 					if ( is_array($rendered_value) )
 					{
 						foreach ( $rendered_value as $key => $value )
@@ -569,7 +582,7 @@ class Common {
 				}
 			}
 			/*
-			 * Add element entry as a pseudo variable pair
+			 * Add element entry as a pseudo variable pair (loop)
 			 */
 			$data[$element_type][] = $entry;
 		}

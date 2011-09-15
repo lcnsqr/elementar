@@ -947,7 +947,7 @@ class Content extends CI_Controller {
 					$pair = '{' . $element['type'] . '}'  . "\n" ;
 					foreach( $this->crud->get_element_type_fields($element['type_id']) as $type_field )
 					{
-						$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
+						$pair .= "\t" . '{' . $element['type'] . '.' . $type_field['sname'] . '}' . "\n";
 					}
 					$pair .= '{/' . $element['type'] . '}'  . "\n" ;
 					$template_variables['element_singles'][$element['type_name']] = array(
