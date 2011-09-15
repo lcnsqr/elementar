@@ -55,12 +55,22 @@ class Common {
 		else
 		{
 			/*
-			 * Consider true if current 
-			 * location begins with the URI
+			 * Ignore root 
 			 */
-			if ( $uri != '/' && strpos("/" . $this->CI->uri->uri_string() . "/", $uri) === 0 )
+			if ( $uri != '/' )
 			{
-				return TRUE;
+				$current_uri = '/' . $this->CI->uri->uri_string();
+				if ( substr($current_uri, -1) == '/' )
+				{
+					/*
+					 * trim out trailing slash
+					 */
+					$current_uri = substr($current_uri, 0, -1);
+				}
+				if ( $current_uri == $uri )
+				{
+					return TRUE;
+				}
 			}
 		}
 		/*
