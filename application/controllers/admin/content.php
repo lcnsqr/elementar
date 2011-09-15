@@ -945,6 +945,7 @@ class Content extends CI_Controller {
 					 * Variable pair with element type fields
 					 */
 					$pair = '{' . $element['type'] . '}'  . "\n" ;
+					$pair .= "\t" . '{' . $element['type'] . '.name}' . "\n";
 					foreach( $this->crud->get_element_type_fields($element['type_id']) as $type_field )
 					{
 						$pair .= "\t" . '{' . $element['type'] . '.' . $type_field['sname'] . '}' . "\n";
@@ -959,6 +960,7 @@ class Content extends CI_Controller {
 				 * Join element fields for unique insert
 				 */
 				$fields = '';
+				$fields .= '{' . $element['sname'] . '.name}' . "\n";
 				foreach ( $this->crud->get_element_fields($element['id']) as $element_field )
 				{
 					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
