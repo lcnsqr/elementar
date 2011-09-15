@@ -9,7 +9,7 @@
 <div id="user_menu">
 <ul>
 	<li><strong><?php echo $username; ?></strong></li>
-	<li><span class="diams">&diams;</span></li>
+	<li><span class="top_menu_sep">&bull;</span></li>
 	<li><a href="/user/logout" title="Sair">Sair</a></li>
 </ul>
 </div> <!-- #user_menu -->

@@ -132,7 +132,7 @@ class Content extends CI_Controller {
 		/*
 		$resource_menu = array(
 			anchor("Usuários", array('href' => '/admin/account', 'title' => 'Usuários')),
-			span("&diams;", array('class' => 'diams')),
+			span("&bull;", array('class' => 'top_menu_sep')),
 			"<strong>Conteúdo</strong>"
 		);
 		*/
