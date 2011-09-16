@@ -589,6 +589,7 @@ class Common {
 		foreach ($elements as $element)
 		{
 			$element_id = $element['id'];
+			$element_sname = $element['sname'];
 			$element_name = $element['name'];
 			$element_type_id = $element['type_id'];
 			$element_type = $element['type'];
@@ -609,7 +610,10 @@ class Common {
 			/*
 			 * To be added in the element type array
 			 */
-			$entry = array($element_type . '.name' => $element_name);
+			$entry = array(
+				$element_type . '.name' => $element_name,
+				$element_type . '.sname' => $element_sname
+			);
 			
 			/*
 			 * Custom fields
@@ -640,6 +644,7 @@ class Common {
 				if ( ! array_key_exists($element['sname'], $data) )
 				{
 					// Adapt to template pseudo variables
+					$data[$element['sname'] . '.sname'] = $element_sname;
 					$data[$element['sname'] . '.name'] = $element_name;
 					if ( is_array($rendered_value) )
 					{
