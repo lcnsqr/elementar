@@ -67,7 +67,6 @@ class Main extends CI_Controller {
 		 */
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
-		$html_template = ''; // HTML template in database
 		$content = array(); // Content fields & Content elements
 		
 		/*
@@ -92,7 +91,7 @@ class Main extends CI_Controller {
 			$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
 			
 			/*
-			 * Content fields
+			 * Content fields & relative contents
 			 */
 			$content['name'] = $data['site'];
 			$content = array_merge($content, $this->common->render_content($content_id));
@@ -158,7 +157,7 @@ class Main extends CI_Controller {
 				$template = $this->crud->get_template($content_id);
 
 				/*
-				 * Content fields
+				 * Content fields & relative contents
 				 */
 				$content['name'] = $content_name;
 				$content = array_merge($content, $this->common->render_content($content_id));
@@ -174,6 +173,13 @@ class Main extends CI_Controller {
 				/*
 				 * 404
 				 */
+				$template = array(
+					'html' => '<p>404: Página não encontrada</p>',
+					'css' => '',
+					'javascript' => '',
+					'head' => ''
+				);
+				$data['content_id'] = 1; // Defaults to home content_id
 				$data['title'] = 'Página não encontrada';
 				$data['metafields'] = array();
 			}

@@ -510,6 +510,75 @@ class Common {
 			$content[$field['sname']] = $this->render_field($field['type'], $field['value']);			
 		}
 		
+		/*
+		 * Children contents
+		 */
+		$children = $this->CI->crud->get_contents_by_parent($content_id);
+		if ( (bool) $children )
+		{
+			/*
+			 * Rename keys to avoid conflict with parent variable names in template
+			 */
+			$children_variables = array();
+			foreach ( $children as $child )
+			{
+				$children_variables[] = array(
+					'children.id' => $child['id'],
+					'children.sname' => $child['sname'],
+					'children.name' => $child['name'],
+					'children.uri' => $this->CI->crud->get_content_uri($child['id']),
+					'children.children' => $child['children']
+				);
+			}
+			$content['children'] = $children_variables;
+		}
+		else
+		{
+			$content['children'][] = array(
+				'children.id' => '',
+				'children.sname' => '',
+				'children.name' => '',
+				'children.uri' => '',
+				'children.children' => ''
+			);
+		}
+
+		/*
+		 * Parent children contents → brothers :)
+		 */
+		if ( $content_id != 1 )
+		{
+			$parent_id = $this->CI->crud->get_content_parent_id($content_id);
+			$brothers = $this->CI->crud->get_contents_by_parent($parent_id);
+			if ( (bool) $brothers )
+			{
+				/*
+				 * Rename keys to avoid conflict with parent variable names in template
+				 */
+				$brothers_variables = array();
+				foreach ( $brothers as $brother )
+				{
+					$brothers_variables[] = array(
+						'brothers.id' => $brother['id'],
+						'brothers.sname' => $brother['sname'],
+						'brothers.name' => $brother['name'],
+						'brothers.uri' => $this->CI->crud->get_content_uri($brother['id']),
+						'brothers.children' => $brother['children']
+					);
+				}
+				$content['brothers'] = $brothers_variables;
+			}
+			else
+			{
+				$content['brothers'][] = array(
+					'brothers.id' => '',
+					'brothers.sname' => '',
+					'brothers.name' => '',
+					'brothers.uri' => '',
+					'brothers.children' => ''
+				);
+			}
+		}
 		return $content;
 	}
 

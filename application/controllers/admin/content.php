@@ -907,20 +907,21 @@ class Content extends CI_Controller {
 			 * Template pseudo variables available for this content
 			 */
 			$template_variables = array(
-				'content_singles_title' => $this->crud->get_content_name($content_id),
-				'content_singles' => array(),
-				'element_singles_title' => 'Elementos',
-				'element_singles' => array(),
-				'element_pairs' => array()
+				'content_variables_title' => $this->crud->get_content_name($content_id),
+				'content_variables' => array(),
+				'relative_content_variables_title' => 'Conteúdos',
+				'relative_content_variables' => array(),
+				'element_variables_title' => 'Elementos',
+				'element_variables' => array()
 			);
 			/*
 			 * Default single variables
 			 */
-			$template_variables['content_singles'][] = array(
+			$template_variables['content_variables'][] = array(
 				'sname' => '{name}',
 				'name' => 'Name'
 			);
-			$template_variables['content_singles'][] = array(
+			$template_variables['content_variables'][] = array(
 				'sname' => '{breadcrumb}',
 				'name' => 'Breadcrumb'
 			);
@@ -929,17 +930,75 @@ class Content extends CI_Controller {
 			 */
 			foreach ( $this->crud->get_content_type_fields($type_id) as $content_field )
 			{
-				$template_variables['content_singles'][] = array(
+				$template_variables['content_variables'][] = array(
 					'sname' => '{' . $content_field['sname'] . '}',
 					'name' => $content_field['name']
 				);
 			}
+			
+			/*
+			 * There are two "types" of relative contents: children and brother 
+			 */
+			if ( $this->crud->get_content_has_children($content_id, FALSE) )
+			{
+				/*
+				 * Children contents
+				 */
+				if ( ! isset($template_variables['relative_content_variables']['children'] ) )
+				{
+					/*
+					 * Variable pair with element type fields
+					 */
+					$pair = '{children}'  . "\n" ;
+					$pair .= "\t" . '{children.name}' . "\n";
+					$pair .= "\t" . '{children.sname}' . "\n";
+					$pair .= "\t" . '{children.uri}' . "\n";
+					$pair .= '{/children}'  . "\n" ;
+					$template_variables['relative_content_variables']['children'] = array(
+						'pair' => urlencode($pair)
+					);
+				}
+			}
+			/*
+			 * if not parent, render content brothers
+			 */
+			if ( $content_id != 1 )
+			{
+				$parent_id = $this->crud->get_content_parent_id($content_id);
+				if ( $this->crud->get_content_has_children($parent_id, FALSE) )
+				{
+					/*
+					 * Dont set if singleton (only child)
+					 */
+					if ( count($this->crud->get_contents_by_parent($parent_id)) > 1 )
+					{
+						/*
+						 * Brother contents
+						 */
+						if ( ! isset($template_variables['relative_content_variables']['brothers'] ) )
+						{
+							/*
+							 * Variable pair with element type fields
+							 */
+							$pair = '{brothers}'  . "\n" ;
+							$pair .= "\t" . '{brothers.name}' . "\n";
+							$pair .= "\t" . '{brothers.sname}' . "\n";
+							$pair .= "\t" . '{brothers.uri}' . "\n";
+							$pair .= '{/brothers}'  . "\n" ;
+							$template_variables['relative_content_variables']['brothers'] = array(
+								'pair' => urlencode($pair)
+							);
+						}
+					}
+				}
+			}
+
 			/*
 			 * Available elements variables
 			 */
 			foreach ( $this->crud->get_elements_by_parent_spreaded($content_id) as $element )
 			{
-				if ( ! isset($template_variables['element_singles'][$element['type_name']] ) )
+				if ( ! isset($template_variables['element_variables'][$element['type_name']] ) )
 				{
 					/*
 					 * Variable pair with element type fields
@@ -951,7 +1010,7 @@ class Content extends CI_Controller {
 						$pair .= "\t" . '{' . $element['type'] . '.' . $type_field['sname'] . '}' . "\n";
 					}
 					$pair .= '{/' . $element['type'] . '}'  . "\n" ;
-					$template_variables['element_singles'][$element['type_name']] = array(
+					$template_variables['element_variables'][$element['type_name']] = array(
 						'pair' => urlencode($pair),
 						'elements' => array()
 					);
@@ -965,7 +1024,7 @@ class Content extends CI_Controller {
 				{
 					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
 				}
-				$template_variables['element_singles'][$element['type_name']]['elements'][] = array(
+				$template_variables['element_variables'][$element['type_name']]['elements'][] = array(
 					'sname' => urlencode($fields),
 					'name' => $element['name']
 				);
@@ -1876,8 +1935,7 @@ class Content extends CI_Controller {
 			'Description' => 'description',
 			'Author' => 'author',
 			'Copyright' => 'copyright',
-			'Priority' => 'priority',
-			'url' => 'url'
+			'Priority' => 'priority'
 		);
 
 		if ( (int) $id == 1 )
@@ -1897,6 +1955,16 @@ class Content extends CI_Controller {
 				// Remove meta field
 				$this->crud->delete_meta_field($id, $name);
 			}
+		}
+		
+		$uri = $this->crud->get_content_uri($id);
+		$url = $this->input->post('url', TRUE);
+		if ( site_url($uri) != $url )
+		{
+			/*
+			 * Write url meta field
+			 */
+			$this->crud->put_meta_field($id, 'url', $url);
 		}
 		
 		$response = array(

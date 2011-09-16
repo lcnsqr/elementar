@@ -8,8 +8,8 @@ var ckeditorConfig = {
 		['Link','Unlink','-','Bold','Italic','Underline','Strike','Subscript','Superscript','Source']
 	],
 	toolbarCanCollapse: false,
-	enterMode: CKEDITOR.ENTER_P,
-	shiftEnterMode: CKEDITOR.ENTER_BR
+	enterMode: CKEDITOR.ENTER_BR,
+	shiftEnterMode: CKEDITOR.ENTER_P
 };
 
 function ckeditor() {
