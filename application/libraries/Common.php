@@ -302,13 +302,17 @@ class Common {
 		{
 			$priority = $this->CI->crud->get_meta_field($content['id'], 'priority');
 			$uri = $this->CI->crud->get_content_uri($content['id']);
-			/*
-			 * Change "/home" to "/"
-			 */
-			$uri = ( $uri == '/home' ) ? '/' : $uri;
+			$url = $this->CI->crud->get_meta_field($content['id'], 'url');
+			if ( $url == '' )
+			{
+				/*
+				 * Change "/home" to "/" or use default path to content
+				 */
+				$url = ( $uri == '/home' ) ? site_url('/') : site_url($uri);
+			}
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
-				'loc' => site_url($uri),
+				'loc' => $url,
 				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
 				'changefreq' => 'daily',
 				'priority' => $priority

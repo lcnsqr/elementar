@@ -1115,6 +1115,39 @@ class Content extends CI_Controller {
 				$meta_form .= div_close("<!-- form_window_column_input -->");
 				$meta_form .= div_close("<!-- .form_content_field -->");
 			}
+
+			/*
+			 * URL
+			 */
+			$meta_form .= div_open(array('class' => 'form_content_field'));
+			$meta_form .= div_open(array('class' => 'form_window_column_label'));
+			$attributes = array('class' => 'field_label');
+			$meta_form .= form_label('URL', 'url', $attributes);
+			$meta_form .= br(1);
+			$meta_form .= div_close("<!-- form_window_column_label -->");
+			$meta_form .= div_open(array('class' => 'form_window_column_input'));
+			$uri = $this->crud->get_content_uri($content_id);
+			$url = $this->crud->get_meta_field($content_id, 'url');
+			if ( $url == '' )
+			{
+				/*
+				 * Change "/home" to "/" or use default path to content
+				 */
+				$url = ( $uri == '/home' ) ? site_url('/') : site_url($uri);
+			}
+			$attributes = array(
+				'class' => 'noform',
+				'name' => 'url',
+				'id' => 'url',
+				'value' => $url
+			);
+			$meta_form .= form_input($attributes);
+			$meta_form .= div_close("<!-- form_window_column_input -->");
+			$meta_form .= div_close("<!-- .form_content_field -->");
+
+			/*
+			 * Priority
+			 */
 			$meta_form .= div_open(array('class' => 'form_content_field'));
 			$meta_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
@@ -1843,7 +1876,8 @@ class Content extends CI_Controller {
 			'Description' => 'description',
 			'Author' => 'author',
 			'Copyright' => 'copyright',
-			'Priority' => 'priority'
+			'Priority' => 'priority',
+			'url' => 'url'
 		);
 
 		if ( (int) $id == 1 )
