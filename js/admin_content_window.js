@@ -82,7 +82,7 @@ $(function() {
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editors_container").replaceWith(data.html).show(function(){
 						// CKEditor activation
-						ckeditor();
+						$('#content_editor_form').find('textarea').ckeditor();
 					});
 				}
 				else {
@@ -146,7 +146,7 @@ $(function() {
 							if ( data.done == true ) {
 								$("#content_window").html(data.html).show(function() {
 									// CKEditor activation
-									ckeditor();
+									$('#content_editor_form').find('textarea').ckeditor();
 
 									// Bloqueio
 									$("#blocker").fadeOut("fast");
@@ -215,7 +215,7 @@ $(function() {
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editors_container").replaceWith(data.html).show(function(){
 						// CKEditor activation
-						ckeditor();
+						$('#content_editor_form').find('textarea').ckeditor();
 					});
 				}
 				else {
@@ -278,7 +278,7 @@ $(function() {
 								if ( data.done == true ) {
 									$("#content_window").html(data.html).show(function() {
 										// CKEditor activation
-										ckeditor();
+										$('#content_editor_form').find('textarea').ckeditor();
 										// Bloqueio
 										$("#blocker").fadeOut("fast");
 									});

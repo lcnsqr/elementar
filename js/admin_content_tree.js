@@ -215,7 +215,7 @@ $(function() {
 				if ( data.done == true ) {
 					$("#content_window").html(data.html).show(function() {
 						// CKEditor activation
-						ckeditor();
+						$('#content_editor_form').find('textarea').ckeditor();
 					});
 				}
 			}
@@ -244,7 +244,7 @@ $(function() {
 				if ( data.done == true ) {
 					$("#content_window").html(data.html).show(function() {
 						// CKEditor activation
-						ckeditor();
+						$('#content_editor_form').find('textarea').ckeditor();
 					});
 				}
 			}
