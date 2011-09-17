@@ -17,20 +17,22 @@ function ckeditor() {
 	$("#content_window").find("textarea").each(function(){
 		if ( $(this).hasClass('p') || $(this).hasClass('hypertext') ) {
 			var id = $(this).attr('id');
-			var exists = Object.keys(CKEDITOR.instances).some(function(element, index, array) {
-				return (element == id);
-			});
-			if ( exists ) {
-				eval("delete CKEDITOR.instances."+id);
+			// Remove exinsting instance of CKEditor for this field
+			for ( var instance in CKEDITOR.instances ) {
+				var instance_id = instance.toString();
+				if ( id == instance_id )
+				{
+					eval("delete CKEDITOR.instances."+id);
+				}
 			}
 			CKEDITOR.replace(this, ckeditorConfig);
 		}
 	});
 	// Cleanup removed textareas from CKEDITOR instances
-	$(Object.keys(CKEDITOR.instances)).each(function(index, id){
-		if ( $('textarea#'+id).length == 0 ) {
-			eval("delete CKEDITOR.instances."+id);
+	for ( var instance in CKEDITOR.instances ) {
+		if ( $('textarea#'+instance.toString()).length == 0 ) {
+			eval("delete CKEDITOR.instances."+instance.toString());
 		}
-	});
+	}
 }
 
