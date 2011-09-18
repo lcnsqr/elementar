@@ -3,7 +3,6 @@
  */
 .white_board {
 	position: relative;
-	background-color: #fff;
 	margin: 0 0 0 230px;
 	padding: 14px;
 }
@@ -13,30 +12,30 @@
 .white_board .top_side {
 	height: 14px;
 	top: 0;
-	left: 0;
-	right: 0;
+	left: 14px;
+	right: 14px;
 	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
 }
 .white_board .right_side {
 	width: 14px;
-	top: 0;
+	top: 14px;
 	right: 0;
-	bottom: 0;
+	bottom: 14px;
 	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
 }
 .white_board .bottom_side {
 	height: 14px;
-	right: 0;
+	right: 14px;
 	bottom: 0;
-	left: 0;
+	left: 14px;
 	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
 	background-position: 0 -14px;
 }
 .white_board .left_side {
 	width: 14px;
-	bottom: 0;
+	bottom: 14px;
 	left: 0;
-	top: 0;
+	top: 14px;
 	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
 	background-position: -14px 0;
 }
@@ -64,6 +63,14 @@
 	bottom: 0;
 	left: 0;
 	background-position: -42px 0;
+}
+.white_board .foreground {
+	position: absolute;
+	top: 14px;
+	bottom: 14px;
+	left: 14px;
+	right: 14px;
+	background-color: #fff;
 }
 
 /*
@@ -123,7 +130,7 @@
 	border-bottom: 1px solid #d3d7cf;
 	border-left: 1px solid #888a85;
 	background-image: url('/css/admin/input_bg.png');
-	background-repeat: repeat-x;
+	background-repeat: no-repeat;
 	padding: 2px 4px;
 }
 .form_content_field .upload_image_title {
@@ -276,10 +283,21 @@
  * Template editor
  */
 .textarea, .hypertext, .template_textarea, .css_textarea, .javascript_textarea, .head_textarea {
-	width: 98%;
+	width: 100%;
+}
+.template_textarea, .css_textarea, .javascript_textarea, .head_textarea {
+	background-image: url('/css/admin/input_bg.png');
+	background-repeat: no-repeat;
+	background-color: #fff;
+	border-top: 1px solid #888a85;
+	border-right: 1px solid #d3d7cf;
+	border-bottom: 1px solid #d3d7cf;
+	border-left: 1px solid #888a85;
+	padding: 4px 0;
 }
 
 .pseudo_variables_menu {
+	width: 100%;
 	border: 1px solid #D9D9D7;
 	background-color: #F3F3F1;
 	margin-bottom: 6px;

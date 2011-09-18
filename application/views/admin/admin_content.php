@@ -16,6 +16,7 @@
 		<div class="corner top_right"></div>
 		<div class="corner bottom_right"></div>
 		<div class="corner bottom_left"></div>
+		<div class="foreground"></div>
 		<div class="face_light"></div>
 	
 		<div id="tree_parent_1" class="tree_parent">
@@ -63,6 +64,7 @@
 	<div class="corner top_right"></div>
 	<div class="corner bottom_right"></div>
 	<div class="corner bottom_left"></div>
+	<div class="foreground"></div>
 	
 	<div id="content_window" style="display: none;">
 	</div> <!-- #content_editor_window -->
@@ -71,13 +73,13 @@
 	
 	<hr style="clear: both; border: 0; height: 0;" />
 
-<div id="blocker"></div> <!-- #blocker -->
 </div> <!-- #main -->
 
 <?php include("global/footer.php"); ?>
 
 <div id="client_warning"><span id="client_msg"></span></div>
 
+<div id="blocker"></div> <!-- #blocker -->
 </body>
 
 </html>
