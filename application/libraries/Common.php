@@ -344,6 +344,7 @@ class Common {
 			}
 		}
 		$this->CI->output->set_header("Content-type: application/xml");
+		$this->CI-output->append_output('<?xml version="1.0" encoding="UTF-8"?>' . "\n");
 		$this->CI->load->view('sitemap', array('urls' => $urls));
 	}
 
