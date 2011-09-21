@@ -950,9 +950,9 @@ class Content extends CI_Controller {
 					 * Variable pair with element type fields
 					 */
 					$pair = '{children}'  . "\n" ;
-					$pair .= "\t" . '{children.name}' . "\n";
-					$pair .= "\t" . '{children.sname}' . "\n";
-					$pair .= "\t" . '{children.uri}' . "\n";
+					$pair .= "\t" . '{name}' . "\n";
+					$pair .= "\t" . '{sname}' . "\n";
+					$pair .= "\t" . '{uri}' . "\n";
 					$pair .= '{/children}'  . "\n" ;
 					$template_variables['relative_content_variables']['children'] = array(
 						'pair' => urlencode($pair)
@@ -981,9 +981,9 @@ class Content extends CI_Controller {
 							 * Variable pair with element type fields
 							 */
 							$pair = '{brothers}'  . "\n" ;
-							$pair .= "\t" . '{brothers.name}' . "\n";
-							$pair .= "\t" . '{brothers.sname}' . "\n";
-							$pair .= "\t" . '{brothers.uri}' . "\n";
+							$pair .= "\t" . '{name}' . "\n";
+							$pair .= "\t" . '{sname}' . "\n";
+							$pair .= "\t" . '{uri}' . "\n";
 							$pair .= '{/brothers}'  . "\n" ;
 							$template_variables['relative_content_variables']['brothers'] = array(
 								'pair' => urlencode($pair)
@@ -1004,10 +1004,11 @@ class Content extends CI_Controller {
 					 * Variable pair with element type fields
 					 */
 					$pair = '{' . $element['type'] . '}'  . "\n" ;
-					$pair .= "\t" . '{' . $element['type'] . '.name}' . "\n";
+					$pair .= "\t" . '{name}' . "\n";
+					$pair .= "\t" . '{sname}' . "\n";
 					foreach( $this->crud->get_element_type_fields($element['type_id']) as $type_field )
 					{
-						$pair .= "\t" . '{' . $element['type'] . '.' . $type_field['sname'] . '}' . "\n";
+						$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
 					}
 					$pair .= '{/' . $element['type'] . '}'  . "\n" ;
 					$template_variables['element_variables'][$element['type_name']] = array(
@@ -1020,6 +1021,7 @@ class Content extends CI_Controller {
 				 */
 				$fields = '';
 				$fields .= '{' . $element['sname'] . '.name}' . "\n";
+				$fields .= '{' . $element['sname'] . '.sname}' . "\n";
 				foreach ( $this->crud->get_element_fields($element['id']) as $element_field )
 				{
 					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";

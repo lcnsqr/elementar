@@ -115,7 +115,10 @@ class Common {
 				/*
 				 * No submenu
 				 */
-				$menu_links[] = $link;
+				$menu_links[] = array(
+					'link' => $link,
+					'submenu' => NULL
+				);
 			}
 			else
 			{
@@ -123,7 +126,10 @@ class Common {
 				 * Recursive 
 				 * through submenu
 				 */
-				$menu_links[$link] = $this->_make_menu($submenu);
+				$menu_links[] = array(
+					'link' => $link,
+					'submenu' => $this->_make_menu($submenu)
+				);
 			}
 			next($menu);
 		}
@@ -462,33 +468,26 @@ class Common {
 			if ( count( $image ) > 0 )
 			{
 				/*
-				 * Mark as composite field
+				 * With an array value, put as a sub array
+				 * so the nested fields can be parsed on 
+				 * a template pair loop
 				 */
-				return array(
-					'_composite' => TRUE,
+				$nested = array();
+				$nested[] = array(
 					'uri' => (string) $image['uri'],
 					'width' => (string) $image['width'],
 					'height' => (string) $image['height'],
 					'alt' => (string) $image['alt'] 
 				);
-			}
-			else 
-			{
-				return array(
-					'_composite' => TRUE,
-					'uri' => '',
-					'width' => '',
-					'height' => '',
-					'alt' => '' 
-				);
+				return $nested;
 			}
 			break;
 
 			case 'menu' :
 			/*
-			 * Render as HTML unordered list
+			 * Generate links with semantic classes
 			 */
-			return ul($this->_make_menu(json_decode($field_value, TRUE)));
+			return $this->_make_menu(json_decode($field_value, TRUE));
 			break;
 			
 			default:
@@ -512,7 +511,7 @@ class Common {
 		}
 		
 		/*
-		 * Children contents
+		 * Children contents listing
 		 */
 		$children = $this->CI->crud->get_contents_by_parent($content_id);
 		if ( (bool) $children )
@@ -524,24 +523,14 @@ class Common {
 			foreach ( $children as $child )
 			{
 				$children_variables[] = array(
-					'children.id' => $child['id'],
-					'children.sname' => $child['sname'],
-					'children.name' => $child['name'],
-					'children.uri' => $this->CI->crud->get_content_uri($child['id']),
-					'children.children' => $child['children']
+					'id' => $child['id'],
+					'sname' => $child['sname'],
+					'name' => $child['name'],
+					'uri' => $this->CI->crud->get_content_uri($child['id']),
+					'children' => $child['children']
 				);
 			}
 			$content['children'] = $children_variables;
-		}
-		else
-		{
-			$content['children'][] = array(
-				'children.id' => '',
-				'children.sname' => '',
-				'children.name' => '',
-				'children.uri' => '',
-				'children.children' => ''
-			);
 		}
 
 		/*
@@ -560,24 +549,14 @@ class Common {
 				foreach ( $brothers as $brother )
 				{
 					$brothers_variables[] = array(
-						'brothers.id' => $brother['id'],
-						'brothers.sname' => $brother['sname'],
-						'brothers.name' => $brother['name'],
-						'brothers.uri' => $this->CI->crud->get_content_uri($brother['id']),
-						'brothers.children' => $brother['children']
+						'id' => $brother['id'],
+						'sname' => $brother['sname'],
+						'name' => $brother['name'],
+						'uri' => $this->CI->crud->get_content_uri($brother['id']),
+						'children' => $brother['children']
 					);
 				}
 				$content['brothers'] = $brothers_variables;
-			}
-			else
-			{
-				$content['brothers'][] = array(
-					'brothers.id' => '',
-					'brothers.sname' => '',
-					'brothers.name' => '',
-					'brothers.uri' => '',
-					'brothers.children' => ''
-				);
 			}
 		}
 		return $content;
@@ -612,8 +591,8 @@ class Common {
 			 * To be added in the element type array
 			 */
 			$entry = array(
-				$element_type . '.name' => $element_name,
-				$element_type . '.sname' => $element_sname
+				'name' => $element_name,
+				'sname' => $element_sname
 			);
 			
 			/*
@@ -629,36 +608,13 @@ class Common {
 				/*
 				 * element type array item
 				 */
-				if ( is_array($rendered_value) )
-				{
-					foreach ( $rendered_value as $key => $value )
-					{
-						$entry[$element_type . '.'. $field['sname'] . '.' . $key] = $value ;
-					}
-				}
-				else
-				{
-					$entry[$element_type . '.'. $field['sname']] = $rendered_value;
-				}
+				$entry[$field['sname']] = $rendered_value;
 				
 				// Add element direct access (without a template loop)
-				if ( ! array_key_exists($element['sname'], $data) )
-				{
-					// Adapt to template pseudo variables
-					$data[$element['sname'] . '.sname'] = $element_sname;
-					$data[$element['sname'] . '.name'] = $element_name;
-					if ( is_array($rendered_value) )
-					{
-						foreach ( $rendered_value as $key => $value )
-						{
-							$data[$element['sname'] . '.' . $field['sname'] . '.' . $key] = $value ;
-						}
-					}
-					else
-					{
-						$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;
-					}
-				}
+				// Adapt to template pseudo variables
+				$data[$element['sname'] . '.sname'] = $element_sname;
+				$data[$element['sname'] . '.name'] = $element_name;
+				$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;
 			}
 			/*
 			 * Add element entry as a pseudo variable pair (loop)

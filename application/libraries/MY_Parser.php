@@ -42,26 +42,24 @@ class MY_Parser extends CI_Parser {
 			return FALSE;
 		}
 
+		/*
+		 * Parse pair loops & composite fields first
+		 * to avoid fields inside loop of being replaced
+		 * by content fields with the same name
+		 */
 		foreach ($data as $key => $val)
 		{
 			if (is_array($val))
 			{
-				/*
-				 * Check if it's not a composite field
-				 */
-				if ( isset($val['_composite']) )
-				{
-					foreach ( $val as $attr => $attr_val )
-					{
-						$template = $this->_parse_single($key . '.' . $attr, (string)$attr_val, $template);
-					}
-				}
-				else
-				{
-					$template = $this->_parse_pair($key, $val, $template);
-				}
+				$template = $this->_parse_pair($key, $val, $template);
 			}
-			else
+		}
+		/*
+		 * Parse content fields
+		 */
+		foreach ($data as $key => $val)
+		{
+			if ( ! is_array($val))
 			{
 				$template = $this->_parse_single($key, (string)$val, $template);
 			}
