@@ -67,6 +67,7 @@ $(".upload_image").live("submit", function(event) {
 					/*
 					 * Update thumbnail and hide loading animation
 					 */
+					$(image_thumbnail).removeClass('image_item_thumbnail_missing');
 					$(image_thumbnail).css("backgroundImage", 'url(' + data.thumb_uri + ')');
 					$(upload_loading).fadeOut("slow");
 					$(image_cancel_item).hide('slow');
@@ -125,7 +126,8 @@ $(".image_erase").live("click", function(event) {
 	 * Update thumbnail and hide loading animation
 	 */
 	var image_thumbnail = $(container).find(".image_item_thumbnail");
-	$(image_thumbnail).css("backgroundImage", 'none');
+	$(image_thumbnail).removeAttr("style");
+	$(image_thumbnail).addClass('image_item_thumbnail_missing');
 	/*
 	 * Hide cancel upload and loading animation
 	 */
