@@ -204,6 +204,78 @@
 }
 
 /*
+ * Image upload field
+ */
+#image_parent_template, #image_item_template {
+	display: none;
+}
+.image_field > .image_parent {
+	margin: 0;
+}
+.image_parent {
+	margin-left: 12px;
+}
+.image_field > .image_parent > .image_item {
+	margin-right: 0;
+}
+.image_item {
+	position: relative;
+	margin-bottom: 12px;
+	padding-left: 6px;
+	margin-right: 8px;
+	border: 1px solid #d9d9d7;
+}
+.image_item_inputs {
+	float: left;
+	width: 196px;
+	margin-bottom: 10px;
+}
+.image_item label {
+	font-size: 11px;
+}
+.image_item_thumbnail {
+	position: relative;
+	width: 128px;
+	height: 128px;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.image_item_thumbnail_missing {
+	background-image: url("/css/admin/image_missing.png");
+}
+.image_item_thumbnail .loading {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: .5;
+	background-color: #fff;
+	background-image: url("/img/working.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.image_item_menu {
+	background-color: #f3f3f1;
+	margin-left: 200px;
+	padding: 2px 4px;
+	font-size: 11px;
+	line-height: 12px;
+}
+.image_field input[type="text"] {
+	width: 90%;
+}
+.image_field input.edit[type="text"] {
+}
+.image_field .add_image, .image_field .delete_image {
+	font-size: 11px;
+}
+
+/*
  * Dropdown listing
  */
 .dropdown_items_listing_inline {

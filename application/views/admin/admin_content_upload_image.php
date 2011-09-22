@@ -1,24 +1,36 @@
-<div id="upload_image_<?php echo $form_upload_session; ?>" class="upload_image_container">
+<div class="image_parent">
+	<div class="image_item">
 
-<div class="upload_image_title">
-<?php echo $input_title; ?>
-</div> <!-- .upload_image_title -->
+		<div class="image_item_inputs">
+			<div class="image_item_description">
+			<?php echo $image_description; ?>
+			</div> <!-- image_item_description -->
+<?php if ( (bool) $thumbnail ) : ?>
+			<div class="image_item_thumbnail" style="background-image: url('<?php echo $thumbnail; ?>');">
+<?php else: ?>
+			<div class="image_item_thumbnail image_item_thumbnail_missing">
+<?php endif; ?>
+			<div class="loading"></div>
+			</div> <!-- image_item_thumbnail -->
+		</div> <!-- image_item_inputs -->
 
-<div class="upload_image_form" <?php echo ( $img_url == "" ) ? "style=\"display: block;\"" : ""; ?> >
-<?php echo $form_upload; ?>
-</div> <!-- .upload_image_form -->
+		<div class="menu_item_menu">
+			<div class="upload_form"><?php echo $upload_form; ?></div>
+			<ul>
+				<li class="image_cancel_item" style="display: none;"><a class="image_cancel" href="<?php echo $upload_session_id; ?>">&notin; Cancelar Envio</a></li>
+				<!--
+				<li><a class="image_up" href="image_up">&uArr; Mover para cima</a></li>
+				<li><a class="image_down" href="image_down">&dArr; Mover para baixo</a></li>
+				-->
+				<li><a class="image_erase" href="image_erase">&empty; Limpar</a></li>
+				<!--
+				<li><a class="image_add_up" href="image_add_up">&uarr; Novo image acima</a></li>
+				<li><a class="image_add_down" href="image_add_down">&darr; Novo image abaixo</a></li>
+				-->
+			</ul>
+		</div>
 
-<div class="upload_image_loading">
-<p><img src="/img/ajax-loader.gif" alt="Carregando..." /> Carregando imagem...</p>
-<p><a href="upload_image_cancel" class="upload_image_cancel">Cancelar</a></p>
-</div> <!-- .upload_image_loading -->
-
-<div class="upload_image_display" <?php echo ( $img_url != "" ) ? "style=\"display: block;\"" : ""; ?> >
-<p><img src="<?php echo $img_url; ?>" alt="" class="upload_image_display_thumb" /></p>
-<p><a href="upload_image_change" class="upload_image_change" >Alterar</a></p>
-
-</div> <!-- .upload_image_display -->
-
-<iframe style="display: none;" class="iframeUpload_<?php echo $form_upload_session; ?>" name="iframeUpload_<?php echo $form_upload_session; ?>" scrolling="no" frameborder="0"></iframe>
-
-</div> <!-- .upload_image_container -->
+		<div style="width: 100%; clear: both;"></div>
+		<iframe style="display: none;" id="iframeUpload_<?php echo $upload_session_id; ?>" name="iframeUpload_<?php echo $upload_session_id; ?>" scrolling="no" frameborder="0"></iframe>
+	</div> <!-- image_item -->
+</div> <!-- image_parent -->

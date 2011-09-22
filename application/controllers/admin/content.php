@@ -551,6 +551,7 @@ class Content extends CI_Controller {
 			break;
 
 			case "img" : 
+			$form .= div_open(array('class' => 'image_field'));
 			$attributes = array(
 				'class' => 'noform',
 				'type' => 'hidden',
@@ -559,6 +560,7 @@ class Content extends CI_Controller {
 			);
 			$form .= form_input($attributes);
 			$form .= $this->common->render_form_upload_image($field['sname'], $value);
+			$form .= div_close();
 			break;
 
 			case "target" :
@@ -1617,7 +1619,7 @@ class Content extends CI_Controller {
 			{
 				case 'img' :
 				$image_id = $value;
-				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
+				$image_title = $this->input->post($type['sname'] . '_description', TRUE);
 				if ( (bool) $image_title )
 				{
 					$this->crud->put_image_title($image_id, $image_title);
@@ -1743,17 +1745,7 @@ class Content extends CI_Controller {
 		 */
 		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
-			if ( $this->crud->get_element_type_sname($type_id) == 'head_element' )
-			{
-				/*
-				 * Ignore XSS filter for Head element fields
-				 */
-				$value = $this->input->post($type['sname']);
-			}
-			else
-			{
-				$value = $this->input->post($type['sname'], TRUE);
-			}
+			$value = $this->input->post($type['sname'], TRUE);
 			$this->crud->put_element_field($element_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
@@ -1762,7 +1754,7 @@ class Content extends CI_Controller {
 			{
 				case 'img' :
 				$image_id = $value;
-				$image_title = $this->input->post($type['sname'] . '_title', TRUE);
+				$image_title = $this->input->post($type['sname'] . '_description', TRUE);
 				if ( (bool) $image_title )
 				{
 					$this->crud->put_image_title($image_id, $image_title);

@@ -362,64 +362,84 @@ class Common {
 	 */
 	function render_form_upload_image($field_sname, $image_id = NULL)
 	{
-		$form_upload_session = $this->CI->crud->put_upload_session();
-		
-		$hidden = array('form_upload_session' => $form_upload_session, 'field_sname' => $field_sname);
-		
-		$attributes = array(
-			'target' => "iframeUpload_" . $form_upload_session,
-			'name' => "upload_image_" . $form_upload_session,
-			'id' => "upload_image_" . $form_upload_session,
-			'class' => "upload_image"
-		);
-		$form = form_open_multipart("/admin/upload/send_image", $attributes, $hidden);
-		
-		$attributes = array(
-			'name' => "upload_image_field",
-			'id' => "upload_image_field_" . $form_upload_session
-		);
+		/*
+		 * Create an upload session to hold sent data
+		 * before saving the content/element
+		 */
+		$upload_session_id = $this->CI->crud->put_upload_session();
 		
 		/*
-		 * IE change event bug
+		 * Upload form properties
+		 */
+		$attributes = array(
+			'target' => "iframeUpload_" . $upload_session_id,
+			'name' => "upload_image_" . $upload_session_id,
+			'id' => "upload_image_" . $upload_session_id,
+			'class' => "upload_image"
+		);
+		/*
+		 * Hidden fields to hold the upload session id
+		 * and the actual image field name (which will carry
+		 * the sent image id)
+		 */
+		$hidden = array(
+			'upload_session_id' => $upload_session_id, 
+			'field_sname' => $field_sname
+		);
+		/*
+		 * The URI to handle the upload
+		 */
+		$form = form_open_multipart("/admin/upload/send_image", $attributes, $hidden);
+		/*
+		 * Open file field
+		 */
+		$attributes = array(
+			'class' => 'upload_file',
+			'name' => "upload_file",
+			'id' => "upload_file_" . $upload_session_id
+		);
+		/*
+		 * IE change event bug (to upload automatic after file selection)
 		 */
 		$this->CI->load->library('user_agent');
 		if( $this->CI->agent->browser() == 'Internet Explorer' )
 		{
 			$attributes['onchange'] = 'this.form.submit(); this.blur();';
 		}
-		
-		$form .= form_label("Escolha a imagem", $attributes['id']);
+		$form .= form_label("Enviar imagem", $attributes['id']);
 		$form .= br(1);
 		$form .= form_upload($attributes);
-
 		/*
-		$form .= br(1);
-		$form .= form_submit("submit", "Enviar imagem");
-		*/
-		
+		 * Close upload form
+		 */
 		$form .= form_close();
 		
-		$data['form_upload'] = $form;
-		$data['form_upload_session'] = $form_upload_session;
-		
-		$data['img_url'] = $this->CI->crud->get_image_uri_thumb($image_id);
+		/*
+		 * Image field View variables
+		 */
+		$data['upload_form'] = $form;
+		$data['upload_session_id'] = $upload_session_id;
+		$data['thumbnail'] = $this->CI->crud->get_image_uri_thumb($image_id);
 
 		/*
-		 * Título (alt text)
+		 * Image description (alt text)
 		 */
 		$attributes = array(
 			'class' => 'noform',
-			'name' => $field_sname . '_title',
-			'id' => $field_sname . '_title',
+			'name' => $field_sname . '_description',
+			'id' => $field_sname . '_description',
 			'value' => $this->CI->crud->get_image_title($image_id)
 		);
-		$data['input_title'] = form_label("Título da imagem", $field_sname . '_title');
-		$data['input_title'] .= br(1);
-		$data['input_title'] .= form_input($attributes);
+		$data['image_description'] = form_label("Descrição da imagem", $field_sname . '_description');
+		$data['image_description'] .= br(1);
+		$data['image_description'] .= form_input($attributes);
 		
-		return $this->CI->load->view("admin/admin_content_upload_image", $data, TRUE);
-		
+		/*
+		 * Render composite field
+		 */
+		return $this->CI->load->view("admin/admin_content_upload_image", $data, TRUE);	
 	}
+
 	/**
 	 * Convert non-ascii and other characters to ascii and underscores
 	 * @param string $string Input string

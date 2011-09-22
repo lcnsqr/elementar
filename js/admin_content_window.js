@@ -46,7 +46,8 @@ $(function() {
 		}, "json");
 	});
 
-	// Selecao do tipo do elemento
+	// Seleção do tipo do elemento
+	
 	$(".dropdown_items_listing_element_type_target").live('click', function(event) {
 		event.preventDefault();
 		

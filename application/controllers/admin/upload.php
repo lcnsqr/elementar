@@ -102,24 +102,24 @@ class Upload extends CI_Controller {
 	}
 
 	/**
-	 * Image uploading status
+	 * Uploading status
 	 */
-	function xhr_read_image_status()
+	function xhr_read_upload_status()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 		
-		$form_upload_session = $this->input->post('form_upload_session', TRUE);
+		$upload_session_id = $this->input->post('upload_session_id', TRUE);
 
-		$done = $this->crud->get_upload_session_done($form_upload_session);
+		$done = $this->crud->get_upload_session_done($upload_session_id);
 		
-		if ( $done )
+		if ( (bool) $done )
 		{
-			$uri = $this->crud->get_upload_session_uri($form_upload_session);
-			$name = $this->crud->get_upload_session_name($form_upload_session);
+			$uri = $this->crud->get_upload_session_uri($upload_session_id);
+			$name = $this->crud->get_upload_session_name($upload_session_id);
 			$response = array(
 				'done' => TRUE,
-				'image_id' => $this->crud->get_upload_session_image_id($form_upload_session),
+				'image_id' => $this->crud->get_upload_session_image_id($upload_session_id),
 				'name' => $name,
 				'uri' => $uri,
 				'thumb_uri' => substr($uri, 0, strrpos($uri, ".")) . "_thumb" . substr($uri, strrpos($uri, ".") - strlen($uri), strlen($uri))
@@ -137,37 +137,42 @@ class Upload extends CI_Controller {
 
 	function send_image()
 	{
-		// session
-		$form_upload_session = $this->input->post("form_upload_session", TRUE);
+		/*
+		 * Receive the upload session ID
+		 */
+		$upload_session_id = $this->input->post("upload_session_id", TRUE);
 		
-		if ((($_FILES["upload_image_field"]["type"] == "image/gif") 
-		OR ($_FILES["upload_image_field"]["type"] == "image/jpeg") 
-		OR ($_FILES["upload_image_field"]["type"] == "image/pjpeg") 
-		OR ($_FILES["upload_image_field"]["type"] == "image/png")) 
-		&& ($_FILES["upload_image_field"]["size"] < 10485760))
+		/*
+		 * Check file type an size ( < 10 MB ) before proceed
+		 */
+		if ((($_FILES["upload_file"]["type"] == "image/gif") 
+		OR ($_FILES["upload_file"]["type"] == "image/jpeg") 
+		OR ($_FILES["upload_file"]["type"] == "image/pjpeg") 
+		OR ($_FILES["upload_file"]["type"] == "image/png")) 
+		&& ($_FILES["upload_file"]["size"] < 10485760)) 
 		{
-			if ($_FILES["upload_image_field"]["error"] > 0)
+			if ($_FILES["file"]["error"] > 0)
 			{
 				/*
-				echo "Error: " . $_FILES["file"]["error"] . "<br />";
-				*/
-				$this->crud->put_upload_session($form_upload_session, "error", TRUE);
+				 * Mark an error in upload session
+				 */
+				$this->crud->put_upload_session($upload_session_id, "error", TRUE);
 			}
 			else
 			{
 				/*
-				echo "Upload: " . $_FILES["file"]["name"] . "<br />";
-				echo "Type: " . $_FILES["file"]["type"] . "<br />";
-				echo "Size: " . ($_FILES["file"]["size"] / 1024) . " Kb<br />";
-				echo "Stored in: " . $_FILES["file"]["tmp_name"];
-				*/
-				$tmp_name = $_FILES["upload_image_field"]["tmp_name"];
-				$name = $_FILES["upload_image_field"]["name"];
+				 * Receive file properties
+				 */
+				$tmp_name = $_FILES["upload_file"]["tmp_name"];
+				$name = $_FILES["upload_file"]["name"];
+				/*
+				 * Move file to upload dir
+				 */
 				$uri = "/img/upload/" . time() . "_" . $name;
 				move_uploaded_file($tmp_name, "." . $uri);
 				
 				/*
-				 * thumbnail
+				 * Generate thumbnail
 				 */
 				$config['image_library'] = 'gd2';
 				$config['source_image']	= "." . $uri;
@@ -177,24 +182,37 @@ class Upload extends CI_Controller {
 				$config['height']	= 128;
 				$this->load->library('image_lib', $config); 
 				$this->image_lib->resize();
-				
-				$this->crud->put_upload_session($form_upload_session, "name", $name);
-				$this->crud->put_upload_session($form_upload_session, "uri", $uri);
-				$this->crud->put_upload_session($form_upload_session, "done", TRUE);
+				$uri_thumb = substr($uri, 0, strrpos($uri, ".")) . "_thumb" . substr($uri, strrpos($uri, ".") - strlen($uri), strlen($uri));
 				
 				/*
-				 * Escrever imagem na tabela
+				 * Write file properties to session
 				 */
-				$uri_thumb = substr($uri, 0, strrpos($uri, ".")) . "_thumb" . substr($uri, strrpos($uri, ".") - strlen($uri), strlen($uri));
-				// Get image dimensions
+				$this->crud->put_upload_session($upload_session_id, "name", $name);
+				$this->crud->put_upload_session($upload_session_id, "uri", $uri);
+				$this->crud->put_upload_session($upload_session_id, "done", TRUE);
+				
+				/*
+				 * Get image dimensions
+				 */
 				list($width, $height, $type, $attr) = getimagesize("." . $uri);
+				/*
+				 * Write image properties in image table
+				 * (use file name for alt text until the 
+				 * content/element is saved)
+				 */
 				$image_id = $this->crud->put_image($name, $uri, $uri_thumb, $width, $height);
-				$this->crud->put_upload_session($form_upload_session, "image_id", $image_id);
+				/*
+				 * Put image id in session table
+				 */
+				$this->crud->put_upload_session($upload_session_id, "image_id", $image_id);
 			}
 		}
 		else
 		{
-			$this->crud->put_upload_session($form_upload_session, "error", TRUE);
+			/*
+			 * Mark an error in upload session
+			 */
+			$this->crud->put_upload_session($upload_session_id, "error", TRUE);
 		}
 	}
 		
