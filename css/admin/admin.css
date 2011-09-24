@@ -12,7 +12,9 @@ body {
 	*/
 	background-color: #fff;
 	color: #2d2d2d;
+/*
 	background: url('/css/admin/admin_bg.png') no-repeat left top;
+*/
 }
 
 a {
@@ -77,7 +79,6 @@ a:visited {
 	background-color: #000;
 }
 #header_shadow {
-	margin-bottom: 60px;
 	background: url('/css/admin/header_bg.png') repeat-x center bottom;
 	height: 7px;
 }
@@ -159,6 +160,18 @@ a:visited {
 }
 #user_menu ul li .dropdown ul li a, #resource_menu ul li .dropdown ul li a {
 	display: inline;
+}
+
+#banner {
+	height: 60px;
+}
+#banner .logo {
+	float: left;
+	height: 60px;
+	width: 280px;
+	background-image: url('/css/admin/elementar.png');
+	background-position: center center;
+	background-repeat: no-repeat;
 }
 
 /*

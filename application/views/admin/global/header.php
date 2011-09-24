@@ -20,3 +20,5 @@
 
 </div> <!-- #header -->
 <div id="header_shadow"></div>
+
+<div id="banner"><div class="logo"></div></div>
