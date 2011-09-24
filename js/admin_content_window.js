@@ -129,6 +129,14 @@ $(function() {
 			//console.log($.toJSON(menu));
 		});
 
+		/*
+		 * Update image gallery data
+		 */
+		$(".image_gallery_field").each(function() {
+			var gallery = prepare_image_gallery_field(this);
+			$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
+		});
+
 		$.post("/admin/content/xhr_write_element", $(".noform").serialize(), function(data){
 			try {
 				if ( data.done == true ) {
@@ -260,6 +268,14 @@ $(function() {
 			var menu = prepare_menu_field(this);
 			$(this).find('input.menu_actual_field').val($.toJSON(menu));
 			console.log($.toJSON(menu));
+		});
+
+		/*
+		 * Update image gallery data
+		 */
+		$(".image_gallery_field").each(function() {
+			var gallery = prepare_image_gallery_field(this);
+			$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
 		});
 
 		$.post("/admin/content/xhr_write_content", $(".noform").serialize(), function(data){

@@ -121,6 +121,7 @@ class Content extends CI_Controller {
 			'/js/admin_content_window.js',
 			'/js/admin_content_ckeditor.js',
 			'/js/admin_content_menu_field.js',
+			'/js/admin_content_image_gallery_field.js',
 			'/js/jquery.json-2.2.min.js',
 			'/js/admin_anchor.js',
 			'/js/admin_upload.js'
@@ -559,7 +560,50 @@ class Content extends CI_Controller {
 				'value' => $value
 			);
 			$form .= form_input($attributes);
-			$form .= $this->common->render_form_upload_image($field['sname'], $value);
+			/*
+			 * Upload form
+			 */
+			$data = $this->common->render_form_upload_image($field['sname'], $value);
+			$form .= $this->load->view("admin/admin_content_upload_image", $data, TRUE);
+			$form .= div_close();
+			break;
+
+			case "image_gallery" : 
+			$form .= div_open(array('class' => 'image_gallery_field'));
+			/*
+			 * Images array
+			 */
+			$gallery = array();
+			/*
+			 * Loop on each image from gallery
+			 */
+			if ( (bool) $value )
+			{
+				$image_ids = json_decode($value, TRUE);
+				foreach ( $image_ids as $image_id )
+				{
+					$item_data = $this->common->render_form_upload_image($field['sname'] . '_item', $image_id);
+					$item_form = $this->load->view("admin/admin_content_image_gallery_field_item", $item_data, TRUE);
+					$gallery[] = array(
+						'item_form' => $item_form
+					);
+				}
+			}
+			/*
+			 * Input holds json array with 
+			 * image IDs and it's alt text
+			 */
+			$attributes = array(
+				'class' => 'noform image_gallery_actual_field',
+				'type' => 'hidden',
+				'name' => $field['sname'],
+				'value' => $value
+			);
+			$form .= form_input($attributes);
+			/*
+			 * Render gallery field
+			 */
+			$form .= $this->load->view("admin/admin_content_image_gallery_field", array('gallery' => $gallery), TRUE);
 			$form .= div_close();
 			break;
 
@@ -1611,7 +1655,6 @@ class Content extends CI_Controller {
 		foreach ( $this->crud->get_content_type_fields($type_id) as $type)
 		{
 			$value = $this->input->post($type['sname'], TRUE);
-			$this->crud->put_content_field($content_id, $type['id'], $value);
 			/*
 			 * Extra fields for specific field types
 			 */
@@ -1624,7 +1667,29 @@ class Content extends CI_Controller {
 				{
 					$this->crud->put_image_title($image_id, $image_title);
 				}
+				$this->crud->put_content_field($content_id, $type['id'], $value);
 				break;
+
+				case 'image_gallery' :
+				$gallery = json_decode($value, TRUE);
+				if ( count($gallery) > 0 )
+				{
+					$ids = array();
+					foreach ( $gallery as $image )
+					{
+						$ids[] = $image['image_id'];
+						if ( (bool) $image['image_description'] )
+						{
+							$this->crud->put_image_title($image['image_id'], $image['image_description']);
+						}
+					}
+					$this->crud->put_content_field($content_id, $type['id'], json_encode($ids));
+				}
+				break;
+				
+				default :
+				$this->crud->put_content_field($content_id, $type['id'], $value);
+				break;				
 			}
 		}
 		
@@ -1746,9 +1811,8 @@ class Content extends CI_Controller {
 		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
 			$value = $this->input->post($type['sname'], TRUE);
-			$this->crud->put_element_field($element_id, $type['id'], $value);
 			/*
-			 * Extra fields for specific field types
+			 * Extra details for specific field types
 			 */
 			switch ( $type['type'] )
 			{
@@ -1759,7 +1823,29 @@ class Content extends CI_Controller {
 				{
 					$this->crud->put_image_title($image_id, $image_title);
 				}
+				$this->crud->put_element_field($element_id, $type['id'], $value);
 				break;
+				
+				case 'image_gallery' :
+				$gallery = json_decode($value, TRUE);
+				if ( count($gallery) > 0 )
+				{
+					$ids = array();
+					foreach ( $gallery as $image )
+					{
+						$ids[] = $image['image_id'];
+						if ( (bool) $image['image_description'] )
+						{
+							$this->crud->put_image_title($image['image_id'], $image['image_description']);
+						}
+					}
+					$this->crud->put_element_field($element_id, $type['id'], json_encode($ids));
+				}
+				break;
+				
+				default :
+				$this->crud->put_element_field($element_id, $type['id'], $value);
+				break;				
 			}
 		}
 		
@@ -2062,5 +2148,25 @@ class Content extends CI_Controller {
 		);
 		$this->common->ajax_response($response);
 	}
+	
+	/**
+	 * New image gallery item form
+	 */
+	function xhr_render_image_gallery_item_form()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
 
+		$field_sname = $this->input->post('field_sname', TRUE);
+
+		$item_data = $this->common->render_form_upload_image($field_sname . '_item');
+		$item_form = $this->load->view("admin/admin_content_image_gallery_field_item", $item_data, TRUE);
+
+		$response = array(
+			'done' => TRUE,
+			'html' => $item_form
+		);
+		$this->common->ajax_response($response);
+		
+	}
 }

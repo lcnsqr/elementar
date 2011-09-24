@@ -213,7 +213,7 @@
 	margin: 0;
 }
 .image_parent {
-	margin-left: 12px;
+	margin: 0;
 }
 .image_field > .image_parent > .image_item {
 	margin-right: 0;
@@ -273,6 +273,9 @@
 }
 .image_field .add_image, .image_field .delete_image {
 	font-size: 11px;
+}
+.image_field input.upload_file, .image_gallery_field input.upload_file {
+	width: 180px;
 }
 
 /*

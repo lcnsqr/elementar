@@ -417,27 +417,15 @@ class Common {
 		/*
 		 * Image field View variables
 		 */
+		$data = array();
+		$data['input_name'] = $field_sname;
 		$data['upload_form'] = $form;
 		$data['upload_session_id'] = $upload_session_id;
 		$data['thumbnail'] = $this->CI->crud->get_image_uri_thumb($image_id);
-
-		/*
-		 * Image description (alt text)
-		 */
-		$attributes = array(
-			'class' => 'noform',
-			'name' => $field_sname . '_description',
-			'id' => $field_sname . '_description',
-			'value' => $this->CI->crud->get_image_title($image_id)
-		);
-		$data['image_description'] = form_label("Descrição da imagem", $field_sname . '_description');
-		$data['image_description'] .= br(1);
-		$data['image_description'] .= form_input($attributes);
+		$data['image_id'] = $image_id;
+		$data['image_description'] = $this->CI->crud->get_image_title($image_id);
 		
-		/*
-		 * Render composite field
-		 */
-		return $this->CI->load->view("admin/admin_content_upload_image", $data, TRUE);	
+		return $data;
 	}
 
 	/**
@@ -501,6 +489,25 @@ class Common {
 				);
 				return $nested;
 			}
+			break;
+
+			case 'image_gallery' :
+			$gallery_ids = json_decode($field_value, TRUE);
+			$gallery = array();
+			foreach ( $gallery_ids as $file_id )
+			{
+				$image = (array) $this->CI->crud->get_image($file_id);
+				if ( count( $image ) > 0 )
+				{
+					$gallery[] = array(
+						'uri' => (string) $image['uri'],
+						'width' => (string) $image['width'],
+						'height' => (string) $image['height'],
+						'alt' => (string) $image['alt'] 
+					);
+				}
+			}
+			return $gallery;
 			break;
 
 			case 'menu' :

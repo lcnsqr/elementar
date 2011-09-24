@@ -44,7 +44,7 @@ $(".upload_image").live("submit", function(event) {
 	/*
 	 * Cancel uploading action
 	 */
-	var image_cancel_item = $(form).parents('.menu_item_menu').first().find('.image_cancel_item');
+	var image_cancel_item = $(form).parents('.image_item_menu').first().find('.image_cancel_item');
 	$(image_cancel_item).show('fast');
 
 	/*
@@ -59,11 +59,16 @@ $(".upload_image").live("submit", function(event) {
 					 */
 					$(form).stopTime('upload_session_status');
 					/*
-					 * Put image id in the field
+					 * Put image id in the field (for single image)
 					 */
 					var field_sname = $(form).find("input[name='field_sname']").first().val();
 					var image_field = $(form).parents('.image_field').first().find("input[name='"+field_sname+"']");
 					$(image_field).val(data.image_id);
+					/*
+					 * Put image id for the item (image gallery)
+					 */
+					var item_image_id = $(form).parents('.image_item').first().find("input.image_id").first();
+					$(item_image_id).val(data.image_id);
 					/*
 					 * Update thumbnail and hide loading animation
 					 */

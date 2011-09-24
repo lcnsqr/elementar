@@ -3,7 +3,8 @@
 
 		<div class="image_item_inputs">
 			<div class="image_item_description">
-			<?php echo $image_description; ?>
+			<label for="<?php echo $input_name; ?>_description_<?php echo $upload_session_id; ?>">Descrição da imagem</label><br />
+			<input type="text" name="<?php echo $input_name; ?>_description" value="<?php echo $image_description; ?>" class="noform image_description" id="<?php echo $input_name; ?>_description_<?php echo $upload_session_id; ?>">
 			</div> <!-- image_item_description -->
 <?php if ( (bool) $thumbnail ) : ?>
 			<div class="image_item_thumbnail" style="background-image: url('<?php echo $thumbnail; ?>');">
@@ -14,19 +15,11 @@
 			</div> <!-- image_item_thumbnail -->
 		</div> <!-- image_item_inputs -->
 
-		<div class="menu_item_menu">
+		<div class="image_item_menu">
 			<div class="upload_form"><?php echo $upload_form; ?></div>
 			<ul>
 				<li class="image_cancel_item" style="display: none;"><a class="image_cancel" href="<?php echo $upload_session_id; ?>">&notin; Cancelar Envio</a></li>
-				<!--
-				<li><a class="image_up" href="image_up">&uArr; Mover para cima</a></li>
-				<li><a class="image_down" href="image_down">&dArr; Mover para baixo</a></li>
-				-->
 				<li><a class="image_erase" href="image_erase">&empty; Limpar</a></li>
-				<!--
-				<li><a class="image_add_up" href="image_add_up">&uarr; Novo image acima</a></li>
-				<li><a class="image_add_down" href="image_add_down">&darr; Novo image abaixo</a></li>
-				-->
 			</ul>
 		</div>
 
