@@ -169,7 +169,9 @@ a:visited {
 	float: left;
 	height: 60px;
 	width: 280px;
+/*
 	background-image: url('/css/admin/elementar.png');
+*/
 	background-position: center center;
 	background-repeat: no-repeat;
 }

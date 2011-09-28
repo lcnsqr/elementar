@@ -112,7 +112,9 @@
 	display: none;
 	margin-left: 16px;
 	line-height: 16px;
+/*
 	padding-bottom: 3px;
+*/
 }
 #tree_listing_1 {
 	display: block;
@@ -159,6 +161,7 @@
 }
 .tree_listing_row .tree_listing_icon img {
 	vertical-align: middle;
+	margin-bottom: 2px;
 }
 .tree_listing_row .tree_listing_menu {
 	display: none;
@@ -198,17 +201,14 @@
 }
 
 .tree_listing_row form.label input[type="text"] {
-/*
-	background-color: #eee;
-*/
 	background-color: transparent;
 	border-width: 0;
 	height: 16px;
-	line-height: 16px;
 	width: 100%;
 	color: #666666;
 	text-shadow: white 0 1px 0;
 	cursor: default;
+	margin-top: -1px;
 }
 .tree_listing_row .tree_listing_hover form.label input[type="text"] {
 	color: #2d2d2d;
@@ -217,7 +217,7 @@
 	background-color: #fff;
 	border: 1px solid #cccccf;
 	cursor: text;
-	margin-top: -1px;
+	margin-top: -2px;
 	margin-left: -1px;
 }
 
