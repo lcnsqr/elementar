@@ -577,9 +577,9 @@ class Content extends CI_Controller {
 			/*
 			 * Loop on each image from gallery
 			 */
-			if ( (bool) $value )
+			$image_ids = json_decode($value, TRUE);
+			if ( is_array($image_ids) )
 			{
-				$image_ids = json_decode($value, TRUE);
 				foreach ( $image_ids as $image_id )
 				{
 					$item_data = $this->common->render_form_upload_image($field['sname'] . '_item', $image_id);
