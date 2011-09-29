@@ -122,6 +122,7 @@ class Content extends CI_Controller {
 			'/js/admin_content_ckeditor.js',
 			'/js/admin_content_menu_field.js',
 			'/js/admin_content_image_gallery_field.js',
+			'/js/admin_content_youtube_gallery_field.js',
 			'/js/jquery.json-2.2.min.js',
 			'/js/admin_anchor.js',
 			'/js/admin_upload.js'
@@ -604,6 +605,29 @@ class Content extends CI_Controller {
 			 * Render gallery field
 			 */
 			$form .= $this->load->view("admin/admin_content_image_gallery_field", array('gallery' => $gallery), TRUE);
+			$form .= div_close();
+			break;
+
+			case "youtube_gallery" :
+			$form .= div_open(array('class' => 'youtube_gallery_field'));
+			/*
+			 * Render youtube_gallery field
+			 */
+			$data = array(
+				'videos' => json_decode($value, TRUE) // decode as associative array
+			);
+			$form .= $this->load->view('admin/admin_content_youtube_gallery_field', $data, true);
+			/*
+			 * The actual field
+			 */
+			$attributes = array(
+				'class' => 'noform youtube_gallery_actual_field',
+				'type' => 'hidden',
+				'name' => $field['sname'],
+				'id' => $field['sname'],
+				'value' => $value
+			);
+			$form .= form_input($attributes);
 			$form .= div_close();
 			break;
 

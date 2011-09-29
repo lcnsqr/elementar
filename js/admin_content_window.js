@@ -137,6 +137,14 @@ $(function() {
 			$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
 		});
 
+		/*
+		 * Update youtube gallery data
+		 */
+		$(".youtube_gallery_field").each(function() {
+			var gallery = prepare_youtube_gallery_field(this);
+			$(this).find('input.youtube_gallery_actual_field').val($.toJSON(gallery));
+		});
+
 		$.post("/admin/content/xhr_write_element", $(".noform").serialize(), function(data){
 			try {
 				if ( data.done == true ) {
@@ -276,6 +284,14 @@ $(function() {
 		$(".image_gallery_field").each(function() {
 			var gallery = prepare_image_gallery_field(this);
 			$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
+		});
+
+		/*
+		 * Update youtube gallery data
+		 */
+		$(".youtube_gallery_field").each(function() {
+			var gallery = prepare_youtube_gallery_field(this);
+			$(this).find('input.youtube_gallery_actual_field').val($.toJSON(gallery));
 		});
 
 		$.post("/admin/content/xhr_write_content", $(".noform").serialize(), function(data){

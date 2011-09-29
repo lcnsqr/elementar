@@ -510,6 +510,31 @@ class Common {
 			return $gallery;
 			break;
 
+			case 'youtube_gallery' :
+			$videos = json_decode($field_value, TRUE);
+			$gallery = array();
+			foreach ( $videos as $video )
+			{
+				if ( count( $video ) > 0 )
+				{
+					/*
+					 * YouTube video id
+					 */
+					$video_url_segments = parse_url($video['url']);
+					parse_str($video_url_segments['query'], $variables);
+					$video_id = $variables['v'];
+					$gallery[] = array(
+						'description' => (string) $video['description'],
+						'url' => (string) $video['url'],
+						'video_id' => $video_id,
+						'screenshot_large' => 'http://img.youtube.com/vi/' . $video_id . '/0.jpg',
+						'screenshot_small' => 'http://img.youtube.com/vi/' . $video_id . '/2.jpg'
+					);
+				}
+			}
+			return $gallery;
+			break;
+
 			case 'menu' :
 			/*
 			 * Generate links with semantic classes

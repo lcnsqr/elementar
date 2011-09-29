@@ -279,6 +279,69 @@
 }
 
 /*
+ * YouTube gallery field
+ */
+#youtube_parent_template, #youtube_item_template {
+	display: none;
+}
+.youtube_field > .youtube_parent {
+	margin: 0;
+}
+.youtube_parent {
+	margin: 0;
+}
+.youtube_field > .youtube_parent > .youtube_item {
+	margin-right: 0;
+}
+.youtube_item {
+	position: relative;
+	margin-bottom: 12px;
+	padding-left: 6px;
+	margin-right: 8px;
+	border: 1px solid #d9d9d7;
+}
+.youtube_item_inputs {
+	float: left;
+	width: 196px;
+	margin-bottom: 10px;
+}
+.youtube_item label {
+	font-size: 11px;
+}
+.youtube_item_name, .youtube_item_target {
+}
+.youtube_item_menu {
+	background-color: #f3f3f1;
+	margin-left: 200px;
+	padding: 2px 4px;
+	font-size: 11px;
+	line-height: 12px;
+}
+.youtube_field input[type="text"] {
+	width: 90%;
+/*
+	background-image: none;
+	background-color: transparent;
+	border-width: 0;
+	height: 16px;
+	line-height: 16px;
+	cursor: default;
+	width: 80px;
+*/
+}
+.youtube_field input.edit[type="text"] {
+/*
+	cursor: text;
+	height: 14px !important;
+	width: 78px !important;
+*/
+}
+.youtube_field .add_youtube, .youtube_field .delete_youtube {
+	font-size: 11px;
+}
+
+
+/*
  * Dropdown listing
  */
 .dropdown_items_listing_inline {
