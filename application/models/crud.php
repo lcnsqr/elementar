@@ -27,6 +27,12 @@
 
 class Crud extends CI_Model {
 	
+	/*
+	 * Status defaults to “published” 
+	 * to avoid listing draft contents
+	 */
+	var $STATUS = 'published';
+	
 	function __construct()
 	{
 		// Call the Model constructor
@@ -241,6 +247,10 @@ class Crud extends CI_Model {
 		$this->elementar->from('content');
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
 		$this->elementar->where('content.id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -266,6 +276,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('name');
 		$this->elementar->from('content');
 		$this->elementar->where('id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -283,6 +297,11 @@ class Crud extends CI_Model {
 		$this->elementar->select('parent_id');
 		$this->elementar->from('content_parent');
 		$this->elementar->where('content_id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->join('content', 'content.id = content_parent.parent_id', 'inner');
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -302,6 +321,10 @@ class Crud extends CI_Model {
 		$this->elementar->from('element');
 		$this->elementar->join('element_parent', 'element_parent.element_id = element.id', 'inner');
 		$this->elementar->where('element.id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('element.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -327,6 +350,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('name');
 		$this->elementar->from('element');
 		$this->elementar->where('id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -386,6 +413,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('sname');
 		$this->elementar->from('content');
 		$this->elementar->where('id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -426,6 +457,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('spread');
 		$this->elementar->from('element');
 		$this->elementar->where('id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1018,6 +1053,10 @@ class Crud extends CI_Model {
 		$this->elementar->join('content_type_field', 'content_type_field.id = content_field.content_type_field_id', 'inner');
 		$this->elementar->join('field_type', 'field_type.id = content_type_field.field_type_id', 'inner');
 		$this->elementar->where('content.id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		foreach ($query->result() as $row)
 		{
@@ -1066,6 +1105,10 @@ class Crud extends CI_Model {
 		$this->elementar->join('element_type_field', 'element_type_field.id = element_field.element_type_field_id', 'inner');
 		$this->elementar->join('field_type', 'field_type.id = element_type_field.field_type_id', 'inner');
 		$this->elementar->where('element.id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('element.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		foreach ($query->result() as $row)
 		{
@@ -1089,6 +1132,11 @@ class Crud extends CI_Model {
 		$this->elementar->from('element_field');
 		$this->elementar->where('element_id', $element_id);
 		$this->elementar->where('element_type_field_id', $element_type_field_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->join('element', 'element.id = element_field.element_id', 'inner');
+			$this->elementar->where('element.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1424,6 +1472,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('template_id, content_type_id');
 		$this->elementar->from('content');
 		$this->elementar->where('id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1597,6 +1649,10 @@ class Crud extends CI_Model {
 		$this->elementar->from('content');
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
 		$this->elementar->where('content_parent.parent_id', $parent_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$this->elementar->order_by('content.created', 'desc');
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1626,6 +1682,10 @@ class Crud extends CI_Model {
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
 		$this->elementar->where('content.sname', $sname);
 		$this->elementar->where('content_parent.parent_id', $parent_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1646,6 +1706,10 @@ class Crud extends CI_Model {
 		$this->elementar->from('element');
 		$this->elementar->join('element_parent', 'element_parent.element_id = element.id', 'inner');
 		$this->elementar->where('element_parent.parent_id', $parent_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('element.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1677,6 +1741,10 @@ class Crud extends CI_Model {
 		$this->elementar->join('element_type', 'element_type.id = element.element_type_id', 'inner');
 		$this->elementar->join('content_parent', 'content_parent.content_id = element_parent.parent_id', 'left');
 		$this->elementar->where('element_parent.parent_id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('element.status', $this->STATUS);
+		}
 		if ( $elements !== NULL )
 		{
 			/*
@@ -1736,6 +1804,11 @@ class Crud extends CI_Model {
 		$this->elementar->select('parent_id');
 		$this->elementar->from('element_parent');
 		$this->elementar->where('element_id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->join('content', 'content.id = element_parent.parent_id', 'inner');
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1753,6 +1826,11 @@ class Crud extends CI_Model {
 		$this->elementar->select('*');
 		$this->elementar->from('content_parent');
 		$this->elementar->where('content_parent.parent_id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->join('content', 'content.id = content_parent.content_id', 'inner');
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		if ( $elements )
 		{
 			/*
@@ -1760,6 +1838,11 @@ class Crud extends CI_Model {
 			 */
 			$this->elementar->from('element_parent');
 			$this->elementar->or_where('element_parent.parent_id', $content_id);
+			if ( $this->STATUS != 'all' )
+			{
+				$this->elementar->join('element', 'element.id = element_parent.element_id', 'inner');
+				$this->elementar->where('element.status', $this->STATUS);
+			}
 		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1782,6 +1865,10 @@ class Crud extends CI_Model {
 
 		$this->elementar->select('id, name, sname, modified');
 		$this->elementar->from('content');
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1801,6 +1888,10 @@ class Crud extends CI_Model {
 		$this->elementar->from('content');
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
 		$this->elementar->where('content_parent.parent_id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('content.status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1829,6 +1920,10 @@ class Crud extends CI_Model {
 		$this->elementar->select('id, name, sname');
 		$this->elementar->from('content');
 		$this->elementar->where('id', $content_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{

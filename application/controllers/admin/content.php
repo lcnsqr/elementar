@@ -73,6 +73,7 @@ class Content extends CI_Controller {
 		 * Create, read, update and delete Model
 		 */
 		$this->load->model('Crud', 'crud');
+		$this->crud->STATUS = 'all';
 		
 		/*
 		 * CMS Common Library
