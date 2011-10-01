@@ -11,7 +11,7 @@ $(function() {
 	 */
 	$("a.youtube_add").live('click', function(event) {
 		event.preventDefault();
-		var parent = $(this).parents(".youtube_field").first().children(".youtube_parent:visible");
+		var parent = $(this).parents(".youtube_gallery_field").first().children(".youtube_parent:visible");
 		if ( $(parent).length > 0 ) {
 			var NewVideo = $("#youtube_item_template").clone();
 			// Redefinir
@@ -71,13 +71,13 @@ $(function() {
 
 		var youtube_item = $(this).parents("div.youtube_item").first();
 		var parent = $(this).parents("div.youtube_parent").first();
-		if ( $(parent).find("div.youtube_item").length == 1 && $(this).parents(".youtube_field").first().find("div.youtube_item:visible").length > 1)
+		if ( $(parent).find("div.youtube_item").length == 1 && $(this).parents(".youtube_gallery_field").first().find("div.youtube_item:visible").length > 1)
 		{
 			$(parent).hide("slow", function() {
 				$(this).remove();
 			});
 		}
-		else if ( $(this).parents(".youtube_field").first().find("div.youtube_item:visible").length > 1 )
+		else if ( $(this).parents(".youtube_gallery_field").first().find("div.youtube_item:visible").length > 1 )
 		{
 			$(youtube_item).hide("slow", function() {
 				$(this).remove();
