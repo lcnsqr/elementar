@@ -1,108 +1,37 @@
-/*
- * Visual decoration
- */
-.aluminium_board {
-	position: relative;
-}
-.aluminium_board .border {
-	position: absolute;
-}
-.aluminium_board .top_side {
-	height: 14px;
-	top: 0;
-	left: 14px;
-	right: 14px;
-	background: url('/css/admin/aluminium_board_border_horizontal.png') repeat-x center top;
-}
-.aluminium_board .right_side {
-	width: 14px;
-	top: 14px;
-	right: 0;
-	bottom: 14px;
-	background: url('/css/admin/aluminium_board_border_vertical.png') repeat-y left center;
-}
-.aluminium_board .bottom_side {
-	height: 14px;
-	right: 14px;
-	bottom: 0;
-	left: 14px;
-	background: url('/css/admin/aluminium_board_border_horizontal.png') repeat-x center top;
-	background-position: 0 -14px;
-}
-.aluminium_board .left_side {
-	width: 14px;
-	bottom: 14px;
-	left: 0;
-	top: 14px;
-	background: url('/css/admin/aluminium_board_border_vertical.png') repeat-y left center;
-	background-position: -14px 0;
-}
-.aluminium_board .corner {
-	position: absolute;
-	width: 14px;
-	height: 14px;
-	background: url('/css/admin/aluminium_board_corners.png') no-repeat left top;
-}
-.aluminium_board .top_left {
-	top: 0;
-	left: 0;
-}
-.aluminium_board .top_right {
-	top: 0;
-	right: 0;
-	background-position: -14px 0;
-}
-.aluminium_board .bottom_right {
-	bottom: 0;
-	right: 0;
-	background-position: -28px 0;
-}
-.aluminium_board .bottom_left {
-	bottom: 0;
-	left: 0;
-	background-position: -42px 0;
-}
-.aluminium_board .foreground {
-	position: absolute;
-	top: 14px;
-	bottom: 14px;
-	left: 14px;
-	right: 14px;
-	background-color: #e7e9e5;
-}
-.aluminium_board .face_light {
-	position: absolute;
-	top: 5px;
-	bottom: 14px;
-	left: 5px;
-	right: 6px;
-	background: url('/css/admin/aluminium_board_face_light.png') repeat-x center bottom;
-}
 
 /*
  * Functional features
  */
 
 #content_tree {
-	float: left;
 	width: 220px;
+	top: 4px;
+	left: 4px;
+	bottom: 4px;
 }
 
 #tree_parent_1 {
-/*
-	position: relative;
-	background-color: #eee;
-*/
-	text-shadow: white 0 1px 0;
-/*
-	border: 1px solid #cccccf;
-	padding: 5px;
-*/
-	margin: 14px;
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	bottom: 10px;
+	left: 14px;
+	overflow: auto;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
-.tree_parent a {
-	color: #666666;
+#content_tree a {
+	color: #666;
+	text-decoration: none;
+	display: block;
+}
+#content_tree a:hover {
+	color: #666;
+	text-decoration: none;
+}
+#content_tree a.current {
+	color: #000;
 }
 
 .tree_parent {
@@ -129,7 +58,7 @@
 	display: block;
 	width: 16px;
 	height: 16px;
-	background-image: url("/img/bullet_down.png");
+	background-image: url("/css/admin/bullet_down.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
@@ -138,7 +67,7 @@
 	display: block;
 	width: 16px;
 	height: 16px;
-	background-image: url("/img/bullet_right.png");
+	background-image: url("/css/admin/bullet_right.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
@@ -163,16 +92,28 @@
 	vertical-align: middle;
 	margin-bottom: 2px;
 }
-.tree_listing_row .tree_listing_menu {
+.tree_listing_menu {
 	display: none;
-	float: right;
+	position: absolute;
 }
-.tree_listing_row .tree_listing_menu a.tree_menu_dropdown_button {
-	height: 16px;
-	line-height: 16px;
+.tree_listing_menu > ul {
+	position: relative;
+	margin: 16px;
 }
-.tree_listing_row .tree_listing_menu a.tree_menu_dropdown_button img {
-	vertical-align: middle;
+.tree_listing_menu > ul li {
+	margin-bottom: 4px;
+}
+.tree_listing_menu .title {
+	color: #888a85;
+	font-style: oblique;
+}
+.tree_listing_menu a:hover {
+	text-decoration: none;
+}
+.tree_listing_menu hr {
+	border: 0;
+	height: 1px;
+	background-color: #eeeeec;
 }
 .tree_listing_row .tree_listing_header {
 	margin-left: 16px;
@@ -180,81 +121,84 @@
 	height: 16px;
 	line-height: 16px;
 }
-.tree_listing_row .tree_listing_header h1 {
-	display: inline;
-	font-size: 13px;
-	vertical-align: -1px;
-}
-
-
-
-
 
 .tree_listing_row .tree_listing_text {
 	margin-left: 32px;
-	margin-right: 16px;
+	margin-right: 0;
 	height: 16px;
 	line-height: 16px;
-}
-.tree_listing_row span.label {
-	vertical-align: -1px;
+	white-space: nowrap;
 }
 
-.tree_listing_row form.label input[type="text"] {
-	background-color: transparent;
-	border-width: 0;
-	height: 16px;
-	width: 100%;
-	color: #666666;
-	text-shadow: white 0 1px 0;
-	cursor: default;
-	margin-top: -1px;
-}
-.tree_listing_row .tree_listing_hover form.label input[type="text"] {
-	color: #2d2d2d;
-}
-.tree_listing_row form.label input.edit[type="text"] {
-	background-color: #fff;
-	border: 1px solid #cccccf;
-	cursor: text;
-	margin-top: -2px;
-	margin-left: -1px;
-}
-
-
-
-
-.tree_listing_row .tree_menu {
-	position: relative;
-}
-.tree_listing_row .tree_menu a {
-	display: block;
-	height: 12px;
-}
-.tree_listing_row .tree_menu a:hover {
-	color: #4478b2;
-}
-.tree_listing_row .tree_menu_dropdown {
-	display: none;
-	z-index: 1;
+/*
+ * Floating menu visual decoration
+ */
+.white_board {
 	position: absolute;
+}
+.white_board .border {
+	position: absolute;
+}
+.white_board .top_side {
+	height: 14px;
+	top: 0;
+	left: 14px;
+	right: 14px;
+	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
+}
+.white_board .right_side {
+	width: 14px;
+	top: 14px;
+	right: 0;
+	bottom: 14px;
+	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
+}
+.white_board .bottom_side {
+	height: 14px;
+	right: 14px;
+	bottom: 0;
+	left: 14px;
+	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
+	background-position: 0 -14px;
+}
+.white_board .left_side {
+	width: 14px;
+	bottom: 14px;
+	left: 0;
+	top: 14px;
+	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
+	background-position: -14px 0;
+}
+.white_board .corner {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	background: url('/css/admin/white_board_corners.png') no-repeat left top;
+}
+.white_board .top_left {
 	top: 0;
 	left: 0;
-	width: 160px;
-	padding: 5px;
+}
+.white_board .top_right {
+	top: 0;
+	right: 0;
+	background-position: -14px 0;
+}
+.white_board .bottom_right {
+	bottom: 0;
+	right: 0;
+	background-position: -28px 0;
+}
+.white_board .bottom_left {
+	bottom: 0;
+	left: 0;
+	background-position: -42px 0;
+}
+.white_board .foreground {
+	position: absolute;
+	top: 14px;
+	bottom: 14px;
+	left: 14px;
+	right: 14px;
 	background-color: #fff;
-	border: 1px solid #666666;
-}
-.tree_listing_row .tree_menu_dropdown ul li {
-	position: static;
-	float: none;
-	margin-bottom: 2px;
-}
-.tree_listing_row .tree_menu_dropdown ul li a {
-	display: inline;
-}
-.tree_listing_row .tree_menu_dropdown ul li hr {
-	border-width: 0;
-	height: 1px;
-	background-color: #666;
 }

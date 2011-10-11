@@ -10,27 +10,26 @@
 			<div class="tree_listing_icon">
 				<img src="/img/icon_element.png" alt="<?php echo $element['name']; ?>" />
 			</div>
-			<div class="tree_listing_menu">
-				<a href="<?php echo $element['id']; ?>" class="tree_menu_dropdown_button"><img src="/img/icon_menu_dropdown_off.png" alt="<?php echo $element['name']; ?>" /></a>
-				<div class="tree_menu">
-					<div class="dropdown tree_menu_dropdown">
-					<ul>
-						<li><a class="edit element" href="<?php echo $element['id']; ?>">Editar</a></li>
-						<li><hr /></li>
-						<li><a class="remove element" href="<?php echo $element['id']; ?>" title="Remover “<?php echo $element['name']; ?>”">Excluir</a></li>
-					</ul>
-					</div>
-				</div>
-			</div>
 			<div class="tree_listing_text">
-				<!-- <span class="label"><?php echo $element['name']; ?></span> -->
-				
-				<form class="label element" action="rename">
-					<p>
-						<input type="hidden" name="id" value="<?php echo $element['id']; ?>" />
-						<input type="text" name="name" value="<?php echo $element['name']; ?>" />
-					</p>
-				</form>
+				<p class="label element"><a href="<?php echo $element['id']; ?>" title="<?php echo $element['name']; ?>"><?php echo $element['name']; ?></a></p>
+			</div>
+			<div class="tree_listing_menu white_board">
+				<div class="border top_side"></div>
+				<div class="border right_side"></div>
+				<div class="border bottom_side"></div>
+				<div class="border left_side"></div>
+				<div class="corner top_left"></div>
+				<div class="corner top_right"></div>
+				<div class="corner bottom_right"></div>
+				<div class="corner bottom_left"></div>
+				<div class="foreground"></div>
+				<ul>
+					<li><span class="title"><?php echo $element['name']; ?></span></li>
+					<li><hr /></li>
+					<li><a class="edit element" href="<?php echo $element['id']; ?>">Editar</a></li>
+					<li><hr /></li>
+					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="Remover “<?php echo $element['name']; ?>”">Excluir</a></li>
+				</ul>
 			</div>
 		</div> <!-- .tree_listing_row -->
 
@@ -53,31 +52,31 @@
 			<div class="tree_listing_icon">
 				<img src="/img/icon_content.png" alt="<?php echo $content['name']; ?>" />
 			</div>
-			<div class="tree_listing_menu">
-				<a href="<?php echo $content['id']; ?>" class="tree_menu_dropdown_button"><img src="/img/icon_menu_dropdown_off.png" alt="<?php echo $content['name']; ?>" /></a>
-				<div class="tree_menu">
-					<div class="dropdown tree_menu_dropdown">
-					<ul>
-						<li><a class="edit content" href="<?php echo $content['id']; ?>">Editar Conteúdo</a></li>
-						<li><a class="edit template" href="<?php echo $content['id']; ?>">Editar Template</a></li>
-						<li><a class="edit meta" href="<?php echo $content['id']; ?>">Meta Fields</a></li>
-						<li><hr /></li>
-						<li><a class="remove content" href="<?php echo $content['id']; ?>" title="Remover “<?php echo $content['name']; ?>” e elementos associados">Excluir</a></li>
-						<li><hr /></li>
-						<li><a class="new content" href="<?php echo $content['id']; ?>">Criar conteúdo aqui</a></li>
-						<li><a class="new element" href="<?php echo $content['id']; ?>">Criar elemento aqui</a></li>
-					</ul>
-					</div>
-				</div>
-			</div>
 			<div class="tree_listing_text">
-				<!-- <span class="label"><?php echo $content['name']; ?></span> -->
-				<form class="label content" action="rename">
-					<p>
-						<input type="hidden" name="id" value="<?php echo $content['id']; ?>" />
-						<input type="text" name="name" value="<?php echo $content['name']; ?>" />
-					</p>
-				</form>
+				<p class="label content"><a href="<?php echo $content['id']; ?>" title="<?php echo $content['name']; ?>"><?php echo $content['name']; ?></a></p>
+			</div>
+			<div class="tree_listing_menu white_board">
+				<div class="border top_side"></div>
+				<div class="border right_side"></div>
+				<div class="border bottom_side"></div>
+				<div class="border left_side"></div>
+				<div class="corner top_left"></div>
+				<div class="corner top_right"></div>
+				<div class="corner bottom_right"></div>
+				<div class="corner bottom_left"></div>
+				<div class="foreground"></div>
+				<ul>
+					<li><span class="title"><?php echo $content['name']; ?></span></li>
+					<li><hr /></li>
+					<li><a class="edit content" href="<?php echo $content['id']; ?>">Editar Conteúdo</a></li>
+					<li><a class="edit template" href="<?php echo $content['id']; ?>">Editar Template</a></li>
+					<li><a class="edit meta" href="<?php echo $content['id']; ?>">Meta Fields</a></li>
+					<li><hr /></li>
+					<li><a class="remove content" href="<?php echo $content['id']; ?>" title="Remover “<?php echo $content['name']; ?>” e elementos associados">Excluir</a></li>
+					<li><hr /></li>
+					<li><a class="new content" href="<?php echo $content['id']; ?>">Criar conteúdo aqui</a></li>
+					<li><a class="new element" href="<?php echo $content['id']; ?>">Criar elemento aqui</a></li>
+				</ul>
 			</div>
 		</div>
 		<!-- Combine parent ID and content ID to avoid duplicated IDs -->

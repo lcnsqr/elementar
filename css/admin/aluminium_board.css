@@ -1,0 +1,80 @@
+/*
+ * Visual decoration
+ */
+.aluminium_board {
+	position: relative;
+}
+.aluminium_board .border {
+	position: absolute;
+}
+.aluminium_board .top_side {
+	height: 14px;
+	top: 0;
+	left: 14px;
+	right: 14px;
+	background: url('/css/admin/aluminium_board_border_horizontal.png') repeat-x center top;
+}
+.aluminium_board .right_side {
+	width: 14px;
+	top: 14px;
+	right: 0;
+	bottom: 14px;
+	background: url('/css/admin/aluminium_board_border_vertical.png') repeat-y left center;
+}
+.aluminium_board .bottom_side {
+	height: 14px;
+	right: 14px;
+	bottom: 0;
+	left: 14px;
+	background: url('/css/admin/aluminium_board_border_horizontal.png') repeat-x center top;
+	background-position: 0 -14px;
+}
+.aluminium_board .left_side {
+	width: 14px;
+	bottom: 14px;
+	left: 0;
+	top: 14px;
+	background: url('/css/admin/aluminium_board_border_vertical.png') repeat-y left center;
+	background-position: -14px 0;
+}
+.aluminium_board .corner {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	background: url('/css/admin/aluminium_board_corners.png') no-repeat left top;
+}
+.aluminium_board .top_left {
+	top: 0;
+	left: 0;
+}
+.aluminium_board .top_right {
+	top: 0;
+	right: 0;
+	background-position: -14px 0;
+}
+.aluminium_board .bottom_right {
+	bottom: 0;
+	right: 0;
+	background-position: -28px 0;
+}
+.aluminium_board .bottom_left {
+	bottom: 0;
+	left: 0;
+	background-position: -42px 0;
+}
+.aluminium_board .foreground {
+	position: absolute;
+	top: 14px;
+	bottom: 14px;
+	left: 14px;
+	right: 14px;
+	background-color: #e7e9e5;
+}
+.aluminium_board .face_light {
+	position: absolute;
+	top: 5px;
+	bottom: 14px;
+	left: 5px;
+	right: 6px;
+	background: url('/css/admin/aluminium_board_face_light.png') repeat-x center bottom;
+}

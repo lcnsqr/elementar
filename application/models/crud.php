@@ -1702,9 +1702,10 @@ class Crud extends CI_Model {
 	{
 		$elements = NULL;
 
-		$this->elementar->select('element.id, element.name, element.sname, element.modified');
+		$this->elementar->select('element.id, element_type.id as type_id, element_type.sname as type, element_type.name as type_name, element.name, element.sname, element.modified');
 		$this->elementar->from('element');
 		$this->elementar->join('element_parent', 'element_parent.element_id = element.id', 'inner');
+		$this->elementar->join('element_type', 'element_type.id = element.element_type_id', 'inner');
 		$this->elementar->where('element_parent.parent_id', $parent_id);
 		if ( $this->STATUS != 'all' )
 		{
@@ -1719,7 +1720,10 @@ class Crud extends CI_Model {
 				$elements[] = array(
 					'id' => $row->id, 
 					'name' => $row->name,
-					'sname' => $row->sname
+					'sname' => $row->sname,
+					'type_id' => $row->type_id,
+					'type_name' => $row->type_name,
+					'type' => $row->type
 				);
 			}
 		}

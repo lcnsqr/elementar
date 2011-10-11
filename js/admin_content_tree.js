@@ -2,17 +2,41 @@
 
 $(function() {
 
-	// Unfocus proper elements
+	// Hide floating menus
 	$("body").click(function() {
-		// tree menu listings
-		$(".dropdown:visible").fadeOut("fast", "easeOutSine", function () {
-			$(this).parents(".tree_listing_menu").first().fadeOut("fast", "easeOutSine");
-			$(this).parents(".tree_listing_menu").next(".tree_listing_text").toggleClass("tree_listing_hover", false);
+		$('body > .tree_listing_menu').fadeOut('fast', function() {
+			$(this).remove();
 		});
-		// Discard labels being edited
-		$("form.label").find("input.edit[type='text']").each(function() {
-			$(this).removeClass("edit");
+		$(".label > a.current").removeClass('current');
+	});
+	
+	/*
+	 * Item menu
+	 */
+	$('.label > a').live('click', function(event){
+		event.preventDefault();
+		/*
+		 * Hide visible menus first
+		 */
+		$('body > .tree_listing_menu').fadeOut('fast', function() {
+			$(this).remove();
 		});
+		/*
+		 * Turn current bold
+		 */
+		$(".label > a.current").removeClass('current');
+		$(this).addClass('current');
+		/*
+		 * Show menu
+		 */
+		var hidden_menu = $(this).parents('.tree_listing_row').first().find('.tree_listing_menu');
+		var visible_menu = $(hidden_menu).clone();
+		/*
+		 * Positioning
+		 */
+		$(visible_menu).css({ 'left' : event.pageX + 'px', 'top' : event.pageY + 'px' });
+		$('body').append(visible_menu);
+		$(visible_menu).fadeIn('fast');
 	});
 	
 	/*
@@ -49,90 +73,7 @@ $(function() {
 		$(this).addClass("fold");
 		$(this).removeClass("unfold");
 	});
-
-	/*
-	 * Show/hide menu button on mouse over
-	 */
-	$(".tree_listing_row").live("mouseenter", function() {
-		$(this).children(".tree_listing_menu").show();
-		$(this).children(".tree_listing_text").toggleClass("tree_listing_hover", true);
-	});
-	$(".tree_listing_row").live("mouseleave", function() {
-		if ( $(this).find(".tree_menu_dropdown").is(":hidden") ) {
-			$(this).children(".tree_listing_menu").hide();
-			$(this).children(".tree_listing_text").toggleClass("tree_listing_hover", false);
-		}
-	});
 	
-	/*
-	 * Show/hide content/element menu
-	 */
-	$(".tree_menu_dropdown_button").live('click', function(event) {
-		event.preventDefault();
-		$(this).next(".tree_menu").children(".tree_menu_dropdown:visible").fadeOut("fast", "easeInSine");
-		$(this).next(".tree_menu").children(".tree_menu_dropdown:hidden").fadeIn("fast", "easeInSine");
-	});
-
-	/*
-	 * Activate rename content/element
-	 */
-	$("form.label").find("input[type='text']").live("click", function(event) {
-		event.preventDefault();		
-		if ( ! $(this).hasClass("edit") ) {
-			$(this).addClass("edit");
-			//$(this).select();
-		}
-	});
-	/*
-	 * Rename form
-	 */
-	$("form.label").live("submit", function(event) {
-		event.preventDefault();
-
-		// Bloqueio
-		$("#blocker").fadeIn("fast");
-		
-		var form = $(this);
-
-		/*
-		 * Request type
-		 */
-		if ( $(form).hasClass("content") ) {
-			var action = "/admin/content/xhr_rename_content";
-		}
-		else if ( $(form).hasClass("element") ) {
-			var action = "/admin/content/xhr_rename_element";
-		}
-		else {
-			return false;
-		}
-
-		$.post(action, $(this).serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					$(form).find("input.edit[type='text']").each(function() {
-						$(this).blur();
-						$(this).removeClass("edit");
-					});	
-				}
-				else {
-					showClientWarning(data.error);
-					$(form).find("input.edit[type='text']").each(function() {
-						$(this).blur();
-						$(this).removeClass("edit");
-						$(this).val(data.name);
-					});	
-				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-
-			// Bloqueio
-			$("#blocker").fadeOut("fast");
-		}, "json");
-
-	});
 
 	/*
 	 * Mostrar formulário de criação de conteúdo

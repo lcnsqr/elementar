@@ -1,84 +1,25 @@
-/*
- * Visual decoration
- */
-.white_board {
-	position: relative;
-	margin: 0 0 0 230px;
-	padding: 14px;
-}
-.white_board .border {
-	position: absolute;
-}
-.white_board .top_side {
-	height: 14px;
-	top: 0;
-	left: 14px;
-	right: 14px;
-	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
-}
-.white_board .right_side {
-	width: 14px;
-	top: 14px;
-	right: 0;
-	bottom: 14px;
-	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
-}
-.white_board .bottom_side {
-	height: 14px;
-	right: 14px;
-	bottom: 0;
-	left: 14px;
-	background: url('/css/admin/white_board_border_horizontal.png') repeat-x center top;
-	background-position: 0 -14px;
-}
-.white_board .left_side {
-	width: 14px;
-	bottom: 14px;
-	left: 0;
-	top: 14px;
-	background: url('/css/admin/white_board_border_vertical.png') repeat-y left center;
-	background-position: -14px 0;
-}
-.white_board .corner {
-	position: absolute;
-	width: 14px;
-	height: 14px;
-	background: url('/css/admin/white_board_corners.png') no-repeat left top;
-}
-.white_board .top_left {
-	top: 0;
-	left: 0;
-}
-.white_board .top_right {
-	top: 0;
-	right: 0;
-	background-position: -14px 0;
-}
-.white_board .bottom_right {
-	bottom: 0;
-	right: 0;
-	background-position: -28px 0;
-}
-.white_board .bottom_left {
-	bottom: 0;
-	left: 0;
-	background-position: -42px 0;
-}
-.white_board .foreground {
-	position: absolute;
-	top: 14px;
-	bottom: 14px;
-	left: 14px;
-	right: 14px;
-	background-color: #fff;
-}
 
 /*
  * Functional features
  */
 
+#content_editor_board {
+	top: 4px;
+	right: 4px;
+	bottom: 4px;
+	left: 222px;
+}
+
 #content_window {
-	position: relative;
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	bottom: 10px;
+	left: 14px;
+	overflow: auto;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
 }
 
 /*
@@ -394,6 +335,10 @@
 	border-bottom: 1px solid #888a85; 
 	margin-bottom: 8px;
 }
+#content_editors_header > p > a {
+	display: inline-block;
+	padding: 2px 0 2px 0;
+}
 #content_editors_menu {
 	position: absolute;
 	right: 0;
@@ -405,7 +350,7 @@
 }
 #content_editors_menu ul li a {
 	display: block;
-	padding: 0 4px;
+	padding: 2px 4px;
 }
 #content_editors_menu ul li a:hover {
 }
