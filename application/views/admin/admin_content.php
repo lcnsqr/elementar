@@ -23,7 +23,7 @@
 	
 			<div class="tree_listing_row">
 				<div class="tree_listing_icon">
-					<img src="/img/icon_home.png" alt="<?php echo $parent; ?>" />
+					<img style="margin: 0;" src="/img/icon_home.png" alt="<?php echo $parent; ?>" />
 				</div>
 				<div class="tree_listing_header">
 					<p class="label content"><a href="<?php echo $parent_id; ?>" title="<?php echo $parent; ?>"><?php echo $parent; ?></a></p>

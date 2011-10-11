@@ -363,12 +363,10 @@
 }
 
 /*
- * Template editor
+ * Textareas
  */
-.textarea, .hypertext, .template_textarea, .css_textarea, .javascript_textarea, .head_textarea {
-	width: 100%;
-}
 .template_textarea, .css_textarea, .javascript_textarea, .head_textarea {
+	width: 100%;
 	background-image: url('/css/admin/input_bg.png');
 	background-repeat: no-repeat;
 	background-color: #fff;

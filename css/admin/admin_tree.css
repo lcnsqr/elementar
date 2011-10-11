@@ -89,8 +89,10 @@
 	line-height: 16px;
 }
 .tree_listing_row .tree_listing_icon img {
+/*
 	vertical-align: middle;
-	margin-bottom: 2px;
+*/
+	margin-top: 2px;
 }
 .tree_listing_menu {
 	display: none;

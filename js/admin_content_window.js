@@ -82,8 +82,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editors_container").replaceWith(data.html).show(function(){
-						// CKEditor activation
-						$('#content_editor_form').find('textarea').ckeditor();
+						// WYSIWYG textarea activation
+						$('#content_editor_form').find('textarea').wysiwyg();
 					});
 				}
 				else {
@@ -112,13 +112,6 @@ $(function() {
 		
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
-
-		/*
-		 * Update CKEditor contents
-		 */
-		$.each(CKEDITOR.instances, function() {
-			this.updateElement();
-		});
 
 		/*
 		 * Update menu field json data
@@ -162,8 +155,8 @@ $(function() {
 						try {
 							if ( data.done == true ) {
 								$("#content_window").html(data.html).show(function() {
-									// CKEditor activation
-									$('#content_editor_form').find('textarea').ckeditor();
+									// WYSIWYG textarea activation
+									$('#content_editor_form').find('textarea').wysiwyg();
 
 									// Bloqueio
 									$("#blocker").fadeOut("fast");
@@ -231,8 +224,8 @@ $(function() {
 					// Close type editor (if visible)
 					$("#type_define_new_container:visible").fadeOut("slow");
 					$("#content_editors_container").replaceWith(data.html).show(function(){
-						// CKEditor activation
-						$('#content_editor_form').find('textarea').ckeditor();
+						// WYSIWYG textarea activation
+						$('#content_editor_form').find('textarea').wysiwyg();
 					});
 				}
 				else {
@@ -261,13 +254,6 @@ $(function() {
 		
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
-
-		/*
-		 * Update CKEditor contents
-		 */
-		$.each(CKEDITOR.instances, function() {
-			this.updateElement();
-		});
 
 		/*
 		 * Update menu field json data
@@ -310,8 +296,8 @@ $(function() {
 							try {
 								if ( data.done == true ) {
 									$("#content_window").html(data.html).show(function() {
-										// CKEditor activation
-										$('#content_editor_form').find('textarea').ckeditor();
+										// WYSIWYG textarea activation
+										$('#content_editor_form').find('textarea').wysiwyg();
 										// Bloqueio
 										$("#blocker").fadeOut("fast");
 									});

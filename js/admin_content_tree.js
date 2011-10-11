@@ -155,8 +155,8 @@ $(function() {
 			try {
 				if ( data.done == true ) {
 					$("#content_window").html(data.html).show(function() {
-						// CKEditor activation
-						$('#content_editor_form').find('textarea').ckeditor();
+						// WYSIWYG textarea activation
+						$('#content_editor_form').find('textarea').wysiwyg();
 					});
 				}
 			}
@@ -184,8 +184,8 @@ $(function() {
 			try {
 				if ( data.done == true ) {
 					$("#content_window").html(data.html).show(function() {
-						// CKEditor activation
-						$('#content_editor_form').find('textarea').ckeditor();
+						// WYSIWYG textarea activation
+						$('#content_editor_form').find('textarea').wysiwyg();
 					});
 				}
 			}
