@@ -60,7 +60,6 @@
 		</div> <!-- #tree_parent_1 -->
 
 		<div class="shade_top"></div>
-		<div class="shade_bottom"></div>	
 	</div> <!-- #content_tree -->
 	
 	<div id="content_editor_board" class="pool_board">
