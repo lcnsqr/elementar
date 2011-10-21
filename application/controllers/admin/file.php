@@ -271,7 +271,7 @@ class File extends CI_Controller {
 				$mime_content_type = finfo_file($finfo, $relative_path . '/' . $content);
 				finfo_close($finfo);
 				*/
-				$mime_content_type = mime_content_type($relative_path . '/' . $content);
+				$mime_content_type = "File";
 				
 				$size = filesize($relative_path . '/' . $content);
 				$attrs = array(
