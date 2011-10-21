@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `content_field` (
 --
 
 INSERT INTO `content_field` (`id`, `content_id`, `content_type_field_id`, `value`) VALUES
-(7, 1, 1, '<p>\n Welcome to the machine</p>\n');
+(7, 1, 1, '<p>Welcome to the machine</p>');
 
 -- --------------------------------------------------------
 
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `content_parent` (
 --
 
 INSERT INTO `content_parent` (`id`, `content_id`, `parent_id`) VALUES
-(64, 1, 0);
+(1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -225,9 +225,9 @@ INSERT INTO `field_type` (`id`, `name`, `sname`, `description`) VALUES
 (2, 'Imagem', 'img', 'Exibir uma imagem'),
 (3, 'Hipertexto', 'hypertext', 'Conteúdo de hipertexto (texto, imagens, ligações, etc)'),
 (4, 'Linha', 'line', 'Parágrafo curto sem formatação'),
-(6, 'Destino', 'target', 'URI de destino no site'),
-(7, 'Textarea', 'textarea', 'Text/code snippet'),
-(8, 'Menu', 'menu', 'Lista de itens de menu');
+(5, 'Destino', 'target', 'URI de destino no site'),
+(6, 'Textarea', 'textarea', 'Text/code snippet'),
+(7, 'Menu', 'menu', 'Lista de itens de menu');
 
 -- --------------------------------------------------------
 
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `html_meta` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content_id` int(10) unsigned NOT NULL,
   `name` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
-  `value` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `value` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -461,7 +461,7 @@ class Common {
 		$string = htmlentities($string, ENT_QUOTES, "UTF-8");
 		$string = preg_replace($acentos, array_keys($acentos), $string);               
 		$string = trim($string);
-		$string = strtolower(url_title($string, 'underscore'));
+		$string = strtolower(url_title($string));
 		$string = html_entity_decode($string, ENT_QUOTES, "UTF-8");
 		return $string;
 	}

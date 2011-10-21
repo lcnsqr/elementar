@@ -97,7 +97,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -123,7 +123,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -165,7 +165,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 	
@@ -194,7 +194,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 	
@@ -240,12 +240,12 @@ $(function() {
 				}
 	
 				// Bloqueio
-				$("#blocker").fadeOut("fast");
+				$("#blocker").stop().fadeOut("fast");
 			}, "json");
 		}
 		else {
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}
 	});
 

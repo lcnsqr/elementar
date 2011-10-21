@@ -187,19 +187,6 @@
 .image_item_thumbnail_missing {
 	background-image: url("/css/admin/image_missing.png");
 }
-.image_item_thumbnail .loading {
-	display: none;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	opacity: .5;
-	background-color: #fff;
-	background-image: url("/img/working.gif");
-	background-position: center center;
-	background-repeat: no-repeat;
-}
 .image_item_menu {
 	background-color: #f3f3f1;
 	margin-left: 200px;

@@ -42,7 +42,7 @@ $(function() {
 			}
 
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -94,7 +94,7 @@ $(function() {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -159,31 +159,31 @@ $(function() {
 									$('#content_editor_form').find('textarea').wysiwyg();
 
 									// Bloqueio
-									$("#blocker").fadeOut("fast");
+									$("#blocker").stop().fadeOut("fast");
 								});
 							}
 							else {
 								// Bloqueio
-								$("#blocker").fadeOut("fast");
+								$("#blocker").stop().fadeOut("fast");
 								showClientWarning("Erro ao salvar");
 							}
 						}
 						catch (err) {
 							// Bloqueio
-							$("#blocker").fadeOut("fast");
+							$("#blocker").stop().fadeOut("fast");
 							showClientWarning("Erro de comunicação com o servidor");
 						}
 					}, "json");
 				}
 				else {
 					// Bloqueio
-					$("#blocker").fadeOut("fast");
+					$("#blocker").stop().fadeOut("fast");
 					showClientWarning(data.error);
 				}
 			}
 			catch (err) {
 				// Bloqueio
-				$("#blocker").fadeOut("fast");
+				$("#blocker").stop().fadeOut("fast");
 				showClientWarning("Erro de comunicação com o servidor");
 			}
 		}, "json");
@@ -236,7 +236,7 @@ $(function() {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -291,41 +291,40 @@ $(function() {
 						$.post("/admin/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
 							$("#tree_listing_1").html(data.html);
 						}, "json");
-
-						$.post("/admin/content/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
-							try {
-								if ( data.done == true ) {
-									$("#content_window").html(data.html).show(function() {
-										// WYSIWYG textarea activation
-										$('#content_editor_form').find('textarea').wysiwyg();
-										// Bloqueio
-										$("#blocker").fadeOut("fast");
-									});
-								}
-								else {
-									// Bloqueio
-									$("#blocker").fadeOut("fast");
-									showClientWarning("Erro ao salvar");
-								}
-							}
-							catch (err) {
-								// Bloqueio
-								$("#blocker").fadeOut("fast");
-								showClientWarning("Erro de comunicação com o servidor");
-							}
-						}, "json");
 					}
+					$.post("/admin/content/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
+						try {
+							if ( data.done == true ) {
+								$("#content_window").html(data.html).show(function() {
+									// WYSIWYG textarea activation
+									$('#content_editor_form').find('textarea').wysiwyg();
+									// Bloqueio
+									$("#blocker").stop().fadeOut("fast");
+								});
+							}
+							else {
+								// Bloqueio
+								$("#blocker").stop().fadeOut("fast");
+								showClientWarning("Erro ao salvar");
+							}
+						}
+						catch (err) {
+							// Bloqueio
+							$("#blocker").stop().fadeOut("fast");
+							showClientWarning("Erro de comunicação com o servidor");
+						}
+					}, "json");
 				}
 				else {
 					// Bloqueio
-					$("#blocker").fadeOut("fast");
+					$("#blocker").stop().fadeOut("fast");
 					showClientWarning(data.error);
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
 				// Bloqueio
-				$("#blocker").fadeOut("fast");
+				$("#blocker").stop().fadeOut("fast");
 			}
 		}, "json");
 	});
@@ -435,7 +434,7 @@ $(function() {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -461,7 +460,7 @@ $(function() {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
@@ -501,7 +500,7 @@ $(function() {
 							}
 				
 							// Bloqueio
-							$("#blocker").fadeOut("fast");
+							$("#blocker").stop().fadeOut("fast");
 						}, "json");
 
 					});
@@ -509,13 +508,13 @@ $(function() {
 				else {
 					showClientWarning(data.error);
 					// Bloqueio
-					$("#blocker").fadeOut("fast");
+					$("#blocker").stop().fadeOut("fast");
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
 				// Bloqueio
-				$("#blocker").fadeOut("fast");
+				$("#blocker").stop().fadeOut("fast");
 			}
 		}, "json");
 	});
@@ -548,20 +547,20 @@ $(function() {
 							showClientWarning("Erro de comunicação com o servidor");
 						}
 						// Bloqueio
-						$("#blocker").fadeOut("fast");
+						$("#blocker").stop().fadeOut("fast");
 					}, "json");
 
 				}
 				else {
 					showClientWarning(data.error);
 					// Bloqueio
-					$("#blocker").fadeOut("fast");
+					$("#blocker").stop().fadeOut("fast");
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
 				// Bloqueio
-				$("#blocker").fadeOut("fast");
+				$("#blocker").stop().fadeOut("fast");
 			}
 		}, "json");
 	});
@@ -645,16 +644,16 @@ $(function() {
 				else {
 					showClientWarning(data.error);
 					// Bloqueio
-					$("#blocker").fadeOut("fast");
+					$("#blocker").stop().fadeOut("fast");
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
 				// Bloqueio
-				$("#blocker").fadeOut("fast");
+				$("#blocker").stop().fadeOut("fast");
 			}
 			// Bloqueio
-			$("#blocker").fadeOut("fast");
+			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 

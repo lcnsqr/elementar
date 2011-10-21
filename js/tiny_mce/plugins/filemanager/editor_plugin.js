@@ -26,7 +26,7 @@
 			ed.addCommand('mceFileManager', function() {
 				ed.windowManager.open({
 					//file : url + '/dialog.htm',
-					file : '/file/manager',
+					file : '/admin/file/manager',
 					width : 880 + parseInt(ed.getLang('filemanager.delta_width', 0)),
 					height : 480 + parseInt(ed.getLang('filemanager.delta_height', 0)),
 					inline : 1

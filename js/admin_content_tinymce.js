@@ -18,6 +18,7 @@ var tinymceConfigHypertext = {
 	
 	theme_advanced_source_editor_width : 800,
 	theme_advanced_source_editor_height : 480,
+	relative_urls : false
 };
 
 var tinymceConfigParagraph = {
@@ -44,6 +45,7 @@ var tinymceConfigParagraph = {
 
 	theme_advanced_source_editor_width : 800,
 	theme_advanced_source_editor_height : 480,
+	relative_urls : false
 };
 
 /*
