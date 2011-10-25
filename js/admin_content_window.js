@@ -119,7 +119,6 @@ $(function() {
 		$(".menu_field").each(function() {
 			var menu = prepare_menu_field(this);
 			$(this).find('input.menu_actual_field').val($.toJSON(menu));
-			//console.log($.toJSON(menu));
 		});
 
 		/*
@@ -141,7 +140,6 @@ $(function() {
 		$.post("/admin/content/xhr_write_element", $(".noform").serialize(), function(data){
 			try {
 				if ( data.done == true ) {
-					showClientWarning("Elemento salvo com sucesso");
 					/*
 					 * Reload Tree
 					 */
@@ -157,6 +155,8 @@ $(function() {
 								$("#content_window").html(data.html).show(function() {
 									// WYSIWYG textarea activation
 									$('#content_editor_form').find('textarea').wysiwyg();
+
+									showClientWarning("Elemento salvo com sucesso");
 
 									// Bloqueio
 									$("#blocker").stop().fadeOut("fast");
@@ -248,7 +248,7 @@ $(function() {
 		});
 	});
 	
-	// Salvar novo conteúdo
+	// Salvar conteúdo
 	$("#button_content_save").live('click', function(event) {
 		event.preventDefault();
 		
@@ -261,7 +261,6 @@ $(function() {
 		$(".menu_field").each(function() {
 			var menu = prepare_menu_field(this);
 			$(this).find('input.menu_actual_field').val($.toJSON(menu));
-			console.log($.toJSON(menu));
 		});
 
 		/*
@@ -283,7 +282,6 @@ $(function() {
 		$.post("/admin/content/xhr_write_content", $(".noform").serialize(), function(data){
 			try {
 				if ( data.done == true ) {
-					showClientWarning("Conteúdo salvo com sucesso");
 					/*
 					 * Reload Tree & editor window if not home
 					 */
@@ -298,6 +296,9 @@ $(function() {
 								$("#content_window").html(data.html).show(function() {
 									// WYSIWYG textarea activation
 									$('#content_editor_form').find('textarea').wysiwyg();
+
+									showClientWarning("Conteúdo salvo com sucesso");
+
 									// Bloqueio
 									$("#blocker").stop().fadeOut("fast");
 								});
@@ -638,7 +639,7 @@ $(function() {
 		$.post("/admin/content/xhr_write_template", $(this).serialize() + '&overwrite=' + overwrite, function(data){
 			try {
 				if ( data.done == true ) {
-					$(template_textarea).val(data.template);
+					//$(template_textarea).val(data.template);
 					showClientWarning("Template salvo com sucesso");
 				}
 				else {
