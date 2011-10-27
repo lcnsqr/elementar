@@ -58,6 +58,17 @@ if ( ! function_exists('anchor'))
 	}
 }
 
+if ( ! function_exists('hr'))
+{
+	function hr($attributes = '')
+	{
+		$hr = '<hr';
+		$hr .= _parse_tag_attributes($attributes);
+		$hr .= ' />';
+		return $hr;
+	}
+}
+
 if ( ! function_exists('_parse_tag_attributes'))
 {
 	function _parse_tag_attributes($attributes)

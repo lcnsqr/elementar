@@ -8,10 +8,10 @@
 				<span class="bullet_placeholder">&nbsp;</span>
 			</div>
 			<div class="tree_listing_icon">
-				<img src="/img/icon_element.png" alt="<?php echo $element['name']; ?>" />
+				<img src="/img/icon_element.png" alt="<?php echo current(json_decode($element['name'], TRUE)); ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label element"><a href="<?php echo $element['id']; ?>" title="<?php echo $element['name']; ?>"><?php echo $element['name']; ?></a></p>
+				<p class="label element"><a href="<?php echo $element['id']; ?>" title="<?php echo current(json_decode($element['name'], TRUE)); ?>"><?php echo current(json_decode($element['name'], TRUE)); ?></a></p>
 			</div>
 			<div class="tree_listing_menu white_board">
 				<div class="border top_side"></div>
@@ -24,11 +24,11 @@
 				<div class="corner bottom_left"></div>
 				<div class="foreground"></div>
 				<ul>
-					<li><span class="title"><?php echo $element['name']; ?></span></li>
+					<li><span class="title"><?php echo current(json_decode($element['name'], TRUE)); ?></span></li>
 					<li><hr /></li>
 					<li><a class="edit element" href="<?php echo $element['id']; ?>">Editar</a></li>
 					<li><hr /></li>
-					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="Remover “<?php echo $element['name']; ?>”">Excluir</a></li>
+					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="Remover “<?php echo current(json_decode($element['name'], TRUE)); ?>”">Excluir</a></li>
 				</ul>
 			</div>
 		</div> <!-- .tree_listing_row -->
@@ -50,10 +50,10 @@
 				<?php endif; ?>
 			</div>
 			<div class="tree_listing_icon">
-				<img src="/img/icon_content.png" alt="<?php echo $content['name']; ?>" />
+				<img src="/img/icon_content.png" alt="<?php echo current(json_decode($content['name'], TRUE)); ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label content"><a href="<?php echo $content['id']; ?>" title="<?php echo $content['name']; ?>"><?php echo $content['name']; ?></a></p>
+				<p class="label content"><a href="<?php echo $content['id']; ?>" title="<?php echo current(json_decode($content['name'], TRUE)); ?>"><?php echo current(json_decode($content['name'], TRUE)); ?></a></p>
 			</div>
 			<div class="tree_listing_menu white_board">
 				<div class="border top_side"></div>
@@ -66,13 +66,13 @@
 				<div class="corner bottom_left"></div>
 				<div class="foreground"></div>
 				<ul>
-					<li><span class="title"><?php echo $content['name']; ?></span></li>
+					<li><span class="title"><?php echo current(json_decode($content['name'], TRUE)); ?></span></li>
 					<li><hr /></li>
 					<li><a class="edit content" href="<?php echo $content['id']; ?>">Editar Conteúdo</a></li>
 					<li><a class="edit template" href="<?php echo $content['id']; ?>">Editar Template</a></li>
 					<li><a class="edit meta" href="<?php echo $content['id']; ?>">Meta Fields</a></li>
 					<li><hr /></li>
-					<li><a class="remove content" href="<?php echo $content['id']; ?>" title="Remover “<?php echo $content['name']; ?>” e elementos associados">Excluir</a></li>
+					<li><a class="remove content" href="<?php echo $content['id']; ?>" title="Remover “<?php echo current(json_decode($content['name'], TRUE)); ?>” e elementos associados">Excluir</a></li>
 					<li><hr /></li>
 					<li><a class="new content" href="<?php echo $content['id']; ?>">Criar conteúdo aqui</a></li>
 					<li><a class="new element" href="<?php echo $content['id']; ?>">Criar elemento aqui</a></li>

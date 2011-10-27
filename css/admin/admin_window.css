@@ -56,6 +56,7 @@
 }
 .form_window_column_input {
 	margin-left: 108px;
+	position: relative;
 }
 .form_content_field {
 	padding-bottom: 8px;
@@ -64,8 +65,21 @@
 	display: table;
 	width: 100%;
 }
-.form_content_field input[type="text"], .menu_field input.edit[type="text"] {
+.form_content_field .text_input_container {
+	position: absolute;
+	right: 15px;
+	left: 6px;
+}
+.form_content_field .text_input_container input[type="text"] {
+	width: 100%;
+	height: 17px;
+}
+.form_content_field .clear {
+	border-width: 0;
+	height: 22px;
 	margin: 0;
+}
+.form_content_field input[type="text"], .menu_field input.edit[type="text"] {
 	border-top: 1px solid #888a85;
 	border-right: 1px solid #d3d7cf;
 	border-bottom: 1px solid #d3d7cf;
@@ -73,7 +87,9 @@
 	background-image: url('/css/admin/input_bg.png');
 	background-repeat: no-repeat;
 	padding: 2px 4px;
+	margin: 0;
 }
+
 .form_content_field .upload_image_title {
 	margin-bottom: 4px;
 }
@@ -103,6 +119,7 @@
 	padding-left: 6px;
 	margin-right: 8px;
 	border: 1px solid #d9d9d7;
+	background-color: #fff;
 }
 .menu_item_inputs {
 	float: left;
@@ -165,6 +182,7 @@
 	padding-left: 6px;
 	margin-right: 8px;
 	border: 1px solid #d9d9d7;
+	background-color: #fff;
 }
 .image_item_inputs {
 	float: left;
@@ -227,6 +245,7 @@
 	padding-left: 6px;
 	margin-right: 8px;
 	border: 1px solid #d9d9d7;
+	background-color: #fff;
 }
 .youtube_item_inputs {
 	float: left;
@@ -324,7 +343,7 @@
 }
 #content_editors_header > p > a {
 	display: inline-block;
-	padding: 2px 0 2px 0;
+	padding: 4px;
 }
 #content_editors_menu {
 	position: absolute;
@@ -337,16 +356,64 @@
 }
 #content_editors_menu ul li a {
 	display: block;
-	padding: 2px 4px;
+	padding: 4px;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #fff;
+	border-bottom-width: 0;
+	border-left: 1px solid #fff;
+	background-color: #fff;
 }
 #content_editors_menu ul li a:hover {
 }
 #content_editors_menu ul li a.current {
+	border: 1px solid #888a85;
 	background-color: #888a85;
 	color: #fff;
+/*
+	text-shadow: 0 -1px 0 #2d2d2d;
+*/
 }
 #content_editors_menu ul li a.current:hover {
 	text-decoration: none;
+}
+
+/*
+ * Input tabs for each language default
+ */
+.input_lang_menu ul li {
+	position: relative;
+	float: left;
+}
+.input_lang_menu .clear {
+	clear: left;
+	border-width: 0;
+	height: 0;
+	margin: 0;
+}
+.input_lang_menu ul li a {
+	display: block;
+	padding: 4px;
+	margin: 1px 1px 0 1px;
+}
+.input_lang_menu ul li a.current {
+	border-top: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-bottom-width: 0;
+	border-left: 1px solid #ccc;
+	margin: 0;
+	background-color: #e7e9e5;
+	color: #2d2d2d;
+	text-shadow: 0 1px 0 white;
+}
+.input_lang_menu ul li a.current:hover {
+	text-decoration: none;
+}
+.input_lang_field {
+	margin-top: -1px;
+	padding: 6px 4px;
+	background-color: #E7E9E5;
+	display: none;
+	border: 1px solid #ccc;
 }
 
 /*

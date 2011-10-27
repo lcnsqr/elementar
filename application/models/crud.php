@@ -40,6 +40,24 @@ class Crud extends CI_Model {
 	}
 
 	/*
+	 * get site config
+	 */
+	function get_config()
+	{
+		$this->elementar->select('*');
+		$this->elementar->from('config');
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * Write content template
 	 */
 	function put_template($template_id = NULL, $html, $css, $javascript, $head)
@@ -408,11 +426,11 @@ class Crud extends CI_Model {
 	/*
 	 * get content sname (slug)
 	 */
-	function get_content_sname($element_id)
+	function get_content_sname($content_id)
 	{
 		$this->elementar->select('sname');
 		$this->elementar->from('content');
-		$this->elementar->where('id', $element_id);
+		$this->elementar->where('id', $content_id);
 		if ( $this->STATUS != 'all' )
 		{
 			$this->elementar->where('status', $this->STATUS);
@@ -499,7 +517,7 @@ class Crud extends CI_Model {
 	function put_content($name, $sname, $content_type_id)
 	{
 		$data = array(
-			'name' => htmlentities($name, ENT_QUOTES, "UTF-8"),
+			'name' => $name,
 			'sname' => $sname,
 			'content_type_id' => $content_type_id,
 			'created' => date("Y-m-d H:i:s")
@@ -521,7 +539,7 @@ class Crud extends CI_Model {
 	function put_content_name($content_id, $name, $sname)
 	{
 		$data = array(
-			'name' => htmlentities($name, ENT_QUOTES, "UTF-8"),
+			'name' => $name,
 			'sname' => $sname
 		);
 		
@@ -535,7 +553,7 @@ class Crud extends CI_Model {
 	function put_element($name, $sname, $element_type_id)
 	{
 		$data = array(
-			'name' => htmlentities($name, ENT_QUOTES, "UTF-8"),
+			'name' => $name,
 			'sname' => $sname,
 			'element_type_id' => $element_type_id,
 			'created' => date("Y-m-d H:i:s")
@@ -557,7 +575,7 @@ class Crud extends CI_Model {
 	function put_element_name($element_id, $name, $sname)
 	{
 		$data = array(
-			'name' => htmlentities($name, ENT_QUOTES, "UTF-8"),
+			'name' => $name,
 			'sname' => $sname
 		);
 		

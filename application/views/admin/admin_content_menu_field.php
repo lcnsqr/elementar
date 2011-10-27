@@ -27,9 +27,6 @@
 
 <p class="menu_parent_add"><a class="menu_add" href="menu_add">&rarr; Novo menu</a></p>
 
-<?php if ( is_array($menu) ) _render_menu_field($menu, $targets); ?>
-
-<?php function _render_menu_field($menu, $targets) { ?>
 <div class="menu_parent">
 <?php foreach ( $menu as $key => $item ) : ?>
 	<div class="menu_item">
@@ -58,13 +55,7 @@
 		</div>
 
 		<div style="width: 100%; clear: both;"></div>
-		
-<?php if ( is_array($item['menu']) ) : ?>
-<?php _render_menu_field($item['menu'], $targets); ?>
-<?php endif; ?>
 	</div> <!-- menu_item -->
 <?php endforeach; ?>
 
 </div> <!-- menu_parent -->
-
-<?php } /* _render_menu_field() */ ?>

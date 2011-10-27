@@ -6,10 +6,22 @@ class Common {
 	 * CodeIgniter Instance
 	 */
 	private $CI;
+	
+	/*
+	 * i18n settings
+	 */
+	private $LANG = 'por';
+	private $URI_PREFIX = '';
 
-	function __construct()
+	function __construct($params)
 	{
 		$this->CI =& get_instance();
+		
+		/*
+		 * i18n: Default language
+		 */
+		$this->LANG = $params['lang'];
+		$this->URI_PREFIX = $params['uri_prefix'];
 
 		/*
 		 * BUG: By default
@@ -104,7 +116,7 @@ class Common {
 			$class .= ( key($menu) == 0 ) ? ' first' : '';
 			$class .= ( key($menu) == ( count($menu) - 1 ) ) ? ' last' : '';
 			$attributes = array(
-				'href' => $menu_item['target'],
+				'href' => $this->URI_PREFIX . $menu_item['target'],
 				'title' => htmlspecialchars( $menu_item['name'] ),
 				'class' => $class
 			);
@@ -156,14 +168,19 @@ class Common {
 		
 		if ( count( $content ) > 0 )
 		{
-			$content_uri = $this->CI->crud->get_content_uri($content_id);
+			/*
+			 * Localized name
+			 */
+			$names = json_decode($content['name'], TRUE);
+			$name = $names[$this->LANG];
+			$content_uri = $this->URI_PREFIX . $this->CI->crud->get_content_uri($content_id);
 			if ( (int) $content['parent_id'] > 1 ) 
 			{
-				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $content_uri . "\">" . $content['name'] . "</a>" . $previous);
+				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $content_uri . "\">" . $name . "</a>" . $previous);
 			}
 			else
 			{
-				$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a> $sep <a href=\"" . $content_uri . "\">" . $content['name'] . "</a>" . $previous;
+				$breadcrumb = '<a href="' . $this->URI_PREFIX . '/" >' . $this->CI->config->item('site_name') . "</a> $sep <a href=\"" . $content_uri . "\">" . $name . "</a>" . $previous;
 			}
 		}
 		return $breadcrumb;
@@ -180,14 +197,19 @@ class Common {
 		
 		if ( count($element) > 0 )
 		{
-			$element_uri = $this->CI->crud->get_content_uri($element['parent_id']) . "#" . $element['sname'];
+			/*
+			 * Localized name
+			 */
+			$names = json_decode($element['name'], TRUE);
+			$name = $names[$this->LANG];
+			$element_uri = $this->URI_PREFIX . $this->CI->crud->get_content_uri($element['parent_id']) . "#" . $element['sname'];
 			if ( (bool) $element['parent_id'] )
 			{ 
-				$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $element_uri . "\" >" . $element['name'] . "</a>");
+				$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $element_uri . "\" >" . $name . "</a>");
 			}
 			else
 			{
-				$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a> $sep <a href=\"/" . $element_uri . "\" >" . $element['name'] . "</a>";
+				$breadcrumb = '<a href="' . $this->URI_PREFIX . '/" >' . $this->CI->config->item('site_name') . "</a> $sep <a href=\"/" . $element_uri . "\" >" . $name . "</a>";
 			}
 		}
 		return $breadcrumb;
@@ -468,6 +490,12 @@ class Common {
 	
 	function render_field($field_type, $field_value)
 	{
+		/*
+		 * Choose language
+		 */
+		$field_values = json_decode($field_value, TRUE);
+		$field_value = $field_values[$this->LANG];
+		
 		switch ( $field_type )
 		{
 			case 'img' :
@@ -574,11 +602,15 @@ class Common {
 			$children_variables = array();
 			foreach ( $children as $child )
 			{
+				/*
+				 * Localized name
+				 */
+				$names = json_decode($child['name'], TRUE);
 				$children_variables[] = array(
 					'id' => $child['id'],
 					'sname' => $child['sname'],
-					'name' => $child['name'],
-					'uri' => $this->CI->crud->get_content_uri($child['id']),
+					'name' => $names[$this->LANG],
+					'uri' => $this->URI_PREFIX . $this->CI->crud->get_content_uri($child['id']),
 					'children' => $child['children']
 				);
 			}
@@ -600,11 +632,15 @@ class Common {
 				$brothers_variables = array();
 				foreach ( $brothers as $brother )
 				{
+					/*
+					 * Localized name
+					 */
+					$names = json_decode($brother['name'], TRUE);
 					$brothers_variables[] = array(
 						'id' => $brother['id'],
 						'sname' => $brother['sname'],
-						'name' => $brother['name'],
-						'uri' => $this->CI->crud->get_content_uri($brother['id']),
+						'name' => $names[$this->LANG],
+						'uri' => $this->URI_PREFIX . $this->CI->crud->get_content_uri($brother['id']),
 						'children' => $brother['children']
 					);
 				}
@@ -620,9 +656,13 @@ class Common {
 		$data = array();
 		foreach ($elements as $element)
 		{
+			/*
+			 * Localized name
+			 */
+			$names = json_decode($element['name'], TRUE);
 			$element_id = $element['id'];
 			$element_sname = $element['sname'];
-			$element_name = $element['name'];
+			$element_name = $names[$this->LANG];
 			$element_type_id = $element['type_id'];
 			$element_type = $element['type'];
 			

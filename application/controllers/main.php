@@ -24,6 +24,17 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
 class Main extends CI_Controller {
+	
+	/*
+	 * i18n settings
+	 */
+	var $LANG;
+	var $LANG_AVAIL = array();
+	
+	/*
+	 * Starting URI segment
+	 */
+	var $SEGMENT_STEP = 0;
 
 	function __construct()
 	{
@@ -50,9 +61,6 @@ class Main extends CI_Controller {
 		// Client model 
 		$this->load->model('Crud', 'crud');
 		
-		// CMS Common Library
-		$this->load->library('common');
-
 		// Parser
 		$this->load->library('parser');
 		
@@ -63,7 +71,82 @@ class Main extends CI_Controller {
 	function index()
 	{
 		/*
-		 * Default values
+		 * Load site config
+		 */
+		$settings = $this->crud->get_config();
+		if ( ! is_array($settings) )
+		{
+			exit('Bad config. Call site administrator.');
+		}
+		foreach($settings as $setting)
+		{
+			switch ( $setting['name'] )
+			{
+				case 'i18n' :
+				/*
+				 * Language settings
+				 */
+				$i18n_settings = json_decode($setting['value'], TRUE);
+				foreach($i18n_settings as $i18n_setting)
+				{
+					if ( (bool) $i18n_setting['default'] )
+					{
+						$this->LANG = $i18n_setting['code'];
+						/*
+						 * Default language is first in array
+						 */
+						$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
+					}
+					else
+					{
+						$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
+					}
+				}
+				break;
+			}
+		}
+		
+		/*
+		 * Check language choice
+		 */
+		if ( $this->uri->total_segments() > 0 )
+		{
+			/*
+			 * URI first segment must be the 
+			 * language code or the default language
+			 * will be used
+			 */
+			if ( array_key_exists($this->uri->segment(1), $this->LANG_AVAIL) )
+			{
+				$this->LANG = $this->uri->segment(1);
+				$this->SEGMENT_STEP = 1;
+			}
+		}
+		
+		/*
+		 * If selected lang is the default language,
+		 * don't prepend lang code to URI
+		 */
+		if ( $this->LANG == key($this->LANG_AVAIL) )
+		{
+			$uri_prefix = '';
+		}
+		else
+		{
+			$uri_prefix = '/' . $this->LANG;
+		}
+		
+		/*
+		 * CMS Common Library called instead of
+		 * in construct to pass the LANG parameter
+		 */
+		$this->load->library('common', array(
+			'lang' => $this->LANG, 
+			'uri_prefix' => $uri_prefix
+		));
+
+		/*
+		 * Default content values
 		 */
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
@@ -72,10 +155,11 @@ class Main extends CI_Controller {
 		/*
 		 * Parse URI
 		 */
-		if ( ! $this->uri->total_segments() > 0 )
+		if ( $this->uri->total_segments() == $this->SEGMENT_STEP )
 		{
 			/*
-			 * No URI, show home page (content_id = 1)
+			 * No URI (besides eventual lang code), 
+			 * show home page (content_id = 1)
 			 */
 			$content_id = 1;
 			
@@ -85,9 +169,13 @@ class Main extends CI_Controller {
 			$data['content_id'] = $content_id;
 			
 			/*
+			 * localized title
+			 */
+			$titles = json_decode($this->crud->get_content_name($content_id), TRUE);
+			$data['title'] = $titles[$this->LANG];
+			/*
 			 * Metafields
 			 */
-			$data['title'] = $this->crud->get_content_name($content_id);
 			$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
 			
 			/*
@@ -113,14 +201,19 @@ class Main extends CI_Controller {
 			 * Identify content ID from URI
 			 */
 			$content_id = 1; // The primeval parent
-			for ( $c = 1; $c <= $this->uri->total_segments(); $c++ )
+			$starting_segment = $this->SEGMENT_STEP + 1;
+			for ( $c = $starting_segment; $c <= $this->uri->total_segments(); $c++ )
 			{
 				$sname = $this->uri->segment($c);
 				$segment = (array) $this->crud->get_content_by_parent($content_id, $sname);
 				if ( count($segment) > 0 )
 				{
 					$content_id = $segment['id'];
-					$content_name = $segment['name'];
+					/*
+					 * localized name
+					 */
+					$names = json_decode($segment['name'], TRUE);
+					$content_name = $names[$this->LANG];
 				}
 				else
 				{

@@ -657,7 +657,22 @@ $(function() {
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
-
+	
+	/*
+	 * Alternate betwin language inputs
+	 */
+	$('.input_lang_tab_link').live('click', function(event){
+		event.preventDefault();
+		var lang_code = $(this).attr('href');
+		var form_window_column_input = $(this).parents('.form_window_column_input').first();
+		// Change tab link colors
+		$(form_window_column_input).find("a.input_lang_tab_link.current").removeClass("current");
+		$(this).addClass("current");
+		// Hide all other language inputs
+		$(form_window_column_input).children('.input_lang_field:visible').hide();
+		// Show requested language input
+		$(form_window_column_input).children('#input_lang_field_' + lang_code).show();
+	});
 });
 
 

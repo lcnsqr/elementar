@@ -24,20 +24,15 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Content extends CI_Controller {
 
+	/*
+	 * i18n settings
+	 */
+	var $LANG;
+	var $LANG_AVAIL = array();
+
 	function __construct()
 	{
 		parent::__construct();
-		
-		/*
-		 * Settings
-		 */
-		$this->config->set_item('site_name', 'Elementar');
-
-		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
-		$this->config->set_item('smtp_port', '465');
-		$this->config->set_item('smtp_user', 'lcnsqr@gmail.com');
-		$this->config->set_item('smtp_pass', '');
-
 		
 		/*
 		 *  CI helpers
@@ -76,9 +71,55 @@ class Content extends CI_Controller {
 		$this->crud->STATUS = 'all';
 		
 		/*
+		 * Load site config
+		 */
+		$settings = $this->crud->get_config();
+		if ( ! is_array($settings) )
+		{
+			exit('Bad config. Call site administrator.');
+		}
+		foreach($settings as $setting)
+		{
+			switch ( $setting['name'] )
+			{
+				case 'i18n' :
+				/*
+				 * Language settings
+				 */
+				$i18n_settings = json_decode($setting['value'], TRUE);
+				foreach($i18n_settings as $i18n_setting)
+				{
+					if ( (bool) $i18n_setting['default'] )
+					{
+						$this->LANG = $i18n_setting['code'];
+						/*
+						 * Default language is first in array
+						 */
+						$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
+					}
+					else
+					{
+						$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
+					}
+				}
+				break;
+			}
+		}
+		
+		/*
 		 * CMS Common Library
 		 */
-		$this->load->library('common');
+		$this->load->library('common', array(
+			'lang' => $this->LANG, 
+			'uri_prefix' => ''
+		));
+
+		$this->config->set_item('site_name', 'Elementar');
+
+		//~ $this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
+		//~ $this->config->set_item('smtp_port', '465');
+		//~ $this->config->set_item('smtp_user', 'lcnsqr@gmail.com');
+		//~ $this->config->set_item('smtp_pass', '');
 
 		/*
 		 * Verificar sessão autenticada
@@ -491,87 +532,84 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 	}
 
-	function _render_form_custom_field($field, $value = NULL)
+	function _render_form_custom_field($type, $name, $sname, $description, $value)
 	{
-		$form = div_open(array('class' => 'form_window_column_label'));
-		$attributes = array('class' => 'field_label');
-		$form .= form_label($field['name'], $field['sname'], $attributes);
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");		
-		$form .= div_open(array('class' => 'form_window_column_input'));
-
 		/*
-		 * Adequar ao tipo do campo
+		 * Adequate input to field type
 		 */
-		switch ( $field['type'] )
+		switch ( $type )
 		{
+			case "name" :
 			case "line" :
 			$attributes = array(
 				'class' => 'noform',
-				'name' => $field['sname'],
-				'id' => $field['sname'],
+				'name' => $sname,
+				'id' => $sname,
 				'value' => $value
 			);
-			$form .= form_input($attributes);
+			$field = div_open(array('class' => 'text_input_container'));
+			$field .= form_input($attributes);
+			$field .= div_close();
+			$field .= hr(array('class' => 'clear'));
 			break;
 
 			case "p" :
 			case "hypertext" :
 			case "textarea" :
 			$attributes = array(
-				'class' => 'noform ' . $field['type'],
-				'name' => $field['sname'],
-				'id' => $field['sname'],
+				'class' => 'noform ' . $type,
+				'name' => $sname,
+				'id' => $sname,
 				'rows' => 16,
 				'cols' => 32,
 				'value' => $value
 			);
-			$form .= form_textarea($attributes);
+			$field = form_textarea($attributes);
 			break;
 			
 			case "menu" :
-			$form .= div_open(array('class' => 'menu_field'));
+			$field = div_open(array('class' => 'menu_field'));
 			/*
 			 * Render menu field
 			 */
 			$data = array(
-				'menu' => json_decode($value, TRUE), // decode as associative array
+				'menu' => json_decode($value, TRUE), 
 				'targets' => $this->_render_target_listing()
 			);
-			$form .= $this->load->view('admin/admin_content_menu_field', $data, true);
+			$field .= $this->load->view('admin/admin_content_menu_field', $data, true);
 			/*
 			 * The actual field
 			 */
 			$attributes = array(
 				'class' => 'noform menu_actual_field',
 				'type' => 'hidden',
-				'name' => $field['sname'],
-				'id' => $field['sname'],
+				'name' => $sname,
+				'id' => $sname,
 				'value' => $value
 			);
-			$form .= form_input($attributes);
-			$form .= div_close();
+			$field .= form_input($attributes);
+			$field .= div_close();
 			break;
 
 			case "img" : 
-			$form .= div_open(array('class' => 'image_field'));
+			$field = div_open(array('class' => 'image_field'));
 			$attributes = array(
 				'class' => 'noform',
 				'type' => 'hidden',
-				'name' => $field['sname'],
+				'name' => $sname,
 				'value' => $value
 			);
-			$form .= form_input($attributes);
+			$field .= form_input($attributes);
 			/*
 			 * Upload form
 			 */
-			$data = $this->common->render_form_upload_image($field['sname'], $value);
-			$form .= $this->load->view("admin/admin_content_upload_image", $data, TRUE);
-			$form .= div_close();
+			$data = $this->common->render_form_upload_image($sname, $value);
+			$field .= $this->load->view("admin/admin_content_upload_image", $data, TRUE);
+			$field .= div_close();
 			break;
 
 			case "image_gallery" : 
-			$form .= div_open(array('class' => 'image_gallery_field'));
+			$field = div_open(array('class' => 'image_gallery_field'));
 			/*
 			 * Images array
 			 */
@@ -584,7 +622,7 @@ class Content extends CI_Controller {
 			{
 				foreach ( $image_ids as $image_id )
 				{
-					$item_data = $this->common->render_form_upload_image($field['sname'] . '_item', $image_id);
+					$item_data = $this->common->render_form_upload_image($sname . '_item', $image_id);
 					$item_form = $this->load->view("admin/admin_content_image_gallery_field_item", $item_data, TRUE);
 					$gallery[] = array(
 						'item_form' => $item_form
@@ -598,53 +636,51 @@ class Content extends CI_Controller {
 			$attributes = array(
 				'class' => 'noform image_gallery_actual_field',
 				'type' => 'hidden',
-				'name' => $field['sname'],
+				'name' => $sname,
 				'value' => $value
 			);
-			$form .= form_input($attributes);
+			$field .= form_input($attributes);
 			/*
 			 * Render gallery field
 			 */
-			$form .= $this->load->view("admin/admin_content_image_gallery_field", array('gallery' => $gallery), TRUE);
-			$form .= div_close();
+			$field .= $this->load->view("admin/admin_content_image_gallery_field", array('gallery' => $gallery), TRUE);
+			$field .= div_close();
 			break;
 
 			case "youtube_gallery" :
-			$form .= div_open(array('class' => 'youtube_gallery_field'));
+			$field = div_open(array('class' => 'youtube_gallery_field'));
 			/*
 			 * Render youtube_gallery field
 			 */
 			$data = array(
 				'videos' => json_decode($value, TRUE) // decode as associative array
 			);
-			$form .= $this->load->view('admin/admin_content_youtube_gallery_field', $data, true);
+			$field .= $this->load->view('admin/admin_content_youtube_gallery_field', $data, true);
 			/*
 			 * The actual field
 			 */
 			$attributes = array(
 				'class' => 'noform youtube_gallery_actual_field',
 				'type' => 'hidden',
-				'name' => $field['sname'],
-				'id' => $field['sname'],
+				'name' => $sname,
+				'id' => $sname,
 				'value' => $value
 			);
-			$form .= form_input($attributes);
-			$form .= div_close();
+			$field .= form_input($attributes);
+			$field .= div_close();
 			break;
 
 			case "target" :
 			$attributes = array(
 				'class' => 'noform',
-				'name' => $field['sname'],
-				'id' => $field['sname'],
+				'name' => $sname,
+				'id' => $sname,
 				'value' => $value
 			);
-			$form .= form_input($attributes);
+			$field = form_input($attributes);
 			break;
 		}
-		$form .= div_close("<!-- form_window_column_input -->");
-
-		return $form;
+		return $field;
 	}
 	
 	function _render_target_listing()
@@ -748,26 +784,6 @@ class Content extends CI_Controller {
 			$form .= form_input($attributes);
 
 			/*
-			 * Element name
-			 */
-			$form .= div_open(array('class' => 'form_content_field'));
-			$form .= div_open(array('class' => 'form_window_column_label'));
-			$attributes = array('class' => 'field_label');
-			$form .= form_label("Nome", "name", $attributes);
-			$form .= br(1);
-			$form .= div_close("<!-- form_window_column_label -->");
-			$form .= div_open(array('class' => 'form_window_column_input'));
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'name',
-				'id' => 'name',
-				'value' => $this->crud->get_element_name($element_id)
-			);
-			$form .= form_input($attributes);
-			$form .= div_close("<!-- form_window_column_input -->");
-			$form .= div_close("<!-- .form_content_field -->");
-
-			/*
 			 * Element parent_id (hidden)
 			 */
 			$attributes = array(
@@ -790,14 +806,22 @@ class Content extends CI_Controller {
 			$form .= form_input($attributes);
 
 			/*
+			 * Element name, array index is language code
+			 */
+			$value = json_decode($this->crud->get_element_name($element_id), TRUE);
+			$form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value);
+
+			/*
 			 * Element type fields
 			 */
 			$fields = $this->crud->get_element_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
-				$form .= div_open(array('class' => 'form_content_field'));
-				$form .= $this->_render_form_custom_field($field, $this->crud->get_element_field($element_id, $field['id']));
-				$form .= div_close("<!-- .form_content_field -->");
+				/*
+				 * Value array index is language code
+				 */
+				$value = json_decode($this->crud->get_element_field($element_id, $field['id']), TRUE);
+				$form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value);
 			}
 
 			/*
@@ -1350,33 +1374,22 @@ class Content extends CI_Controller {
 			$content_form .= form_input($attributes);
 
 			/*
-			 * Content name
+			 * Content name, array index is language code
 			 */
-			$content_form .= div_open(array('class' => 'form_content_field'));
-			$content_form .= div_open(array('class' => 'form_window_column_label'));
-			$attributes = array('class' => 'field_label');
-			$content_form .= form_label("Nome", "name", $attributes);
-			$content_form .= br(1);
-			$content_form .= div_close("<!-- form_window_column_label -->");
-			
-			$content_form .= div_open(array('class' => 'form_window_column_input'));
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'name',
-				'id' => 'name',
-				'value' => $this->crud->get_content_name($content_id)
-			);
-			$content_form .= form_input($attributes);
-			$content_form .= div_close("<!-- form_window_column_input -->");
+			$value = json_decode($this->crud->get_content_name($content_id), TRUE);
+			$content_form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value);
 
-			$content_form .= div_close("<!-- .form_content_field -->");
-
+			/*
+			 * Render custom fields
+			 */
 			$fields = $this->crud->get_content_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
-				$content_form .= div_open(array('class' => 'form_content_field'));
-				$content_form .= $this->_render_form_custom_field($field, $this->crud->get_content_field($content_id, $field['id']));
-				$content_form .= div_close("<!-- .form_content_field -->");
+				/*
+				 * Value array index is language code
+				 */
+				$value = json_decode($this->crud->get_content_field($content_id, $field['id']), TRUE);
+				$content_form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value);
 			}
 
 			/*
@@ -1426,7 +1439,57 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 
 	}
-	
+
+	/*
+	 * Render html columns with label and input(s)
+	 */
+	function _render_form_field($type, $name, $sname, $description = NULL, $value = NULL)
+	{
+		$field = div_open(array('class' => 'form_content_field'));
+		$field .= div_open(array('class' => 'form_window_column_label'));
+		$attributes = array('class' => 'field_label');
+		$field .= form_label($name, $sname, $attributes);
+		$field .= br(1);
+		$field .= div_close('<!-- form_window_column_label -->');
+		$field .= div_open(array('class' => 'form_window_column_input'));
+		/*
+		 * One tab link for each language
+		 */
+		$input_lang_tab_links = array();
+		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+		{
+			$current = ( $this->LANG == $lang_code ) ? ' current' : '';
+			$input_lang_tab_links[] = anchor($lang_name, array('href' => $lang_code, 'class' => 'input_lang_tab_link' . $current));
+		}
+		$field .= div_open(array('class' => 'input_lang_menu'));
+		$field .= ul($input_lang_tab_links);
+		$field .= hr(array('class' => 'clear'));
+		$field .= div_close('<!-- input_lang_menu -->');
+		/*
+		 * The input fields for each language
+		 */
+		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+		{
+			/*
+			 * Get the field value correspondent language
+			 */
+			$lang_value = $value[$lang_code];
+			$attributes = array('class' => 'input_lang_field', 'id' => 'input_lang_field_' . $lang_code);
+			if ( $this->LANG == $lang_code ) 
+			{
+				$attributes['style'] = 'display: block;';
+			}
+			$field .= div_open($attributes);
+			
+			$field .= $this->_render_form_custom_field($type, $name, $sname . '_' . $lang_code, $description, $lang_value);
+			
+			$field .= div_close('<!-- input_lang_field -->');
+		}			
+		$field .= div_close('<!-- form_window_column_input -->');
+		$field .= div_close('<!-- .form_content_field -->');
+		return $field;
+	}
+
 	/**
 	 * Content types HTML dropdown
 	 * @param integer $selected Selected content type (id)
@@ -1636,22 +1699,24 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 	}
 
-	/**
-	 * Salvar conteúdo
+	/*
+	 * Save/update content
 	 */
 	function xhr_write_content()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 
-		$type_id = $this->input->post('type_id', TRUE);
+		/*
+		 * Content sname determined by the default language
+		 */
+		$sname = $this->common->normalize_string($this->input->post('name_' . $this->LANG, TRUE));
 
-		$name = $this->input->post('name', TRUE);
-
-		$sname = $this->common->normalize_string($name);
-
-		if ( $name == "" )
+		if ( $sname == "" )
 		{
+			/*
+			 * Invalid sname, return an error
+			 */
 			$response = array(
 				'done' => FALSE,
 				'error' => 'Nome inválido'
@@ -1660,45 +1725,93 @@ class Content extends CI_Controller {
 			return NULL;
 		}
 
+		/*
+		 * For content name saving,
+		 * Group each language's value 
+		 * on a array before saving
+		 */
+		$values = array();
+		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+		{
+			$values[$lang_code] = htmlentities($this->input->post('name_' . $lang_code, TRUE), ENT_QUOTES, "UTF-8");
+		}
+		$name = json_encode($values);
+
+		/*
+		 * Locate content type
+		 */
+		$type_id = $this->input->post('type_id', TRUE);
+
+		/*
+		 * Locate content ID
+		 */
 		$content_id = $this->input->post('content_id', TRUE);
-		if ( ! $content_id )
+		if ( (bool) $content_id )
+		{
+			/*
+			 * Content has ID. Just rename
+			 */
+			$this->crud->put_content_name($content_id, $name, $sname);
+		}
+		else
 		{
 			/*
 			 * Content ID not found, create new content
 			 */
 			$content_id = $this->crud->put_content($name, $sname, $type_id);
 		}
-		elseif ( $name != "" ) 
-		{
-			// Renomear
-			$this->crud->put_content_name($content_id, $name, $sname);
-		}
 		
 		/* 
-		 * Armazenar campos
+		 * Store content fields based on it's type
 		 */
 		foreach ( $this->crud->get_content_type_fields($type_id) as $type)
 		{
-			$value = $this->input->post($type['sname'], TRUE);
 			/*
 			 * Extra fields for specific field types
 			 */
 			switch ( $type['type'] )
 			{
-				case 'img' :
-				$image_id = $value;
-				$image_title = $this->input->post($type['sname'] . '_description', TRUE);
-				if ( (bool) $image_title )
+				default :
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
-					$this->crud->put_image_title($image_id, $image_title);
+					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
 				}
+				$value = json_encode($values);
+				$this->crud->put_content_field($content_id, $type['id'], $value);
+				break;				
+
+				case 'img' :
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+				{
+					$image_id = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);					
+					$image_title = $this->input->post($type['sname'] . '_description_' . $lang_code, TRUE);
+					if ( (bool) $image_title )
+					{
+						$this->crud->put_image_title($image_id, $image_title);
+					}
+					$values[$lang_code] = $image_id;
+				}
+				$value = json_encode($values);
 				$this->crud->put_content_field($content_id, $type['id'], $value);
 				break;
 
 				case 'image_gallery' :
-				$gallery = json_decode($value, TRUE);
-				if ( count($gallery) > 0 )
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
+					$gallery = array();
+					$gallery = json_decode($this->input->post($type['sname'] . '_' . $lang_code, TRUE), TRUE);
 					$ids = array();
 					foreach ( $gallery as $image )
 					{
@@ -1708,35 +1821,32 @@ class Content extends CI_Controller {
 							$this->crud->put_image_title($image['image_id'], $image['image_description']);
 						}
 					}
-					$this->crud->put_content_field($content_id, $type['id'], json_encode($ids));
+					$values[$lang_code] = json_encode($ids);
 				}
-				break;
-				
-				default :
+				$value = json_encode($values);
 				$this->crud->put_content_field($content_id, $type['id'], $value);
-				break;				
+				break;
 			}
 		}
 		
 		/*
-		 * Parent
+		 * Save content's parent
 		 */
 		$parent_id = (int) $this->input->post('parent_id', TRUE);
 		$this->crud->put_content_parent($content_id, $parent_id);
 
 		/* 
-		 * Armazenar status
+		 * Save status
 		 */
 		$this->crud->put_content_status($content_id, $this->input->post('status', TRUE));
 		
 		/*
-		 * resposta
+		 * Return ajax response
 		 */
 		$response = array(
 			'done' => TRUE,
 			'content_id' => $content_id
 		);
-		
 		$this->common->ajax_response($response);
 
 	}
@@ -1801,13 +1911,16 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 
-		$type_id = $this->input->post('type_id', TRUE);
-		$parent_id = $this->input->post('parent_id', TRUE);
-		$name = $this->input->post('name', TRUE);
-		$sname = $this->common->normalize_string($name);
+		/*
+		 * Content sname determined by the default language
+		 */
+		$sname = $this->common->normalize_string($this->input->post('name_' . $this->LANG, TRUE));
 
-		if ( (bool) $name === false )
+		if ( (bool) $sname === false )
 		{
+			/*
+			 * Invalid sname, return an error
+			 */
 			$response = array(
 				'done' => FALSE,
 				'error' => 'Nome inválido'
@@ -1816,45 +1929,93 @@ class Content extends CI_Controller {
 			return NULL;
 		}
 
+		/*
+		 * For element name saving,
+		 * Group each language's value 
+		 * on a array before saving
+		 */
+		$values = array();
+		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+		{
+			$values[$lang_code] = htmlentities($this->input->post('name_' . $lang_code, TRUE), ENT_QUOTES, "UTF-8");
+		}
+		$name = json_encode($values);
+		
+		/*
+		 * Locate element type
+		 */
+		$type_id = $this->input->post('type_id', TRUE);
+		
+		/*
+		 * Locate element ID
+		 */
 		$element_id = $this->input->post('element_id', TRUE);
-		if ( ! $element_id )
+		if ( (bool) $element_id )
+		{
+			/*
+			 * Content has ID. Just rename
+			 */
+			$this->crud->put_element_name($element_id, $name, $sname);
+		}
+		else
 		{
 			/*
 			 * Element ID not found, create new element
 			 */
 			$element_id = $this->crud->put_element($name, $sname, $type_id);
 		}
-		elseif ( $name != "" ) 
-		{
-			// Renomear
-			$this->crud->put_element_name($element_id, $name, $sname);
-		}
 
 		/* 
-		 * Armazenar campos
+		 * Store element fields based on it's type
 		 */
 		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
-			$value = $this->input->post($type['sname'], TRUE);
 			/*
-			 * Extra details for specific field types
+			 * Extra fields for specific field types
 			 */
 			switch ( $type['type'] )
 			{
-				case 'img' :
-				$image_id = $value;
-				$image_title = $this->input->post($type['sname'] . '_description', TRUE);
-				if ( (bool) $image_title )
+				default :
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
-					$this->crud->put_image_title($image_id, $image_title);
+					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
 				}
+				$value = json_encode($values);
+				$this->crud->put_element_field($element_id, $type['id'], $value);
+				break;				
+
+				case 'img' :
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+				{
+					$image_id = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);					
+					$image_title = $this->input->post($type['sname'] . '_description_' . $lang_code, TRUE);
+					if ( (bool) $image_title )
+					{
+						$this->crud->put_image_title($image_id, $image_title);
+					}
+					$values[$lang_code] = $image_id;
+				}
+				$value = json_encode($values);
 				$this->crud->put_element_field($element_id, $type['id'], $value);
 				break;
-				
+
 				case 'image_gallery' :
-				$gallery = json_decode($value, TRUE);
-				if ( count($gallery) > 0 )
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
+					$gallery = array();
+					$gallery = json_decode($this->input->post($type['sname'] . '_' . $lang_code, TRUE), TRUE);
 					$ids = array();
 					foreach ( $gallery as $image )
 					{
@@ -1864,13 +2025,11 @@ class Content extends CI_Controller {
 							$this->crud->put_image_title($image['image_id'], $image['image_description']);
 						}
 					}
-					$this->crud->put_element_field($element_id, $type['id'], json_encode($ids));
+					$values[$lang_code] = json_encode($ids);
 				}
-				break;
-				
-				default :
+				$value = json_encode($values);
 				$this->crud->put_element_field($element_id, $type['id'], $value);
-				break;				
+				break;
 			}
 		}
 		
@@ -1887,23 +2046,23 @@ class Content extends CI_Controller {
 		}
 
 		/*
-		 * Parent
+		 * Element's Parent
 		 */
+		$parent_id = $this->input->post('parent_id', TRUE);
 		$this->crud->put_element_parent($element_id, $parent_id);
 
 		/* 
-		 * Armazenar status
+		 * Save status
 		 */
 		$this->crud->put_element_status($element_id, $this->input->post('status', TRUE));
 		
 		/*
-		 * resposta
+		 * Ajax response
 		 */
 		$response = array(
 			'done' => TRUE,
 			'element_id' => $element_id
 		);
-		
 		$this->common->ajax_response($response);
 
 	}
@@ -1939,8 +2098,12 @@ class Content extends CI_Controller {
 	function _render_tree_listing($id, $listing = NULL, $listing_id = NULL)
 	{
 		$data['parent_id'] = $id;
-
-		$data['parent'] = $this->crud->get_content_name($id);
+		
+		/*
+		 * Set default language for view
+		 */
+		$data['lang'] = $this->LANG;
+		
 		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent($id);
 		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent($id);
 		// Inner listings, if any
