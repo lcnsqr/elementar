@@ -377,80 +377,6 @@ class Common {
 	}
 
 	/**
-	 * Formulário para envio de imagem no campo imagem
-	 * @param string $field_name Nome real (hidden input)
-	 * @param integer $image_id Id de imagem armazenado 
-	 * @return HTML content
-	 */
-	function render_form_upload_image($field_sname, $image_id = NULL)
-	{
-		/*
-		 * Create an upload session to hold sent data
-		 * before saving the content/element
-		 */
-		$upload_session_id = $this->CI->crud->put_upload_session();
-		
-		/*
-		 * Upload form properties
-		 */
-		$attributes = array(
-			'target' => "iframeUpload_" . $upload_session_id,
-			'name' => "upload_image_" . $upload_session_id,
-			'id' => "upload_image_" . $upload_session_id,
-			'class' => "upload_image"
-		);
-		/*
-		 * Hidden fields to hold the upload session id
-		 * and the actual image field name (which will carry
-		 * the sent image id)
-		 */
-		$hidden = array(
-			'upload_session_id' => $upload_session_id, 
-			'field_sname' => $field_sname
-		);
-		/*
-		 * The URI to handle the upload
-		 */
-		$form = form_open_multipart("/admin/upload/send_image", $attributes, $hidden);
-		/*
-		 * Open file field
-		 */
-		$attributes = array(
-			'class' => 'upload_file',
-			'name' => "upload_file",
-			'id' => "upload_file_" . $upload_session_id
-		);
-		/*
-		 * IE change event bug (to upload automatic after file selection)
-		 */
-		$this->CI->load->library('user_agent');
-		if( $this->CI->agent->browser() == 'Internet Explorer' )
-		{
-			$attributes['onchange'] = 'this.form.submit(); this.blur();';
-		}
-		$form .= form_label("Enviar imagem", $attributes['id']);
-		$form .= br(1);
-		$form .= form_upload($attributes);
-		/*
-		 * Close upload form
-		 */
-		$form .= form_close();
-		
-		/*
-		 * Image field View variables
-		 */
-		$data = array();
-		$data['input_name'] = $field_sname;
-		$data['upload_form'] = $form;
-		$data['upload_session_id'] = $upload_session_id;
-		$data['thumbnail'] = $this->CI->crud->get_image_uri_thumb($image_id);
-		$data['image_id'] = $image_id;
-		$data['image_description'] = $this->CI->crud->get_image_title($image_id);
-		
-		return $data;
-	}
-
-	/**
 	 * Convert non-ascii and other characters to ascii and underscores
 	 * @param string $string Input string
 	 * @return string Converted string
@@ -499,21 +425,20 @@ class Common {
 		switch ( $field_type )
 		{
 			case 'img' :
-			$file_id = $field_value;
-			$image = (array) $this->CI->crud->get_image($file_id);
-			if ( count( $image ) > 0 )
+			$attributes = json_decode($field_value, TRUE);
+			if ( count( $attributes ) > 0 )
 			{
 				/*
-				 * With an array value, put as a sub array
+				 * Put attributes as a sub array
 				 * so the nested fields can be parsed on 
 				 * a template pair loop
 				 */
 				$nested = array();
 				$nested[] = array(
-					'uri' => (string) $image['uri'],
-					'width' => (string) $image['width'],
-					'height' => (string) $image['height'],
-					'alt' => (string) $image['alt'] 
+					'uri' => (string) $attributes['uri'],
+					'width' => (string) $attributes['width'],
+					'height' => (string) $attributes['height'],
+					'alt' => (string) $attributes['title'] 
 				);
 				return $nested;
 			}

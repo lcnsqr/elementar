@@ -1,3 +1,4 @@
+//<![CDATA[
 var tinymceConfigHypertext = {
 	// Location of TinyMCE script
 	script_url : '/js/tiny_mce/tiny_mce.js',
@@ -61,3 +62,5 @@ $.fn.extend({
 		}
 	}
 });
+
+//]]>

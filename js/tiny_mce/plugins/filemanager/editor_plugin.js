@@ -25,14 +25,13 @@
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
 			ed.addCommand('mceFileManager', function() {
 				ed.windowManager.open({
-					//file : url + '/dialog.htm',
-					file : '/admin/file/manager',
+					file : '/admin/file/manager?parent=tinymce',
 					width : 880 + parseInt(ed.getLang('filemanager.delta_width', 0)),
 					height : 480 + parseInt(ed.getLang('filemanager.delta_height', 0)),
 					inline : 1
 				}, {
 					plugin_url : url, // Plugin absolute URL
-					some_custom_arg : 'custom arg' // Custom argument
+					// some_custom_arg : 'custom arg' // Custom argument
 				});
 			});
 

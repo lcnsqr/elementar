@@ -1213,67 +1213,6 @@ class Crud extends CI_Model {
 	}
 
 	/*
-	 * Get image properties
-	 * return array
-	 */
-	function get_image($field_id)
-	{
-		$this->elementar->select('uri, uri_thumb, alt, width, height');
-		$this->elementar->from('image');
-		$this->elementar->where('id', $field_id);
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			return $query->row_array();
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-
-	/*
-	 * Pegar uri de imagem
-	 */
-	function get_image_uri($field_id)
-	{
-		$this->elementar->select('uri');
-		$this->elementar->from('image');
-		$this->elementar->where('id', $field_id);
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			$row = $query->row();
-			return $row->uri;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-
-	/*
-	 * Pegar thumb de imagem
-	 */
-	function get_image_uri_thumb($field_id)
-	{
-		$this->elementar->select('uri_thumb');
-		$this->elementar->from('image');
-		$this->elementar->where('id', $field_id);
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			$row = $query->row();
-			return $row->uri_thumb;
-		}
-		else
-		{
-			return NULL;
-		}
-
-	}
-
-	/*
 	 * Gravar pai de conteúdo
 	 */
 	function put_content_parent($content_id, $parent_id)
@@ -2041,26 +1980,6 @@ class Crud extends CI_Model {
 	}
 
 	/*
-	 * Pegar id na tabela pra o arquivo enviado
-	 */
-	function get_upload_session_image_id($upload_session_id)
-	{
-		$this->elementar->select('image_id');
-		$this->elementar->from('upload_session');
-		$this->elementar->where('id', $upload_session_id);
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			$row = $query->row();
-			return $row->image_id;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-
-	/*
 	 * Pegar nome do arquivo enviado
 	 */
 	function get_upload_session_name($upload_session_id)
@@ -2073,63 +1992,6 @@ class Crud extends CI_Model {
 		{
 			$row = $query->row();
 			return $row->name;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-	
-	/*
-	 * Gravar informações de imagem na tabela
-	 */
-	function put_image($alt, $uri, $uri_thumb, $width = NULL, $height = NULL)
-	{
-		$data = array(
-			'alt' => $alt,
-			'uri' => $uri,
-			'uri_thumb' => $uri_thumb,
-			'width' => $width,
-			'height' => $height
-		);
-		$inserted = $this->elementar->insert('image', $data);
-		if ($inserted)
-		{
-			return $this->elementar->insert_id();
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	/*
-	 * Gravar título (alt) de imagem na tabela
-	 */
-	function put_image_title($image_id, $title)
-	{
-		$data = array(
-			'alt' => htmlentities($title, ENT_QUOTES, "UTF-8")
-		);
-		
-		$this->elementar->where('id', $image_id);
-		$this->elementar->update('image', $data); 
-	}
-
-	/*
-	 * Pegar título de imagem
-	 */
-	function get_image_title($image_id)
-	{
-		$this->elementar->select('alt');
-		$this->elementar->from('image');
-		$this->elementar->where('id', $image_id);
-		$this->elementar->limit(1);
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			$row = $query->row();
-			return html_entity_decode($row->alt, ENT_QUOTES, "UTF-8");
 		}
 		else
 		{

@@ -132,8 +132,53 @@ $(function() {
 	 */
 	$('a.insert').live('click', function(event){
 		event.preventDefault();
-		var contents = $(this).next('.action_insert').html();
-		FileManagerDialog.insert(contents);
+
+		/* 
+		 * File details
+		 */
+		var uri = $(this).next('.action_insert').html();
+		var title = $(this).attr('title');
+		var details = $(this).parents('#current_file_details');
+		var mime = $(details).find('span.mime').first().html();
+		var size = $(details).find('span.size').first().html();
+		var width = $(details).find('span.width').first().html();
+		var height = $(details).find('span.height').first().html();
+		var thumbnail = $(details).find('span.icon').first().html();
+		
+		/*
+		 * Identifies file manager caller
+		 * and responds correctly
+		 */
+		if ( $.getUrlVar('parent') == 'tinymce' ) { 
+			FileManagerDialog.insert(uri);
+		}
+		else if ( $.getUrlVar('parent') == 'direct' ) {
+			var identifier = $.getUrlVar('identifier');
+			var field = window.opener.$('input.noform[name="' + identifier + '"]');
+			var field_description = window.opener.$('input[name="' + identifier + '_description"]');
+			var field_thumbnail = window.opener.$('div#image_item_thumbnail_' + identifier);
+			if ($(field) != null) {
+				/*
+				 * Convert variables to json before returning to parent field
+				 */
+				var contents = { uri : uri, title : title, mime : mime, size : size, width : width, height : height, thumbnail : thumbnail };
+				$(field).val($.toJSON(contents));
+				/*
+				 * Check for previous description and update
+				 */
+				if ( $(field_description).val() == '' ) {
+					$(field_description).val(title);
+				}
+				/*
+				 * Update Thumbnail
+				 */
+				$(field_thumbnail).css('background-image', 'url("' + thumbnail + '")');
+			}
+			/*
+			 * Close File manager
+			 */
+			window.close();
+		}
 	});
 
 	/*
@@ -392,4 +437,25 @@ $(function() {
 	});
 
 });
+
+/*
+ * Read a page's GET URL variables 
+ * Code from http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
+ */
+$.extend({
+	getUrlVars: function(){
+		var vars = [], hash;
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		for(var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			vars.push(hash[0]);
+			vars[hash[0]] = hash[1];
+		}
+		return vars;
+	},
+	getUrlVar: function(name){
+		return $.getUrlVars()[name];
+	}
+});
+
 //]]>

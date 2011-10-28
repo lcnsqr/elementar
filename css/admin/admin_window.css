@@ -90,10 +90,6 @@
 	margin: 0;
 }
 
-.form_content_field .upload_image_title {
-	margin-bottom: 4px;
-}
-
 .form_control_buttons {
 	text-align: right;
 }
@@ -162,7 +158,7 @@
 }
 
 /*
- * Image upload field
+ * Image field
  */
 #image_parent_template, #image_item_template {
 	display: none;
@@ -219,9 +215,6 @@
 }
 .image_field .add_image, .image_field .delete_image {
 	font-size: 11px;
-}
-.image_field input.upload_file, .image_gallery_field input.upload_file {
-	width: 180px;
 }
 
 /*

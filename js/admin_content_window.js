@@ -114,6 +114,17 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		/*
+		 * Update image field json data
+		 */
+		$("input.img").each(function() {
+			var img = $.parseJSON($(this).val());
+			if ( img != null ) {
+				img.title = $('input#' + $(this).attr('id') + '_description').val();
+			}
+			$(this).val($.toJSON(img));
+		});
+
+		/*
 		 * Update menu field json data
 		 */
 		$(".menu_field").each(function() {
@@ -247,13 +258,53 @@ $(function() {
 			$("#content_editor_form").html("");
 		});
 	});
-	
+
+	/*
+	 * Discard image in a image field	
+	 */
+	$(".image_erase").live("click", function(event) {
+		event.preventDefault();
+		var container = $(this).parents(".image_item").first();
+		/*
+		 * Clear file input field
+		 */
+		$(container).find("input.upload_file").val("");
+		/*
+		 * Update thumbnail and hide loading animation
+		 */
+		var image_thumbnail = $(container).find(".image_item_thumbnail");
+		$(image_thumbnail).removeAttr("style");
+		$(image_thumbnail).addClass('image_item_thumbnail_missing');
+		/*
+		 * Empty the image id field
+		 */
+		var field_sname = $(this).attr('href');
+		var image_field = $(container).parents('.image_field').first().find("input[name='"+field_sname+"']");
+		$(image_field).val('');
+		/*
+		 * Empty the description field
+		 */
+		var image_description = $(container).find("input[name='"+field_sname+"_description']");
+		$(image_description).val('');
+	});
+
 	// Salvar conteúdo
 	$("#button_content_save").live('click', function(event) {
 		event.preventDefault();
 		
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
+
+		/*
+		 * Update image field json data
+		 */
+		$("input.img").each(function() {
+			var img = $.parseJSON($(this).val());
+			if ( img != null ) {
+				img.title = $('input#' + $(this).attr('id') + '_description').val();
+			}
+			$(this).val($.toJSON(img));
+		});
 
 		/*
 		 * Update menu field json data
@@ -673,6 +724,22 @@ $(function() {
 		// Show requested language input
 		$(form_window_column_input).children('#input_lang_field_' + lang_code).show();
 	});
+	
+	/*
+	 * Open file manager
+	 */
+	$('.browse_file').live('click', function(event){
+		event.preventDefault();
+		/*
+		 * Identifies receptor input
+		 */
+		var identifier = $(this).attr('href');
+		/*
+		 * Pass caller data to file manager 
+		 */
+		window.open('/admin/file/manager?parent=direct&identifier=' + identifier, '_blank', 'height=480, width=880');
+	});
+	
 });
 
 

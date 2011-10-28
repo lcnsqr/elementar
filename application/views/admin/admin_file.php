@@ -7,12 +7,10 @@
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<link rel="stylesheet" href="/css/admin/admin_file.css" type="text/css" />
 	<link rel="stylesheet" href="/css/admin/reset.css" type="text/css" />
-	<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
-	<script type="text/javascript" src="/js/jquery.timers-1.2.js"></script>
-	<script type="text/javascript" src="/js/tiny_mce/tiny_mce_popup.js"></script>
-	<script type="text/javascript" src="/js/tiny_mce/plugins/filemanager/js/dialog.js"></script>
-	<script type="text/javascript" src="/js/admin_file.js"></script>
+
+<?php foreach ( $js as $uri ): ?>
+	<script type="text/javascript" src="<?php echo $uri; ?>"></script>
+<?php endforeach; ?>
 
 </head>
 

@@ -23,6 +23,14 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class File extends CI_Controller {
+	
+	var $ROOT;
+
+	/*
+	 * i18n settings
+	 */
+	var $LANG;
+	var $LANG_AVAIL = array();
 
 	function __construct()
 	{
@@ -40,9 +48,48 @@ class File extends CI_Controller {
 		$this->crud->STATUS = 'all';
 		
 		/*
+		 * Load site config
+		 */
+		$settings = $this->crud->get_config();
+		if ( ! is_array($settings) )
+		{
+			exit('Bad config. Call site administrator.');
+		}
+		foreach($settings as $setting)
+		{
+			switch ( $setting['name'] )
+			{
+				case 'i18n' :
+				/*
+				 * Language settings
+				 */
+				$i18n_settings = json_decode($setting['value'], TRUE);
+				foreach($i18n_settings as $i18n_setting)
+				{
+					if ( (bool) $i18n_setting['default'] )
+					{
+						$this->LANG = $i18n_setting['code'];
+						/*
+						 * Default language is first in array
+						 */
+						$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
+					}
+					else
+					{
+						$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
+					}
+				}
+				break;
+			}
+		}
+		
+		/*
 		 * CMS Common Library
 		 */
-		$this->load->library('common');
+		$this->load->library('common', array(
+			'lang' => $this->LANG, 
+			'uri_prefix' => ''
+		));
 
 		$this->ROOT = '/files';
 
@@ -56,6 +103,29 @@ class File extends CI_Controller {
 	function manager()
 	{
 		$data = array();
+
+		/*
+		 * client controller (javascript)
+		 */
+		$js = array(
+			'/js/jquery-1.6.2.min.js',
+			'/js/jquery.easing.1.3.js',
+			'/js/jquery.timers-1.2.js',
+			'/js/jquery.json-2.2.min.js',
+			'/js/admin_file.js'
+		);
+
+		/*
+		 * Add tinymce support scripts if requested by file manager plugin
+		 */
+		if ( $this->input->get('parent', TRUE) == 'tinymce' )
+		{
+			$js[] = '/js/tiny_mce/tiny_mce_popup.js';
+			$js[] = '/js/tiny_mce/plugins/filemanager/js/dialog.js';
+		}
+		
+		$data['js'] = $js;
+
 		$data['folder'] = array(
 			'name' => 'Raiz',
 			'path' => $this->ROOT,
@@ -263,15 +333,11 @@ class File extends CI_Controller {
 			{
 				$label = ( strlen($content) > 8 ) ? substr($content, 0, 8) . '...' : $content;
 				/*
-				 * File info
+				 * TODO: Replace file_info by another method to retrieve file type
 				 */
-				/*
-				 * Dreamhost does not support fileinfo
-				$finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+				$finfo = finfo_open(FILEINFO_MIME_TYPE);
 				$mime_content_type = finfo_file($finfo, $relative_path . '/' . $content);
 				finfo_close($finfo);
-				*/
-				$mime_content_type = "File";
 				
 				$size = filesize($relative_path . '/' . $content);
 				$attrs = array(

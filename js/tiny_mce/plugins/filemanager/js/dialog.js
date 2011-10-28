@@ -2,8 +2,8 @@ tinyMCEPopup.requireLangPack();
 
 var FileManagerDialog = {
 	init : function() {
+		// Local actions from plugin call data
 		//var f = document.forms[0];
-
 		// Get the selected contents as text and place it in the input
 		//f.someval.value = tinyMCEPopup.editor.selection.getContent({format : 'text'});
 		//f.somearg.value = tinyMCEPopup.getWindowArg('some_custom_arg');
