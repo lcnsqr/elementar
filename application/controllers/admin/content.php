@@ -572,7 +572,7 @@ class Content extends CI_Controller {
 			 * Render menu field
 			 */
 			$data = array(
-				'menu' => json_decode($value, TRUE), 
+				'menu' => ( $value != '' ) ? json_decode($value, TRUE) : array(), 
 				'targets' => $this->_render_target_listing()
 			);
 			$field .= $this->load->view('admin/admin_content_menu_field', $data, true);

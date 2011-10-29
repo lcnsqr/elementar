@@ -64,27 +64,38 @@ class Common {
 				return TRUE;
 			}
 		}
-		else
+		
+		/*
+		 * trim out trailing slash
+		 */
+		$current_uri = '/' . $this->CI->uri->uri_string();
+		if ( substr($current_uri, -1) == '/' )
 		{
-			/*
-			 * Ignore root 
-			 */
-			if ( $uri != '/' )
+			$current_uri = substr($current_uri, 0, -1);
+		}
+
+		/*
+		 * Check for localized home
+		 */
+		if ( $this->CI->uri->total_segments() == 1 )
+		{
+			if ( $this->URI_PREFIX == $current_uri && $current_uri . '/' == $uri )
 			{
-				$current_uri = '/' . $this->CI->uri->uri_string();
-				if ( substr($current_uri, -1) == '/' )
-				{
-					/*
-					 * trim out trailing slash
-					 */
-					$current_uri = substr($current_uri, 0, -1);
-				}
-				if ( $current_uri == $uri )
-				{
-					return TRUE;
-				}
+				return TRUE;
+			}
+		} 
+		
+		/*
+		 * Non root URI
+		 */
+		if ( $uri != '/' )
+		{
+			if ( $current_uri == $uri )
+			{
+				return TRUE;
 			}
 		}
+
 		/*
 		 * Defaults to false
 		 */
@@ -109,7 +120,7 @@ class Common {
 			/*
 			 * Mark current menu
 			 */
-			$class = ( $this->_uri_is_current($menu_item['target']) ) ? 'menu_item current' : 'menu_item';
+			$class = ( $this->_uri_is_current($this->URI_PREFIX . $menu_item['target']) ) ? 'menu_item current' : 'menu_item';
 			/*
 			 * Set first and last menu for styling
 			 */
@@ -121,6 +132,7 @@ class Common {
 				'class' => $class
 			);
 			$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
+			$link = '<a href="'.$this->URI_PREFIX . $menu_item['target'].'" title="'.htmlspecialchars( $menu_item['name'] ).'" class="'.$class.'">'.htmlspecialchars($menu_item['name']).'</a>';
 			$submenu = $menu_item['menu'];
 			if ( ! (bool) $submenu )
 			{

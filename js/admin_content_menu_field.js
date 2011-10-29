@@ -184,4 +184,25 @@ function prepare_menu_field(list) {
 	return menus;
 }
 
+$.fn.extend({
+	prepareMenuField: function(){
+		var menus = new Array();
+		$(this).children('.menu_parent[id=""]').each(function() {
+			$(this).children('.menu_item[id=""]').each(function() {
+				var name = $(this).find('input[name="name"]').val();
+				var target = $(this).find('input[name="target"]').val();
+				if ( $(this).children('.menu_parent[id=""]').length > 0 ) {
+					var submenu = $(this).prepareMenuField();
+				}
+				else {
+					var submenu = null;
+				}
+				menus.push( { name : name, target : target, menu : submenu } );
+			});
+		});
+		$(this).find('input.menu_actual_field').val($.toJSON(menus));
+	}
+});
+
+
 //]]>

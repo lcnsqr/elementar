@@ -128,8 +128,7 @@ $(function() {
 		 * Update menu field json data
 		 */
 		$(".menu_field").each(function() {
-			var menu = prepare_menu_field(this);
-			$(this).find('input.menu_actual_field').val($.toJSON(menu));
+			$(this).prepareMenuField();
 		});
 
 		/*
@@ -310,8 +309,7 @@ $(function() {
 		 * Update menu field json data
 		 */
 		$(".menu_field").each(function() {
-			var menu = prepare_menu_field(this);
-			$(this).find('input.menu_actual_field').val($.toJSON(menu));
+			$(this).prepareMenuField();
 		});
 
 		/*
