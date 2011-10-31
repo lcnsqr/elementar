@@ -153,21 +153,6 @@ $(function() {
 });
 
 /*
- * Serialize image gallery for writing
- */
-function prepare_image_gallery_field(list) {
-	var gallery = new Array();
-	$(list).find(".image_item").each(function() {
-		var image_id = $(this).find("input.image_id").val();
-		var image_description = $(this).find("input.image_description").val();
-		if ( image_id != '' ) {
-			gallery.push( { image_id : image_id, image_description : image_description } );
-		}
-	});
-	return gallery;
-}
-
-/*
  * Serialize images gallery for saving
  */
 $.fn.extend({
