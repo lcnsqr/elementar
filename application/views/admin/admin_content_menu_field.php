@@ -1,5 +1,5 @@
-<div class="menu_parent" id="menu_parent_template">
-	<div class="menu_item" id="menu_item_template">
+<div class="menu_parent menu_parent_template">
+	<div class="menu_item menu_item_template">
 		<div class="menu_item_inputs">
 			<div class="menu_item_name">
 			<label for="">Nome</label><br />

@@ -623,27 +623,9 @@ class Content extends CI_Controller {
 			case "image_gallery" : 
 			$field = div_open(array('class' => 'image_gallery_field'));
 			/*
-			 * Images array
-			 */
-			$gallery = array();
-			/*
-			 * Loop on each image from gallery
-			 */
-			$image_ids = json_decode($value, TRUE);
-			if ( is_array($image_ids) )
-			{
-				foreach ( $image_ids as $image_id )
-				{
-					$item_data = $this->common->render_form_upload_image($sname . '_item', $image_id);
-					$item_form = $this->load->view("admin/admin_content_image_gallery_field_item", $item_data, TRUE);
-					$gallery[] = array(
-						'item_form' => $item_form
-					);
-				}
-			}
-			/*
-			 * Input holds json array with 
-			 * image IDs and it's alt text
+			 * Input holds json data with 
+			 * image uri, alt text, width, height,
+			 * thumbnail and size
 			 */
 			$attributes = array(
 				'class' => 'noform image_gallery_actual_field',
@@ -655,7 +637,10 @@ class Content extends CI_Controller {
 			/*
 			 * Render gallery field
 			 */
-			$field .= $this->load->view("admin/admin_content_image_gallery_field", array('gallery' => $gallery), TRUE);
+			$data = array(
+				'gallery' => ($value != '') ? json_decode($value, TRUE) : array()
+			);
+			$field .= $this->load->view("admin/admin_content_image_gallery_field", $data, TRUE);
 			$field .= div_close();
 			break;
 
@@ -1779,47 +1764,15 @@ class Content extends CI_Controller {
 		foreach ( $this->crud->get_content_type_fields($type_id) as $type)
 		{
 			/*
-			 * Extra fields for specific field types
+			 * Group each language's value on a array before saving
 			 */
-			switch ( $type['type'] )
+			$values = array();
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
-				default :
-				/*
-				 * Group each language's value on a array before saving
-				 */
-				$values = array();
-				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
-				{
-					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
-				}
-				$value = json_encode($values);
-				$this->crud->put_content_field($content_id, $type['id'], $value);
-				break;				
-
-				case 'image_gallery' :
-				/*
-				 * Group each language's value on a array before saving
-				 */
-				$values = array();
-				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
-				{
-					$gallery = array();
-					$gallery = json_decode($this->input->post($type['sname'] . '_' . $lang_code, TRUE), TRUE);
-					$ids = array();
-					foreach ( $gallery as $image )
-					{
-						$ids[] = $image['image_id'];
-						if ( (bool) $image['image_description'] )
-						{
-							$this->crud->put_image_title($image['image_id'], $image['image_description']);
-						}
-					}
-					$values[$lang_code] = json_encode($ids);
-				}
-				$value = json_encode($values);
-				$this->crud->put_content_field($content_id, $type['id'], $value);
-				break;
+				$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
 			}
+			$value = json_encode($values);
+			$this->crud->put_content_field($content_id, $type['id'], $value);
 		}
 		
 		/*
@@ -1964,47 +1917,15 @@ class Content extends CI_Controller {
 		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
 			/*
-			 * Extra fields for specific field types
+			 * Group each language's value on a array before saving
 			 */
-			switch ( $type['type'] )
+			$values = array();
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
-				default :
-				/*
-				 * Group each language's value on a array before saving
-				 */
-				$values = array();
-				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
-				{
-					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
-				}
-				$value = json_encode($values);
-				$this->crud->put_element_field($element_id, $type['id'], $value);
-				break;				
-
-				case 'image_gallery' :
-				/*
-				 * Group each language's value on a array before saving
-				 */
-				$values = array();
-				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
-				{
-					$gallery = array();
-					$gallery = json_decode($this->input->post($type['sname'] . '_' . $lang_code, TRUE), TRUE);
-					$ids = array();
-					foreach ( $gallery as $image )
-					{
-						$ids[] = $image['image_id'];
-						if ( (bool) $image['image_description'] )
-						{
-							$this->crud->put_image_title($image['image_id'], $image['image_description']);
-						}
-					}
-					$values[$lang_code] = json_encode($ids);
-				}
-				$value = json_encode($values);
-				$this->crud->put_element_field($element_id, $type['id'], $value);
-				break;
+				$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
 			}
+			$value = json_encode($values);
+			$this->crud->put_element_field($element_id, $type['id'], $value);
 		}
 		
 		/*

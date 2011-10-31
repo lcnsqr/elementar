@@ -97,8 +97,11 @@
 /*
  * Menu field editor
  */
-#menu_parent_template, #menu_item_template {
+.menu_parent_template, .menu_item_template {
 	display: none;
+}
+.menu_parent_add {
+	margin-bottom: 6px;
 }
 .menu_field > .menu_parent {
 	margin: 0;
@@ -111,9 +114,11 @@
 }
 .menu_item {
 	position: relative;
-	margin-bottom: 12px;
+	margin-bottom: 6px;
 	padding-left: 6px;
+/*
 	margin-right: 8px;
+*/
 	border: 1px solid #d9d9d7;
 	background-color: #fff;
 }
@@ -160,8 +165,11 @@
 /*
  * Image field
  */
-#image_parent_template, #image_item_template {
+.image_parent_template, .image_item_template {
 	display: none;
+}
+.image_parent_add {
+	margin-bottom: 6px;
 }
 .image_field > .image_parent {
 	margin: 0;
@@ -174,9 +182,11 @@
 }
 .image_item {
 	position: relative;
-	margin-bottom: 12px;
+	margin-bottom: 6px;
 	padding-left: 6px;
+/*
 	margin-right: 8px;
+*/
 	border: 1px solid #d9d9d7;
 	background-color: #fff;
 }
@@ -220,7 +230,7 @@
 /*
  * YouTube gallery field
  */
-#youtube_parent_template, #youtube_item_template {
+.youtube_parent_template, .youtube_item_template {
 	display: none;
 }
 .youtube_field > .youtube_parent {

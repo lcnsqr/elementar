@@ -1,5 +1,5 @@
-<div class="youtube_parent" id="youtube_parent_template">
-	<div class="youtube_item" id="youtube_item_template">
+<div class="youtube_parent youtube_parent_template">
+	<div class="youtube_item youtube_item_template">
 		<div class="youtube_item_inputs">
 			<div class="youtube_item_url">
 			<label for="">URL</label><br />
@@ -25,9 +25,8 @@
 
 <p class="youtube_parent_add"><a class="youtube_add" href="youtube_add">&rarr; Novo vídeo</a></p>
 
-<?php if ( is_array($videos) ): ?>
-
 <div class="youtube_parent">
+<?php if ( is_array($videos) ): ?>
 <?php foreach ( $videos as $key => $item ) : ?>
 	<div class="youtube_item">
 
@@ -57,6 +56,5 @@
 	</div> <!-- youtube_item -->
 <?php endforeach; ?>
 
-</div> <!-- youtube_parent -->
-
 <?php endif; ?>
+</div> <!-- youtube_parent -->

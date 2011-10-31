@@ -1,11 +1,9 @@
 //<![CDATA[
 
+/*
+ * Menu editing functions
+ */
 $(function() {
-
-	/*
-	 * Menu type field
-	 */
-
 	/*
 	 * Novo menu topo
 	 */
@@ -13,9 +11,9 @@ $(function() {
 		event.preventDefault();
 		var parent = $(this).parents(".menu_field").first().children(".menu_parent:visible");
 		if ( $(parent).length > 0 ) {
-			var NewMenu = $("#menu_item_template").clone();
+			var NewMenu = $(".menu_item_template").first().clone();
 			// Redefinir
-			$(NewMenu).removeAttr("id");
+			$(NewMenu).removeClass("menu_item_template");
 			$(NewMenu).css("display", "none");
 			// Inserir
 			$(parent).prepend(NewMenu);
@@ -23,12 +21,12 @@ $(function() {
 		}
 		else
 		{
-			var NewParent = $("#menu_parent_template").clone();
-			var NewMenu = $(NewParent).find("#menu_item_template");
+			var NewParent = $(".menu_parent_template").first().clone();
+			var NewMenu = $(NewParent).find(".menu_item_template");
 			// Redefinir
-			$(NewParent).removeAttr("id");
+			$(NewParent).removeClass("menu_parent_template");
 			$(NewParent).css("display", "none");
-			$(NewMenu).removeAttr("id");
+			$(NewMenu).removeClass("menu_item_template");
 			// Inserir
 			$(this).parent(".menu_parent_add").after(NewParent);
 			$(NewParent).show("fast", "easeInSine");
@@ -40,9 +38,9 @@ $(function() {
 	 */
 	$("a.menu_add_up").live('click', function(event) {
 		event.preventDefault();
-		var NewMenu = $("#menu_item_template").clone();
+		var NewMenu = $(".menu_item_template").first().clone();
 		// Redefinir
-		$(NewMenu).removeAttr("id");
+		$(NewMenu).removeClass("menu_item_template");
 		$(NewMenu).css("display", "none");
 		// Inserir
 		$(this).parents('div.menu_item').first().before(NewMenu);
@@ -54,9 +52,9 @@ $(function() {
 	 */
 	$("a.menu_add_down").live('click', function(event) {
 		event.preventDefault();
-		var NewMenu = $("#menu_item_template").clone();
+		var NewMenu = $(".menu_item_template").first().clone();
 		// Redefinir
-		$(NewMenu).removeAttr("id");
+		$(NewMenu).removeClass("menu_item_template");
 		$(NewMenu).css("display", "none");
 		// Inserir
 		$(this).parents('div.menu_item').first().after(NewMenu);
@@ -69,12 +67,12 @@ $(function() {
 	$("a.menu_add_submenu").live('click', function(event) {
 		event.preventDefault();
 
-		var NewParent = $("#menu_parent_template").clone();
-		var NewMenu = $(NewParent).find("#menu_item_template");
+		var NewParent = $(".menu_parent_template").first().clone();
+		var NewMenu = $(NewParent).find(".menu_item_template");
 		
 		// Redefinir
-		$(NewParent).removeAttr("id");
-		$(NewMenu).removeAttr("id");
+		$(NewParent).removeClass("menu_parent_template");
+		$(NewMenu).removeClass("menu_item_template");
 		
 		// Inserir
 		var Menu = $(this).parents('div.menu_item').first();
@@ -164,34 +162,16 @@ $(function() {
 });
 
 /*
- * Serialize menus for writing
+ * Serialize menus for saving
  */
-function prepare_menu_field(list) {
-	var menus = new Array();
-	$(list).children(".menu_parent:visible").each(function() {
-		$(this).children(".menu_item:visible").each(function() {
-			var name = $(this).find("input[name='name']").val();
-			var target = $(this).find("input[name='target']").val();
-			if ( $(this).children(".menu_parent:visible").length > 0 ) {
-				var submenu = prepare_menu_field(this);
-			}
-			else {
-				var submenu = null;
-			}
-			menus.push( { name : name, target : target, menu : submenu } );
-		});
-	});
-	return menus;
-}
-
 $.fn.extend({
 	prepareMenuField: function(){
 		var menus = new Array();
-		$(this).children('.menu_parent[id=""]').each(function() {
-			$(this).children('.menu_item[id=""]').each(function() {
+		$(this).children('.menu_parent:not(.menu_parent_template)').each(function() {
+			$(this).children('.menu_item:not(.menu_item_template)').each(function() {
 				var name = $(this).find('input[name="name"]').val();
 				var target = $(this).find('input[name="target"]').val();
-				if ( $(this).children('.menu_parent[id=""]').length > 0 ) {
+				if ( $(this).children('.menu_parent:not(.menu_parent_template)').length > 0 ) {
 					var submenu = $(this).prepareMenuField();
 				}
 				else {

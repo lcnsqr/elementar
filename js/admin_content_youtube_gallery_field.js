@@ -1,38 +1,21 @@
 //<![CDATA[
-
+/*
+ * Youtube gallery functions
+ */
 $(function() {
-
-	/*
-	 * Youtube gallery type field
-	 */
-
 	/*
 	 * Novo vídeo
 	 */
 	$("a.youtube_add").live('click', function(event) {
 		event.preventDefault();
 		var parent = $(this).parents(".youtube_gallery_field").first().children(".youtube_parent:visible");
-		if ( $(parent).length > 0 ) {
-			var NewVideo = $("#youtube_item_template").clone();
-			// Redefinir
-			$(NewVideo).removeAttr("id");
-			$(NewVideo).css("display", "none");
-			// Inserir
-			$(parent).prepend(NewVideo);
-			$(NewVideo).show("fast", "easeInSine");
-		}
-		else
-		{
-			var NewParent = $("#youtube_parent_template").clone();
-			var NewVideo = $(NewParent).find("#youtube_item_template");
-			// Redefinir
-			$(NewParent).removeAttr("id");
-			$(NewParent).css("display", "none");
-			$(NewVideo).removeAttr("id");
-			// Inserir
-			$(this).parent(".youtube_parent_add").after(NewParent);
-			$(NewParent).show("fast", "easeInSine");
-		}
+		var NewVideo = $(".youtube_item_template").first().clone();
+		// Redefinir
+		$(NewVideo).removeClass("youtube_item_template");
+		$(NewVideo).css("display", "none");
+		// Inserir
+		$(parent).prepend(NewVideo);
+		$(NewVideo).show("fast", "easeInSine");
 	});
 
 	/*
@@ -40,9 +23,9 @@ $(function() {
 	 */
 	$("a.youtube_add_up").live('click', function(event) {
 		event.preventDefault();
-		var NewVideo = $("#youtube_item_template").clone();
+		var NewVideo = $(".youtube_item_template").first().clone();
 		// Redefinir
-		$(NewVideo).removeAttr("id");
+		$(NewVideo).removeClass("youtube_item_template");
 		$(NewVideo).css("display", "none");
 		// Inserir
 		$(this).parents('div.youtube_item').first().before(NewVideo);
@@ -54,9 +37,9 @@ $(function() {
 	 */
 	$("a.youtube_add_down").live('click', function(event) {
 		event.preventDefault();
-		var NewVideo = $("#youtube_item_template").clone();
+		var NewVideo = $(".youtube_item_template").first().clone();
 		// Redefinir
-		$(NewVideo).removeAttr("id");
+		$(NewVideo).removeClass("youtube_item_template");
 		$(NewVideo).css("display", "none");
 		// Inserir
 		$(this).parents('div.youtube_item').first().after(NewVideo);
@@ -114,20 +97,22 @@ $(function() {
 });
 
 /*
- * Serialize videos for writing
+ * Serialize videos for saving
  */
-function prepare_youtube_gallery_field(list) {
-	var videos = new Array();
-	$(list).children(".youtube_parent:visible").each(function() {
-		$(this).children(".youtube_item:visible").each(function() {
-			var url = $(this).find("input[name='url']").val();
-			var description = $(this).find("input[name='description']").val();
-			if ( url != '' ) {
-				videos.push( { url : url, description : description } );
-			}
+$.fn.extend({
+	prepareYoutubeGalleryField: function(){
+		var videos = new Array();
+		$(this).children('.youtube_parent:not(.youtube_parent_template)').each(function() {
+			$(this).children('.youtube_item:not(.youtube_item_template)').each(function() {
+				var url = $(this).find('input[name="url"]').val();
+				var description = $(this).find('input[name="description"]').val();
+				if ( url != '' ) {
+					videos.push( { url : url, description : description } );
+				}
+			});
 		});
-	});
-	return videos;
-}
+		$(this).find('input.youtube_gallery_actual_field').val($.toJSON(videos));
+	}
+});
 
 //]]>

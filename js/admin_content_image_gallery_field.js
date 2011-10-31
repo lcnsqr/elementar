@@ -14,20 +14,33 @@ $(function() {
 		/*
 		 * Gallery items container
 		 */
-		var parent = $(this).parents(".image_gallery_field").first().children(".image_parent");
+		var parent = $(this).parents(".image_gallery_field").first().children(".image_parent:not(.image_parent_template)");
 		
-		// Bloqueio
-		$("#blocker").fadeIn("fast");
-		// Generate new image item form
-		$.post('/admin/content/xhr_render_image_gallery_item_form', { field_sname : $(image_gallery_actual_field).attr('name') }, function(data) {
-			if ( data.done == true )
-			{
-				// Inserir
-				$(parent).prepend(data.html);
-				// Bloqueio
-				$("#blocker").fadeOut("fast");
-			}
-		}, 'json');
+		/*
+		 * Clone image template
+		 */
+		var NewImage = $(".image_item_template").first().clone();
+		// Redefinir
+		$(NewImage).removeClass("image_item_template");
+		$(NewImage).css("display", "none");
+		/*
+		 * Temporary image input name (unique) to receive file manager values
+		 */
+		var image_id = String((new Date()).getTime()).replace(/\D/gi,'');
+		while ( $('input[name="image_item_field_' + image_id + '"]').length > 0 )
+		{
+			var image_id = String((new Date()).getTime()).replace(/\D/gi,'');
+		}
+		$(NewImage).find('.image_item_field').attr('name', 'image_item_field_' + image_id);
+		$(NewImage).find('.image_item_field').attr('id', 'image_item_field_' + image_id);
+		$(NewImage).find('.image_item_description_field').attr('name', 'image_item_field_' + image_id + '_description');
+		$(NewImage).find('.image_item_description_field').attr('id', 'image_item_field_' + image_id + '_description');
+		$(NewImage).find('.image_item_thumbnail').attr('id', 'image_item_thumbnail_image_item_field_' + image_id);
+		$(NewImage).find('a.image_erase').attr('href', 'image_item_field_' + image_id);
+		$(NewImage).find('a.browse_file').attr('href', 'image_item_field_' + image_id);
+		// Inserir
+		$(parent).prepend(NewImage);
+		$(NewImage).show("fast", "easeInSine");
 	});
 
 	/*
@@ -35,23 +48,34 @@ $(function() {
 	 */
 	$("a.image_add_up").live('click', function(event) {
 		event.preventDefault();
-		/*
-		 * Gallery real field (json encoded)
-		 */
-		var image_gallery_actual_field = $(this).parents(".image_gallery_field").first().find(".image_gallery_actual_field");
 		var current_item = $(this).parents('div.image_item').first();
-		// Bloqueio
-		$("#blocker").fadeIn("fast");
-		// Generate new image item form
-		$.post('/admin/content/xhr_render_image_gallery_item_form', { field_sname : $(image_gallery_actual_field).attr('name') }, function(data) {
-			if ( data.done == true )
-			{
-				// Inserir
-				$(current_item).before(data.html);
-				// Bloqueio
-				$("#blocker").fadeOut("fast");
-			}
-		}, 'json');
+
+		/*
+		 * Clone image template
+		 */
+		var NewImage = $(".image_item_template").first().clone();
+		// Redefinir
+		$(NewImage).removeClass("image_item_template");
+		$(NewImage).css("display", "none");
+		/*
+		 * Temporary image input name (unique) to receive file manager values
+		 */
+		var image_id = String((new Date()).getTime()).replace(/\D/gi,'');
+		while ( $('input[name="image_item_field_' + image_id + '"]').length > 0 )
+		{
+			var image_id = String((new Date()).getTime()).replace(/\D/gi,'');
+		}
+		$(NewImage).find('.image_item_field').attr('name', 'image_item_field_' + image_id);
+		$(NewImage).find('.image_item_field').attr('id', 'image_item_field_' + image_id);
+		$(NewImage).find('.image_item_description_field').attr('name', 'image_item_field_' + image_id + '_description');
+		$(NewImage).find('.image_item_description_field').attr('id', 'image_item_field_' + image_id + '_description');
+		$(NewImage).find('.image_item_thumbnail').attr('id', 'image_item_thumbnail_image_item_field_' + image_id);
+		$(NewImage).find('a.image_erase').attr('href', 'image_item_field_' + image_id);
+		$(NewImage).find('a.browse_file').attr('href', 'image_item_field_' + image_id);
+		// Insert
+		$(current_item).before(NewImage);
+		$(NewImage).show("fast", "easeInSine");
+
 	});
 
 	/*
@@ -59,23 +83,33 @@ $(function() {
 	 */
 	$("a.image_add_down").live('click', function(event) {
 		event.preventDefault();
-		/*
-		 * Gallery real field (json encoded)
-		 */
-		var image_gallery_actual_field = $(this).parents(".image_gallery_field").first().find(".image_gallery_actual_field");
+
 		var current_item = $(this).parents('div.image_item').first();
-		// Bloqueio
-		$("#blocker").fadeIn("fast");
-		// Generate new image item form
-		$.post('/admin/content/xhr_render_image_gallery_item_form', { field_sname : $(image_gallery_actual_field).attr('name') }, function(data) {
-			if ( data.done == true )
-			{
-				// Inserir
-				$(current_item).after(data.html);
-				// Bloqueio
-				$("#blocker").fadeOut("fast");
-			}
-		}, 'json');
+		/*
+		 * Clone image template
+		 */
+		var NewImage = $(".image_item_template").first().clone();
+		// Redefinir
+		$(NewImage).removeClass("image_item_template");
+		$(NewImage).css("display", "none");
+		/*
+		 * Temporary image input name (unique) to receive file manager values
+		 */
+		var image_id = String((new Date()).getTime()).replace(/\D/gi,'');
+		while ( $('input[name="image_item_field_' + image_id + '"]').length > 0 )
+		{
+			var image_id = String((new Date()).getTime()).replace(/\D/gi,'');
+		}
+		$(NewImage).find('.image_item_field').attr('name', 'image_item_field_' + image_id);
+		$(NewImage).find('.image_item_field').attr('id', 'image_item_field_' + image_id);
+		$(NewImage).find('.image_item_description_field').attr('name', 'image_item_field_' + image_id + '_description');
+		$(NewImage).find('.image_item_description_field').attr('id', 'image_item_field_' + image_id + '_description');
+		$(NewImage).find('.image_item_thumbnail').attr('id', 'image_item_thumbnail_image_item_field_' + image_id);
+		$(NewImage).find('a.image_erase').attr('href', 'image_item_field_' + image_id);
+		$(NewImage).find('a.browse_file').attr('href', 'image_item_field_' + image_id);
+		// Insert
+		$(current_item).after(NewImage);
+		$(NewImage).show("fast", "easeInSine");
 	});
 
 	/*
@@ -132,5 +166,36 @@ function prepare_image_gallery_field(list) {
 	});
 	return gallery;
 }
+
+/*
+ * Serialize images gallery for saving
+ */
+$.fn.extend({
+	prepareImageGalleryField: function(){
+		var gallery = new Array();
+		$(this).find(".image_item").each(function() {
+			/*
+			 * Push each image image description into its array
+			 */
+			var image_description = $(this).find("input.image_item_description_field").val();
+			var image_item = $(this).find("input.image_item_field").val();
+			var img = $.parseJSON(image_item);
+			if ( img != null ) {
+				/*
+				 * Push description text to array
+				 */
+				img.title = image_description;
+				/*
+				 * Push image to gallery
+				 */
+				gallery.push( $.toJSON(img) );
+			}
+		});
+		/*
+		 * Update gallery field
+		 */
+		$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
+	}
+});
 
 //]]>

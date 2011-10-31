@@ -154,8 +154,8 @@ $(function() {
 		}
 		else if ( $.getUrlVar('parent') == 'direct' ) {
 			var identifier = $.getUrlVar('identifier');
-			var field = window.opener.$('input.noform[name="' + identifier + '"]');
-			var field_description = window.opener.$('input[name="' + identifier + '_description"]');
+			var field = window.opener.$('input[name="' + identifier + '"]');
+			var field_description = window.opener.$('input#' + identifier + '_description');
 			var field_thumbnail = window.opener.$('div#image_item_thumbnail_' + identifier);
 			if ($(field) != null) {
 				/*

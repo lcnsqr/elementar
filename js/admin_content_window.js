@@ -105,7 +105,7 @@ $(function() {
 			$("#element_editor_form").html("");
 		});
 	});
-	
+
 	// Salvar novo elemento
 	$("#button_element_save").live('click', function(event) {
 		event.preventDefault();
@@ -114,39 +114,10 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		/*
-		 * Update image field json data
+		 * Composite fields
 		 */
-		$("input.img").each(function() {
-			var img = $.parseJSON($(this).val());
-			if ( img != null ) {
-				img.title = $('input#' + $(this).attr('id') + '_description').val();
-			}
-			$(this).val($.toJSON(img));
-		});
-
-		/*
-		 * Update menu field json data
-		 */
-		$(".menu_field").each(function() {
-			$(this).prepareMenuField();
-		});
-
-		/*
-		 * Update image gallery data
-		 */
-		$(".image_gallery_field").each(function() {
-			var gallery = prepare_image_gallery_field(this);
-			$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
-		});
-
-		/*
-		 * Update youtube gallery data
-		 */
-		$(".youtube_gallery_field").each(function() {
-			var gallery = prepare_youtube_gallery_field(this);
-			$(this).find('input.youtube_gallery_actual_field').val($.toJSON(gallery));
-		});
-
+		$.prepareCompositeFields();
+		
 		$.post("/admin/content/xhr_write_element", $(".noform").serialize(), function(data){
 			try {
 				if ( data.done == true ) {
@@ -295,38 +266,9 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		/*
-		 * Update image field json data
+		 * Composite fields
 		 */
-		$("input.img").each(function() {
-			var img = $.parseJSON($(this).val());
-			if ( img != null ) {
-				img.title = $('input#' + $(this).attr('id') + '_description').val();
-			}
-			$(this).val($.toJSON(img));
-		});
-
-		/*
-		 * Update menu field json data
-		 */
-		$(".menu_field").each(function() {
-			$(this).prepareMenuField();
-		});
-
-		/*
-		 * Update image gallery data
-		 */
-		$(".image_gallery_field").each(function() {
-			var gallery = prepare_image_gallery_field(this);
-			$(this).find('input.image_gallery_actual_field').val($.toJSON(gallery));
-		});
-
-		/*
-		 * Update youtube gallery data
-		 */
-		$(".youtube_gallery_field").each(function() {
-			var gallery = prepare_youtube_gallery_field(this);
-			$(this).find('input.youtube_gallery_actual_field').val($.toJSON(gallery));
-		});
+		$.prepareCompositeFields();
 
 		$.post("/admin/content/xhr_write_content", $(".noform").serialize(), function(data){
 			try {
@@ -738,6 +680,48 @@ $(function() {
 		window.open('/admin/file/manager?parent=direct&identifier=' + identifier, '_blank', 'height=480, width=880');
 	});
 	
+});
+
+/*
+ * Serialize composite fields for saving
+ */
+$.extend({
+	prepareCompositeFields: function(){
+		/*
+		 * Update image field json data
+		 */
+		$("input.img").each(function() {
+			var img = $.parseJSON($(this).val());
+			if ( img != null ) {
+				/*
+				 * Push description text to array
+				 */
+				img.title = $('input#' + $(this).attr('id') + '_description').val();
+			}
+			$(this).val($.toJSON(img));
+		});
+
+		/*
+		 * Update image gallery json data
+		 */
+		$(".image_gallery_field").each(function() {
+			$(this).prepareImageGalleryField();
+		});
+
+		/*
+		 * Update menu field json data
+		 */
+		$(".menu_field").each(function() {
+			$(this).prepareMenuField();
+		});
+
+		/*
+		 * Update youtube gallery json data
+		 */
+		$(".youtube_gallery_field").each(function() {
+			$(this).prepareYoutubeGalleryField();
+		});
+	}
 });
 
 

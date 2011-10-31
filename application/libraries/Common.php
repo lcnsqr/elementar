@@ -457,18 +457,18 @@ class Common {
 			break;
 
 			case 'image_gallery' :
-			$gallery_ids = json_decode($field_value, TRUE);
+			$images = json_decode($field_value, TRUE);
 			$gallery = array();
-			foreach ( $gallery_ids as $file_id )
+			foreach ( $images as $image_item )
 			{
-				$image = (array) $this->CI->crud->get_image($file_id);
+				$image = json_decode($image_item, TRUE);
 				if ( count( $image ) > 0 )
 				{
 					$gallery[] = array(
 						'uri' => (string) $image['uri'],
 						'width' => (string) $image['width'],
 						'height' => (string) $image['height'],
-						'alt' => (string) $image['alt'] 
+						'alt' => (string) $image['title'] 
 					);
 				}
 			}
