@@ -16,8 +16,8 @@
 
 		<div class="image_item_menu">
 			<ul>
-				<li><a class="image_erase" href="<?php echo $input_name; ?>">&empty; Limpar</a></li>
 				<li><a class="browse_file" href="<?php echo $input_name; ?>">&alpha; Arquivo</a></li>
+				<li><a class="image_erase" href="<?php echo $input_name; ?>">&empty; Limpar</a></li>
 			</ul>
 		</div>
 
