@@ -102,15 +102,6 @@ class File extends CI_Controller {
 
 	function manager()
 	{
-		if (function_exists('finfo_open ') )
-		{
-			echo 'existe';
-		}
-		else
-		{
-			echo 'não existe';
-		}
-		
 		$data = array();
 
 		/*
