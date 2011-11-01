@@ -21,7 +21,7 @@
 	
 		<div id="tree_parent_1" class="tree_parent">
 	
-			<div class="tree_listing_row">
+			<div class="tree_listing_row dropable">
 				<div class="tree_listing_icon">
 					<img style="margin: 0;" src="/css/backend/icon_home.png" alt="<?php echo $parent; ?>" />
 				</div>
@@ -56,6 +56,8 @@
 			<?php include("backend_content_tree.php"); ?>
 			
 			</div> <!-- #tree_listing_1 -->
+		
+		<div id="tree_drag_container"></div>
 		
 		</div> <!-- #tree_parent_1 -->
 

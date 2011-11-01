@@ -1854,7 +1854,81 @@ class Content extends CI_Controller {
 
 	}
 
-	/**
+	/*
+	 * Write element parent
+	 */
+	function xhr_write_element_parent()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
+
+		/*
+		 * Parent id
+		 */
+		$parent_id = $this->input->post('parent_id', TRUE);
+
+		/*
+		 * Element id
+		 */
+		$element_id = $this->input->post('child_id', TRUE);
+
+		if ( (bool) $parent_id && (bool) $element_id && ( $parent_id != $element_id ) )
+		{
+			$this->crud->put_element_parent($element_id, $parent_id);
+			$response = array(
+				'done' => TRUE
+			);
+			$this->common->ajax_response($response);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'error' => 'Dados incorretos'
+			);
+			$this->common->ajax_response($response);
+		}
+
+	}
+
+	/*
+	 * Write content parent
+	 */
+	function xhr_write_content_parent()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
+
+		/*
+		 * Parent id
+		 */
+		$parent_id = $this->input->post('parent_id', TRUE);
+
+		/*
+		 * Content id
+		 */
+		$content_id = $this->input->post('child_id', TRUE);
+
+		if ( (bool) $parent_id && (bool) $content_id && ( $parent_id != $content_id ) )
+		{
+			$this->crud->put_content_parent($content_id, $parent_id);
+			$response = array(
+				'done' => TRUE
+			);
+			$this->common->ajax_response($response);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'error' => 'Dados incorretos'
+			);
+			$this->common->ajax_response($response);
+		}
+
+	}
+
+	/*
 	 * Salvar elemento
 	 */
 	function xhr_write_element()

@@ -41,7 +41,7 @@
 	<?php foreach($content_hierarchy_content as $content): ?>
 	<div class="tree_parent">
 
-		<div class="tree_listing_row">
+		<div class="tree_listing_row dropable">
 			<div class="tree_listing_bullet">
 				<?php if ( $content['children'] === TRUE ): ?>  		
 				<a href="<?php echo $content['id']; ?>" class="<?php echo ( (bool) $content_listing && $content_listing_id == $content['id'] ) ? "unfold" : "fold"; ?> folder_switch content"></a>

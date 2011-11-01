@@ -87,6 +87,7 @@
 	float: left;
 	height: 16px;
 	line-height: 16px;
+	cursor: url('/css/backend/openhand.cur'), auto !important;
 }
 .tree_listing_row .tree_listing_icon img {
 /*
@@ -204,3 +205,25 @@
 	right: 14px;
 	background-color: #fff;
 }
+
+/*
+ * Drag and drop
+ */
+#tree_drag_container {
+	display: none;
+	position: fixed;
+	z-index: 999;
+	top: 0;
+	left: 0;
+	opacity: .5;
+	width: 400px;
+	height: 20px;
+}
+#tree_drag_container .dragging, #tree_drag_container .dragging a:hover {
+	cursor: url('/css/backend/closedhand.cur'), auto !important;
+}
+
+#content_tree .hover {
+	background-color: #eeeeec;
+}
+

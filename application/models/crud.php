@@ -1233,6 +1233,12 @@ class Crud extends CI_Model {
 		}
 		
 		/*
+		 * Remove previous parent
+		 */
+		$this->elementar->where('content_id', $content_id);
+		$this->elementar->delete('content_parent');
+
+		/*
 		 * Criar relacionamento
 		 */
 		$data = array(
@@ -1266,6 +1272,12 @@ class Crud extends CI_Model {
 			return $row->id;
 		}
 		
+		/*
+		 * Remove previous parent
+		 */
+		$this->elementar->where('element_id', $element_id);
+		$this->elementar->delete('element_parent');
+
 		/*
 		 * Criar relacionamento
 		 */
