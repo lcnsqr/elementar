@@ -333,11 +333,18 @@ class File extends CI_Controller {
 			{
 				$label = ( strlen($content) > 8 ) ? substr($content, 0, 8) . '...' : $content;
 				/*
-				 * TODO: Replace file_info by another method to retrieve file type
+				 * If not exists, replace file_info by another method to retrieve file mime type
 				 */
-				$finfo = finfo_open(FILEINFO_MIME_TYPE);
-				$mime_content_type = finfo_file($finfo, $relative_path . '/' . $content);
-				finfo_close($finfo);
+				if (function_exists('finfo_open '))
+				{
+					$finfo = finfo_open(FILEINFO_MIME_TYPE);
+					$mime_content_type = finfo_file($finfo, $relative_path . '/' . $content);
+					finfo_close($finfo);
+				}
+				else
+				{
+					$mime_content_type = 'application/octet-stream';
+				}
 				
 				$size = filesize($relative_path . '/' . $content);
 				$attrs = array(
