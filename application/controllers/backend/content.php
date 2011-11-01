@@ -1476,7 +1476,7 @@ class Content extends CI_Controller {
 			 * Get the field value correspondent language
 			 */
 			$lang_value = $value[$lang_code];
-			$attributes = array('class' => 'input_lang_field', 'id' => 'input_lang_field_' . $lang_code);
+			$attributes = array('class' => 'input_lang_field input_lang_field_' . $lang_code);
 			if ( $this->LANG == $lang_code ) 
 			{
 				$attributes['style'] = 'display: block;';

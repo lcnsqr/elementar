@@ -662,7 +662,7 @@ $(function() {
 		// Hide all other language inputs
 		$(form_window_column_input).children('.input_lang_field:visible').hide();
 		// Show requested language input
-		$(form_window_column_input).children('#input_lang_field_' + lang_code).show();
+		$(form_window_column_input).children('.input_lang_field_' + lang_code).show();
 	});
 	
 	/*

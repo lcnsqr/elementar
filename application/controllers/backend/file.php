@@ -486,6 +486,13 @@ class File extends CI_Controller {
 		// Get new dimensions
 		list($width_orig, $height_orig) = getimagesize($from);
 		
+		// Smaller images are just copied
+		if ( $width_orig <= $width || $height_orig <= $height )
+		{
+			copy($from, $to);
+			return;
+		}
+		
 		$ratio_orig = $width_orig / $height_orig;
 		
 		if ($width / $height > $ratio_orig) 
@@ -500,9 +507,8 @@ class File extends CI_Controller {
 		// Resample
 		$image_p = imagecreatetruecolor($width, $height);
 		
-		$finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-		$mime_content_type = finfo_file($finfo, $from);
-		finfo_close($finfo);
+		$mime_content_type = $this->_mime_type($from);
+
 		switch($mime_content_type)
 		{
 			case "image/jpeg":
