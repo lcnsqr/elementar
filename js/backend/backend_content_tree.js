@@ -203,6 +203,7 @@ $(function() {
 	 */
 	$("a.remove").live('click', function(event) {
 		event.preventDefault();
+
 		/*
 		 * Item type
 		 */
@@ -216,12 +217,13 @@ $(function() {
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 		
+		var id = $(this).attr('href');
+		var erase = $('#tree_listing_1').find('p.label > a[href="' + id + '"]').parents('.tree_parent').first();
+		var parent_listing = $(erase).parents(".tree_listing").first();
+		var parent = $(erase).parents(".tree_parent").first();
+		
 		if (confirm($(this).attr("title") + "?")) { 
 
-			var id = $(this).attr('href');
-			var erase = $(this).parents(".tree_parent").first();
-			var parent_listing = $(erase).parents(".tree_listing").first();
-			var parent = $(erase).parents(".tree_parent").first();
 			$.post(action, { id : id }, function(data){
 				try {
 					if ( data.done == true ) {
