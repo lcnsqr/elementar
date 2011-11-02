@@ -150,7 +150,14 @@ class Main extends CI_Controller {
 		 */
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
-		$content = array(); // Content fields & Content elements
+
+		/*
+		 * Array to carry content fields, elements,
+		 * and other useful variables & rendered data
+		 */
+		$content = array(
+			'year' => date("Y")
+		);
 		
 		/*
 		 * Parse URI
