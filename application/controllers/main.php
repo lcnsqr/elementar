@@ -68,7 +68,10 @@ class Main extends CI_Controller {
 		$this->load->helper('url');
 	}
 
-	function index()
+	/*
+	 * Load configuration and remap to requested method
+	 */
+	public function _remap($method)
 	{
 		/*
 		 * Load site config
@@ -145,6 +148,53 @@ class Main extends CI_Controller {
 			'uri_prefix' => $uri_prefix
 		));
 
+		/*
+		 * Redirect to existing function or parser
+		 */
+		if ( $this->uri->total_segments() > $this->SEGMENT_STEP )
+		{
+			/*
+			 * Step forward on segments if method is the controller myself
+			 */
+			if ( $this->uri->segment($this->SEGMENT_STEP + 1) == 'main' )
+			{
+				$request = $this->uri->segment($this->SEGMENT_STEP + 2);
+			}
+			else
+			{
+				$request = $this->uri->segment($this->SEGMENT_STEP + 1);
+			}
+			
+			if ( method_exists($this, $request) )
+			{
+				/*
+				 * Redirect to existing method
+				 */
+				 $this->$request();
+			}
+			elseif ( method_exists($this, $method) )
+			{
+				/*
+				 * Method called directly
+				 */
+				$this->$method();
+			}
+			else
+			{
+				/*
+				 * Redirect to parser
+				 */
+				$this->index();
+			}
+		}
+		else
+		{
+			$this->index();
+		}
+	}
+
+	function index()
+	{
 		/*
 		 * Default content values
 		 */
