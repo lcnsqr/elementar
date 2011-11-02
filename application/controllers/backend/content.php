@@ -1475,6 +1475,7 @@ class Content extends CI_Controller {
 			/*
 			 * If language index does not exist, set empty
 			 */
+			$value = ( $value == NULL ) ? array() : $value;
 			$lang_value = ( array_key_exists($lang_code, $value) ) ? $value[$lang_code] : '';
 
 			$attributes = array('class' => 'input_lang_field input_lang_field_' . $lang_code);
