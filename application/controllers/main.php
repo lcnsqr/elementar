@@ -189,6 +189,7 @@ class Main extends CI_Controller {
 			 * Content fields & relative contents
 			 */
 			$content['name'] = $data['site'];
+			$content['title'] = $data['title'];
 			$content = array_merge($content, $this->common->render_content($content_id));
 
 			/*
@@ -260,6 +261,7 @@ class Main extends CI_Controller {
 				 * Content fields & relative contents
 				 */
 				$content['name'] = $content_name;
+				$content['title'] = $data['title'];
 				$content = array_merge($content, $this->common->render_content($content_id));
 
 				/*
