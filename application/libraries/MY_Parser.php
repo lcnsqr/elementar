@@ -165,6 +165,13 @@ class MY_Parser extends CI_Parser {
 				$string = str_replace($match[0], '', $string);
 			}
 		}
+		/*
+		 * Recursive to check for another if conditional
+		 */
+		if ( preg_match("|" . preg_quote($this->l_delim) . 'if ' . $key . "(.+?)" . preg_quote($this->r_delim) . "(.+?)" . preg_quote($this->l_delim) . '/if' . preg_quote($this->r_delim) . "|s", $string, $match))
+		{
+			$string = $this->_match_if($string, $key, $val);
+		}
 		return $string;
 	}
 
