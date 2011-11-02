@@ -348,7 +348,7 @@ class Common {
 				/*
 				 * Change "/home" to "/" or use default path to content
 				 */
-				$url = ( $uri == '/home' ) ? site_url('/') : site_url($uri);
+				$url = ( $uri == '/' . $this->CI->crud->get_content_sname(1) ) ? site_url('/') : site_url($uri);
 			}
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
