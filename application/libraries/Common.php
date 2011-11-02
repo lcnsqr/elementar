@@ -591,7 +591,7 @@ class Common {
 	{
 		$elements = $this->CI->crud->get_elements_by_parent_spreaded($content_id);
 		$data = array();
-		foreach ($elements as $element)
+		foreach ($elements as $key => $element)
 		{
 			/*
 			 * Localized name
@@ -602,6 +602,22 @@ class Common {
 			$element_name = $names[$this->LANG];
 			$element_type_id = $element['type_id'];
 			$element_type = $element['type'];
+			
+			/*
+			 * Position in array
+			 */
+			if ( 0 == $key )
+			{
+				$lineup = 'first';
+			}
+			elseif ( count($elements) - 1 == $key )
+			{
+				$lineup = 'last';
+			}
+			else
+			{
+				$lineup = 'middle';
+			}
 			
 			/*
 			 * Initialize element type inner array
@@ -621,7 +637,8 @@ class Common {
 			 */
 			$entry = array(
 				'name' => $element_name,
-				'sname' => $element_sname
+				'sname' => $element_sname,
+				'lineup' => $lineup
 			);
 			
 			/*
