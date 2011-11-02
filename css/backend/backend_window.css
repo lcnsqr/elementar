@@ -384,15 +384,12 @@
 /*
  * Input tabs for each language default
  */
+.input_lang_menu {
+	height: 22px;
+}
 .input_lang_menu ul li {
 	position: relative;
 	float: left;
-}
-.input_lang_menu .clear {
-	clear: left;
-	border-width: 0;
-	height: 0;
-	margin: 0;
 }
 .input_lang_menu ul li a {
 	display: block;

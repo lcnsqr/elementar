@@ -1465,7 +1465,7 @@ class Content extends CI_Controller {
 		}
 		$field .= div_open(array('class' => 'input_lang_menu'));
 		$field .= ul($input_lang_tab_links);
-		$field .= hr(array('class' => 'clear'));
+		//field .= hr(array('class' => 'clear'));
 		$field .= div_close('<!-- input_lang_menu -->');
 		/*
 		 * The input fields for each language
@@ -1473,9 +1473,10 @@ class Content extends CI_Controller {
 		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 		{
 			/*
-			 * Get the field value correspondent language
+			 * If language index does not exist, set empty
 			 */
-			$lang_value = $value[$lang_code];
+			$lang_value = ( array_key_exists($lang_code, $value) ) ? $value[$lang_code] : '';
+
 			$attributes = array('class' => 'input_lang_field input_lang_field_' . $lang_code);
 			if ( $this->LANG == $lang_code ) 
 			{
