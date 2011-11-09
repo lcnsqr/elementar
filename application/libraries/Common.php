@@ -535,7 +535,7 @@ class Common {
 			$titles = json_decode($this->CI->crud->get_content_name($content_id), TRUE);
 			$content_name = $titles[$this->LANG];
 			$content_uri = $this->CI->crud->get_content_uri($content_id);
-			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_id) ) ? 'index_item current' : 'index_item';
+			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
 			$attributes = array(
 				'href' => $this->URI_PREFIX . $content_uri,
