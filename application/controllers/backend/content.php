@@ -2102,76 +2102,6 @@ class Content extends CI_Controller {
 	}
 
 	/**
-	 * renomear conteudo
-	 */
-	function xhr_rename_content() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$id = $this->input->post('id', TRUE);
-		
-		$name = $this->input->post('name', TRUE);
-
-		if ($id != "" && $name != "" ) 
-		{
-			$sname = $this->common->normalize_string($name);
-
-			$this->crud->put_content_name($id, $name, $sname);
-
-			$response = array(
-				'done' => TRUE,
-				'sname' => $sname
-			);
-		}
-		else {
-			$response = array(
-				'done' => FALSE,
-				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->crud->get_content_name($id), ENT_QUOTES, "UTF-8")
-			);
-		}			
-
-		$this->common->ajax_response($response);
-
-	}
-
-	/**
-	 * renomear elemento
-	 */
-	function xhr_rename_element() 
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$id = $this->input->post('id', TRUE);
-		
-		$name = $this->input->post('name', TRUE);
-
-		if ($id != "" && $name != "" ) 
-		{
-			$sname = $this->common->normalize_string($name);
-
-			$this->crud->put_element_name($id, $name, $sname);
-
-			$response = array(
-				'done' => TRUE,
-				'sname' => $sname
-			);
-		}
-		else {
-			$response = array(
-				'done' => FALSE,
-				'error' => 'Nome inválido',
-				'name' => html_entity_decode($this->crud->get_element_name($id), ENT_QUOTES, "UTF-8")
-			);
-		}			
-
-		$this->common->ajax_response($response);
-
-	}
-
-	/**
 	 * Save meta fields
 	 */
 	function xhr_write_meta() 
@@ -2323,24 +2253,4 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 	}
 	
-	/**
-	 * New image gallery item form
-	 */
-	function xhr_render_image_gallery_item_form()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
-
-		$field_sname = $this->input->post('field_sname', TRUE);
-
-		$item_data = $this->common->render_form_upload_image($field_sname . '_item');
-		$item_form = $this->load->view("backend/backend_content_image_gallery_field_item", $item_data, TRUE);
-
-		$response = array(
-			'done' => TRUE,
-			'html' => $item_form
-		);
-		$this->common->ajax_response($response);
-		
-	}
 }
