@@ -507,10 +507,53 @@ class Common {
 			return $this->_make_menu(json_decode($field_value, TRUE));
 			break;
 			
+			case 'index' :
+			/*
+			 * Index listing
+			 */
+			$content_id = $field_value;
+			return ul($this->_index_field($content_id));
+			break;
+
 			default:
 			return (string) $field_value;
 			break;
 		}
+	}
+	
+	function _index_field($content_id)
+	{
+		$index = array();
+		$children = $this->CI->crud->get_content_children($content_id);
+		$children = ( is_array($children) ) ? $children : array();
+		foreach($children as $child)
+		{
+			$content_id = $child['id'];
+			/*
+			 * localized title
+			 */
+			$titles = json_decode($this->CI->crud->get_content_name($content_id), TRUE);
+			$content_name = $titles[$this->LANG];
+			$content_uri = $this->CI->crud->get_content_uri($content_id);
+			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_id) ) ? 'index_item current' : 'index_item';
+	
+			$attributes = array(
+				'href' => $this->URI_PREFIX . $content_uri,
+				'title' => htmlspecialchars( $content_name ),
+				'class' => $class
+			);
+			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
+			$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
+			if ( $this->CI->crud->get_content_has_children($content_id, FALSE) )
+			{
+				$index[$link] = $this->_index_field($content_id);
+			}
+			else
+			{
+				$index[] = $link;
+			}
+		}
+		return $index;
 	}
 
 	function render_content($content_id = 1)

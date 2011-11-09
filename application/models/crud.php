@@ -1853,7 +1853,7 @@ class Crud extends CI_Model {
 	/*
 	 * Children contents
 	 */
-	function _get_content_children($content_id)
+	function get_content_children($content_id)
 	{
 		$contents = array();
 	
@@ -1874,7 +1874,7 @@ class Crud extends CI_Model {
 					'id' => $row->id, 
 					'name' => $row->name,
 					'sname' => $row->sname,
-					'children' => $this->_get_content_children($row->id)
+					'children' => $this->get_content_children($row->id)
 				);
 			}
 			return $contents;

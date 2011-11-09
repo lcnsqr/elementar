@@ -681,6 +681,16 @@ class Content extends CI_Controller {
 			);
 			$field = form_input($attributes);
 			break;
+
+			case "index" :
+			$attributes = array(
+				'class' => 'noform',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field = form_input($attributes);
+			break;
 		}
 		return $field;
 	}
