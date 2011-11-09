@@ -208,6 +208,54 @@ class Main extends CI_Controller {
 		$content = array(
 			'year' => date("Y")
 		);
+
+		/*
+		 * Language links
+		 */
+		reset($this->LANG_AVAIL);
+		$default_lang = key($this->LANG_AVAIL);
+		$content['lang'] = array();
+		foreach($this->LANG_AVAIL as $code => $name)
+		{
+			/*
+			 * Build current uri for each language
+			 */
+			if ( $this->SEGMENT_STEP == 1 )
+			{
+				/*
+				 * Slash on home uri
+				 */
+				if ( $this->uri->total_segments() == $this->SEGMENT_STEP )
+				{
+					$uri = ($default_lang == $code) ? '/' : '/' . $code . '/';
+				}
+				else
+				{
+					/*
+					 * Split out language prefix and 
+					 * rebuild uri based on current page
+					 */
+					$uri = substr($this->uri->uri_string(), strlen($this->LANG));
+					/*
+					 * Add language prefix to non default languages
+					 */
+					$uri = ($default_lang == $code) ? $uri : '/' . $code . $uri;
+				}
+			}
+			else
+			{
+				/*
+				 * Add language prefix to non default languages
+				 */
+				$uri = ($default_lang == $code) ? '/' . $this->uri->uri_string() : '/' . $code . '/' . $this->uri->uri_string();
+			}
+			$content['lang'][] = array(
+				'code' => $code, 
+				'uri' => $uri, 
+				'title' => $name, 
+				'current' => ($this->LANG == $code) ? TRUE : FALSE 
+			);
+		}
 		
 		/*
 		 * Parse URI
