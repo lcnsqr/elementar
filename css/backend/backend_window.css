@@ -449,9 +449,7 @@
 	margin: 2px 6px;
 }
 .pseudo_variables_column {
-	position: relative;
-	float: left;
-	margin-right: 12px;
+	padding-right: 18px;
 }
 .pseudo_variables_element_list {
 	margin-left: 10px;

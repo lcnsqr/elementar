@@ -1013,8 +1013,9 @@ class Content extends CI_Controller {
 			/*
 			 * Template pseudo variables available for this content
 			 */
+			$title = json_decode($this->crud->get_content_name($content_id), TRUE);
 			$template_variables = array(
-				'content_variables_title' => $this->crud->get_content_name($content_id),
+				'content_variables_title' => $title[$this->LANG],
 				'content_variables' => array(),
 				'relative_content_variables_title' => 'Conteúdos',
 				'relative_content_variables' => array(),
@@ -1133,9 +1134,10 @@ class Content extends CI_Controller {
 				{
 					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
 				}
+				$name = json_decode($element['name'], TRUE);
 				$template_variables['element_variables'][$element['type_name']]['elements'][] = array(
 					'sname' => urlencode($fields),
-					'name' => $element['name']
+					'name' => $name[$this->LANG]
 				);
 			}
 
