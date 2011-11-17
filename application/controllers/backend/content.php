@@ -818,10 +818,10 @@ class Content extends CI_Controller {
 			$form .= form_input($attributes);
 
 			/*
-			 * Element name, array index is language code
+			 * Element name
 			 */
-			$value = json_decode($this->crud->get_element_name($element_id), TRUE);
-			$form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value);
+			$value = $this->crud->get_element_name($element_id);
+			$form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value, FALSE);
 
 			/*
 			 * Element type fields
@@ -830,10 +830,10 @@ class Content extends CI_Controller {
 			foreach ( $fields as $field )
 			{
 				/*
-				 * Value array index is language code
+				 * Field value
 				 */
-				$value = json_decode($this->crud->get_element_field($element_id, $field['id']), TRUE);
-				$form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value);
+				$value = $this->crud->get_element_field($element_id, $field['id']);
+				$form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
 			}
 
 			/*
@@ -1134,10 +1134,9 @@ class Content extends CI_Controller {
 				{
 					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
 				}
-				$name = json_decode($element['name'], TRUE);
 				$template_variables['element_variables'][$element['type_name']]['elements'][] = array(
 					'sname' => urlencode($fields),
-					'name' => $name[$this->LANG]
+					'name' => $element['name']
 				);
 			}
 
@@ -1388,10 +1387,10 @@ class Content extends CI_Controller {
 			$content_form .= form_input($attributes);
 
 			/*
-			 * Content name, array index is language code
+			 * Content name
 			 */
-			$value = json_decode($this->crud->get_content_name($content_id), TRUE);
-			$content_form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value);
+			$value = $this->crud->get_content_name($content_id);
+			$content_form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value, TRUE);
 
 			/*
 			 * Render custom fields
@@ -1400,10 +1399,10 @@ class Content extends CI_Controller {
 			foreach ( $fields as $field )
 			{
 				/*
-				 * Value array index is language code
+				 * Field value
 				 */
-				$value = json_decode($this->crud->get_content_field($content_id, $field['id']), TRUE);
-				$content_form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value);
+				$value = $this->crud->get_content_field($content_id, $field['id']);
+				$content_form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
 			}
 
 			/*
@@ -1457,7 +1456,7 @@ class Content extends CI_Controller {
 	/*
 	 * Render html columns with label and input(s)
 	 */
-	function _render_form_field($type, $name, $sname, $description = NULL, $value = NULL)
+	function _render_form_field($type, $name, $sname, $description = NULL, $value = NULL, $i18n)
 	{
 		$field = div_open(array('class' => 'form_content_field'));
 		$field .= div_open(array('class' => 'form_window_column_label'));
@@ -1466,41 +1465,64 @@ class Content extends CI_Controller {
 		$field .= br(1);
 		$field .= div_close('<!-- form_window_column_label -->');
 		$field .= div_open(array('class' => 'form_window_column_input'));
+		
 		/*
-		 * One tab link for each language
+		 * Check multilanguage
 		 */
-		$input_lang_tab_links = array();
-		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
-		{
-			$current = ( $this->LANG == $lang_code ) ? ' current' : '';
-			$input_lang_tab_links[] = anchor($lang_name, array('href' => $lang_code, 'class' => 'input_lang_tab_link' . $current));
-		}
-		$field .= div_open(array('class' => 'input_lang_menu'));
-		$field .= ul($input_lang_tab_links);
-		//field .= hr(array('class' => 'clear'));
-		$field .= div_close('<!-- input_lang_menu -->');
-		/*
-		 * The input fields for each language
-		 */
-		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+		if ( (bool) $i18n )
 		{
 			/*
-			 * If language index does not exist, set empty
+			 * Value array index is language code
 			 */
-			$value = ( $value == NULL ) ? array() : $value;
-			$lang_value = ( array_key_exists($lang_code, $value) ) ? $value[$lang_code] : '';
+			$value = json_decode($value, TRUE);
 
-			$attributes = array('class' => 'input_lang_field input_lang_field_' . $lang_code);
-			if ( $this->LANG == $lang_code ) 
+			/*
+			 * One tab link for each language
+			 */
+			$input_lang_tab_links = array();
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
-				$attributes['style'] = 'display: block;';
+				$current = ( $this->LANG == $lang_code ) ? ' current' : '';
+				$input_lang_tab_links[] = anchor($lang_name, array('href' => $lang_code, 'class' => 'input_lang_tab_link' . $current));
 			}
+			$field .= div_open(array('class' => 'input_lang_menu'));
+			$field .= ul($input_lang_tab_links);
+			//field .= hr(array('class' => 'clear'));
+			$field .= div_close('<!-- input_lang_menu -->');
+			/*
+			 * The input fields for each language
+			 */
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+			{
+				/*
+				 * If language index does not exist, set empty
+				 */
+				$value = ( $value == NULL ) ? array() : $value;
+				$lang_value = ( array_key_exists($lang_code, $value) ) ? $value[$lang_code] : '';
+	
+				$attributes = array('class' => 'input_lang_field input_lang_field_' . $lang_code);
+				if ( $this->LANG == $lang_code ) 
+				{
+					$attributes['style'] = 'display: block;';
+				}
+				$field .= div_open($attributes);
+				$field .= $this->_render_form_custom_field($type, $name, $sname . '_' . $lang_code, $description, $lang_value);
+				$field .= div_close('<!-- input_lang_field -->');
+			}
+		}
+		else
+		{
+			/*
+			 * No multilanguage, no language tabs
+			 */
+			$attributes = array('class' => 'input_lang_field');
+			$attributes['style'] = 'display: block;';
 			$field .= div_open($attributes);
-			
-			$field .= $this->_render_form_custom_field($type, $name, $sname . '_' . $lang_code, $description, $lang_value);
-			
+			$field .= $this->_render_form_custom_field($type, $name, $sname, $description, $value);
 			$field .= div_close('<!-- input_lang_field -->');
-		}			
+			 
+		}
+		
 		$field .= div_close('<!-- form_window_column_input -->');
 		$field .= div_close('<!-- .form_content_field -->');
 		return $field;
@@ -1783,14 +1805,27 @@ class Content extends CI_Controller {
 		foreach ( $this->crud->get_content_type_fields($type_id) as $type)
 		{
 			/*
-			 * Group each language's value on a array before saving
+			 * Check for multilanguage field
 			 */
-			$values = array();
-			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+			if ( (bool) $type['i18n'] )
 			{
-				$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+				{
+					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
+				}
+				$value = json_encode($values);
 			}
-			$value = json_encode($values);
+			else
+			{
+				/*
+				 * Not multilanguage
+				 */
+				$value = $this->input->post($type['sname'], TRUE);
+			}
 			$this->crud->put_content_field($content_id, $type['id'], $value);
 		}
 		
@@ -1951,9 +1986,9 @@ class Content extends CI_Controller {
 			exit('No direct script access allowed');
 
 		/*
-		 * Content sname determined by the default language
+		 * Elements snames are not multilanguage
 		 */
-		$sname = $this->common->normalize_string($this->input->post('name_' . $this->LANG, TRUE));
+		$sname = $this->common->normalize_string($this->input->post('name', TRUE));
 
 		if ( (bool) $sname === false )
 		{
@@ -1969,16 +2004,9 @@ class Content extends CI_Controller {
 		}
 
 		/*
-		 * For element name saving,
-		 * Group each language's value 
-		 * on a array before saving
+		 * Elements names are not multilanguage
 		 */
-		$values = array();
-		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
-		{
-			$values[$lang_code] = htmlentities($this->input->post('name_' . $lang_code, TRUE), ENT_QUOTES, "UTF-8");
-		}
-		$name = json_encode($values);
+		$name = $this->input->post('name', TRUE);
 		
 		/*
 		 * Locate element type
@@ -2010,14 +2038,27 @@ class Content extends CI_Controller {
 		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
 		{
 			/*
-			 * Group each language's value on a array before saving
+			 * Check for multilanguage field
 			 */
-			$values = array();
-			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+			if ( (bool) $type['i18n'] )
 			{
-				$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
+				/*
+				 * Group each language's value on a array before saving
+				 */
+				$values = array();
+				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+				{
+					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
+				}
+				$value = json_encode($values);
 			}
-			$value = json_encode($values);
+			else
+			{
+				/*
+				 * Not multilanguage
+				 */
+				$value = $this->input->post($type['sname'], TRUE);
+			}
 			$this->crud->put_element_field($element_id, $type['id'], $value);
 		}
 		

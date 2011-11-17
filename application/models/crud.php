@@ -1065,7 +1065,7 @@ class Crud extends CI_Model {
 	function get_content_fields($content_id)
 	{
 		$fields = array();
-		$this->elementar->select('content.id as content_id, content_type_field.name as name, content_type_field.sname as sname, content_field.value as value, field_type.sname as type, field_type.description as description');
+		$this->elementar->select('content.id as content_id, content_type_field.name as name, content_type_field.sname as sname, content_field.value as value, field_type.sname as type, field_type.description as description, field_type.i18n as i18n');
 		$this->elementar->from('content');
 		$this->elementar->join('content_field', 'content_field.content_id = content.id', 'inner');
 		$this->elementar->join('content_type_field', 'content_type_field.id = content_field.content_type_field_id', 'inner');
@@ -1083,7 +1083,8 @@ class Crud extends CI_Model {
 				'sname' => $row->sname,
 				'value' => html_entity_decode($row->value, ENT_QUOTES, "UTF-8"),
 				'type' => $row->type,
-				'description' => $row->description
+				'description' => $row->description,
+				'i18n' => $row->i18n
 			);
 		}
 		return $fields;
@@ -1117,7 +1118,7 @@ class Crud extends CI_Model {
 	function get_element_fields($element_id)
 	{
 		$fields = array();
-		$this->elementar->select('element.id as element_id, element_type_field.name as name, element_type_field.sname as sname, element_field.value as value, field_type.sname as type, field_type.description as description');
+		$this->elementar->select('element.id as element_id, element_type_field.name as name, element_type_field.sname as sname, element_field.value as value, field_type.sname as type, field_type.description as description, field_type.i18n as i18n');
 		$this->elementar->from('element');
 		$this->elementar->join('element_field', 'element_field.element_id = element.id', 'inner');
 		$this->elementar->join('element_type_field', 'element_type_field.id = element_field.element_type_field_id', 'inner');
@@ -1135,7 +1136,8 @@ class Crud extends CI_Model {
 				'sname' => $row->sname,
 				'value' => html_entity_decode($row->value, ENT_QUOTES, "UTF-8"),
 				'type' => $row->type,
-				'description' => $row->description
+				'description' => $row->description,
+				'i18n' => $row->i18n
 			);
 		}
 		return $fields;
@@ -1505,10 +1507,11 @@ class Crud extends CI_Model {
 	function get_content_type_fields($type_id)
 	{
 		$fields = array();
-		$this->elementar->select('id, name, sname, field_type_id');
+		$this->elementar->select('content_type_field.id, content_type_field.name, content_type_field.sname, content_type_field.field_type_id, field_type.sname as field_type_sname, field_type.description as field_type_description, field_type.i18n as field_type_i18n');
 		$this->elementar->from('content_type_field');
-		$this->elementar->where('content_type_id', $type_id);
-		$this->elementar->order_by('id', 'asc');
+		$this->elementar->join('field_type', 'field_type.id = content_type_field.field_type_id', 'inner');
+		$this->elementar->where('content_type_field.content_type_id', $type_id);
+		$this->elementar->order_by('content_type_field.id', 'asc');
 		$query = $this->elementar->get();
 		foreach ($query->result() as $row)
 		{
@@ -1516,8 +1519,9 @@ class Crud extends CI_Model {
 				'id' => $row->id,
 				'name' => $row->name,
 				'sname' => $row->sname,
-				'type' => $this->get_field_type_sname($row->field_type_id),
-				'description' => $this->get_field_type_description($row->field_type_id)
+				'type' => $row->field_type_sname,
+				'description' => $row->field_type_description,
+				'i18n' => $row->field_type_i18n
 			);
 		}
 		return $fields;
@@ -1529,7 +1533,7 @@ class Crud extends CI_Model {
 	function get_element_type_fields($type_id)
 	{
 		$fields = array();
-		$this->elementar->select('element_type_field.id, element_type_field.name, element_type_field.sname, element_type_field.field_type_id, field_type.sname as field_type_sname, field_type.description as field_type_description');
+		$this->elementar->select('element_type_field.id, element_type_field.name, element_type_field.sname, element_type_field.field_type_id, field_type.sname as field_type_sname, field_type.description as field_type_description, field_type.i18n as field_type_i18n');
 		$this->elementar->from('element_type_field');
 		$this->elementar->join('field_type', 'field_type.id = element_type_field.field_type_id', 'inner');
 		$this->elementar->where('element_type_field.element_type_id', $type_id);
@@ -1542,7 +1546,8 @@ class Crud extends CI_Model {
 				'name' => $row->name,
 				'sname' => $row->sname,
 				'type' => $row->field_type_sname,
-				'description' => $row->field_type_description
+				'description' => $row->field_type_description,
+				'i18n' => $row->field_type_i18n
 			);
 		}
 		return $fields;

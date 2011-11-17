@@ -212,8 +212,7 @@ class Common {
 			/*
 			 * Localized name
 			 */
-			$names = json_decode($element['name'], TRUE);
-			$name = $names[$this->LANG];
+			$name = $element['name'];
 			$element_uri = $this->URI_PREFIX . $this->CI->crud->get_content_uri($element['parent_id']) . "#" . $element['sname'];
 			if ( (bool) $element['parent_id'] )
 			{ 
@@ -426,15 +425,21 @@ class Common {
 		return $string;
 	}
 	
-	function render_field($field_type, $field_value)
+	function render_field($field_attr, $field_value)
 	{
 		/*
-		 * Choose language
+		 * Check for multilanguage field
 		 */
-		$field_values = json_decode($field_value, TRUE);
-		$field_value = $field_values[$this->LANG];
+		if ( (bool) $field_attr['i18n'] )
+		{
+			/*
+			 * Choose language
+			 */
+			$field_values = json_decode($field_value, TRUE);
+			$field_value = $field_values[$this->LANG];
+		}
 		
-		switch ( $field_type )
+		switch ( $field_attr['type'] )
 		{
 			case 'img' :
 			$attributes = json_decode($field_value, TRUE);
@@ -567,7 +572,7 @@ class Common {
 		$fields = $this->CI->crud->get_content_fields($content_id);
 		foreach ($fields as $field)
 		{
-			$content[$field['sname']] = $this->render_field($field['type'], $field['value']);			
+			$content[$field['sname']] = $this->render_field($field, $field['value']);			
 		}
 		
 		/*
@@ -692,7 +697,7 @@ class Common {
 				/*
 				 * Format field value depending on field type
 				 */
-				$rendered_value = $this->render_field($field['type'], $field['value']);
+				$rendered_value = $this->render_field($field, $field['value']);
 
 				/*
 				 * element type array item
