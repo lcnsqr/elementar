@@ -494,7 +494,32 @@ class Common {
 			 * Index listing
 			 */
 			$content_id = $field_value;
-			return ul($this->_index_field($content_id));
+			$index = array();
+			/*
+			 * localized parent title
+			 */
+			$titles = json_decode($this->CI->crud->get_content_name($content_id), TRUE);
+			$content_name = $titles[$this->LANG];
+			$content_uri = $this->CI->crud->get_content_uri($content_id);
+			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
+	
+			$attributes = array(
+				'href' => $this->URI_PREFIX . $content_uri,
+				'title' => htmlspecialchars( $content_name ),
+				'class' => $class
+			);
+			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
+			$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
+			if ( $this->CI->crud->get_content_has_children($content_id, FALSE) )
+			{
+				$index[$link] = $this->_index_field($content_id);
+			}
+			else
+			{
+				$index[] = $link;
+			}
+
+			return ul($index);
 			break;
 
 			default:
@@ -525,7 +550,7 @@ class Common {
 				'class' => $class
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
-			$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
+			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
 			if ( $this->CI->crud->get_content_has_children($content_id, FALSE) )
 			{
 				$index[$link] = $this->_index_field($content_id);
