@@ -710,30 +710,31 @@ class Content extends CI_Controller {
 			$listing[] = $this->common->breadcrumb_content($content['id']);
 		}
 		/*
-		 * Controllers
+		 * Addons
 		 */
-		$controllers = array();		
-		foreach( $this->common->controllers(array('Main','Rss','User')) as $controller )
+		foreach ( $this->common->load_addons() as $addon ) 
 		{
-			$controllers[] = array(
-				'path' => $controller['uri'],
-				'name' => $controller['name']
-			);
-			// Controller methods
-			if ( count($controller['methods']) > 0 )
+			$listing[] = $this->common->breadcrumb_path($addon['uri']);
+			// Methods
+			if ( count($addon['methods']) > 0 )
 			{
-				foreach ( $controller['methods'] as $method ) 
+				foreach ( $addon['methods'] as $method ) 
 				{
-					$controllers[] = array(
-						'path' => $method['uri'],
-						'name' => $method['name']
-					);
+	            // skip methods that begin with '_'
+	            if ( substr($method, 0, 1) == '_' ) continue;
+	
+	            // skip default method
+	            if ( $method == 'index' || $method == 'main' ) continue;
+	            
+					// skip XHR (ajax) methods
+	            if ( substr($method, 0, 4) == 'xhr_' ) continue;
+	
+	            // skip old-style constructor
+	            if ( strtolower($method) == strtolower($addon['name']) ) continue;
+
+					$listing[] = $this->common->breadcrumb_path($addon['uri'] . '/' . $method);
 				}				
 			}
-		}
-		foreach( $controllers as $controller )
-		{
-			$listing[] = $this->common->breadcrumb_path($controller['path']);
 		}
 		$targets = div_open(array('class' => 'dropdown_items_listing_position'));
 		$targets .= div_open(array('class' => 'dropdown_items_listing'));

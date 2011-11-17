@@ -35,7 +35,7 @@ class Main extends CI_Controller {
 	 * Starting URI segment
 	 */
 	var $SEGMENT_STEP = 0;
-
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -165,6 +165,44 @@ class Main extends CI_Controller {
 				$request = $this->uri->segment($this->SEGMENT_STEP + 1);
 			}
 			
+			/*
+			 * Load plugins
+			 */
+			$addons = $this->common->load_addons();
+			foreach ( $addons as $addon )
+			{
+				if ( strtolower($request) == strtolower($addon['name']) )
+				{
+					/*
+					 * Plugin requested
+					 */
+					$$addon['name'] = new $addon['name'](array(
+						'lang' => $this->LANG, 
+						'uri_prefix' => $uri_prefix
+					));
+					/*
+					 * Check method
+					 */
+					$method = $this->uri->segment($this->SEGMENT_STEP + 2);
+
+					if ( $method == '' && method_exists($$addon['name'], 'main') )
+					{
+						/*
+						 * No specific method, load main method
+						 */
+						$$addon['name']->main();
+					}
+					elseif ( method_exists($$addon['name'], $method) )
+					{
+						$$addon['name']->$method();
+					}
+					exit(0);
+				}
+			}
+			
+			/*
+			 * Local action
+			 */
 			if ( method_exists($this, $request) )
 			{
 				/*
@@ -175,7 +213,7 @@ class Main extends CI_Controller {
 			elseif ( method_exists($this, $method) )
 			{
 				/*
-				 * Method called directly
+				 * Method called directly, without lang code
 				 */
 				$this->$method();
 			}

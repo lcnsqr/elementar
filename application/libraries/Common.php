@@ -261,74 +261,39 @@ class Common {
 		return $breadcrumb;
 	}
 
-    function get_controller_methods($class = null)
-    {
-        // Use the PHP5 Reflection class to introspect the controller
-        $controller = new ReflectionClass($class);
-        
-		$data = array();
-        foreach($controller->getMethods() as $method)
-        {
-            // skip methods that begin with '_'
-            if(substr($method->name, 0, 1) == '_') continue;
-
-            // skip globally ignored names
-            //if(in_array(strtolower($method->name), $this->ignore['*'])) continue;
-
-            // skip ignored controller methods
-            //if(isset($this->ignore[strtolower($class)]) AND in_array(strtolower($method->name), (array) $this->ignore[strtolower($class)])) continue;
-
-            // skip index page
-            if($method->name == 'index') continue;
-            
-            // skip get_instance method
-            if($method->name == 'get_instance') continue;
-
-			// skip XHR (ajax) methods
-            if(substr($method->name, 0, 4) == 'xhr_') continue;
-
-            // skip old-style constructor
-            if(strtolower($method->name) == strtolower($class)) continue;
-
-            // skip methods that aren't public
-            if(!$method->isPublic()) continue;
-
-            // build link data for parser class
-            $data[] = array(
-                'uri' => strtolower('/' . $class . '/' . $method->name),
-                'name'=> ucwords(strtr($method->name, array('_'=>' '))),
-            );
-        }
-
-        return $data;
-	}
-
-	function controllers($ignore = NULL)
+	function load_addons($ignore = NULL)
 	{
+		$ignore = ( NULL == $ignore ) ? array() : $ignore;
 		$this->CI->load->helper('file');
-		
-		$data = array();
-		$controllers_path = APPPATH.'controllers/';
-		foreach(get_dir_file_info($controllers_path, TRUE) as $controller) 
+		$addons = array();
+		$addons_path = APPPATH.'addons/';
+		foreach(get_dir_file_info($addons_path, TRUE) as $addon) 
 		{
-			// skip anything other than PHP files
-			if ( substr($controller['name'], -4) == '.php' )
+			/*
+			 * Skip anything other than PHP files
+			 */
+			if ( substr($addon['name'], -4) == '.php' )
 			{
-				list($class, $ext) = explode('.', ucfirst($controller['name']));
+				list($class, $ext) = explode('.', ucfirst($addon['name']));
 				if ( in_array($class, $ignore) ) continue;
-				//if(isset($this->ignore[strtolower($class)]) AND $this->ignore[strtolower($class)] == '*') continue;    // skip controllers marked as 'ignore'
-				if(!class_exists($class)) { 
-					include($controller['relative_path'] . '/' . $controller['name']);  // include the class for access
+
+				if ( ! class_exists($class) ) 
+				{ 
+					/*
+					 * Load addon
+					 */
+					include($addon['relative_path'] . $addon['name']);
 				}
-				$data[] = array(
+				$addons[] = array(
 					'uri' => '/' . strtolower($class),
 					'name'=> $class,
-					'date' => $controller['date'],
-					'methods' => $this->get_controller_methods($class)
+					'path' => $addon['relative_path'] . $addon['name'],
+					'date' => $addon['date'],
+					'methods' => get_class_methods($class)
 				);
 			}
 		}
-		return $data;
+		return $addons;
 	}
 
 	function sitemap()
@@ -358,24 +323,36 @@ class Common {
 			);
 		}
 		/*
-		 * Other controllers
+		 * Plugins
 		 */
-		foreach ( $this->controllers(array('Main','Rss','User')) as $url ) 
+		foreach ( $this->load_addons() as $addon ) 
 		{
 			$urls[] = array(
-				'loc' => site_url($url['uri']),
-				'lastmod' => date("Y-m-d", $url['date']),
+				'loc' => site_url($addon['uri']),
+				'lastmod' => date("Y-m-d", $addon['date']),
 				'changefreq' => 'daily',
 				'priority' => '0.5'
 			);
-			// Controller methods
-			if ( count($url['methods']) > 0 )
+			// Methods
+			if ( count($addon['methods']) > 0 )
 			{
-				foreach ( $url['methods'] as $method ) 
+				foreach ( $addon['methods'] as $method ) 
 				{
+	            // skip methods that begin with '_'
+	            if ( substr($method, 0, 1) == '_' ) continue;
+	
+	            // skip default method
+	            if ( $method == 'index' || $method == 'main' ) continue;
+	            
+					// skip XHR (ajax) methods
+	            if ( substr($method, 0, 4) == 'xhr_' ) continue;
+	
+	            // skip old-style constructor
+	            if ( strtolower($method) == strtolower($addon['name']) ) continue;
+	
 					$urls[] = array(
-						'loc' => site_url($method['uri']),
-						'lastmod' => date("Y-m-d", $url['date']),
+						'loc' => site_url($addon['uri'] . '/' . $method),
+						'lastmod' => date("Y-m-d", $addon['date']),
 						'changefreq' => 'daily',
 						'priority' => '0.5'
 					);
