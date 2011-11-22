@@ -1862,7 +1862,7 @@ class Crud extends CI_Model {
 	{
 		$contents = array();
 	
-		$this->elementar->select('content.id, content.name, content.sname');
+		$this->elementar->select('content.id, content.name, content.sname, content.created, content.modified');
 		$this->elementar->from('content');
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
 		$this->elementar->where('content_parent.parent_id', $content_id);
@@ -1879,6 +1879,8 @@ class Crud extends CI_Model {
 					'id' => $row->id, 
 					'name' => $row->name,
 					'sname' => $row->sname,
+					'created' => $row->created,
+					'modified' => $row->modified,
 					'children' => $this->get_content_children($row->id)
 				);
 			}
