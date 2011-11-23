@@ -441,12 +441,13 @@ class Common {
 			case 'image_gallery' :
 			$images = json_decode($field_value, TRUE);
 			$gallery = array();
-			foreach ( $images as $image_item )
+			foreach ( $images as $index => $image_item )
 			{
 				$image = json_decode($image_item, TRUE);
 				if ( count( $image ) > 0 )
 				{
 					$gallery[] = array(
+						'index' => (string) $index,
 						'uri' => (string) $image['uri'],
 						'width' => (string) $image['width'],
 						'height' => (string) $image['height'],
@@ -460,7 +461,7 @@ class Common {
 			case 'youtube_gallery' :
 			$videos = json_decode($field_value, TRUE);
 			$gallery = array();
-			foreach ( $videos as $video )
+			foreach ( $videos as $index => $video )
 			{
 				if ( count( $video ) > 0 )
 				{
@@ -471,6 +472,7 @@ class Common {
 					parse_str($video_url_segments['query'], $variables);
 					$video_id = $variables['v'];
 					$gallery[] = array(
+						'index' => (string) $index,
 						'description' => (string) $video['description'],
 						'url' => (string) $video['url'],
 						'video_id' => $video_id,
