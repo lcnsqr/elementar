@@ -44,8 +44,6 @@ class File extends CI_Controller {
 		/*
 		 * CI libraries
 		 */
-		$this->config->set_item('sess_encrypt_cookie', TRUE);
-		$this->config->set_item('sess_expiration', 604800);
 		$this->load->library('session');
 
 		/*

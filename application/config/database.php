@@ -44,7 +44,7 @@
 | the active record class
 */
 
-$active_group = 'default';
+$active_group = 'elementar';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
@@ -66,10 +66,10 @@ $db['default']['stricton'] = FALSE;
 /*
  * Elementar database
  */
-$db['elementar']['hostname'] = 'localhost';
-$db['elementar']['username'] = 'elementar';
+$db['elementar']['hostname'] = '';
+$db['elementar']['username'] = '';
 $db['elementar']['password'] = '';
-$db['elementar']['database'] = 'elementar';
+$db['elementar']['database'] = '';
 $db['elementar']['dbdriver'] = 'mysql';
 $db['elementar']['dbprefix'] = '';
 $db['elementar']['pconnect'] = TRUE;

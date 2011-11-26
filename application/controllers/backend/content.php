@@ -42,8 +42,6 @@ class Content extends CI_Controller {
 		/*
 		 * CI libraries
 		 */
-		$this->config->set_item('sess_encrypt_cookie', TRUE);
-		$this->config->set_item('sess_expiration', 604800);
 		$this->load->library('session');
 		
 		/*
@@ -108,10 +106,17 @@ class Content extends CI_Controller {
 
 		$this->config->set_item('site_name', 'Elementar');
 
-		//~ $this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
-		//~ $this->config->set_item('smtp_port', '465');
-		//~ $this->config->set_item('smtp_user', 'lcnsqr@gmail.com');
-		//~ $this->config->set_item('smtp_pass', '');
+		/*
+		 * Email config
+		 */
+		/*
+		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
+		$this->config->set_item('smtp_port', '465');
+		$this->config->set_item('smtp_user', '');
+		$this->config->set_item('smtp_pass', '');
+		$this->load->library('email', $config);
+		$this->email->set_newline("\r\n");
+		*/
 
 		/*
 		 * Verificar sessão autenticada

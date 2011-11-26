@@ -14,8 +14,6 @@ class User extends CI_Controller {
 		/*
 		 * Session CI library
 		 */
-		$this->config->set_item('sess_encrypt_cookie', TRUE);
-		$this->config->set_item('sess_expiration', 604800);
 		$this->load->library('session');
 
 		/*
@@ -31,15 +29,14 @@ class User extends CI_Controller {
 		/*
 		 * Email config
 		 */
-		$config = Array(
-		    'protocol' => 'smtp',
-		    'smtp_host' => $this->config->item('smtp_host'),
-		    'smtp_port' => $this->config->item('smtp_port'),
-		    'smtp_user' => $this->config->item('smtp_user'),
-		    'smtp_pass' => $this->config->item('smtp_pass'),
-		);
+		/*
+		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
+		$this->config->set_item('smtp_port', '465');
+		$this->config->set_item('smtp_user', '');
+		$this->config->set_item('smtp_pass', '');
 		$this->load->library('email', $config);
 		$this->email->set_newline("\r\n");
+		*/
 
 	}
 	
@@ -67,14 +64,6 @@ class User extends CI_Controller {
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
-
-		/*
-		 * Erase data stored in cookie
-		 */
-		if ( FALSE === (bool) $this->session->userdata('user_id') )
-		{
-			$this->session->sess_destroy();
-		}
 
 		$response = array('done' => FALSE);
 
@@ -114,8 +103,7 @@ class User extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 
-		$user_id = $this->session->userdata('user_id');
-		$this->session->sess_destroy();
+		$this->session->unset_userdata('user_id');
 		
 		$response = array('done' => TRUE);
 		$this->_ajax_response($response);
