@@ -29,6 +29,25 @@ $(function() {
 							 */
 							$(listing).html(data.html);
 							/*
+							 * Locate selected item in listing
+							 */
+							if ( $(listing).find("a.item.block.current").length > 0 )
+							{
+								var selected = $(listing).find("a.item.block.current").first();
+								var details = $(selected).next('.item_details').html();
+								$('#current_file_details').html(details).show('fast');
+							}
+							else
+							{
+								/*
+								 * Hide previous file details
+								 */
+								$('#current_file_details').hide('fast', function(){
+									$(this).html('');
+								});
+							}
+
+							/*
 							 * Update directories tree?
 							 */
 							if ( update_tree ) {
@@ -55,26 +74,9 @@ $(function() {
 							/*
 							 * Update action links
 							 */
-							$('#current_folder_title').html(title);
-							if ( path == '/' )
-							{
-								$('#current_folder_rename').parent('li').hide('fast');
-								$('#current_folder_erase').parent('li').hide('fast');
-							}
-							else
-							{
-								$('#current_folder_rename').parent('li').show('fast');
-								$('#current_folder_erase').parent('li').show('fast');
-							}
-							$('#current_folder_rename').attr('href', path);
-							$('#current_folder_erase').attr('href', path);
-							$('#current_folder_upload').attr('href', path);
-							/*
-							 * Hide previous file details
-							 */
-							$('#current_file_details').hide('fast', function(){
-								$(this).html('');
-							});
+							$('#current_folder_title').html(data.title);
+							$('#current_folder_mkdir').attr('href', data.path);
+							$('#current_folder_upload').attr('href', data.path);
 						}
 					}
 					catch (err) {
@@ -409,11 +411,12 @@ $(function() {
 	$('a.uploaded_file').live('click', function(event){
 		event.preventDefault();
 		/*
-		 * Show folder contents
+		 * Show file in listing
 		 */
 		var title = $(this).attr('title');
 		var path = $(this).attr('href');
 		$("#file_manager_listing").update_listing(path, title, true);
+		
 	});
 
 	/*
@@ -422,17 +425,106 @@ $(function() {
 	$('.current_item_erase').live('click', function(event){
 		event.preventDefault();
 		
-		var path = $(this).attr('href');
-		$.post("/backend/file/xhr_erase_item", { path : path }, function(data){
-			try {
-				if ( data.done == true ) {
-					console.log('Apagado');
+		var details = $(this).parents('#current_file_details');
+		var title = $(details).find('p.current_file_title').first().html();
+		var mime = $(details).find('span.mime').first().html();
+		
+		if ( mime == null )
+		{
+			/*
+			 * Directory
+			 */
+			var question = ' e todo seu conteúdo?';
+		}
+		else
+		{
+			/*
+			 * File
+			 */
+			var question = '?';
+		}
+
+		if ( confirm("Excluir “" + title + '”' + question) == true )
+		{
+			var path = $(this).attr('href');
+			$.post("/backend/file/xhr_rm", { path : path }, function(data){
+				try {
+					if ( data.done == true ) {
+						/*
+						 * Update listing and tree
+						 */
+						$("#file_manager_listing").update_listing(data.path, data.title, true);
+					}
 				}
-			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-			}
-		}, 'json');
+				catch (err) {
+					showClientWarning("Erro de comunicação com o servidor");
+				}
+			}, 'json');
+		}
+	});
+
+	/*
+	 * Rename file/folder
+	 */
+	$('.current_item_rename').live('click', function(event){
+		event.preventDefault();
+		
+		var details = $(this).parents('#current_file_details');
+		var title = $(details).find('p.current_file_title').first().html();
+
+		var path = $(this).attr('href');
+		
+		var name = prompt('Renomear “' + title + '”', title);
+		
+		if ( name != '' && name != null )
+		{
+			$.post("/backend/file/xhr_rename", { path : path, name : name }, function(data){
+				try {
+					if ( data.done == true ) {
+						/*
+						 * Update listing and tree
+						 */
+						$("#file_manager_listing").update_listing(data.path, data.title, true);
+					}
+				}
+				catch (err) {
+					showClientWarning("Erro de comunicação com o servidor");
+				}
+			}, 'json');
+		}
+	});
+
+	/*
+	 * Create a folder
+	 */
+	$('#current_folder_mkdir').live('click', function(event)
+	{
+		event.preventDefault();
+		
+		var path = $(this).attr('href');
+		
+		var newdir = prompt('Nova Pasta', 'Nova Pasta');
+		
+		if ( newdir != '' && newdir != null )
+		{
+			$.post("/backend/file/xhr_mkdir", { path : path, newdir : newdir }, function(data)
+			{
+				try 
+				{
+					if ( data.done == true ) 
+					{
+						/*
+						 * Update listing and tree
+						 */
+						$("#file_manager_listing").update_listing(path + '/' + newdir, newdir, true);
+					}
+				}
+				catch (err) 
+				{
+					showClientWarning("Erro de comunicação com o servidor");
+				}
+			}, 'json');
+		}
 
 	});
 

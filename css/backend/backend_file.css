@@ -352,6 +352,7 @@
 }
 #file_manager_action .upload_form_container .upload_form {
 	position: absolute;
+	overflow: hidden;
 	display: block;
 	top: 4px;
 	right: 0;

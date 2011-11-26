@@ -42,6 +42,13 @@ class File extends CI_Controller {
 		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
+		 * CI libraries
+		 */
+		$this->config->set_item('sess_encrypt_cookie', TRUE);
+		$this->config->set_item('sess_expiration', 604800);
+		$this->load->library('session');
+
+		/*
 		 * Create, read, update and delete Model
 		 */
 		$this->load->model('Crud', 'crud');
@@ -92,6 +99,29 @@ class File extends CI_Controller {
 		));
 
 		$this->ROOT = '/files';
+
+		/*
+		 * Verificar sessão autenticada
+		 * de usuário autorizado no admin
+		 */
+		$user_id = $this->session->userdata('user_id');
+		if ( (int) $user_id != 1 )
+		{
+			$data = array(
+				'is_logged' => FALSE,
+				'title' => $this->config->item('site_name'),
+				'js' => array(
+					'/js/backend/jquery-1.6.2.min.js', 
+					'/js/backend/backend_account.js', 
+					'/js/backend/jquery.timers-1.2.js', 
+					'/js/backend/backend_client_warning.js'
+				),
+				'action' => '/' . uri_string(),
+				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
+			);
+			$login = $this->load->view('backend/backend_login', $data, TRUE);
+			exit($login);
+		}
 
 	}
 
@@ -226,7 +256,22 @@ class File extends CI_Controller {
 
 		$html = $this->_render_listing($path);
 
+		/*
+		 * Verify if it's a file and
+		 * strip directory information
+		 */
+		$relative_path = '.' . $path;
+		if ( is_file($relative_path) )
+		{
+			$relative_path = dirname($relative_path);
+			$path = substr($relative_path, 1);
+		}
+
+		$title = basename($path);
+		
 		$response = array(
+			'title' => $title,
+			'path' => $path,
 			'done' => TRUE,
 			'html' => $html
 		);
@@ -364,19 +409,19 @@ class File extends CI_Controller {
 		$this->load->helper(array('directory', 'file', 'html'));
 		
 		/*
+		 * Given path defines item selection
+		 */
+		$selected_path = $path; 
+		
+		/*
 		 * Verify if it's a file or a directory
 		 * and assign proper variables
 		 */
 		$relative_path = '.' . $path;
 		if ( is_file($relative_path) )
 		{
-			$selected_file = basename($relative_path);
 			$relative_path = dirname($relative_path);
-			$path = substr($relative_path, 1, strlen($relative_path) - 1);
-		}
-		else 
-		{
-			$selected_file = NULL;
+			$path = substr($relative_path, 1);
 		}
 
 		/*
@@ -397,7 +442,7 @@ class File extends CI_Controller {
 					'label' => $label,
 					'icon' => '/css/backend/directory.png',
 					'path' => $path . '/' . $content,
-					'class' => 'directory'
+					'class' => ( $path . '/' . $content == $selected_path ) ? 'directory current' : 'directory'
 				);
 			}
 		}
@@ -421,16 +466,9 @@ class File extends CI_Controller {
 					'icon' => '/css/backend/file.png',
 					'path' => $path . '/' . $content,
 					'mime' => $mime_content_type,
-					'size' => $this->_byte_convert($size)
+					'size' => $this->_byte_convert($size),
+					'class' => ( $path . '/' . $content == $selected_path ) ? 'file current' : 'file'
 				);
-				if ( $content == $selected_file )
-				{
-					$attrs['class'] = 'file current';
-				}
-				else
-				{
-					$attrs['class'] = 'file';
-				}
 				/*
 				 * Image info
 				 */
@@ -475,8 +513,10 @@ class File extends CI_Controller {
 			}
 		}
 		sort($files);
-		
-		$data = array('listing' => array_merge($folders, $files));
+
+		$data = array(
+			'listing' => array_merge($folders, $files)
+		);
 		$html = $this->load->view('backend/backend_file_listing', $data, true);
 		return $html;
 	}
@@ -737,18 +777,129 @@ class File extends CI_Controller {
 		echo NULL;
 	}
 
-	function xhr_erase_item()
+	function xhr_rm()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 		
 		$path = $this->input->post("path", TRUE);
+		$relative_path = '.' . $path;
 		
-		unlink('.' . $path);
+		$parent_dir = dirname($relative_path);
+		
+		/*
+		 * File or directory
+		 */
+		if ( is_file($relative_path) )
+		{
+			if ( unlink($relative_path) )
+			{
+				$response = array(
+					'done' => TRUE,
+					'path' => substr($parent_dir, 1),
+					'title' => basename($parent_dir)
+				);
+			}
+			else
+			{
+				$response = array(
+					'done' => FALSE
+				);
+			}
+		}
+		else
+		{
+			$this->load->helper('file');
+			/*
+			 * Delete contents recursively
+			 */
+			delete_files($relative_path, TRUE);
+			/*
+			 * Check for hidden thumbnaisl dir
+			 */
+			if ( file_exists($relative_path . '/' . '.thumbnails') )
+			{
+				delete_files($relative_path . '/' . '.thumbnails', TRUE);
+				rmdir($relative_path . '/' . '.thumbnails');
+			}
+			if ( rmdir($relative_path) )
+			{
+				$response = array(
+					'done' => TRUE,
+					'path' => substr($parent_dir, 1),
+					'title' => basename($parent_dir)
+				);
+			}
+			else
+			{
+				$response = array(
+					'done' => FALSE
+				);
+			}
+		}
 
-		$response = array(
-			'done' => TRUE
-		);
+		$this->common->ajax_response($response);
+
+	}
+
+	function xhr_mkdir()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
+		
+		$path = $this->input->post('path', TRUE);
+		$relative_path = '.' . $path;
+				
+		$newdir = $this->input->post('newdir', TRUE);
+		
+		if ( mkdir($relative_path . '/' . $newdir) )
+		{
+			$response = array(
+				'done' => TRUE
+			);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'msg' => 'Não foi possível criar a pasta ' . $newdir
+			);
+		}
+
+		$this->common->ajax_response($response);
+
+	}
+
+	function xhr_rename()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit('No direct script access allowed');
+		
+		$name = $this->input->post('name', TRUE);
+
+		$path = $this->input->post('path', TRUE);
+		$relative_path = '.' . $path;			
+
+		/*
+		 * Ignore empty name
+		 */
+		$name = ( trim($name) == '' ) ? basename($relative_path) : $name;
+
+		if ( rename($relative_path, dirname($relative_path) . '/' . $name) )
+		{
+			$response = array(
+				'title' => $name,
+				'path' => dirname($path),
+				'done' => TRUE
+			);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'msg' => 'Não foi possível renomear ' . $name
+			);
+		}
 
 		$this->common->ajax_response($response);
 

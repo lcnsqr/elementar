@@ -102,9 +102,8 @@
 			<div id="current_folder_icon"></div>
 			<p id="current_folder_title">Raiz</p>
 			<ul>
-				<li style="display: none;"><a href="/" id="current_folder_rename">Renomear</a></li>
-				<li style="display: none;"><a href="/" id="current_folder_erase">Apagar</a></li>
-				<li><a href="/" id="current_folder_upload">Enviar Arquivo</a></li>
+				<li><a href="<?php echo $folder['path']; ?>" id="current_folder_mkdir">Nova Pasta</a></li>
+				<li><a href="<?php echo $folder['path']; ?>" id="current_folder_upload">Enviar Arquivo</a></li>
 			</ul>
 		</div>
 		<div id="current_file_details">

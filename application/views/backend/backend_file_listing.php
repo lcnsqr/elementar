@@ -24,7 +24,7 @@
 			}
 			?>
 			<?php endif; ?>
-			<li><a href="<?php echo $item['path']; ?>">Renomear</a></li>
+			<li><a href="<?php echo $item['path']; ?>" class="current_item_rename">Renomear</a></li>
 			<li><a href="<?php echo $item['path']; ?>" class="current_item_erase">Apagar</a></li>
 		</ul>
 		<?php if ( $item['class'] != 'directory' ) : ?>
