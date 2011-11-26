@@ -10,7 +10,7 @@
 <ul>
 	<li><strong><?php echo $username; ?></strong></li>
 	<li><span class="top_menu_sep">&bull;</span></li>
-	<li><a href="/user/logout" title="Sair">Sair</a></li>
+	<li><a href="/backend/content" title="Sair" class="logout">Sair</a></li>
 </ul>
 </div> <!-- #user_menu -->
 

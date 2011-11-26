@@ -64,30 +64,11 @@ $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
 /*
- * account database
- */
-$db['account']['hostname'] = 'localhost';
-$db['account']['username'] = 'cms';
-$db['account']['password'] = 'Y8z6bE6SuyB2XcYH';
-$db['account']['database'] = 'account';
-$db['account']['dbdriver'] = 'mysql';
-$db['account']['dbprefix'] = '';
-$db['account']['pconnect'] = TRUE;
-$db['account']['db_debug'] = TRUE;
-$db['account']['cache_on'] = FALSE;
-$db['account']['cachedir'] = '';
-$db['account']['char_set'] = 'utf8';
-$db['account']['dbcollat'] = 'utf8_general_ci';
-$db['account']['swap_pre'] = '';
-$db['account']['autoinit'] = FALSE;
-$db['account']['stricton'] = FALSE;
-
-/*
  * Elementar database
  */
 $db['elementar']['hostname'] = 'localhost';
 $db['elementar']['username'] = 'elementar';
-$db['elementar']['password'] = 'CDq6UsjFyaA57XwH';
+$db['elementar']['password'] = '';
 $db['elementar']['database'] = 'elementar';
 $db['elementar']['dbdriver'] = 'mysql';
 $db['elementar']['dbprefix'] = '';

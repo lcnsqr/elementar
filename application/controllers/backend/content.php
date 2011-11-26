@@ -42,27 +42,19 @@ class Content extends CI_Controller {
 		/*
 		 * CI libraries
 		 */
+		$this->config->set_item('sess_encrypt_cookie', TRUE);
+		$this->config->set_item('sess_expiration', 604800);
 		$this->load->library('session');
 		
 		/*
-		 * User/session database
-		 */
-		$this->db_acc = $this->load->database('account', TRUE);
-
-		/*
-		 * Content database
+		 * Elementar database
 		 */
 		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
-		 * Session model
-		 */
-		$this->load->model('M_session', 'sess');
-
-		/*
 		 * Account model
 		 */
-		$this->load->model('M_account', 'account');
+		$this->load->model('Account', 'account');
 
 		/*
 		 * Create, read, update and delete Model
@@ -125,15 +117,15 @@ class Content extends CI_Controller {
 		 * Verificar sessão autenticada
 		 * de usuário autorizado no admin
 		 */
-		$user_id = $this->account->logged($this->sess->session_id());
-		if ( $user_id === FALSE )
+		$user_id = $this->session->userdata('user_id');
+		if ( (int) $user_id != 1 )
 		{
 			$data = array(
 				'is_logged' => FALSE,
 				'title' => $this->config->item('site_name'),
 				'js' => array(
 					'/js/backend/jquery-1.6.2.min.js', 
-					'/js/backend/backend_session.js', 
+					'/js/backend/backend_account.js', 
 					'/js/backend/jquery.timers-1.2.js', 
 					'/js/backend/backend_client_warning.js'
 				),
@@ -151,7 +143,7 @@ class Content extends CI_Controller {
 		/*
 		 * User info
 		 */
-		$user_id = $this->account->logged($this->sess->session_id());
+		$user_id = $this->session->userdata('user_id');
 		$is_logged = TRUE;
 		$username = $this->account->get_user_name($user_id);
 
@@ -162,6 +154,7 @@ class Content extends CI_Controller {
 			'/js/backend/jquery-1.6.2.min.js',
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
+			'/js/backend/backend_account.js',
 			'/js/backend/tiny_mce/jquery.tinymce.js',
 			'/js/backend/backend_client_warning.js',
 			'/js/backend/backend_content_tree.js',

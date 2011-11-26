@@ -5,9 +5,10 @@
 <head>
 	<title><?php echo $title; ?></title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<script type="text/javascript" src="/js/jquery-1.5.min.js"></script>
-	<script type="text/javascript" src="/js/session.js"></script>
+
+	<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="/js/account.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="/css/reset.css" />
 </head>
 
@@ -15,7 +16,7 @@
 
 <?php if ( ! $is_logged ): ?>
 <p class="page_title">Identificação</p>
-<form name="login" id="login_form" action="<?php echo (isset($action)) ? $action : "/"; ?>">
+<form name="login" id="login_form" action="/user">
 <p class="login_field">
 <label for="login_usuario">Nome de usuário:</label><br />
 <input name="login_usuario" id="login_usuario" type="text" />
@@ -40,7 +41,7 @@
 <?php else: ?>
 
 <p><?php echo $username; ?></p>
-<p><a href="/user/logout">Sair</a></p>
+<p><a href="/user" class="logout">Sair</a></p>
 <?php endif; ?>
 
 </body>

@@ -6,7 +6,7 @@
 
 <div id="main">
 
-<div id="sections">
+<div id="authenticate">
 
 <p class="page_title">Identificação</p>
 <form name="login" id="login_form" action="<?php echo (isset($action)) ? $action : "/admin"; ?>">

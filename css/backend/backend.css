@@ -17,6 +17,11 @@ body {
 */
 }
 
+#authenticate
+{
+	text-align: center;
+}
+
 .loading {
 	display: none;
 	position: absolute;

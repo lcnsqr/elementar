@@ -14,22 +14,19 @@ class User extends CI_Controller {
 		/*
 		 * Session CI library
 		 */
+		$this->config->set_item('sess_encrypt_cookie', TRUE);
+		$this->config->set_item('sess_expiration', 604800);
 		$this->load->library('session');
 
 		/*
-		 * Account DB
+		 * Elementar database
 		 */
-		$this->db_acc = $this->load->database('account', TRUE);
+		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
 		 * Account model
 		 */
-		$this->load->model('M_account', 'account', TRUE);
-
-		/*
-		 * Session model
-		 */
-		$this->load->model('M_session', 'sess', TRUE);
+		$this->load->model('Account', 'account', TRUE);
 
 		/*
 		 * Email config
@@ -52,8 +49,8 @@ class User extends CI_Controller {
 		 * Formulário de login
 		 */
 		$data = array('title' => "Identificação");
-		$user_id = $this->account->logged($this->sess->session_id());
-		if ( $user_id !== FALSE )
+		$user_id = $this->session->userdata('user_id');
+		if ( (bool) $user_id !== FALSE )
 		{
 			$data['is_logged'] = TRUE;
 			$data['username'] = $this->account->get_user_name($user_id);
@@ -71,6 +68,14 @@ class User extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
 
+		/*
+		 * Erase data stored in cookie
+		 */
+		if ( FALSE === (bool) $this->session->userdata('user_id') )
+		{
+			$this->session->sess_destroy();
+		}
+
 		$response = array('done' => FALSE);
 
 		$username = $this->input->post("login_usuario", TRUE);
@@ -78,11 +83,11 @@ class User extends CI_Controller {
 
 		$user_id = $this->account->get_user_id($username);
 		
-		if ($user_id !== FALSE)
+		if ( (bool) $user_id !== FALSE)
 		{
 			if ( $this->account->authenticate($user_id, $password) )
 			{
-				$this->account->register_session($user_id, $this->sess->session_id());
+				$this->session->set_userdata('user_id', $user_id);
 				
 				$response = array(
 					'done' => TRUE,
@@ -106,24 +111,14 @@ class User extends CI_Controller {
 	
 	function logout()
 	{
-		/*
 		if ( ! $this->input->is_ajax_request() )
 			exit('No direct script access allowed');
-		*/
 
-		$response = array('done' => FALSE);
-
-		$user_id = $this->account->logged($this->sess->session_id());
-		if ($user_id !== FALSE)
-		{
-			$this->account->unregister_session($this->sess->session_id());
-			$response = array('done' => TRUE);
-		}
+		$user_id = $this->session->userdata('user_id');
+		$this->session->sess_destroy();
 		
-		// Enviar resposta
-		//$this->_ajax_response($response);
-
-		redirect("/");
+		$response = array('done' => TRUE);
+		$this->_ajax_response($response);
 	}
 
 	/*
@@ -290,7 +285,7 @@ class User extends CI_Controller {
 
 	function send_email($to, $subject, $body)
 	{
-		$this->email->from('dilma@presidencia.gov.br', 'Dilma Roussef');
+		$this->email->from('support@elementar.com', 'Elementar');
 
 		$this->email->to($to);
 		$this->email->subject($subject);
@@ -315,20 +310,6 @@ class User extends CI_Controller {
 		{
 			echo "<p>Cadastro não localizado</p>";
 		}
-	}
-
-	function session_active()
-	{
-		$hash = $this->uri->segment(3, 0);
-		$user_id = $this->account->logged($hash);
-		if ( $user_id === FALSE )
-		{
-			echo 0;
-		}
-		else 
-		{
-			echo 1;
-		}		
 	}
 
 	function _ajax_response($response)

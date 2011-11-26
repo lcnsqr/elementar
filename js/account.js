@@ -3,18 +3,23 @@
 $(function() {
 
 	// inclusão de usuário
-	$("a#cadastrar").click(function(event) {
+	$("#form_cadastro").submit(function(event) {
 		event.preventDefault();
 
-		$.post("/user/register", $("form[name='cadastro']").serialize(), function(data){
+		$.post("/user/register", $(this).serialize(), function(data){
 			try {
 				if ( data.done == true ) {
-					console.log("ok");
+					alert('O link de confirmação do cadastro foi enviado para seu email.');
 				}
 				else {
+					var msg = '';
 					$.each(data, function(index, value) { 
-						console.log(index + ": " + value);
+						if ( index != 'done' && index != 'elapsed_time' )
+						{
+							msg += value + "\n";
+						}
 					});
+					alert(msg);
 				}
 			}
 			catch (err) {
@@ -67,6 +72,41 @@ $(function() {
 			}
 		}, "json");
 
+	});
+	
+	$('#login_form').submit(function(event)
+	{
+		event.preventDefault();
+		var location = $(this).attr('action');
+		
+		$.post('/user/login', $(this).serialize(), function(data)
+		{
+			if ( data.done == true )
+			{
+				window.location.replace(location);
+			}
+			else
+			{
+				alert(data.msg);
+			}
+		}, 'json');
+	});
+	
+	$('.logout').click(function(event)
+	{
+		event.preventDefault();
+		var location = $(this).attr('href');
+		$.post('/user/logout', function(data)
+		{
+			if ( data.done == true ) 
+			{
+				window.location.replace(location);
+			}
+			else
+			{
+				alert(data.msg);
+			}
+		}, 'json');
 	});
 	
 });

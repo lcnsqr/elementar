@@ -2,6 +2,51 @@
 
 $(function() {
 
+	$("#login_form").submit(function(event){
+		event.preventDefault();
+	
+		// Bloqueio
+		$("#sections_blocker").fadeIn("fast");
+			
+		var action = $(this).attr("action") + document.location.hash;
+		
+		$.post("/user/login", $(this).serialize(), function(data) {
+			try {
+				if ( data.done == true ) {
+					// Encaminhar para o endereço solicitado
+					if ( action != "" ) {
+						location.reload();
+					}
+				}
+				else {
+					showClientWarning(data.msg);
+				}
+			}
+			catch (err) {
+				showClientWarning("Erro de comunicação com o servidor");
+			}
+			// Bloqueio
+			$("#sections_blocker").fadeOut("fast");
+		}, "json");
+	});
+
+	$('.logout').click(function(event)
+	{
+		event.preventDefault();
+		var location = $(this).attr('href');
+		$.post('/user/logout', function(data)
+		{
+			if ( data.done == true ) 
+			{
+				window.location.replace(location);
+			}
+			else
+			{
+				alert(data.msg);
+			}
+		}, 'json');
+	});
+
 	// mostrar inclusão
 	$("#user_add").live("click", function(event) {
 		event.preventDefault();

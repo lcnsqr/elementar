@@ -1,6 +1,6 @@
 <?php 
 
-class M_account extends CI_Model {
+class Account extends CI_Model {
 	
 	function __construct()
 	{
@@ -28,7 +28,7 @@ class M_account extends CI_Model {
 			/* 
 			 * verifica se username já foi utilizado 
 			 */
-			$query = $this->db_acc->get_where('acc_user', array('user' => $username), '1');
+			$query = $this->elementar->get_where('account', array('user' => $username), '1');
 			if ($query->num_rows() > 0 )
 			{
 				return "Este nome de usuário já foi cadastrado";
@@ -48,7 +48,7 @@ class M_account extends CI_Model {
 		/* 
 		 * Remover solicitado
 		 */
-		$this->db_acc->delete('acc_user', array('id' => $user_id));
+		$this->elementar->delete('account', array('id' => $user_id));
 	}
 	
 	/*
@@ -67,10 +67,10 @@ class M_account extends CI_Model {
 			'created' => date("Y-m-d H:i:s"),
 			'enabled' => $enabled
 		);
-		$query = $this->db_acc->insert('acc_user', $data);
+		$query = $this->elementar->insert('account', $data);
 		if ($query)
 		{
-			return $this->db_acc->insert_id();
+			return $this->elementar->insert_id();
 		}
 		else
 		{
@@ -86,7 +86,7 @@ class M_account extends CI_Model {
 		/*
 		 * Verificar existência do hash
 		 */
-		$query = $this->db_acc->get_where('acc_user', array('register_hash' => $hash), '1');
+		$query = $this->elementar->get_where('account', array('register_hash' => $hash), '1');
 		if ($query->num_rows() > 0 )
 		{
 			/* 
@@ -95,8 +95,8 @@ class M_account extends CI_Model {
 			$data = array(
 				'enabled' => TRUE
 			);
-			$query = $this->db_acc->where('register_hash', $hash);
-			$query = $this->db_acc->update('acc_user', $data);
+			$query = $this->elementar->where('register_hash', $hash);
+			$query = $this->elementar->update('account', $data);
 			return TRUE;
 		}
 
@@ -111,15 +111,15 @@ class M_account extends CI_Model {
 		/*
 		 * localizar email no cadastro
 		 */
-		$query = $this->db_acc->get_where('acc_user', array('email' => $email), '1');
+		$query = $this->elementar->get_where('account', array('email' => $email), '1');
 		if ($query->num_rows() > 0 )
 		{
 			$data = array(
 				'reset_hash' => $hash,
 				'reset_hash_date' => date("Y-m-d H:i:s")
 			);
-			$query = $this->db_acc->where('email', $email);
-			$query = $this->db_acc->update('acc_user', $data);
+			$query = $this->elementar->where('email', $email);
+			$query = $this->elementar->update('account', $data);
 			return TRUE;
 		}
 		else
@@ -136,10 +136,10 @@ class M_account extends CI_Model {
 		/*
 		 * localizar reset hash
 		 */
-		$this->db_acc->select('reset_hash_date');
-		$this->db_acc->from('acc_user');
-		$this->db_acc->where('reset_hash', $hash);
-		$query = $this->db_acc->get();
+		$this->elementar->select('reset_hash_date');
+		$this->elementar->from('account');
+		$this->elementar->where('reset_hash', $hash);
+		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
@@ -187,8 +187,8 @@ class M_account extends CI_Model {
 					'reset_hash' => NULL,
 					'password' => do_hash($password)
 				);
-				$query = $this->db_acc->where('reset_hash', $hash);
-				$query = $this->db_acc->update('acc_user', $data);
+				$query = $this->elementar->where('reset_hash', $hash);
+				$query = $this->elementar->update('account', $data);
 				return TRUE;
 			}
 			else
@@ -225,7 +225,7 @@ class M_account extends CI_Model {
 				/* 
 				 * verifica se email já foi utilizado 
 				 */
-				$query = $this->db_acc->get_where('acc_user', array('email' => $email), '1');
+				$query = $this->elementar->get_where('account', array('email' => $email), '1');
 				if ($query->num_rows() > 0 )
 				{
 					return "Este email já foi cadastrado";
@@ -265,8 +265,8 @@ class M_account extends CI_Model {
 		$data = array(
 			'user_id' => $user_id
 		);
-		$query = $this->db_acc->where('hash', $session_id);
-		$query = $this->db_acc->update('acc_session', $data);
+		$query = $this->elementar->where('hash', $session_id);
+		$query = $this->elementar->update('acc_session', $data);
 	}
 
 	/*
@@ -277,8 +277,8 @@ class M_account extends CI_Model {
 		$data = array(
 			'user_id' => NULL
 		);
-		$query = $this->db_acc->where('hash', $session_id);
-		$query = $this->db_acc->update('acc_session', $data);
+		$query = $this->elementar->where('hash', $session_id);
+		$query = $this->elementar->update('acc_session', $data);
 	}
 	
 	/*
@@ -290,8 +290,8 @@ class M_account extends CI_Model {
 		$data = array(
 			'user_id' => NULL
 		);
-		$query = $this->db_acc->where('created <', date("Y-m-d H:i:s", $limit));
-		$query = $this->db_acc->update('acc_session', $data);
+		$query = $this->elementar->where('created <', date("Y-m-d H:i:s", $limit));
+		$query = $this->elementar->update('acc_session', $data);
 	}
 	
 	/*
@@ -299,11 +299,11 @@ class M_account extends CI_Model {
 	 */
 	function logged($session_id)
 	{
-		$this->db_acc->select('user_id, created');
-		$this->db_acc->from('acc_session');
-		$this->db_acc->where('hash', $session_id);
-		$this->db_acc->limit(1);
-		$query = $this->db_acc->get();
+		$this->elementar->select('user_id, created');
+		$this->elementar->from('acc_session');
+		$this->elementar->where('hash', $session_id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
 			/*
@@ -347,7 +347,7 @@ class M_account extends CI_Model {
 	 */
 	function authenticate($user_id, $password)
 	{
-		$query = $this->db_acc->get_where('acc_user', array('password' => do_hash($password)), '1');
+		$query = $this->elementar->get_where('account', array('password' => do_hash($password)), '1');
 		if ($query->num_rows() > 0 )
 		{
 			return TRUE;
@@ -361,10 +361,10 @@ class M_account extends CI_Model {
 	 */
 	function get_user_id($username)
 	{
-		$this->db_acc->select('id');
-		$this->db_acc->from('acc_user');
-		$this->db_acc->where('user', $username);
-		$query = $this->db_acc->get();
+		$this->elementar->select('id');
+		$this->elementar->from('account');
+		$this->elementar->where('user', $username);
+		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
@@ -382,14 +382,35 @@ class M_account extends CI_Model {
 	 */
 	function get_user_name($id)
 	{
-		$this->db_acc->select('user');
-		$this->db_acc->from('acc_user');
-		$this->db_acc->where('id', $id);
-		$query = $this->db_acc->get();
+		$this->elementar->select('user');
+		$this->elementar->from('account');
+		$this->elementar->where('id', $id);
+		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
 			return $row->user;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/*
+	 * Verificar id
+	 * e retornar email
+	 */
+	function get_user_email($id)
+	{
+		$this->elementar->select('email');
+		$this->elementar->from('account');
+		$this->elementar->where('id', $id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->email;
 		}
 		else
 		{
@@ -403,13 +424,13 @@ class M_account extends CI_Model {
 	function get_users($id = NULL)
 	{
 		$contents = array();
-		$this->db_acc->select('id, user, email, created');
-		$this->db_acc->from('acc_user');
+		$this->elementar->select('id, user, email, created');
+		$this->elementar->from('account');
 		if ($id !== NULL)
 		{
-			$this->db_acc->where('id', $id);
+			$this->elementar->where('id', $id);
 		}
-		$query = $this->db_acc->get();
+		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
 			$contents = $query->result_array();
