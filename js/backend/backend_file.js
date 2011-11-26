@@ -21,7 +21,7 @@ $(function() {
 				// File listing loading animation
 				$(listing).children(".loading").fadeIn("fast");
 	
-				$.post('/backend/file/xhr_render_contents', { path : path }, function(data) {
+				$.post('/backend/file/xhr_render_contents', { path : path, parent : $.getUrlVar('parent') }, function(data) {
 					try {
 						if ( data.done == true ) {
 							/*

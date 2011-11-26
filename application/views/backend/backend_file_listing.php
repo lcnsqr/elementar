@@ -30,7 +30,8 @@
 		<?php if ( $item['class'] != 'directory' ) : ?>
 		<hr />
 		<ul>
-			<li><a href="<?php echo $item['path']; ?>" title="<?php echo $item['name']; ?>" class="insert">Inserir endereço</a><span class="action_insert"><?php echo $item['path']; ?></span></li>
+		<?php if ( $parent == 'tinymce' ): ?>
+			<li><a href="<?php echo $item['path']; ?>" title="<?php echo $item['name']; ?>" class="insert">Inserir link</a><span class="action_insert"><a href="<?php echo $item['path']; ?>" alt="<?php echo $item['name']; ?>" title="<?php echo $item['name']; ?>"><?php echo $item['name']; ?></a></span></li>
 			<?php
 			switch ( $item['mime'] )
 			{
@@ -41,6 +42,9 @@
 				break;
 			}
 			?>
+		<?php else: ?>
+			<li><a href="<?php echo $item['path']; ?>" title="<?php echo $item['name']; ?>" class="insert">Inserir</a><span class="action_insert"><?php echo $item['path']; ?></span></li>
+		<?php endif; ?>
 		</ul>
 		<?php endif; ?>
 	</div>

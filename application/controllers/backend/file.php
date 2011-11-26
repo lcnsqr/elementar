@@ -153,7 +153,6 @@ class File extends CI_Controller {
 			$js[] = '/js/backend/tiny_mce/tiny_mce_popup.js';
 			$js[] = '/js/backend/tiny_mce/plugins/filemanager/js/dialog.js';
 		}
-		
 		$data['js'] = $js;
 
 		$data['folder'] = array(
@@ -162,7 +161,7 @@ class File extends CI_Controller {
 			'children' => (bool) count($this->_subfolders($this->ROOT))
 		);
 		$data['folders'] = $this->_render_tree_folder($this->ROOT);
-		$data['listing'] = $this->_render_listing($this->ROOT);
+		$data['listing'] = $this->_render_listing($this->ROOT, $this->input->get('parent', TRUE));
 		$this->load->view('backend/backend_file', $data);
 	}
 
@@ -253,8 +252,13 @@ class File extends CI_Controller {
 		{
 			$path = $this->ROOT;
 		}
+		
+		/*
+		 * Caller field type
+		 */
+		$parent = $this->input->post('parent');
 
-		$html = $this->_render_listing($path);
+		$html = $this->_render_listing($path, $parent);
 
 		/*
 		 * Verify if it's a file and
@@ -404,7 +408,7 @@ class File extends CI_Controller {
 		}
 	}
 
-	function _render_listing($path)
+	function _render_listing($path, $parent = 'direct')
 	{
 		$this->load->helper(array('directory', 'file', 'html'));
 		
@@ -514,9 +518,18 @@ class File extends CI_Controller {
 		}
 		sort($files);
 
+		/*
+		 * File listing
+		 */
 		$data = array(
 			'listing' => array_merge($folders, $files)
 		);
+
+		/*
+		 * Store parent window caller element type
+		 */
+		$data['parent'] = $parent;
+
 		$html = $this->load->view('backend/backend_file_listing', $data, true);
 		return $html;
 	}
