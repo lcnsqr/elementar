@@ -6,7 +6,7 @@
 
 <title><?php echo $title; ?></title>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-
+<link rel="shortcut icon" href="/favicon.ico" />
 <?php foreach ( $js as $uri ): ?>
 <script type="text/javascript" src="<?php echo $uri; ?>"></script>
 <?php endforeach; ?>
