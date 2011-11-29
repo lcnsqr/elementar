@@ -418,7 +418,7 @@ class Common {
 		
 		switch ( $field_attr['type'] )
 		{
-			case 'img' :
+			case 'file' :
 			$attributes = json_decode($field_value, TRUE);
 			if ( count( $attributes ) > 0 )
 			{
@@ -438,7 +438,7 @@ class Common {
 			}
 			break;
 
-			case 'image_gallery' :
+			case 'file_gallery' :
 			$images = json_decode($field_value, TRUE);
 			$gallery = array();
 			foreach ( $images as $index => $image_item )

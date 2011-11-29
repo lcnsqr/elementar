@@ -158,7 +158,11 @@ $(function() {
 			var identifier = $.getUrlVar('identifier');
 			var field = window.opener.$('input[name="' + identifier + '"]');
 			var field_description = window.opener.$('input#' + identifier + '_description');
-			var field_thumbnail = window.opener.$('div#image_item_thumbnail_' + identifier);
+			var field_thumbnail = window.opener.$('div#file_item_thumbnail_' + identifier);
+			var field_details = window.opener.$('ul#file_details_' + identifier);
+			var field_details_uri = window.opener.$(field_details).find('span.uri');
+			var field_details_mime = window.opener.$(field_details).find('span.mime');
+			var field_details_size = window.opener.$(field_details).find('span.size');
 			if ($(field) != null) {
 				/*
 				 * Convert variables to json before returning to parent field
@@ -175,6 +179,13 @@ $(function() {
 				 * Update Thumbnail
 				 */
 				$(field_thumbnail).css('background-image', 'url("' + thumbnail + '")');
+				/*
+				 * File details
+				 */
+				$(field_details_uri).html(uri);
+				$(field_details_mime).html(mime);
+				$(field_details_size).html(size);
+				$(field_details).show();
 			}
 			/*
 			 * Close File manager

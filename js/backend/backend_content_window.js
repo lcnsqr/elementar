@@ -230,11 +230,11 @@ $(function() {
 	});
 
 	/*
-	 * Discard image in a image field	
+	 * Discard file in a file field	
 	 */
-	$(".image_erase").live("click", function(event) {
+	$(".file_erase").live("click", function(event) {
 		event.preventDefault();
-		var container = $(this).parents(".image_item").first();
+		var container = $(this).parents(".file_item").first();
 		/*
 		 * Clear file input field
 		 */
@@ -242,20 +242,26 @@ $(function() {
 		/*
 		 * Update thumbnail and hide loading animation
 		 */
-		var image_thumbnail = $(container).find(".image_item_thumbnail");
-		$(image_thumbnail).removeAttr("style");
-		$(image_thumbnail).addClass('image_item_thumbnail_missing');
+		var file_thumbnail = $(container).find(".file_item_thumbnail");
+		$(file_thumbnail).addClass('file_item_thumbnail_missing');
+		$(file_thumbnail).removeAttr("style");
 		/*
-		 * Empty the image id field
+		 * Empty the file id field
 		 */
 		var field_sname = $(this).attr('href');
-		var image_field = $(container).parents('.image_field').first().find("input[name='"+field_sname+"']");
-		$(image_field).val('');
+		var file_field = $(container).parents('.file_field').first().find("input[name='"+field_sname+"']");
+		$(file_field).val('');
 		/*
 		 * Empty the description field
 		 */
-		var image_description = $(container).find("input[name='"+field_sname+"_description']");
-		$(image_description).val('');
+		var file_description = $(container).find("input[name='"+field_sname+"_description']");
+		$(file_description).val('');
+		/*
+		 * Hide details
+		 */
+		var file_details = $(container).find("ul.file_details");
+		$(file_details).hide();
+		$(file_details).find('span').html('');
 	});
 
 	// Salvar conteúdo
@@ -688,24 +694,24 @@ $(function() {
 $.extend({
 	prepareCompositeFields: function(){
 		/*
-		 * Update image field json data
+		 * Update file field json data
 		 */
-		$("input.img").each(function() {
-			var img = $.parseJSON($(this).val());
-			if ( img != null ) {
+		$("input.file").each(function() {
+			var file = $.parseJSON($(this).val());
+			if ( file != null ) {
 				/*
 				 * Push description text to array
 				 */
-				img.title = $('input#' + $(this).attr('id') + '_description').val();
+				file.title = $('input#' + $(this).attr('id') + '_description').val();
 			}
-			$(this).val($.toJSON(img));
+			$(this).val($.toJSON(file));
 		});
 
 		/*
-		 * Update image gallery json data
+		 * Update file gallery json data
 		 */
-		$(".image_gallery_field").each(function() {
-			$(this).prepareImageGalleryField();
+		$(".file_gallery_field").each(function() {
+			$(this).prepareFileGalleryField();
 		});
 
 		/*

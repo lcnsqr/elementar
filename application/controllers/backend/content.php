@@ -166,7 +166,7 @@ class Content extends CI_Controller {
 			'/js/backend/backend_content_window.js',
 			'/js/backend/backend_content_tinymce.js',
 			'/js/backend/backend_content_menu_field.js',
-			'/js/backend/backend_content_image_gallery_field.js',
+			'/js/backend/backend_content_file_gallery_field.js',
 			'/js/backend/backend_content_youtube_gallery_field.js',
 			'/js/backend/jquery.json-2.2.min.js',
 			'/js/backend/backend_anchor.js'
@@ -593,8 +593,8 @@ class Content extends CI_Controller {
 			$field .= div_close();
 			break;
 
-			case "img" : 
-			$field = div_open(array('class' => 'image_field'));
+			case "file" : 
+			$field = div_open(array('class' => 'file_field'));
 			$attributes = array(
 				'class' => 'noform ' . $type,
 				'type' => 'hidden',
@@ -604,7 +604,7 @@ class Content extends CI_Controller {
 			);
 			$field .= form_input($attributes);
 			/*
-			 * Image field View variables
+			 * File field View variables
 			 */
 			$data = array();
 			$data['input_name'] = $sname;
@@ -612,26 +612,32 @@ class Content extends CI_Controller {
 			{
 				$attributes = json_decode($value, TRUE);
 				$data['thumbnail'] = $attributes['thumbnail'];
-				$data['image_description'] = $attributes['title'];
+				$data['file_description'] = $attributes['title'];
+				$data['file_uri'] = $attributes['uri'];
+				$data['mime'] = $attributes['mime'];
+				$data['size'] = $attributes['size'];
 			}
 			else
 			{
 				$data['thumbnail'] = '';
-				$data['image_description'] = '';
+				$data['file_description'] = '';
+				$data['file_uri'] = '';
+				$data['mime'] = '';
+				$data['size'] = '';
 			}
-			$field .= $this->load->view("backend/backend_content_image_field", $data, TRUE);
+			$field .= $this->load->view("backend/backend_content_file_field", $data, TRUE);
 			$field .= div_close();
 			break;
 
-			case "image_gallery" : 
-			$field = div_open(array('class' => 'image_gallery_field'));
+			case "file_gallery" : 
+			$field = div_open(array('class' => 'file_gallery_field'));
 			/*
 			 * Input holds json data with 
-			 * image uri, alt text, width, height,
+			 * file uri, alt text, width, height,
 			 * thumbnail and size
 			 */
 			$attributes = array(
-				'class' => 'noform image_gallery_actual_field',
+				'class' => 'noform file_gallery_actual_field',
 				'type' => 'hidden',
 				'name' => $sname,
 				'value' => $value
@@ -643,7 +649,7 @@ class Content extends CI_Controller {
 			$data = array(
 				'gallery' => ($value != '') ? json_decode($value, TRUE) : array()
 			);
-			$field .= $this->load->view("backend/backend_content_image_gallery_field", $data, TRUE);
+			$field .= $this->load->view("backend/backend_content_file_gallery_field", $data, TRUE);
 			$field .= div_close();
 			break;
 
