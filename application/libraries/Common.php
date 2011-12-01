@@ -541,7 +541,7 @@ class Common {
 			/*
 			 * localized title
 			 */
-			$titles = json_decode($this->CI->crud->get_content_name($content_id), TRUE);
+			$titles = json_decode($child['name'], TRUE);
 			$content_name = $titles[$this->LANG];
 			$content_uri = $this->CI->crud->get_content_uri($content_id);
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
@@ -553,7 +553,7 @@ class Common {
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
-			if ( $this->CI->crud->get_content_has_children($content_id, FALSE) )
+			if ( (bool) $child['children'] )
 			{
 				$index[$link] = $this->_index_field($content_id);
 			}

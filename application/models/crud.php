@@ -1799,7 +1799,7 @@ class Crud extends CI_Model {
 	/*
 	 * Verify if content has any elements/contents associated to it
 	 */
-	function get_content_has_children($content_id, $elements = TRUE)
+	function get_content_has_children($content_id, $elements = FALSE)
 	{
 		$this->elementar->select('*');
 		$this->elementar->from('content_parent');
@@ -1881,7 +1881,7 @@ class Crud extends CI_Model {
 					'sname' => $row->sname,
 					'created' => $row->created,
 					'modified' => $row->modified,
-					'children' => $this->get_content_children($row->id)
+					'children' => $this->get_content_has_children($row->id)
 				);
 			}
 			return $contents;
@@ -1897,9 +1897,11 @@ class Crud extends CI_Model {
 	 */
 	function get_content_uri($content_id)
 	{
-		$this->elementar->select('id, name, sname');
+		$this->elementar->select('content.id, content.name, content.sname');
 		$this->elementar->from('content');
-		$this->elementar->where('id', $content_id);
+		$this->elementar->where('content.id', $content_id);
+		$this->elementar->limit(1);
+
 		if ( $this->STATUS != 'all' )
 		{
 			$this->elementar->where('status', $this->STATUS);
