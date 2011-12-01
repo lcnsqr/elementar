@@ -1636,7 +1636,7 @@ class Crud extends CI_Model {
 			{
 				$contents[] = array(
 					'id' => $row->id, 
-					'name' => $row->name,
+					'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
 					'sname' => $row->sname,
 					'children' => $this->get_content_has_children($row->id)
 				);
@@ -1877,7 +1877,7 @@ class Crud extends CI_Model {
 			{
 				$contents[] = array(
 					'id' => $row->id, 
-					'name' => $row->name,
+					'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
 					'sname' => $row->sname,
 					'created' => $row->created,
 					'modified' => $row->modified,
