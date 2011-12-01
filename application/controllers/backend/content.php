@@ -166,6 +166,7 @@ class Content extends CI_Controller {
 			'/js/backend/backend_content_window.js',
 			'/js/backend/backend_content_tinymce.js',
 			'/js/backend/backend_content_menu_field.js',
+			'/js/backend/backend_content_index_field.js',
 			'/js/backend/backend_content_file_gallery_field.js',
 			'/js/backend/backend_content_youtube_gallery_field.js',
 			'/js/backend/jquery.json-2.2.min.js',
@@ -688,12 +689,13 @@ class Content extends CI_Controller {
 
 			case "index" :
 			$attributes = array(
-				'class' => 'noform',
+				'class' => 'noform index_field',
 				'name' => $sname,
 				'id' => $sname,
 				'value' => $value
 			);
 			$field = form_input($attributes);
+			$field .= $this->_render_contents_listing();
 			break;
 		}
 		return $field;
@@ -750,7 +752,33 @@ class Content extends CI_Controller {
 		$targets .= div_close();
 		return $targets;
 	}
-	
+
+	function _render_contents_listing()
+	{
+		/*
+		 * dropdown target listing
+		 */
+		$listing = array();
+		$listing[] = paragraph("<strong>Conteúdos</strong>");
+		/*
+		 * Conteúdos
+		 */
+		foreach ( $this->crud->get_contents_by_parent() as $content )
+		{
+			$content_name = json_decode($content['name'], TRUE);
+			$listing[] = anchor($content_name[$this->LANG], array('href' => $content['id']));
+		}
+		$contents = div_open(array('class' => 'dropdown_items_listing_position'));
+		$contents .= div_open(array('class' => 'dropdown_items_listing'));
+		$attributes = array(
+			'class' => 'dropdown_items_listing_contents'
+		);
+		$contents .= ul($listing, $attributes);
+		$contents .= div_close();
+		$contents .= div_close();
+		return $contents;
+	}
+
 	/**
 	 * Gerar formulário para inserção de elemento
 	 */
