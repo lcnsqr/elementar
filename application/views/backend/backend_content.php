@@ -41,12 +41,12 @@
 					<ul>
 						<li><span class="title"><?php echo $parent; ?></span></li>
 						<li><hr /></li>
-						<li><a class="edit content" href="<?php echo $parent_id; ?>">Editar Conteúdo</a></li>
-						<li><a class="edit template" href="<?php echo $parent_id; ?>">Editar Template</a></li>
-						<li><a class="edit meta" href="<?php echo $parent_id; ?>">Meta Fields</a></li>
+						<li><a class="edit content" href="<?php echo $parent_id; ?>"><?php echo $elementar_edit_content; ?></a></li>
+						<li><a class="edit template" href="<?php echo $parent_id; ?>"><?php echo $elementar_edit_template; ?></a></li>
+						<li><a class="edit meta" href="<?php echo $parent_id; ?>"><?php echo $elementar_edit_meta; ?></a></li>
 						<li><hr /></li>
-						<li><a class="new content" href="<?php echo $parent_id; ?>">Criar conteúdo aqui</a></li>
-						<li><a class="new element" href="<?php echo $parent_id; ?>">Criar elemento aqui</a></li>
+						<li><a class="new content" href="<?php echo $parent_id; ?>"><?php echo $elementar_new_content; ?></a></li>
+						<li><a class="new element" href="<?php echo $parent_id; ?>"><?php echo $elementar_new_element; ?></a></li>
 					</ul>
 				</div>
 			</div> <!-- .tree_listing_row -->

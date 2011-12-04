@@ -20,7 +20,7 @@
  *      MA 02110-1301, USA.
  */
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if ( ! defined('BASEPATH')) exit($this->lang->line('elementar_no_direct_script_access'));
 
 class Content extends CI_Controller {
 
@@ -61,12 +61,17 @@ class Content extends CI_Controller {
 		$this->crud->STATUS = 'all';
 		
 		/*
+		 * Backend language file
+		 */
+		$this->lang->load('elementar', 'portuguese');
+		
+		/*
 		 * Load site config
 		 */
 		$settings = $this->crud->get_config();
 		if ( ! is_array($settings) )
 		{
-			exit('Bad config. Call site administrator.');
+			exit($this->lang->line('elementar_config_error'));
 		}
 		foreach($settings as $setting)
 		{
@@ -178,13 +183,13 @@ class Content extends CI_Controller {
 		 */
 		/*
 		$resource_menu = array(
-			anchor("Usuários", array('href' => '/backend/account', 'title' => 'Usuários')),
+			anchor('Usuários', array('href' => '/backend/account', 'title' => 'Usuários')),
 			span("&bull;", array('class' => 'top_menu_sep')),
-			"<strong>Conteúdo</strong>"
+			'<strong>' . $this->lang->line('elementar_content') . '</strong>'
 		);
 		*/
 		$resource_menu = array(
-			"<strong>Conteúdo</strong>"
+			'<strong>' . $this->lang->line('elementar_content') . '</strong>'
 		);
 
 		$data = array(
@@ -202,6 +207,22 @@ class Content extends CI_Controller {
 		$data['content_listing_id'] = NULL;
 		$data['content_listing'] = NULL;
 		
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_exit'] = $this->lang->line('elementar_exit');
+		$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
+		$data['elementar_finished_second'] = $this->lang->line('elementar_finished_second');
+		$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
+		$data['elementar_edit'] = $this->lang->line('elementar_edit');
+		$data['elementar_delete'] = $this->lang->line('elementar_delete');
+		$data['elementar_and_associated'] = $this->lang->line('elementar_and_associated');
+		$data['elementar_edit_content'] = $this->lang->line('elementar_edit_content');
+		$data['elementar_edit_template'] = $this->lang->line('elementar_edit_template');
+		$data['elementar_edit_meta'] = $this->lang->line('elementar_edit_meta');
+		$data['elementar_new_content'] = $this->lang->line('elementar_new_content');
+		$data['elementar_new_element'] = $this->lang->line('elementar_new_element');
+		
 		$this->load->view('backend/backend_content', $data);
 
 	}
@@ -212,7 +233,7 @@ class Content extends CI_Controller {
 	function xhr_render_tree_unfold()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$id = $this->input->post('id', TRUE);
 		$request = $this->input->post('request', TRUE);
@@ -258,7 +279,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => "Dados inconsistentes"
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -271,9 +292,9 @@ class Content extends CI_Controller {
 	function xhr_render_content_type_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 			
-		$form = paragraph("Campos do Modelo", array('class' => 'page_subtitle'));
+		$form = paragraph($this->lang->line('elementar_model_fields'), array('class' => 'page_subtitle'));
 		
 		$attributes = array('class' => 'content_type_define_new_form', 'id' => 'content_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -285,7 +306,7 @@ class Content extends CI_Controller {
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$form .= form_label("Nome do tipo", "name", $attributes);
+		$form .= form_label($this->lang->line('elementar_model_name'), 'name', $attributes);
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -307,7 +328,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label("Nome do campo", "field_0");
+		$form .= form_label($this->lang->line('elementar_model_field_name'), "field_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -324,7 +345,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label("Tipo do campo", "field_type_0");
+		$form .= form_label($this->lang->line('elementar_model_field_type'), "field_type_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -337,16 +358,16 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor("&rarr; Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_model_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		/*
 		 * HTML template
 		 */
-		$form .= paragraph("Markup do Modelo", array('class' => 'page_subtitle'));
+		$form .= paragraph($this->lang->line('elementar_model_markup'), array('class' => 'page_subtitle'));
 
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label("Template", "template");
+		$form .= form_label($this->lang->line('elementar_model_markup_template'), "template");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -364,7 +385,7 @@ class Content extends CI_Controller {
 
 		$form .= div_open(array('class' => 'form_control_buttons'));
 
-		$form .= form_submit('type_save', 'Salvar');
+		$form .= form_submit('type_save', $this->lang->line('elementar_save'));
 		
 		$form .= div_close();
 
@@ -385,9 +406,9 @@ class Content extends CI_Controller {
 	function xhr_render_element_type_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 			
-		$form = paragraph("Defini&ccedil;&atilde;o de novo tipo", array('class' => 'page_subtitle'));
+		$form = paragraph($this->lang->line('elementar_model_element_new'), array('class' => 'page_subtitle'));
 		
 		$attributes = array('class' => 'element_type_define_new_form', 'id' => 'element_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -399,7 +420,7 @@ class Content extends CI_Controller {
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$form .= form_label("Nome do tipo", "name", $attributes);
+		$form .= form_label($this->lang->line('elementar_model_name'), 'name', $attributes);
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -421,7 +442,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label("Nome do campo", "field_0");
+		$form .= form_label($this->lang->line('elementar_model_field_name'), "field_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -438,7 +459,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label("Tipo do campo", "field_type_0");
+		$form .= form_label($this->lang->line('elementar_model_field_type'), "field_type_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -451,11 +472,11 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor("&rarr; Incluir outro campo", array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_model_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		$form .= div_open(array('class' => 'form_control_buttons'));
 
-		$form .= form_submit('type_save', 'Salvar');
+		$form .= form_submit('type_save', $this->lang->line('elementar_save'));
 		
 		$form .= div_close();
 
@@ -476,7 +497,7 @@ class Content extends CI_Controller {
 	function xhr_render_content_new()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$parent_id = $this->input->post('id', TRUE);
 		
@@ -492,6 +513,12 @@ class Content extends CI_Controller {
 		$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		$data['content_types_dropdown'] = $this->_render_content_types_dropdown($type_id);
 		
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_new_content_from_model'] = $this->lang->line('elementar_new_content_from_model');
+		$data['elementar_proceed'] = $this->lang->line('elementar_proceed');
+
 		$html = $this->load->view('backend/backend_content_new', $data, true);
 
 		$response = array(
@@ -507,7 +534,7 @@ class Content extends CI_Controller {
 	function xhr_render_element_new()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Determine parent id
@@ -525,6 +552,12 @@ class Content extends CI_Controller {
 		$data['parent_id'] = $parent_id;
 		$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
+
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_new_element_from_model'] = $this->lang->line('elementar_new_element_from_model');
+		$data['elementar_proceed'] = $this->lang->line('elementar_proceed');
 		
 		$html = $this->load->view('backend/backend_content_element_new', $data, true);
 
@@ -579,6 +612,19 @@ class Content extends CI_Controller {
 				'menu' => ( $value != '' ) ? json_decode($value, TRUE) : array(), 
 				'targets' => $this->_render_target_listing()
 			);
+			
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_menu_name'] = $this->lang->line('elementar_menu_name');
+			$data['elementar_menu_target'] = $this->lang->line('elementar_menu_target');
+			$data['elementar_menu_add'] = $this->lang->line('elementar_menu_add');
+			$data['elementar_menu_move_up'] = $this->lang->line('elementar_menu_move_up');
+			$data['elementar_menu_move_down'] = $this->lang->line('elementar_menu_move_down');
+			$data['elementar_menu_delete'] = $this->lang->line('elementar_menu_delete');
+			$data['elementar_menu_new_above'] = $this->lang->line('elementar_menu_new_above');
+			$data['elementar_menu_new_below'] = $this->lang->line('elementar_menu_new_below');			
+			
 			$field .= $this->load->view('backend/backend_content_menu_field', $data, true);
 			/*
 			 * The actual field
@@ -626,6 +672,17 @@ class Content extends CI_Controller {
 				$data['mime'] = '';
 				$data['size'] = '';
 			}
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_file_description'] = $this->lang->line('elementar_file_description');
+			$data['elementar_file_uri'] = $this->lang->line('elementar_file_uri');
+			$data['elementar_file_type'] = $this->lang->line('elementar_file_type');
+			$data['elementar_file_size'] = $this->lang->line('elementar_file_size');
+			$data['elementar_file_browse'] = $this->lang->line('elementar_file_browse');
+			$data['elementar_file_erase'] = $this->lang->line('elementar_file_erase');
+
 			$field .= $this->load->view("backend/backend_content_file_field", $data, TRUE);
 			$field .= div_close();
 			break;
@@ -650,6 +707,23 @@ class Content extends CI_Controller {
 			$data = array(
 				'gallery' => ($value != '') ? json_decode($value, TRUE) : array()
 			);
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_file_description'] = $this->lang->line('elementar_file_description');
+			$data['elementar_file_uri'] = $this->lang->line('elementar_file_uri');
+			$data['elementar_file_type'] = $this->lang->line('elementar_file_type');
+			$data['elementar_file_size'] = $this->lang->line('elementar_file_size');
+			$data['elementar_file_browse'] = $this->lang->line('elementar_file_browse');
+			$data['elementar_file_erase'] = $this->lang->line('elementar_file_erase');
+			$data['elementar_file_add'] = $this->lang->line('elementar_file_add');
+			$data['elementar_file_move_up'] = $this->lang->line('elementar_file_move_up');
+			$data['elementar_file_move_down'] = $this->lang->line('elementar_file_move_down');
+			$data['elementar_file_delete'] = $this->lang->line('elementar_file_delete');
+			$data['elementar_file_new_above'] = $this->lang->line('elementar_file_new_above');
+			$data['elementar_file_new_below'] = $this->lang->line('elementar_file_new_below');
+
 			$field .= $this->load->view("backend/backend_content_file_gallery_field", $data, TRUE);
 			$field .= div_close();
 			break;
@@ -662,6 +736,19 @@ class Content extends CI_Controller {
 			$data = array(
 				'videos' => json_decode($value, TRUE) // decode as associative array
 			);
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_youtube_description'] = $this->lang->line('elementar_youtube_description');
+			$data['elementar_youtube_url'] = $this->lang->line('elementar_youtube_url');
+			$data['elementar_youtube_add'] = $this->lang->line('elementar_youtube_add');
+			$data['elementar_youtube_move_up'] = $this->lang->line('elementar_youtube_move_up');
+			$data['elementar_youtube_move_down'] = $this->lang->line('elementar_youtube_move_down');
+			$data['elementar_youtube_delete'] = $this->lang->line('elementar_youtube_delete');
+			$data['elementar_youtube_new_above'] = $this->lang->line('elementar_youtube_new_above');
+			$data['elementar_youtube_new_below'] = $this->lang->line('elementar_youtube_new_below');
+
 			$field .= $this->load->view('backend/backend_content_youtube_gallery_field', $data, true);
 			/*
 			 * The actual field
@@ -707,7 +794,7 @@ class Content extends CI_Controller {
 		 * dropdown target listing
 		 */
 		$listing = array();
-		$listing[] = paragraph("<strong>Destinos internos</strong>");
+		$listing[] = paragraph('<strong>' . $this->lang->line('elementar_inside_targets') . '</strong>');
 		/*
 		 * Conteúdos
 		 */
@@ -759,7 +846,7 @@ class Content extends CI_Controller {
 		 * dropdown target listing
 		 */
 		$listing = array();
-		$listing[] = paragraph("<strong>Conteúdos</strong>");
+		$listing[] = paragraph('<strong>' . $this->lang->line('elementar_contents') . '</strong>');
 		/*
 		 * Conteúdos
 		 */
@@ -785,7 +872,7 @@ class Content extends CI_Controller {
 	function xhr_render_element_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Create or update? Check for incoming element ID
@@ -854,7 +941,7 @@ class Content extends CI_Controller {
 			 * Element name
 			 */
 			$value = $this->crud->get_element_name($element_id);
-			$form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value, FALSE);
+			$form .= $this->_render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
 			/*
 			 * Element type fields
@@ -884,7 +971,7 @@ class Content extends CI_Controller {
 				$checked = TRUE;
 			}
 			$attributes = array('class' => 'field_label');
-			$form .= form_label("Propagar", "spread", $attributes);
+			$form .= form_label($this->lang->line('elementar_element_spread'), "spread", $attributes);
 			$form .= div_close("<!-- form_window_column_label -->");
 
 			$form .= div_open(array('class' => 'form_window_column_input'));
@@ -905,7 +992,7 @@ class Content extends CI_Controller {
 			$form .= div_open(array('class' => 'form_content_field'));
 			$form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$form .= form_label("Status", "status", $attributes);
+			$form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
 			$form .= div_close("<!-- form_window_column_label -->");
 			$form .= div_open(array('class' => 'form_window_column_input'));
 			$form .= $this->_render_status_dropdown($this->crud->get_element_status($element_id));
@@ -921,7 +1008,7 @@ class Content extends CI_Controller {
 			    'name' => 'button_element_save',
 			    'id' => 'button_element_save',
 			    'class' => 'noform',
-			    'content' => 'Salvar'
+			    'content' => $this->lang->line('elementar_save')
 			);
 			$form .= form_button($attributes);
 
@@ -940,7 +1027,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => "Forneça o nome para o elemento"
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -953,7 +1040,7 @@ class Content extends CI_Controller {
 	function xhr_render_content_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Create or update? Check for incoming content ID
@@ -1020,7 +1107,7 @@ class Content extends CI_Controller {
 				$template_form .= div_open(array('class' => 'form_content_field'));
 				$template_form .= div_open(array('class' => 'form_window_column_label'));
 				$attributes = array('class' => 'field_label');
-				$template_form .= form_label("Exclusivo", "sole", $attributes);
+				$template_form .= form_label($this->lang->line('elementar_template_sole'), "sole", $attributes);
 				$template_form .= div_close("<!-- form_window_column_label -->");
 				$template_form .= div_open(array('class' => 'form_window_column_input'));
 				if ( (bool) $content_id ) 
@@ -1050,9 +1137,9 @@ class Content extends CI_Controller {
 			$template_variables = array(
 				'content_variables_title' => $title[$this->LANG],
 				'content_variables' => array(),
-				'relative_content_variables_title' => 'Conteúdos',
+				'relative_content_variables_title' => $this->lang->line('elementar_contents'),
 				'relative_content_variables' => array(),
-				'element_variables_title' => 'Elementos',
+				'element_variables_title' => $this->lang->line('elementar_elements'),
 				'element_variables' => array()
 			);
 			/*
@@ -1176,10 +1263,11 @@ class Content extends CI_Controller {
 			/*
 			 * HTML Template editor
 			 */
+			$template_variables['elementar_template_variables_title'] = $this->lang->line('elementar_template_variables_title');
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label("Template", 'template_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_model_markup_template'), 'template_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1202,7 +1290,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label("Style Sheet", 'css_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_model_css'), 'css_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1224,7 +1312,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label("Javascript", 'css_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_model_javascript'), 'css_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1246,7 +1334,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label("Extra Head Content", 'head_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_model_extra_head'), 'head_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1266,7 +1354,7 @@ class Content extends CI_Controller {
 			$attributes = array(
 			    'name' => 'button_template_save',
 			    'id' => 'button_template_save',
-			    'value' => 'Salvar'
+			    'value' => $this->lang->line('elementar_save')
 			);
 			$template_form .= form_submit($attributes);
 			$template_form .= div_close("<!-- form_control_buttons -->");
@@ -1288,15 +1376,15 @@ class Content extends CI_Controller {
 			 * Meta fields
 			 */
 			$fields = array(
-				'Keywords' => 'keywords',
-				'Description' => 'description',
-				'Author' => 'author',
-				'Copyright' => 'copyright'
+				$this->lang->line('elementar_meta_keywords') => 'keywords',
+				$this->lang->line('elementar_meta_description') => 'description',
+				$this->lang->line('elementar_meta_author') => 'author',
+				$this->lang->line('elementar_meta_author') => 'copyright'
 			);
 			
 			if ( (int) $content_id == 1 )
 			{
-				$fields['Google Site Verification'] = 'google-site-verification';
+				$fields[$this->lang->line('elementar_meta_google-site-verification')] = 'google-site-verification';
 			}
 			foreach ( $fields as $label => $name )
 			{
@@ -1324,7 +1412,7 @@ class Content extends CI_Controller {
 			$meta_form .= div_open(array('class' => 'form_content_field'));
 			$meta_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$meta_form .= form_label('URL', 'url', $attributes);
+			$meta_form .= form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
 			$meta_form .= br(1);
 			$meta_form .= div_close("<!-- form_window_column_label -->");
 			$meta_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1353,7 +1441,7 @@ class Content extends CI_Controller {
 			$meta_form .= div_open(array('class' => 'form_content_field'));
 			$meta_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$meta_form .= form_label('Prioridade', 'priority', $attributes);
+			$meta_form .= form_label($this->lang->line('elementar_meta_priority'), 'priority', $attributes);
 			$meta_form .= br(1);
 			$meta_form .= div_close("<!-- form_window_column_label -->");
 			$meta_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1383,7 +1471,7 @@ class Content extends CI_Controller {
 			    'name' => 'button_meta_save',
 			    'id' => 'button_meta_save',
 			    'class' => 'noform',
-			    'content' => 'Salvar'
+			    'content' => $this->lang->line('elementar_save')
 			);
 			$meta_form .= form_button($attributes);
 			$meta_form .= div_close();
@@ -1423,7 +1511,7 @@ class Content extends CI_Controller {
 			 * Content name
 			 */
 			$value = $this->crud->get_content_name($content_id);
-			$content_form .= $this->_render_form_field('name', 'Nome', 'name', NULL, $value, TRUE);
+			$content_form .= $this->_render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, TRUE);
 
 			/*
 			 * Render custom fields
@@ -1444,7 +1532,7 @@ class Content extends CI_Controller {
 			$content_form .= div_open(array('class' => 'form_content_field'));
 			$content_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$content_form .= form_label("Status", "status", $attributes);
+			$content_form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
 			$content_form .= br(1);
 			$content_form .= div_close("<!-- form_window_column_label -->");
 			$content_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1460,13 +1548,20 @@ class Content extends CI_Controller {
 			    'name' => 'button_content_save',
 			    'id' => 'button_content_save',
 			    'class' => 'noform',
-			    'content' => 'Salvar'
+			    'content' => $this->lang->line('elementar_save')
 			);
 			$content_form .= form_button($attributes);
 
 			$content_form .= div_close("<!-- form_control_buttons -->");
 			
 			$data['content_form'] = $content_form;
+			
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_editor_content'] = $this->lang->line('elementar_editor_content');
+			$data['elementar_editor_template'] = $this->lang->line('elementar_editor_template');
+			$data['elementar_editor_meta'] = $this->lang->line('elementar_editor_meta');
 			
 			$html = $this->load->view('backend/backend_content_form', $data, true);
 			
@@ -1479,7 +1574,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => "Erro na criação do conteúdo"
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1583,7 +1678,7 @@ class Content extends CI_Controller {
 		}
 		else
 		{
-			$dropdown .= anchor("Novo...", array('href' => '0'));
+			$dropdown .= anchor($this->lang->line('elementar_new') . '...', array('href' => '0'));
 		}
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
@@ -1593,7 +1688,7 @@ class Content extends CI_Controller {
 			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_content_type_target', 'href' => $type_id));
 		}
 		// "New" link
-		$dropdown_items[] = anchor("Novo...", array('id' => 'content_type_create', 'class' => 'dropdown_items_listing_content_type_target', 'href' => '0'));
+		$dropdown_items[] = anchor($this->lang->line('elementar_new') . '...', array('id' => 'content_type_create', 'class' => 'dropdown_items_listing_content_type_target', 'href' => '0'));
 		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
 		$dropdown .= div_close();
 		$dropdown .= div_close();
@@ -1623,7 +1718,7 @@ class Content extends CI_Controller {
 		}
 		else
 		{
-			$dropdown .= anchor("Novo...", array('href' => '0'));
+			$dropdown .= anchor($this->lang->line('elementar_new') . '...', array('href' => '0'));
 		}
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
@@ -1633,7 +1728,7 @@ class Content extends CI_Controller {
 			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_element_type_target', 'href' => $type_id));
 		}
 		// "New" link
-		$dropdown_items[] = anchor("Novo...", array('id' => 'element_type_create', 'class' => 'dropdown_items_listing_element_type_target', 'href' => '0'));
+		$dropdown_items[] = anchor($this->lang->line('elementar_new') . '...', array('id' => 'element_type_create', 'class' => 'dropdown_items_listing_element_type_target', 'href' => '0'));
 		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
 		$dropdown .= div_close();
 		$dropdown .= div_close();
@@ -1649,8 +1744,8 @@ class Content extends CI_Controller {
 	function _render_status_dropdown($selected = "draft")
 	{
 		$options = array(
-			"draft" => "Rascunho",
-			"published" => "Publicado"
+			"draft" => $this->lang->line('elementar_draft'),
+			"published" => $this->lang->line('elementar_published')
 		); 
 		$attributes = "id=\"new_content_status\" class=\"noform\"";
 		return form_dropdown('status', $options, $selected, $attributes);
@@ -1678,7 +1773,7 @@ class Content extends CI_Controller {
 	function xhr_write_content_type()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$count = $this->input->post('field_count', TRUE);
 		$template = $this->input->post('template');
@@ -1714,7 +1809,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => 'Nome inválido'
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1726,7 +1821,7 @@ class Content extends CI_Controller {
 	function xhr_write_element_type()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$count = $this->input->post('field_count', TRUE);
 		
@@ -1764,7 +1859,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => 'Nome inválido'
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1776,7 +1871,7 @@ class Content extends CI_Controller {
 	function xhr_write_content()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Content sname determined by the default language
@@ -1790,7 +1885,7 @@ class Content extends CI_Controller {
 			 */
 			$response = array(
 				'done' => FALSE,
-				'error' => 'Nome inválido'
+				'return' => $this->lang->line('elementar_return_name_error')
 			);
 			$this->common->ajax_response($response);
 			return NULL;
@@ -1890,7 +1985,7 @@ class Content extends CI_Controller {
 	function xhr_erase_content()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$content_id = $this->input->post('id', TRUE);
 
@@ -1916,7 +2011,7 @@ class Content extends CI_Controller {
 	function xhr_erase_element()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$element_id = $this->input->post('id', TRUE);
 
@@ -1942,7 +2037,7 @@ class Content extends CI_Controller {
 	function xhr_write_element_parent()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Parent id
@@ -1966,7 +2061,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => 'Dados incorretos'
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 			$this->common->ajax_response($response);
 		}
@@ -1979,7 +2074,7 @@ class Content extends CI_Controller {
 	function xhr_write_content_parent()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Parent id
@@ -2003,7 +2098,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'error' => 'Dados incorretos'
+				'return' => $this->lang->line('elementar_bad_request')
 			);
 			$this->common->ajax_response($response);
 		}
@@ -2016,7 +2111,7 @@ class Content extends CI_Controller {
 	function xhr_write_element()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
 		 * Elements snames are not multilanguage
@@ -2030,7 +2125,7 @@ class Content extends CI_Controller {
 			 */
 			$response = array(
 				'done' => FALSE,
-				'error' => 'Nome inválido'
+				'return' => $this->lang->line('elementar_return_name_error')
 			);
 			$this->common->ajax_response($response);
 			return NULL;
@@ -2135,7 +2230,7 @@ class Content extends CI_Controller {
 	function xhr_render_tree_listing()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		if ( $this->input->post('id') )
 		{
@@ -2172,6 +2267,19 @@ class Content extends CI_Controller {
 		$data['content_listing_id'] = $listing_id;
 		$data['content_listing'] = $listing;
 		
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_edit'] = $this->lang->line('elementar_edit');
+		$data['elementar_delete'] = $this->lang->line('elementar_delete');
+		$data['elementar_and_associated'] = $this->lang->line('elementar_and_associated');
+		$data['elementar_edit_content'] = $this->lang->line('elementar_edit_content');
+		$data['elementar_edit_template'] = $this->lang->line('elementar_edit_template');
+		$data['elementar_edit_meta'] = $this->lang->line('elementar_edit_meta');
+		$data['elementar_new_content'] = $this->lang->line('elementar_new_content');
+		$data['elementar_new_element'] = $this->lang->line('elementar_new_element');
+
+		
 		$html = $this->load->view('backend/backend_content_tree', $data, true);
 		
 		return $html;
@@ -2183,7 +2291,7 @@ class Content extends CI_Controller {
 	function xhr_write_meta() 
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$id = $this->input->post('id', TRUE);
 		
@@ -2191,19 +2299,19 @@ class Content extends CI_Controller {
 		 * Meta fields
 		 */
 		$fields = array(
-			'Keywords' => 'keywords',
-			'Description' => 'description',
-			'Author' => 'author',
-			'Copyright' => 'copyright',
-			'Priority' => 'priority'
+			'keywords',
+			'description',
+			'author',
+			'copyright',
+			'priority'
 		);
 
 		if ( (int) $id == 1 )
 		{
-			$fields['Google Site Verification'] = 'google-site-verification';
+			$fields[] = 'google-site-verification';
 		}
 
-		foreach ( $fields as $label => $name )
+		foreach ( $fields as $name )
 		{
 			$value = $this->input->post($name, TRUE);
 			if ( (bool) $value )
@@ -2239,7 +2347,7 @@ class Content extends CI_Controller {
 	function xhr_write_template()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$content_id = $this->input->post('content_id', TRUE);
 		$template_id = $this->input->post('template_id', TRUE);		

@@ -26,9 +26,9 @@
 				<ul>
 					<li><span class="title"><?php echo $element['name']; ?></span></li>
 					<li><hr /></li>
-					<li><a class="edit element" href="<?php echo $element['id']; ?>">Editar</a></li>
+					<li><a class="edit element" href="<?php echo $element['id']; ?>"><?php echo $elementar_edit; ?></a></li>
 					<li><hr /></li>
-					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="Remover “<?php echo $element['name']; ?>”">Excluir</a></li>
+					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="<?php echo $elementar_delete; ?> “<?php echo $element['name']; ?>”"><?php echo $elementar_delete; ?></a></li>
 				</ul>
 			</div>
 		</div> <!-- .tree_listing_row -->
@@ -68,14 +68,14 @@
 				<ul>
 					<li><span class="title"><?php echo current(json_decode($content['name'], TRUE)); ?></span></li>
 					<li><hr /></li>
-					<li><a class="edit content" href="<?php echo $content['id']; ?>">Editar Conteúdo</a></li>
-					<li><a class="edit template" href="<?php echo $content['id']; ?>">Editar Template</a></li>
-					<li><a class="edit meta" href="<?php echo $content['id']; ?>">Meta Fields</a></li>
+					<li><a class="edit content" href="<?php echo $content['id']; ?>"><?php echo $elementar_edit_content; ?></a></li>
+					<li><a class="edit template" href="<?php echo $content['id']; ?>"><?php echo $elementar_edit_template; ?></a></li>
+					<li><a class="edit meta" href="<?php echo $content['id']; ?>"><?php echo $elementar_edit_meta; ?></a></li>
 					<li><hr /></li>
-					<li><a class="remove content" href="<?php echo $content['id']; ?>" title="Remover “<?php echo current(json_decode($content['name'], TRUE)); ?>” e elementos associados">Excluir</a></li>
+					<li><a class="remove content" href="<?php echo $content['id']; ?>" title="<?php echo $elementar_delete; ?> “<?php echo current(json_decode($content['name'], TRUE)); ?>” <?php echo $elementar_and_associated; ?>"><?php echo $elementar_delete; ?></a></li>
 					<li><hr /></li>
-					<li><a class="new content" href="<?php echo $content['id']; ?>">Criar conteúdo aqui</a></li>
-					<li><a class="new element" href="<?php echo $content['id']; ?>">Criar elemento aqui</a></li>
+					<li><a class="new content" href="<?php echo $content['id']; ?>"><?php echo $elementar_new_content; ?></a></li>
+					<li><a class="new element" href="<?php echo $content['id']; ?>"><?php echo $elementar_new_element; ?></a></li>
 				</ul>
 			</div>
 		</div>

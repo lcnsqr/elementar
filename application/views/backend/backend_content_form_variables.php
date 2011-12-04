@@ -1,5 +1,5 @@
 <div class="pseudo_variables_menu">
-<h1>Campos de conteúdo e elementos</h1>
+<h1><?php echo $elementar_template_variables_title; ?></h1>
 <div class="pseudo_variables_accordion">
 
 <table>
