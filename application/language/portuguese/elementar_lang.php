@@ -59,8 +59,8 @@ $lang['elementar_edit_template']		= 'Editar Padr&atilde;o';
 $lang['elementar_edit_meta']		= 'Meta fields';
 $lang['elementar_new_content']		= 'Criar conte&uacute;do aqui';
 $lang['elementar_new_element']		= 'Criar elemento aqui';
-$lang['elementar_new_content_from_type']		= 'Criar conte&uacute;do do modelo';
-$lang['elementar_new_element_from_type']		= 'Criar elemento do modelo';
+$lang['elementar_new_content_from_type']		= 'Criar conte&uacute;do do padr&atilde;o';
+$lang['elementar_new_element_from_type']		= 'Criar elemento do padr&atilde;o';
 
 $lang['elementar_new']		= 'Novo';
 $lang['elementar_proceed']		= 'Continuar';

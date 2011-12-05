@@ -59,8 +59,8 @@ $lang['elementar_edit_template']		= 'Edit Template';
 $lang['elementar_edit_meta']		= 'Meta fields';
 $lang['elementar_new_content']		= 'Add new content here';
 $lang['elementar_new_element']		= 'Add new element here';
-$lang['elementar_new_content_from_type']		= 'Create content from model';
-$lang['elementar_new_element_from_type']		= 'Create element from model';
+$lang['elementar_new_content_from_type']		= 'Create content from type';
+$lang['elementar_new_element_from_type']		= 'Create element from type';
 
 $lang['elementar_new']		= 'New';
 $lang['elementar_proceed']		= 'Proceed';
