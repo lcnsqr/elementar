@@ -80,10 +80,10 @@ $lang['elementar_xhr_erase_element']		= 'Element deleted';
 $lang['elementar_xhr_write_meta']		= 'Fields saved';
 $lang['elementar_xhr_write_element']		= 'Element saved';
 $lang['elementar_xhr_write_element_error']		= 'Error while saving element';
-$lang['elementar_xhr_write_element_type']		= 'Element type saved';
+$lang['elementar_xhr_write_element_type']		= 'Element template saved';
 $lang['elementar_xhr_write_content']		= 'Content saved';
 $lang['elementar_xhr_write_content_error']		= 'Error while saving content';
-$lang['elementar_xhr_write_content_type']		= 'Content type saved';
+$lang['elementar_xhr_write_content_type']		= 'Content template saved';
 $lang['elementar_xhr_write_template']		= 'Template saved';
 
 /*

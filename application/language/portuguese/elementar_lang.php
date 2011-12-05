@@ -84,7 +84,7 @@ $lang['elementar_xhr_write_element_type']		= 'Padr&atilde;o de elemento salvo';
 $lang['elementar_xhr_write_content']		= 'Conte&uacute;do salvo com sucesso';
 $lang['elementar_xhr_write_content_error']		= 'Erro ao salvar conte&uacute;do';
 $lang['elementar_xhr_write_content_type']		= 'Padr&atilde;o de conteúdo salvo';
-$lang['elementar_xhr_write_template']		= 'Template salvo com sucesso';
+$lang['elementar_xhr_write_template']		= 'Padr&atilde;o salvo com sucesso';
 
 
 /*
