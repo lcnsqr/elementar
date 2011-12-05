@@ -6,7 +6,7 @@ $(function() {
 		event.preventDefault();
 	
 		// Bloqueio
-		$("#sections_blocker").fadeIn("fast");
+		$("#blocker").fadeIn("fast");
 			
 		var action = $(this).attr("action") + document.location.hash;
 		
@@ -26,7 +26,7 @@ $(function() {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
 			// Bloqueio
-			$("#sections_blocker").fadeOut("fast");
+			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 

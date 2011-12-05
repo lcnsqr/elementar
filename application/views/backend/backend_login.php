@@ -37,7 +37,7 @@
 <?php include("global/footer.php"); ?>
 
 <div id="client_warning"><span id="client_msg"></span></div>
-
+<div id="blocker"></div>
 </body>
 
 </html>
