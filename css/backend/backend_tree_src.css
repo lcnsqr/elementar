@@ -21,6 +21,21 @@
 	padding-bottom: 10px;
 }
 
+#content_tree_loading {
+	display: none;
+	position: absolute;
+	z-index: 1;
+	top: 6px;
+	left: 6px;
+	width: 16px;
+	height: 16px;
+	opacity: .5;
+	background-color: #fff;
+	background-image: url("/css/backend/working_small.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
 #content_tree a {
 	color: #666;
 	text-decoration: none;

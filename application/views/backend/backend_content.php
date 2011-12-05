@@ -8,6 +8,8 @@
 	
 	<div id="content_tree" class="pool_board">
 	
+		<div id="content_tree_loading"></div>
+	
 		<div class="border top_side"></div>
 		<div class="border right_side"></div>
 		<div class="border bottom_side"></div>
@@ -20,7 +22,7 @@
 		<div class="face_light"></div>
 	
 		<div id="tree_parent_1" class="tree_parent">
-	
+			
 			<div class="tree_listing_row dropable">
 				<div class="tree_listing_icon">
 					<img style="margin: 0;" src="/css/backend/icon_home.png" alt="<?php echo $parent; ?>" />

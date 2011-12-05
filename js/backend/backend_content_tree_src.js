@@ -53,6 +53,9 @@ $(function() {
 	$("a.fold.folder_switch").live("click", function(event) {
 		event.preventDefault();
 
+		// Loading icon
+		$("#content_tree_loading").fadeIn("fast");
+
 		var id = $(this).attr("href");
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		var bullet = $(this);
@@ -64,6 +67,8 @@ $(function() {
 				$(bullet).addClass("unfold");
 				$(bullet).removeClass("fold");
 			}
+			// Loading icon
+			$("#content_tree_loading").fadeOut("fast");
 		}, "json");
 	});
 	/*
@@ -304,8 +309,8 @@ $(function() {
 				return null;
 			}
 
-			// Bloqueio
-			$("#blocker").fadeIn("fast");
+			// Loading icon
+			$("#content_tree_loading").fadeIn("fast");
 
 			/*
 			 * Update item parent
@@ -318,14 +323,14 @@ $(function() {
 					$.post("/backend/content/xhr_render_tree_unfold", { request : child_type, id : child_id }, function(data) {
 						$("#tree_listing_1").html(data.html);
 
-						// Bloqueio
-						$("#blocker").stop().fadeOut("fast");
+						// Loading icon
+						$("#content_tree_loading").fadeOut("fast");
 
 					}, "json");
 				}
 				else {
-					// Bloqueio
-					$("#blocker").stop().fadeOut("fast");
+					// Loading icon
+					$("#content_tree_loading").fadeOut("fast");
 					showClientWarning(data.message);
 				}
 			}, "json");
