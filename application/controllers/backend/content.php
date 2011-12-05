@@ -63,7 +63,7 @@ class Content extends CI_Controller {
 		/*
 		 * Backend language file
 		 */
-		$this->lang->load('elementar', 'portuguese');
+		$this->lang->load('elementar', $this->config->item('language'));
 		
 		/*
 		 * Load site config
@@ -142,6 +142,20 @@ class Content extends CI_Controller {
 				'action' => '/' . uri_string(),
 				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
 			);
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_authentication_title'] = $this->lang->line('elementar_authentication_title');
+			$data['elementar_authentication_account'] = $this->lang->line('elementar_authentication_account');
+			$data['elementar_authentication_password'] = $this->lang->line('elementar_authentication_password');
+			$data['elementar_authentication_login'] = $this->lang->line('elementar_authentication_login');
+
+			$data['elementar_exit'] = $this->lang->line('elementar_exit');
+			$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
+			$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
+			$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
+
 			$login = $this->load->view('backend/backend_login', $data, TRUE);
 			exit($login);
 		}

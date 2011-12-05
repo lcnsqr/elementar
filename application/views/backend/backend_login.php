@@ -6,24 +6,31 @@
 
 <div id="main">
 
-<div id="authenticate">
+	<div id="authenticate">
+	
+		<h1><?php echo $elementar_authentication_title; ?></h1>
+		
+		<form name="login" id="login_form" action="<?php echo (isset($action)) ? $action : "/admin"; ?>">
+			
+			<p class="login_field">
+			<label for="login_usuario"><?php echo $elementar_authentication_account; ?></label><br />
+			<input name="login_usuario" id="login_usuario" type="text" />
+			</p>
+			
+			<p class="login_field">
+			<label for="login_senha"><?php echo $elementar_authentication_password; ?></label><br />
+			<input name="login_senha" id="login_senha" type="password" />
+			</p>
+			
+			<p class="login_field">
+			<input type="submit" value="<?php echo $elementar_authentication_login; ?>" />
+			</p>
 
-<p class="page_title">Identificação</p>
-<form name="login" id="login_form" action="<?php echo (isset($action)) ? $action : "/admin"; ?>">
-<p class="login_field">
-<label for="login_usuario">Nome de usuário:</label><br />
-<input name="login_usuario" id="login_usuario" type="text" />
-</p>
-<p class="login_field">
-<label for="login_senha">Senha:</label><br />
-<input name="login_senha" id="login_senha" type="password" />
-</p>
-<p class="login_field"><input type="submit" value="Entrar" /></p>
-</form>
-
-<div id="sections_blocker"></div> <!-- #sections_blocker -->
-
-</div> <!-- #sections -->
+		</form>
+		
+		<div id="blocker"></div> <!-- #blocker -->
+	
+	</div> <!-- #authenticate -->
 
 </div> <!-- #main -->
 

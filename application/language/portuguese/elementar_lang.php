@@ -1,6 +1,14 @@
 <?php
 
 /*
+ * Auth
+ */
+$lang['elementar_authentication_title'] = 'Identificação';
+$lang['elementar_authentication_account'] = 'Conta';
+$lang['elementar_authentication_password'] = 'Senha';
+$lang['elementar_authentication_login'] = 'Entrar';
+
+/*
  * General info
  */
 $lang['elementar_config_error']		= 'Configura&ccedil;&atilde;o incorreta. Avise o administrador.';
