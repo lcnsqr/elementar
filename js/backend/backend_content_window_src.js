@@ -530,8 +530,6 @@ $(function() {
 	 */
 	$("form.template_form").live('submit', function(event) {
 		event.preventDefault();
-		// Bloqueio
-		$("#blocker").fadeIn("fast");
 		
 		/*
 		 * Requires confirmation if default
@@ -543,11 +541,10 @@ $(function() {
 			overwrite = confirm($('label.template_confirm_overwrite').html());
 		}
 
-		if ( overwrite != true ) {
+		if ( overwrite == true ) {
 			// Bloqueio
-			$("#blocker").stop().fadeOut("fast");
-		}
-		else {
+			$("#blocker").fadeIn("fast");
+
 			/*
 			 * Template textarea
 			 */
