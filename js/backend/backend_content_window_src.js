@@ -541,29 +541,30 @@ $(function() {
 		var sole = $(this).find('input[name="template_sole"]').first();
 		if ( ! $(sole).attr('checked') && $(sole).length > 0 ) {
 			overwrite = confirm($('label.template_confirm_overwrite').html());
-			if ( overwrite != true ) {
-				// Bloqueio
-				$("#blocker").stop().fadeOut("fast");
-				return null;
-			}
 		}
 
-		/*
-		 * Template textarea
-		 */
-		var template_textarea = $(this).find('.template_textarea');
-
-		$.post("/backend/content/xhr_write_template", $(this).serialize() + '&overwrite=' + overwrite, function(data){
-			if ( data.done == true ) {
-				//$(template_textarea).val(data.template);
-				showClientWarning(data.message);
-			}
-			else {
-				showClientWarning(data.message);
-			}
+		if ( overwrite != true ) {
 			// Bloqueio
 			$("#blocker").stop().fadeOut("fast");
-		}, "json");
+		}
+		else {
+			/*
+			 * Template textarea
+			 */
+			var template_textarea = $(this).find('.template_textarea');
+	
+			$.post("/backend/content/xhr_write_template", $(this).serialize() + '&overwrite=' + overwrite, function(data){
+				if ( data.done == true ) {
+					//$(template_textarea).val(data.template);
+					showClientWarning(data.message);
+				}
+				else {
+					showClientWarning(data.message);
+				}
+				// Bloqueio
+				$("#blocker").stop().fadeOut("fast");
+			}, "json");
+		}
 	});
 	
 	/*
