@@ -1140,6 +1140,7 @@ class Content extends CI_Controller {
 					'checked'     => (bool) $checked
 				);
 				$template_form .= form_checkbox($attributes);
+				$template_form .= '<label class="template_confirm_overwrite" for="' . 'template_sole_' . $content_id . '">' . $this->lang->line('elementar_template_confirm_overwrite') . '</label>';
 				$template_form .= div_close("<!-- form_window_column_input -->");
 				$template_form .= div_close("<!-- .form_content_field -->");
 			}

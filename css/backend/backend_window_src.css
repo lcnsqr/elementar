@@ -475,3 +475,7 @@
 .pseudo_variables_menu_switcher_footer .expanded {
 	background-position: -16px 0;
 }
+
+.template_confirm_overwrite {
+	display: none;
+}

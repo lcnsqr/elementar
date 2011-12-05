@@ -79,6 +79,7 @@ $lang['elementar_status']		= 'Status';
 
 $lang['elementar_template_variables_title']		= 'Content fields and elements';
 $lang['elementar_template_sole']		= 'Exclusive';
+$lang['elementar_template_confirm_overwrite']		= 'Overwrite template?';
 
 /*
  * Ajax return messages

@@ -79,6 +79,7 @@ $lang['elementar_status']		= 'Status';
 
 $lang['elementar_template_variables_title']		= 'Campos de conteúdo e elementos';
 $lang['elementar_template_sole']		= 'Exclusivo';
+$lang['elementar_template_confirm_overwrite']		= 'Sobrescrever padr&atilde;o?';
 
 /*
  * Ajax return messages

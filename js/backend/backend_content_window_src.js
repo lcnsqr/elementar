@@ -540,9 +540,14 @@ $(function() {
 		var overwrite = true;
 		var sole = $(this).find('input[name="template_sole"]').first();
 		if ( ! $(sole).attr('checked') && $(sole).length > 0 ) {
-			overwrite = confirm("Sobrescrever template padrão?");
+			overwrite = confirm($('label.template_confirm_overwrite').html());
+			if ( overwrite != true ) {
+				// Bloqueio
+				$("#blocker").stop().fadeOut("fast");
+				return null;
+			}
 		}
-		
+
 		/*
 		 * Template textarea
 		 */
