@@ -212,7 +212,7 @@ class Content extends CI_Controller {
 		 */
 		$data['elementar_exit'] = $this->lang->line('elementar_exit');
 		$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
-		$data['elementar_finished_second'] = $this->lang->line('elementar_finished_second');
+		$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
 		$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
 		$data['elementar_edit'] = $this->lang->line('elementar_edit');
 		$data['elementar_delete'] = $this->lang->line('elementar_delete');
@@ -279,7 +279,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -294,7 +294,7 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 			
-		$form = paragraph($this->lang->line('elementar_model_fields'), array('class' => 'page_subtitle'));
+		$form = paragraph($this->lang->line('elementar_type_fields'), array('class' => 'page_subtitle'));
 		
 		$attributes = array('class' => 'content_type_define_new_form', 'id' => 'content_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -306,7 +306,7 @@ class Content extends CI_Controller {
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$form .= form_label($this->lang->line('elementar_model_name'), 'name', $attributes);
+		$form .= form_label($this->lang->line('elementar_type_name'), 'name', $attributes);
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -328,7 +328,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_model_field_name'), "field_0");
+		$form .= form_label($this->lang->line('elementar_type_field_name'), "field_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -345,7 +345,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_model_field_type'), "field_type_0");
+		$form .= form_label($this->lang->line('elementar_type_field_type'), "field_type_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -358,16 +358,16 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_model_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_type_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		/*
 		 * HTML template
 		 */
-		$form .= paragraph($this->lang->line('elementar_model_markup'), array('class' => 'page_subtitle'));
+		$form .= paragraph($this->lang->line('elementar_type_markup'), array('class' => 'page_subtitle'));
 
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_model_markup_template'), "template");
+		$form .= form_label($this->lang->line('elementar_type_markup_template'), "template");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -408,7 +408,7 @@ class Content extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 			
-		$form = paragraph($this->lang->line('elementar_model_element_new'), array('class' => 'page_subtitle'));
+		$form = paragraph($this->lang->line('elementar_type_element_new'), array('class' => 'page_subtitle'));
 		
 		$attributes = array('class' => 'element_type_define_new_form', 'id' => 'element_type_define_new_form');
 		$hidden = array('field_count' => 1);
@@ -420,7 +420,7 @@ class Content extends CI_Controller {
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$form .= form_label($this->lang->line('elementar_model_name'), 'name', $attributes);
+		$form .= form_label($this->lang->line('elementar_type_name'), 'name', $attributes);
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -442,7 +442,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_model_field_name'), "field_0");
+		$form .= form_label($this->lang->line('elementar_type_field_name'), "field_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -459,7 +459,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_open(array('class' => 'form_content_field'));
 		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_model_field_type'), "field_type_0");
+		$form .= form_label($this->lang->line('elementar_type_field_type'), "field_type_0");
 		$form .= br(1);
 		$form .= div_close("<!-- form_window_column_label -->");
 		$form .= div_open(array('class' => 'form_window_column_input'));
@@ -472,7 +472,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_model_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_type_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
 		
 		$form .= div_open(array('class' => 'form_control_buttons'));
 
@@ -516,7 +516,7 @@ class Content extends CI_Controller {
 		/*
 		 * Localized texts
 		 */
-		$data['elementar_new_content_from_model'] = $this->lang->line('elementar_new_content_from_model');
+		$data['elementar_new_content_from_type'] = $this->lang->line('elementar_new_content_from_type');
 		$data['elementar_proceed'] = $this->lang->line('elementar_proceed');
 
 		$html = $this->load->view('backend/backend_content_new', $data, true);
@@ -556,7 +556,7 @@ class Content extends CI_Controller {
 		/*
 		 * Localized texts
 		 */
-		$data['elementar_new_element_from_model'] = $this->lang->line('elementar_new_element_from_model');
+		$data['elementar_new_element_from_type'] = $this->lang->line('elementar_new_element_from_type');
 		$data['elementar_proceed'] = $this->lang->line('elementar_proceed');
 		
 		$html = $this->load->view('backend/backend_content_element_new', $data, true);
@@ -1027,7 +1027,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1267,7 +1267,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_model_markup_template'), 'template_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_type_markup_template'), 'template_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1290,7 +1290,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_model_css'), 'css_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_type_css'), 'css_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1312,7 +1312,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_model_javascript'), 'css_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_type_javascript'), 'css_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1334,7 +1334,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_model_extra_head'), 'head_' . $content_id, $attributes);
+			$template_form .= form_label($this->lang->line('elementar_type_extra_head'), 'head_' . $content_id, $attributes);
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
@@ -1574,7 +1574,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1802,14 +1802,15 @@ class Content extends CI_Controller {
 			 */
 			$response = array(
 				'done' => TRUE,
-				'type_id' => $type_id
+				'type_id' => $type_id,
+				'message' => $this->lang->line('elementar_xhr_write_content_type')
 			);
 		}
 		else
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1852,14 +1853,15 @@ class Content extends CI_Controller {
 			 */
 			$response = array(
 				'done' => TRUE,
-				'type_id' => $type_id
+				'type_id' => $type_id,
+				'message' => $this->lang->line('elementar_xhr_write_element_type')
 			);
 		}
 		else
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
 		$this->common->ajax_response($response);
@@ -1885,7 +1887,7 @@ class Content extends CI_Controller {
 			 */
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_return_name_error')
+				'message' => $this->lang->line('elementar_return_name_error')
 			);
 			$this->common->ajax_response($response);
 			return NULL;
@@ -1973,7 +1975,8 @@ class Content extends CI_Controller {
 		 */
 		$response = array(
 			'done' => TRUE,
-			'content_id' => $content_id
+			'content_id' => $content_id,
+			'message' => $this->lang->line('elementar_xhr_write_content')
 		);
 		$this->common->ajax_response($response);
 
@@ -1998,7 +2001,8 @@ class Content extends CI_Controller {
 		 * resposta
 		 */
 		$response = array(
-			'done' => TRUE
+			'done' => TRUE,
+			'message' => $this->lang->line('elementar_xhr_erase_content')
 		);
 		
 		$this->common->ajax_response($response);
@@ -2024,7 +2028,8 @@ class Content extends CI_Controller {
 		 * resposta
 		 */
 		$response = array(
-			'done' => TRUE
+			'done' => TRUE,
+			'message' => $this->lang->line('elementar_xhr_erase_element')
 		);
 		
 		$this->common->ajax_response($response);
@@ -2061,7 +2066,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 			$this->common->ajax_response($response);
 		}
@@ -2098,7 +2103,7 @@ class Content extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_bad_request')
+				'message' => $this->lang->line('elementar_bad_request')
 			);
 			$this->common->ajax_response($response);
 		}
@@ -2125,7 +2130,7 @@ class Content extends CI_Controller {
 			 */
 			$response = array(
 				'done' => FALSE,
-				'return' => $this->lang->line('elementar_return_name_error')
+				'message' => $this->lang->line('elementar_return_name_error')
 			);
 			$this->common->ajax_response($response);
 			return NULL;
@@ -2218,7 +2223,8 @@ class Content extends CI_Controller {
 		 */
 		$response = array(
 			'done' => TRUE,
-			'element_id' => $element_id
+			'element_id' => $element_id,
+			'message' => $this->lang->line('elementar_xhr_write_element')
 		);
 		$this->common->ajax_response($response);
 
@@ -2336,7 +2342,8 @@ class Content extends CI_Controller {
 		}
 		
 		$response = array(
-			'done' => TRUE
+			'done' => TRUE,
+			'message' => $this->lang->line('elementar_xhr_write_meta')
 		);
 		$this->common->ajax_response($response);
 	}
@@ -2432,7 +2439,8 @@ class Content extends CI_Controller {
 			'template' => $template['html'],
 			'css' => $template['css'],
 			'javascript' => $template['javascript'],
-			'head' => $template['head']
+			'head' => $template['head'],
+			'message' => $this->lang->line('elementar_xhr_write_template')
 		);
 		$this->common->ajax_response($response);
 	}

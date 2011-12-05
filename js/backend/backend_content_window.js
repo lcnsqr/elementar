@@ -29,16 +29,11 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/content/xhr_write_meta", $(".noform").serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					showClientWarning("Campos armazenados com sucesso");
-				}
-				else {
-					showClientWarning(data.error);
-				}
+			if ( data.done == true ) {
+				showClientWarning(data.message);
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 			}
 
 			// Bloqueio
@@ -77,21 +72,16 @@ $(function() {
 		}
 
 		$.post("/backend/content/xhr_render_element_form", { parent_id : parent_id, type_id : type_id }, function(data){
-			try {
-				if ( data.done == true ) {
-					// Close type editor (if visible)
-					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#content_editors_container").replaceWith(data.html).show(function(){
-						// WYSIWYG textarea activation
-						$('#content_editor_form').find('textarea').wysiwyg();
-					});
-				}
-				else {
-					showClientWarning(data.error);
-				}
+			if ( data.done == true ) {
+				// Close type editor (if visible)
+				$("#type_define_new_container:visible").fadeOut("slow");
+				$("#content_editors_container").replaceWith(data.html).show(function(){
+					// WYSIWYG textarea activation
+					$('#content_editor_form').find('textarea').wysiwyg();
+				});
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 			}
 			// Bloqueio
 			$("#blocker").stop().fadeOut("fast");
@@ -119,58 +109,40 @@ $(function() {
 		$.prepareCompositeFields();
 		
 		$.post("/backend/content/xhr_write_element", $(".noform").serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					/*
-					 * Reload Tree
-					 */
-					$.post("/backend/content/xhr_render_tree_unfold", { request : 'element', id : data.element_id }, function(data) {
-						$("#tree_listing_1").html(data.html);
-					}, "json");
-					/*
-					 * Reload editor window
-					 */
-					$.post("/backend/content/xhr_render_element_form", { id : data.element_id }, function(data){
-						try {
-							if ( data.done == true ) {
-								$("#content_window").html(data.html).show(function() {
-									// WYSIWYG textarea activation
-									$('#content_editor_form').find('textarea').wysiwyg();
+			if ( data.done == true ) {
+				var message = data.message;
+				/*
+				 * Reload Tree
+				 */
+				$.post("/backend/content/xhr_render_tree_unfold", { request : 'element', id : data.element_id }, function(data) {
+					$("#tree_listing_1").html(data.html);
+				}, "json");
+				/*
+				 * Reload editor window
+				 */
+				$.post("/backend/content/xhr_render_element_form", { id : data.element_id }, function(data){
+					if ( data.done == true ) {
+						$("#content_window").html(data.html).show(function() {
+							// WYSIWYG textarea activation
+							$('#content_editor_form').find('textarea').wysiwyg();
 
-									showClientWarning("Elemento salvo com sucesso");
+							showClientWarning(message);
 
-									// Bloqueio
-									$("#blocker").stop().fadeOut("fast");
-								});
-							}
-							else {
-								// Bloqueio
-								$("#blocker").stop().fadeOut("fast");
-								showClientWarning("Erro ao salvar");
-							}
-						}
-						catch (err) {
 							// Bloqueio
 							$("#blocker").stop().fadeOut("fast");
-							showClientWarning("Erro de comunicação com o servidor");
-						}
-					}, "json");
-				}
-				else {
-					// Bloqueio
-					$("#blocker").stop().fadeOut("fast");
-					showClientWarning(data.error);
-				}
+						});
+					}
+				}, "json");
 			}
-			catch (err) {
+			else {
 				// Bloqueio
 				$("#blocker").stop().fadeOut("fast");
-				showClientWarning("Erro de comunicação com o servidor");
+				showClientWarning(data.message);
 			}
 		}, "json");
 	});
 
-	// Selecao do tipo do conteúdo
+	// Seleção do tipo do conteúdo
 	$(".dropdown_items_listing_content_type_target").live('click', function(event) {
 		event.preventDefault();
 		
@@ -200,21 +172,16 @@ $(function() {
 		}
 
 		$.post("/backend/content/xhr_render_content_form", { parent_id : parent_id, type_id : type_id, editor : 'content' }, function(data){
-			try {
-				if ( data.done == true ) {
-					// Close type editor (if visible)
-					$("#type_define_new_container:visible").fadeOut("slow");
-					$("#content_editors_container").replaceWith(data.html).show(function(){
-						// WYSIWYG textarea activation
-						$('#content_editor_form').find('textarea').wysiwyg();
-					});
-				}
-				else {
-					showClientWarning(data.error);
-				}
+			if ( data.done == true ) {
+				// Close type editor (if visible)
+				$("#type_define_new_container:visible").fadeOut("slow");
+				$("#content_editors_container").replaceWith(data.html).show(function(){
+					// WYSIWYG textarea activation
+					$('#content_editor_form').find('textarea').wysiwyg();
+				});
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 			}
 			// Bloqueio
 			$("#blocker").stop().fadeOut("fast");
@@ -277,52 +244,34 @@ $(function() {
 		$.prepareCompositeFields();
 
 		$.post("/backend/content/xhr_write_content", $(".noform").serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					/*
-					 * Reload Tree & editor window if not home
-					 */
-					if ( data.content_id != 1 ) {
-						$.post("/backend/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
-							$("#tree_listing_1").html(data.html);
-						}, "json");
-					}
-					$.post("/backend/content/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
-						try {
-							if ( data.done == true ) {
-								$("#content_window").html(data.html).show(function() {
-									// WYSIWYG textarea activation
-									$('#content_editor_form').find('textarea').wysiwyg();
-
-									showClientWarning("Conteúdo salvo com sucesso");
-
-									// Bloqueio
-									$("#blocker").stop().fadeOut("fast");
-								});
-							}
-							else {
-								// Bloqueio
-								$("#blocker").stop().fadeOut("fast");
-								showClientWarning("Erro ao salvar");
-							}
-						}
-						catch (err) {
-							// Bloqueio
-							$("#blocker").stop().fadeOut("fast");
-							showClientWarning("Erro de comunicação com o servidor");
-						}
+			if ( data.done == true ) {
+				var message = data.message;
+				/*
+				 * Reload Tree & editor window if not home
+				 */
+				if ( data.content_id != 1 ) {
+					$.post("/backend/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
+						$("#tree_listing_1").html(data.html);
 					}, "json");
 				}
-				else {
-					// Bloqueio
-					$("#blocker").stop().fadeOut("fast");
-					showClientWarning(data.error);
-				}
+				$.post("/backend/content/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
+					if ( data.done == true ) {
+						$("#content_window").html(data.html).show(function() {
+							// WYSIWYG textarea activation
+							$('#content_editor_form').find('textarea').wysiwyg();
+
+							showClientWarning(message);
+
+							// Bloqueio
+							$("#blocker").stop().fadeOut("fast");
+						});
+					}
+				}, "json");
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
 				// Bloqueio
 				$("#blocker").stop().fadeOut("fast");
+				showClientWarning(data.message);
 			}
 		}, "json");
 	});
@@ -420,16 +369,11 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/content/xhr_render_content_type_form", function(data){
-			try {
-				if ( data.done == true ) {
-					$("#type_define_new_container").html(data.html).show("slow");
-				}
-				else {
-					showClientWarning(data.error);
-				}
+			if ( data.done == true ) {
+				$("#type_define_new_container").html(data.html).show("slow");
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 			}
 			// Bloqueio
 			$("#blocker").stop().fadeOut("fast");
@@ -446,16 +390,11 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/content/xhr_render_element_type_form", function(data){
-			try {
-				if ( data.done == true ) {
-					$("#type_define_new_container").html(data.html).show("slow");
-				}
-				else {
-					showClientWarning(data.error);
-				}
+			if ( data.done == true ) {
+				$("#type_define_new_container").html(data.html).show("slow");
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 			}
 			// Bloqueio
 			$("#blocker").stop().fadeOut("fast");
@@ -479,38 +418,26 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/content/xhr_write_content_type", $(this).serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					showClientWarning("Tipo salvo com sucesso");
-					$("#type_define_new_container").hide('slow', function() {
+			if ( data.done == true ) {
+				showClientWarning(data.message);
+				$("#type_define_new_container").hide('slow', function() {
 
-						// Reload types dropdown widget with new value
-						var id = $("#choose_content_type_for_parent_id").attr('href');
-				
-						$.post("/backend/content/xhr_render_content_new", { id : id, type_id : data.type_id }, function(data){
-							try {
-								if ( data.done == true ) {
-									$("#content_window").html(data.html).show();
-								}
-							}
-							catch (err) {
-								showClientWarning("Erro de comunicação com o servidor");
-							}
-				
-							// Bloqueio
-							$("#blocker").stop().fadeOut("fast");
-						}, "json");
+					// Reload types dropdown widget with new value
+					var id = $("#choose_content_type_for_parent_id").attr('href');
+			
+					$.post("/backend/content/xhr_render_content_new", { id : id, type_id : data.type_id }, function(data){
+						if ( data.done == true ) {
+							$("#content_window").html(data.html).show();
+						}
+			
+						// Bloqueio
+						$("#blocker").stop().fadeOut("fast");
+					}, "json");
 
-					});
-				}
-				else {
-					showClientWarning(data.error);
-					// Bloqueio
-					$("#blocker").stop().fadeOut("fast");
-				}
+				});
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 				// Bloqueio
 				$("#blocker").stop().fadeOut("fast");
 			}
@@ -525,38 +452,26 @@ $(function() {
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 		$.post("/backend/content/xhr_write_element_type", $(this).serialize(), function(data){
-			try {
-				if ( data.done == true ) {
-					showClientWarning("Tipo salvo com sucesso");
-					$("#type_define_new_container").hide('slow', function() {
-						$("#type_define_new_container").html("");
-					});
-					
-					// Reload types dropdown widget with new value
-					var id = $("#choose_element_type_for_parent_id").attr("href");
-			
-					$.post("/backend/content/xhr_render_element_new", { id : id, type_id : data.type_id }, function(data){
-						try {
-							if ( data.done == true ) {
-								$("#content_window").html(data.html).show();
-							}
-						}
-						catch (err) {
-							showClientWarning("Erro de comunicação com o servidor");
-						}
-						// Bloqueio
-						$("#blocker").stop().fadeOut("fast");
-					}, "json");
-
-				}
-				else {
-					showClientWarning(data.error);
+			if ( data.done == true ) {
+				showClientWarning(data.message);
+				$("#type_define_new_container").hide('slow', function() {
+					$("#type_define_new_container").html("");
+				});
+				
+				// Reload types dropdown widget with new value
+				var id = $("#choose_element_type_for_parent_id").attr("href");
+		
+				$.post("/backend/content/xhr_render_element_new", { id : id, type_id : data.type_id }, function(data){
+					if ( data.done == true ) {
+						$("#content_window").html(data.html).show();
+					}
 					// Bloqueio
 					$("#blocker").stop().fadeOut("fast");
-				}
+				}, "json");
+
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
+			else {
+				showClientWarning(data.message);
 				// Bloqueio
 				$("#blocker").stop().fadeOut("fast");
 			}
@@ -634,21 +549,12 @@ $(function() {
 		var template_textarea = $(this).find('.template_textarea');
 
 		$.post("/backend/content/xhr_write_template", $(this).serialize() + '&overwrite=' + overwrite, function(data){
-			try {
-				if ( data.done == true ) {
-					//$(template_textarea).val(data.template);
-					showClientWarning("Template salvo com sucesso");
-				}
-				else {
-					showClientWarning(data.error);
-					// Bloqueio
-					$("#blocker").stop().fadeOut("fast");
-				}
+			if ( data.done == true ) {
+				//$(template_textarea).val(data.template);
+				showClientWarning(data.message);
 			}
-			catch (err) {
-				showClientWarning("Erro de comunicação com o servidor");
-				// Bloqueio
-				$("#blocker").stop().fadeOut("fast");
+			else {
+				showClientWarning(data.message);
 			}
 			// Bloqueio
 			$("#blocker").stop().fadeOut("fast");
