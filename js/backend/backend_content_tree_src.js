@@ -15,6 +15,7 @@ $(function() {
 	 */
 	$('.label > a').live('click', function(event){
 		event.preventDefault();
+
 		/*
 		 * Hide visible menus first
 		 */
@@ -39,6 +40,13 @@ $(function() {
 		$(visible_menu).fadeIn('fast');
 	});
 	
+	/*
+	 * Prevent unintended default browser draging of link
+	 */
+	$('.label > a').live('mousedown', function(event){
+		event.preventDefault();
+	});
+
 	/*
 	 * Show existing contents listing and rotate bullet arrow
 	 */
@@ -237,6 +245,11 @@ $(function() {
 	 * Discard dragging item upon mouse button up
 	 */
 	$(window).mouseup(function(event){
+		/*
+		 * Unset mouse button
+		 */
+		mouseButton = 0;
+			
 		if ( $('#tree_drag_container').children().length > 0 )
 		{
 			/*
@@ -265,14 +278,9 @@ $(function() {
 			var parent_id = $(parent_label).children('a').attr('href');
 	
 			/*
-			 * Unset mouse button
-			 */
-			mouseButton = 0;
-			
-			/*
 			 * Re-add dropable class to dragged row
 			 */
-			$('.tree_listing_row:not(.dropable)').addClass('dropable');
+			$('.tree_listing_row').not('.undropable').not('.dropable').addClass('dropable');
 
 			/*
 			 * Unset droppable highlight
@@ -347,7 +355,7 @@ $(function() {
 			 */
 			var pointerY = event.pageY;
 			var pointerX = event.pageX;
-			$('.tree_listing_row.dropable:not(.dragging)').each(function(){
+			$('.tree_listing_row.dropable').not('.dragging').each(function(){
 				var row_top = $(this).offset().top;
 				var row_right = $(this).offset().left + $(this).outerWidth();
 				var row_bottom = $(this).offset().top + $(this).outerHeight();
@@ -365,29 +373,34 @@ $(function() {
 	/*
 	 * Clone draggable row and add it to drag container
 	 */
-	$('.tree_listing_row').live('mousedown', function(event){
+	$('.tree_listing_icon').live('mousedown', function(event){
 		event.preventDefault();
+		
+		/*
+		 * Get item row
+		 */
+		var row = $(this).parent('.tree_listing_row');
 		
 		/*
 		 * Reject tree first parent (Home)
 		 */
-		if ( $(this).parent('#tree_parent_1').length > 0 ) {
+		if ( $(row).parent('#tree_parent_1').length > 0 ) {
 			return null;
 		}
 		
 		/*
 		 * Offset position
 		 */
-		var offset = $(this).offset();
+		var offset = $(row).offset();
 		offsetY = event.pageY - offset.top;
 		offsetX = event.pageX - offset.left;
 		
 		/*
 		 * Disable same item drop
 		 */
-		$(this).removeClass('dropable');
+		$(row).removeClass('dropable');
 		
-		var moving = $(this).clone();
+		var moving = $(row).clone();
 		$(moving).addClass('dragging');
 		$(moving).children().addClass('dragging');
 		$('#tree_drag_container').html(moving);

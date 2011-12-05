@@ -3,7 +3,7 @@
 	<?php foreach($content_hierarchy_element as $element): ?>
 	<div class="tree_parent">
 
-		<div class="tree_listing_row">
+		<div class="tree_listing_row undropable">
 			<div class="tree_listing_bullet">
 				<span class="bullet_placeholder">&nbsp;</span>
 			</div>
