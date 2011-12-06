@@ -1,6 +1,6 @@
 <?php
 /*
- *     crud.php
+ *     storage.php
  *      
  *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
  *      
@@ -22,10 +22,10 @@
 
 
 /*
- * Create, read, update and delete contents & elements
+ * Create, read, update and delete in database
  */
 
-class Crud extends CI_Model {
+class Storage extends CI_Model {
 	
 	/*
 	 * Status defaults to “published” 

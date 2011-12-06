@@ -24,7 +24,7 @@ class User extends CI_Controller {
 		/*
 		 * Account model
 		 */
-		$this->load->model('Account', 'account', TRUE);
+		$this->load->model('Access', 'access', TRUE);
 
 		/*
 		 * Email config
@@ -50,7 +50,7 @@ class User extends CI_Controller {
 		if ( (bool) $user_id !== FALSE )
 		{
 			$data['is_logged'] = TRUE;
-			$data['username'] = $this->account->get_user_name($user_id);
+			$data['username'] = $this->access->get_user_name($user_id);
 		}
 		else
 		{
@@ -70,11 +70,11 @@ class User extends CI_Controller {
 		$username = $this->input->post("login_usuario", TRUE);
 		$password = $this->input->post("login_senha", TRUE);
 
-		$user_id = $this->account->get_user_id($username);
+		$user_id = $this->access->get_user_id($username);
 		
 		if ( (bool) $user_id !== FALSE)
 		{
-			if ( $this->account->authenticate($user_id, $password) )
+			if ( $this->access->authenticate($user_id, $password) )
 			{
 				$this->session->set_userdata('user_id', $user_id);
 				
@@ -132,7 +132,7 @@ class User extends CI_Controller {
 			 * Verificação de usuário
 			 */
 			$username = $this->input->post('cadastro_usuario', TRUE);
-			$valid = $this->account->validate_username($username);
+			$valid = $this->access->validate_username($username);
 			
 			if ( $valid !== TRUE )
 			{
@@ -144,7 +144,7 @@ class User extends CI_Controller {
 			 * Verificação de email
 			 */
 			$email = $this->input->post('cadastro_email', TRUE);
-			$valid = $this->account->validate_email($email);
+			$valid = $this->access->validate_email($email);
 			
 			if ( $valid !== TRUE )
 			{
@@ -156,7 +156,7 @@ class User extends CI_Controller {
 			 * Verificação de senha
 			 */
 			$senha = $this->input->post('cadastro_senha', TRUE);
-			$valid = $this->account->validate_password($senha);
+			$valid = $this->access->validate_password($senha);
 			
 			if ( $valid !== TRUE )
 			{
@@ -172,7 +172,7 @@ class User extends CI_Controller {
 			if ( $response['done'] )
 			{
 				$hash = random_string('unique');
-				$this->account->register_user($username, $email, $senha, $hash);
+				$this->access->register_user($username, $email, $senha, $hash);
 				
 				// Enviar email
 				$this->send_email($email, "Confirmação de cadastro", site_url("/user/confirm_registration/") . $hash);
@@ -198,7 +198,7 @@ class User extends CI_Controller {
 		
 		$hash = random_string('unique');
 		
-		$verified = $this->account->reset_password_hash($email, $hash);
+		$verified = $this->access->reset_password_hash($email, $hash);
 		if ( $verified === TRUE )
 		{
 			// Enviar email para redefinição da senha
@@ -235,7 +235,7 @@ class User extends CI_Controller {
 			'hash' => $hash
 		);
 		
-		$data['verified'] = $this->account->verify_reset_password_hash($hash);
+		$data['verified'] = $this->access->verify_reset_password_hash($hash);
 		
 		$this->load->view('reset_password', $data);
 	}
@@ -252,7 +252,7 @@ class User extends CI_Controller {
 		$hash = $this->input->post("hash", TRUE);
 		$password = $this->input->post("nova_senha", TRUE);
 		
-		$verified = $this->account->change_reset_password($hash, $password);
+		$verified = $this->access->change_reset_password($hash, $password);
 		if ( $verified === TRUE )
 		{
 			$response = array(
@@ -289,7 +289,7 @@ class User extends CI_Controller {
 	{
 		$hash = $this->uri->segment(3, 0);
 
-		$confirm = $this->account->confirm_registration($hash);
+		$confirm = $this->access->confirm_registration($hash);
 		if ( $confirm === TRUE )
 		{
 			echo "<p>Cadastro ativado</p>";

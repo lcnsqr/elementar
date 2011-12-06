@@ -176,7 +176,7 @@ class Common {
 			return $breadcrumb;
 		}
 
-		$content = (array) $this->CI->crud->get_content($content_id);
+		$content = (array) $this->CI->storage->get_content($content_id);
 		
 		if ( count( $content ) > 0 )
 		{
@@ -185,7 +185,7 @@ class Common {
 			 */
 			$names = json_decode($content['name'], TRUE);
 			$name = $names[$this->LANG];
-			$content_uri = $this->URI_PREFIX . $this->CI->crud->get_content_uri($content_id);
+			$content_uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($content_id);
 			if ( (int) $content['parent_id'] > 1 ) 
 			{
 				$breadcrumb = $this->breadcrumb_content($content['parent_id'], $sep, " $sep <a href=\"" . $content_uri . "\">" . $name . "</a>" . $previous);
@@ -205,7 +205,7 @@ class Common {
 	{
 		$breadcrumb = "";
 		
-		$element = $this->CI->crud->get_element($element_id);
+		$element = $this->CI->storage->get_element($element_id);
 		
 		if ( count($element) > 0 )
 		{
@@ -213,7 +213,7 @@ class Common {
 			 * Localized name
 			 */
 			$name = $element['name'];
-			$element_uri = $this->URI_PREFIX . $this->CI->crud->get_content_uri($element['parent_id']) . "#" . $element['sname'];
+			$element_uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($element['parent_id']) . "#" . $element['sname'];
 			if ( (bool) $element['parent_id'] )
 			{ 
 				$breadcrumb = $this->breadcrumb_content($element['parent_id'], $sep, " $sep <a href=\"" . $element_uri . "\" >" . $name . "</a>");
@@ -302,17 +302,17 @@ class Common {
 		/*
 		 * Database contents
 		 */
-		foreach ( $this->CI->crud->get_contents() as $content )
+		foreach ( $this->CI->storage->get_contents() as $content )
 		{
-			$priority = $this->CI->crud->get_meta_field($content['id'], 'priority');
-			$uri = $this->CI->crud->get_content_uri($content['id']);
-			$url = $this->CI->crud->get_meta_field($content['id'], 'url');
+			$priority = $this->CI->storage->get_meta_field($content['id'], 'priority');
+			$uri = $this->CI->storage->get_content_uri($content['id']);
+			$url = $this->CI->storage->get_meta_field($content['id'], 'url');
 			if ( $url == '' )
 			{
 				/*
 				 * Change "/home" to "/" or use default path to content
 				 */
-				$url = ( $uri == '/' . $this->CI->crud->get_content_sname(1) ) ? site_url('/') : site_url($uri);
+				$url = ( $uri == '/' . $this->CI->storage->get_content_sname(1) ) ? site_url('/') : site_url($uri);
 			}
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
@@ -500,9 +500,9 @@ class Common {
 			/*
 			 * localized parent title
 			 */
-			$titles = json_decode($this->CI->crud->get_content_name($content_id), TRUE);
+			$titles = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
 			$content_name = $titles[$this->LANG];
-			$content_uri = $this->CI->crud->get_content_uri($content_id);
+			$content_uri = $this->CI->storage->get_content_uri($content_id);
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
 			$attributes = array(
@@ -512,7 +512,7 @@ class Common {
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
-			if ( $this->CI->crud->get_content_has_children($content_id, FALSE) )
+			if ( $this->CI->storage->get_content_has_children($content_id, FALSE) )
 			{
 				$index[$link] = $this->_index_field($content_id);
 			}
@@ -533,7 +533,7 @@ class Common {
 	function _index_field($content_id)
 	{
 		$index = array();
-		$children = $this->CI->crud->get_content_children($content_id);
+		$children = $this->CI->storage->get_content_children($content_id);
 		$children = ( is_array($children) ) ? $children : array();
 		foreach($children as $child)
 		{
@@ -543,7 +543,7 @@ class Common {
 			 */
 			$titles = json_decode($child['name'], TRUE);
 			$content_name = $titles[$this->LANG];
-			$content_uri = $this->CI->crud->get_content_uri($content_id);
+			$content_uri = $this->CI->storage->get_content_uri($content_id);
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
 			$attributes = array(
@@ -573,7 +573,7 @@ class Common {
 		$content['breadcrumb'] = $this->breadcrumb_content($content_id);
 		
 		// Content fields
-		$fields = $this->CI->crud->get_content_fields($content_id);
+		$fields = $this->CI->storage->get_content_fields($content_id);
 		foreach ($fields as $field)
 		{
 			$content[$field['sname']] = $this->render_field($field, $field['value']);			
@@ -582,7 +582,7 @@ class Common {
 		/*
 		 * Children contents listing
 		 */
-		$children = $this->CI->crud->get_contents_by_parent($content_id);
+		$children = $this->CI->storage->get_contents_by_parent($content_id);
 		if ( (bool) $children )
 		{
 			/*
@@ -599,7 +599,7 @@ class Common {
 					'id' => $child['id'],
 					'sname' => $child['sname'],
 					'name' => $names[$this->LANG],
-					'uri' => $this->URI_PREFIX . $this->CI->crud->get_content_uri($child['id']),
+					'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($child['id']),
 					'children' => $child['children']
 				);
 			}
@@ -611,8 +611,8 @@ class Common {
 		 */
 		if ( $content_id != 1 )
 		{
-			$parent_id = $this->CI->crud->get_content_parent_id($content_id);
-			$brothers = $this->CI->crud->get_contents_by_parent($parent_id);
+			$parent_id = $this->CI->storage->get_content_parent_id($content_id);
+			$brothers = $this->CI->storage->get_contents_by_parent($parent_id);
 			if ( (bool) $brothers )
 			{
 				/*
@@ -629,7 +629,7 @@ class Common {
 						'id' => $brother['id'],
 						'sname' => $brother['sname'],
 						'name' => $names[$this->LANG],
-						'uri' => $this->URI_PREFIX . $this->CI->crud->get_content_uri($brother['id']),
+						'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($brother['id']),
 						'children' => $brother['children']
 					);
 				}
@@ -641,7 +641,7 @@ class Common {
 
 	function render_elements($content_id = 1) 
 	{
-		$elements = $this->CI->crud->get_elements_by_parent_spreaded($content_id);
+		$elements = $this->CI->storage->get_elements_by_parent_spreaded($content_id);
 		$data = array();
 		foreach ($elements as $key => $element)
 		{
@@ -682,7 +682,7 @@ class Common {
 			/*
 			 * Render loop entries by element type sname
 			 */
-			$fields = $this->CI->crud->get_element_fields($element_id);
+			$fields = $this->CI->storage->get_element_fields($element_id);
 
 			/*
 			 * To be added in the element type array

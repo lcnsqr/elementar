@@ -58,8 +58,8 @@ class Main extends CI_Controller {
 		// DB
 		$this->elementar = $this->load->database('elementar', TRUE);
 
-		// Client model 
-		$this->load->model('Crud', 'crud');
+		// Storage model 
+		$this->load->model('Storage', 'storage');
 		
 		// Parser
 		$this->load->library('parser');
@@ -76,7 +76,7 @@ class Main extends CI_Controller {
 		/*
 		 * Load site config
 		 */
-		$settings = $this->crud->get_config();
+		$settings = $this->storage->get_config();
 		if ( ! is_array($settings) )
 		{
 			exit('Bad config. Call site administrator.');
@@ -314,12 +314,12 @@ class Main extends CI_Controller {
 			/*
 			 * localized title
 			 */
-			$titles = json_decode($this->crud->get_content_name($content_id), TRUE);
+			$titles = json_decode($this->storage->get_content_name($content_id), TRUE);
 			$data['title'] = $titles[$this->LANG];
 			/*
 			 * Metafields
 			 */
-			$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
+			$data['metafields'] = (array) $this->storage->get_meta_fields($content_id);
 			
 			/*
 			 * Content fields & relative contents
@@ -337,7 +337,7 @@ class Main extends CI_Controller {
 			/*
 			 * Template
 			 */
-			$template = $this->crud->get_template($content_id);
+			$template = $this->storage->get_template($content_id);
 		}
 		else
 		{
@@ -349,7 +349,7 @@ class Main extends CI_Controller {
 			for ( $c = $starting_segment; $c <= $this->uri->total_segments(); $c++ )
 			{
 				$sname = $this->uri->segment($c);
-				$segment = (array) $this->crud->get_content_by_parent($content_id, $sname);
+				$segment = (array) $this->storage->get_content_by_parent($content_id, $sname);
 				if ( count($segment) > 0 )
 				{
 					$content_id = $segment['id'];
@@ -379,19 +379,19 @@ class Main extends CI_Controller {
 				 * Metafields
 				 */
 				$data['title'] = $content_name;
-				$data['metafields'] = (array) $this->crud->get_meta_fields($content_id);
+				$data['metafields'] = (array) $this->storage->get_meta_fields($content_id);
 				/*
 				 * Common meta fields
 				 */
 				$data['metafields'][] = array(
 					'name' => 'google-site-verification',
-					'value' => $this->crud->get_meta_field(1, 'google-site-verification')
+					'value' => $this->storage->get_meta_field(1, 'google-site-verification')
 				);
 
 				/*
 				 * Template
 				 */
-				$template = $this->crud->get_template($content_id);
+				$template = $this->storage->get_template($content_id);
 
 				/*
 				 * Content fields & relative contents
@@ -455,12 +455,12 @@ class Main extends CI_Controller {
 			/*
 			 * Load main CSS too
 			 */
-			$css = $this->crud->get_template_css(1);
+			$css = $this->storage->get_template_css(1);
 		}
 		/*
 		 * Load individual CSS
 		 */
-		$css .= $this->crud->get_template_css($content_id);
+		$css .= $this->storage->get_template_css($content_id);
 		$this->output->set_header("Content-type: text/css");
 		$this->output->set_output($css);
 	}
@@ -477,12 +477,12 @@ class Main extends CI_Controller {
 			/*
 			 * Load main Javascript too
 			 */
-			$javascript = $this->crud->get_template_javascript(1);
+			$javascript = $this->storage->get_template_javascript(1);
 		}
 		/*
 		 * Load individual Javascript
 		 */
-		$javascript .= $this->crud->get_template_javascript($content_id);
+		$javascript .= $this->storage->get_template_javascript($content_id);
 		$this->output->set_header("Content-type: text/javascript");
 		$this->output->set_output($javascript);
 	}

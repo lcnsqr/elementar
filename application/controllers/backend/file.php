@@ -49,13 +49,13 @@ class File extends CI_Controller {
 		/*
 		 * Create, read, update and delete Model
 		 */
-		$this->load->model('Crud', 'crud');
-		$this->crud->STATUS = 'all';
+		$this->load->model('Storage', 'storage');
+		$this->storage->STATUS = 'all';
 		
 		/*
 		 * Load site config
 		 */
-		$settings = $this->crud->get_config();
+		$settings = $this->storage->get_config();
 		if ( ! is_array($settings) )
 		{
 			exit('Bad config. Call site administrator.');
@@ -621,7 +621,7 @@ class File extends CI_Controller {
 		 * Create an upload session to hold sent data
 		 * before saving the content/element
 		 */
-		$upload_session_id = $this->crud->put_upload_session();
+		$upload_session_id = $this->storage->put_upload_session();
 		
 		/*
 		 * Target folder
@@ -710,7 +710,7 @@ class File extends CI_Controller {
 				/*
 				 * Mark an error in upload session
 				 */
-				$this->crud->put_upload_session($upload_session_id, "error", TRUE);
+				$this->storage->put_upload_session($upload_session_id, "error", TRUE);
 			}
 			else
 			{
@@ -729,9 +729,9 @@ class File extends CI_Controller {
 				 * Write file properties to upload session
 				 */
 				$uri = $path . '/' . $name;
-				$this->crud->put_upload_session($upload_session_id, "name", $name);
-				$this->crud->put_upload_session($upload_session_id, "uri", $uri);
-				$this->crud->put_upload_session($upload_session_id, "done", TRUE);
+				$this->storage->put_upload_session($upload_session_id, "name", $name);
+				$this->storage->put_upload_session($upload_session_id, "uri", $uri);
+				$this->storage->put_upload_session($upload_session_id, "done", TRUE);
 			}
 		}
 		else
@@ -739,7 +739,7 @@ class File extends CI_Controller {
 			/*
 			 * Mark an error in upload session
 			 */
-			$this->crud->put_upload_session($upload_session_id, "error", TRUE);
+			$this->storage->put_upload_session($upload_session_id, "error", TRUE);
 		}
 	}
 
@@ -753,12 +753,12 @@ class File extends CI_Controller {
 		
 		$upload_session_id = $this->input->post('upload_session_id', TRUE);
 
-		$done = $this->crud->get_upload_session_done($upload_session_id);
+		$done = $this->storage->get_upload_session_done($upload_session_id);
 		
 		if ( (bool) $done )
 		{
-			$uri = $this->crud->get_upload_session_uri($upload_session_id);
-			$name = $this->crud->get_upload_session_name($upload_session_id);
+			$uri = $this->storage->get_upload_session_uri($upload_session_id);
+			$name = $this->storage->get_upload_session_name($upload_session_id);
 			$label = ( strlen($name) > 8 ) ? substr($name, 0, 24) . '...' : $name;
 			$data = array(
 				'label' => $label,

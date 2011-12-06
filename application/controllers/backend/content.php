@@ -50,15 +50,15 @@ class Content extends CI_Controller {
 		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
-		 * Account model
+		 * Access model
 		 */
-		$this->load->model('Account', 'account');
+		$this->load->model('Access', 'access');
 
 		/*
 		 * Create, read, update and delete Model
 		 */
-		$this->load->model('Crud', 'crud');
-		$this->crud->STATUS = 'all';
+		$this->load->model('Storage', 'storage');
+		$this->storage->STATUS = 'all';
 		
 		/*
 		 * Backend language file
@@ -68,7 +68,7 @@ class Content extends CI_Controller {
 		/*
 		 * Load site config
 		 */
-		$settings = $this->crud->get_config();
+		$settings = $this->storage->get_config();
 		if ( ! is_array($settings) )
 		{
 			exit($this->lang->line('elementar_config_error'));
@@ -169,7 +169,7 @@ class Content extends CI_Controller {
 		 */
 		$user_id = $this->session->userdata('user_id');
 		$is_logged = TRUE;
-		$username = $this->account->get_user_name($user_id);
+		$username = $this->access->get_user_name($user_id);
 
 		/*
 		 * client controller (javascript)
@@ -216,8 +216,8 @@ class Content extends CI_Controller {
 
 		$data['parent_id'] = 1;
 		$data['parent'] = $this->config->item('site_name');
-		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent(1);
-		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent(1);
+		$data['content_hierarchy_content'] = $this->storage->get_contents_by_parent(1);
+		$data['content_hierarchy_element'] = $this->storage->get_elements_by_parent(1);
 		$data['content_listing_id'] = NULL;
 		$data['content_listing'] = NULL;
 		
@@ -260,24 +260,24 @@ class Content extends CI_Controller {
 			switch ( $request )
 			{
 				case "content" :
-				$parent_id = $this->crud->get_content_parent_id($id);
+				$parent_id = $this->storage->get_content_parent_id($id);
 				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
 				while ( $tree_id > 1 )
 				{
-					$parent_id = $this->crud->get_content_parent_id($tree_id);
+					$parent_id = $this->storage->get_content_parent_id($tree_id);
 					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
 					$tree_id = $parent_id;
 				}
 				break;
 				
 				case "element" : 
-				$parent_id = $this->crud->get_element_parent_id($id);
+				$parent_id = $this->storage->get_element_parent_id($id);
 				$tree = $this->_render_tree_listing($parent_id);
 				$tree_id = $parent_id;
 				while ( $tree_id > 1 )
 				{
-					$parent_id = $this->crud->get_content_parent_id($tree_id);
+					$parent_id = $this->storage->get_content_parent_id($tree_id);
 					$tree = $this->_render_tree_listing($parent_id, $tree, $tree_id);
 					$tree_id = $parent_id;
 				}
@@ -812,7 +812,7 @@ class Content extends CI_Controller {
 		/*
 		 * Conteúdos
 		 */
-		foreach ( $this->crud->get_contents() as $content )
+		foreach ( $this->storage->get_contents() as $content )
 		{
 			$listing[] = $this->common->breadcrumb_content($content['id']);
 		}
@@ -864,7 +864,7 @@ class Content extends CI_Controller {
 		/*
 		 * Conteúdos
 		 */
-		foreach ( $this->crud->get_contents_by_parent() as $content )
+		foreach ( $this->storage->get_contents_by_parent() as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
 			$listing[] = anchor($content_name[$this->LANG], array('href' => $content['id']));
@@ -899,8 +899,8 @@ class Content extends CI_Controller {
 			/*
 			 * Update
 			 */
-			$parent_id = $this->crud->get_element_parent_id($element_id);
-			$type_id = $this->crud->get_element_type_id($element_id);		
+			$parent_id = $this->storage->get_element_parent_id($element_id);
+			$type_id = $this->storage->get_element_type_id($element_id);		
 			$data['breadcrumb'] = $this->common->breadcrumb_element($element_id);
 		}
 		else
@@ -954,19 +954,19 @@ class Content extends CI_Controller {
 			/*
 			 * Element name
 			 */
-			$value = $this->crud->get_element_name($element_id);
+			$value = $this->storage->get_element_name($element_id);
 			$form .= $this->_render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
 			/*
 			 * Element type fields
 			 */
-			$fields = $this->crud->get_element_type_fields($type_id);
+			$fields = $this->storage->get_element_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
 				/*
 				 * Field value
 				 */
-				$value = $this->crud->get_element_field($element_id, $field['id']);
+				$value = $this->storage->get_element_field($element_id, $field['id']);
 				$form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
 			}
 
@@ -977,7 +977,7 @@ class Content extends CI_Controller {
 			$form .= div_open(array('class' => 'form_window_column_label'));
 			if ( (bool) $element_id !== FALSE ) 
 			{
-				$checked = $this->crud->get_element_spread($element_id);
+				$checked = $this->storage->get_element_spread($element_id);
 			}
 			else
 			{
@@ -1009,7 +1009,7 @@ class Content extends CI_Controller {
 			$form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
 			$form .= div_close("<!-- form_window_column_label -->");
 			$form .= div_open(array('class' => 'form_window_column_input'));
-			$form .= $this->_render_status_dropdown($this->crud->get_element_status($element_id));
+			$form .= $this->_render_status_dropdown($this->storage->get_element_status($element_id));
 			$form .= div_close("<!-- form_window_column_input -->");
 			$form .= div_close("<!-- .form_content_field -->");
 
@@ -1071,10 +1071,10 @@ class Content extends CI_Controller {
 			/*
 			 * Update
 			 */
-			$parent_id = $this->crud->get_content_parent_id($content_id);
-			$type_id = $this->crud->get_content_type_id($content_id);
-			$template_id = $this->crud->get_content_template_id($content_id);
-			$template = $this->crud->get_template($content_id);
+			$parent_id = $this->storage->get_content_parent_id($content_id);
+			$type_id = $this->storage->get_content_type_id($content_id);
+			$template_id = $this->storage->get_content_template_id($content_id);
+			$template = $this->storage->get_template($content_id);
 			$template_html = $template['html'];
 			$template_css = $template['css'];
 			$template_javascript = $template['javascript'];
@@ -1089,8 +1089,8 @@ class Content extends CI_Controller {
 			 */
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
-			$template_id = $this->crud->get_content_type_template_id($type_id);
-			$template = $this->crud->get_content_type_template($type_id);
+			$template_id = $this->storage->get_content_type_template_id($type_id);
+			$template = $this->storage->get_content_type_template($type_id);
 			$template_html = $template['html'];
 			$template_css = $template['css'];
 			$template_javascript = $template['javascript'];
@@ -1126,7 +1126,7 @@ class Content extends CI_Controller {
 				$template_form .= div_open(array('class' => 'form_window_column_input'));
 				if ( (bool) $content_id ) 
 				{
-					$checked = $this->crud->get_content_type_template_id($type_id) != $this->crud->get_content_template_id($content_id) ;
+					$checked = $this->storage->get_content_type_template_id($type_id) != $this->storage->get_content_template_id($content_id) ;
 				}
 				else 
 				{
@@ -1148,7 +1148,7 @@ class Content extends CI_Controller {
 			/*
 			 * Template pseudo variables available for this content
 			 */
-			$title = json_decode($this->crud->get_content_name($content_id), TRUE);
+			$title = json_decode($this->storage->get_content_name($content_id), TRUE);
 			$template_variables = array(
 				'content_variables_title' => $title[$this->LANG],
 				'content_variables' => array(),
@@ -1171,7 +1171,7 @@ class Content extends CI_Controller {
 			/*
 			 * Content single variables
 			 */
-			foreach ( $this->crud->get_content_type_fields($type_id) as $content_field )
+			foreach ( $this->storage->get_content_type_fields($type_id) as $content_field )
 			{
 				$template_variables['content_variables'][] = array(
 					'sname' => '{' . $content_field['sname'] . '}',
@@ -1182,7 +1182,7 @@ class Content extends CI_Controller {
 			/*
 			 * There are two "types" of relative contents: children and brother 
 			 */
-			if ( $this->crud->get_content_has_children($content_id, FALSE) )
+			if ( $this->storage->get_content_has_children($content_id, FALSE) )
 			{
 				/*
 				 * Children contents
@@ -1207,13 +1207,13 @@ class Content extends CI_Controller {
 			 */
 			if ( $content_id != 1 )
 			{
-				$parent_id = $this->crud->get_content_parent_id($content_id);
-				if ( $this->crud->get_content_has_children($parent_id, FALSE) )
+				$parent_id = $this->storage->get_content_parent_id($content_id);
+				if ( $this->storage->get_content_has_children($parent_id, FALSE) )
 				{
 					/*
 					 * Dont set if singleton (only child)
 					 */
-					if ( count($this->crud->get_contents_by_parent($parent_id)) > 1 )
+					if ( count($this->storage->get_contents_by_parent($parent_id)) > 1 )
 					{
 						/*
 						 * Brother contents
@@ -1239,7 +1239,7 @@ class Content extends CI_Controller {
 			/*
 			 * Available elements variables
 			 */
-			foreach ( $this->crud->get_elements_by_parent_spreaded($content_id) as $element )
+			foreach ( $this->storage->get_elements_by_parent_spreaded($content_id) as $element )
 			{
 				if ( ! isset($template_variables['element_variables'][$element['type_name']] ) )
 				{
@@ -1249,7 +1249,7 @@ class Content extends CI_Controller {
 					$pair = '{' . $element['type'] . '}'  . "\n" ;
 					$pair .= "\t" . '{name}' . "\n";
 					$pair .= "\t" . '{sname}' . "\n";
-					foreach( $this->crud->get_element_type_fields($element['type_id']) as $type_field )
+					foreach( $this->storage->get_element_type_fields($element['type_id']) as $type_field )
 					{
 						$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
 					}
@@ -1265,7 +1265,7 @@ class Content extends CI_Controller {
 				$fields = '';
 				$fields .= '{' . $element['sname'] . '.name}' . "\n";
 				$fields .= '{' . $element['sname'] . '.sname}' . "\n";
-				foreach ( $this->crud->get_element_fields($element['id']) as $element_field )
+				foreach ( $this->storage->get_element_fields($element['id']) as $element_field )
 				{
 					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
 				}
@@ -1414,7 +1414,7 @@ class Content extends CI_Controller {
 					'class' => 'noform',
 					'name' => $name,
 					'id' => $name,
-					'value' => html_entity_decode($this->crud->get_meta_field($content_id, $name), ENT_QUOTES, "UTF-8")
+					'value' => html_entity_decode($this->storage->get_meta_field($content_id, $name), ENT_QUOTES, "UTF-8")
 				);
 				$meta_form .= form_input($attributes);
 				$meta_form .= div_close("<!-- form_window_column_input -->");
@@ -1431,8 +1431,8 @@ class Content extends CI_Controller {
 			$meta_form .= br(1);
 			$meta_form .= div_close("<!-- form_window_column_label -->");
 			$meta_form .= div_open(array('class' => 'form_window_column_input'));
-			$uri = $this->crud->get_content_uri($content_id);
-			$url = $this->crud->get_meta_field($content_id, 'url');
+			$uri = $this->storage->get_content_uri($content_id);
+			$url = $this->storage->get_meta_field($content_id, 'url');
 			if ( $url == '' )
 			{
 				/*
@@ -1473,7 +1473,7 @@ class Content extends CI_Controller {
 				'0.9' => '0.9',
 				'1.0' => '1.0'
 			);
-			$value = $this->crud->get_meta_field($content_id, 'priority');
+			$value = $this->storage->get_meta_field($content_id, 'priority');
 			$selected = ( (bool) $value ) ? $value : '0.5';
 			$meta_form .= form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
 			$meta_form .= div_close("<!-- form_window_column_input -->");
@@ -1525,19 +1525,19 @@ class Content extends CI_Controller {
 			/*
 			 * Content name
 			 */
-			$value = $this->crud->get_content_name($content_id);
+			$value = $this->storage->get_content_name($content_id);
 			$content_form .= $this->_render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, TRUE);
 
 			/*
 			 * Render custom fields
 			 */
-			$fields = $this->crud->get_content_type_fields($type_id);
+			$fields = $this->storage->get_content_type_fields($type_id);
 			foreach ( $fields as $field )
 			{
 				/*
 				 * Field value
 				 */
-				$value = $this->crud->get_content_field($content_id, $field['id']);
+				$value = $this->storage->get_content_field($content_id, $field['id']);
 				$content_form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
 			}
 
@@ -1551,7 +1551,7 @@ class Content extends CI_Controller {
 			$content_form .= br(1);
 			$content_form .= div_close("<!-- form_window_column_label -->");
 			$content_form .= div_open(array('class' => 'form_window_column_input'));
-			$content_form .= $this->_render_status_dropdown($this->crud->get_content_status($content_id));
+			$content_form .= $this->_render_status_dropdown($this->storage->get_content_status($content_id));
 			$content_form .= div_close("<!-- form_window_column_input -->");
 			$content_form .= div_close("<!-- .form_content_field -->");
 
@@ -1679,12 +1679,12 @@ class Content extends CI_Controller {
 	function _render_content_types_dropdown($selected = NULL)
 	{
 		$dropdown = div_open(array('class' => 'dropdown_items_listing_inline'));
-		$types = $this->crud->get_content_types();
+		$types = $this->storage->get_content_types();
 		if ( count($types) > 0 )
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown .= anchor($this->crud->get_content_type_name($selected), array('href' => $selected));
+				$dropdown .= anchor($this->storage->get_content_type_name($selected), array('href' => $selected));
 			}
 			else
 			{
@@ -1719,12 +1719,12 @@ class Content extends CI_Controller {
 	function _render_element_types_dropdown($selected = NULL )
 	{
 		$dropdown = div_open(array('class' => 'dropdown_items_listing_inline'));
-		$types = $this->crud->get_element_types();
+		$types = $this->storage->get_element_types();
 		if ( count($types) > 0 )
 		{
 			if ( (bool) $selected )
 			{
-				$dropdown .= anchor($this->crud->get_element_type_name($selected), array('href' => $selected));
+				$dropdown .= anchor($this->storage->get_element_type_name($selected), array('href' => $selected));
 			}
 			else
 			{
@@ -1774,7 +1774,7 @@ class Content extends CI_Controller {
 	function _render_field_type_dropdown($selected = "1")
 	{
 		$options = array();
-		foreach ( $this->crud->get_field_types() as $option )
+		foreach ( $this->storage->get_field_types() as $option )
 		{
 			$options[$option['id']] = $option['name'];
 		}
@@ -1793,8 +1793,8 @@ class Content extends CI_Controller {
 		$count = $this->input->post('field_count', TRUE);
 		$template = $this->input->post('template');
 		$name = $this->input->post('name', TRUE);		
-		$template_id = $this->crud->put_template_html(NULL, $template);
-		$type_id = $this->crud->put_content_type($name, $template_id);
+		$template_id = $this->storage->put_template_html(NULL, $template);
+		$type_id = $this->storage->put_content_type($name, $template_id);
 		
 		if ( (bool) $type_id )
 		{
@@ -1808,7 +1808,7 @@ class Content extends CI_Controller {
 				$field_type = $this->input->post("field_type_" . $c, TRUE);
 				if ( $field != "" )
 				{
-					$this->crud->put_content_type_field($type_id, $field, $sname, $field_type);
+					$this->storage->put_content_type_field($type_id, $field, $sname, $field_type);
 				}
 			}
 			
@@ -1845,7 +1845,7 @@ class Content extends CI_Controller {
 
 		$sname = $this->common->normalize_string($name);
 
-		$type_id = $this->crud->put_element_type($name, $sname);
+		$type_id = $this->storage->put_element_type($name, $sname);
 		
 		if ( (bool) $type_id )
 		{
@@ -1859,7 +1859,7 @@ class Content extends CI_Controller {
 				$field_type = $this->input->post("field_type_" . $c, TRUE);
 				if ( $field != "" )
 				{
-					$this->crud->put_element_type_field($type_id, $field, $sname, $field_type);
+					$this->storage->put_element_type_field($type_id, $field, $sname, $field_type);
 				}
 			}
 			
@@ -1934,20 +1934,20 @@ class Content extends CI_Controller {
 			/*
 			 * Content has ID. Just rename
 			 */
-			$this->crud->put_content_name($content_id, $name, $sname);
+			$this->storage->put_content_name($content_id, $name, $sname);
 		}
 		else
 		{
 			/*
 			 * Content ID not found, create new content
 			 */
-			$content_id = $this->crud->put_content($name, $sname, $type_id);
+			$content_id = $this->storage->put_content($name, $sname, $type_id);
 		}
 		
 		/* 
 		 * Store content fields based on it's type
 		 */
-		foreach ( $this->crud->get_content_type_fields($type_id) as $type)
+		foreach ( $this->storage->get_content_type_fields($type_id) as $type)
 		{
 			/*
 			 * Check for multilanguage field
@@ -1971,19 +1971,19 @@ class Content extends CI_Controller {
 				 */
 				$value = $this->input->post($type['sname'], TRUE);
 			}
-			$this->crud->put_content_field($content_id, $type['id'], $value);
+			$this->storage->put_content_field($content_id, $type['id'], $value);
 		}
 		
 		/*
 		 * Save content's parent
 		 */
 		$parent_id = (int) $this->input->post('parent_id', TRUE);
-		$this->crud->put_content_parent($content_id, $parent_id);
+		$this->storage->put_content_parent($content_id, $parent_id);
 
 		/* 
 		 * Save status
 		 */
-		$this->crud->put_content_status($content_id, $this->input->post('status', TRUE));
+		$this->storage->put_content_status($content_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * Return ajax response
@@ -2010,7 +2010,7 @@ class Content extends CI_Controller {
 		/*
 		 * remover conteúdo
 		 */
-		$this->crud->delete_content($content_id);
+		$this->storage->delete_content($content_id);
 
 		/*
 		 * resposta
@@ -2037,7 +2037,7 @@ class Content extends CI_Controller {
 		/*
 		 * remover elemento
 		 */
-		$this->crud->delete_element($element_id);
+		$this->storage->delete_element($element_id);
 
 		/*
 		 * resposta
@@ -2071,7 +2071,7 @@ class Content extends CI_Controller {
 
 		if ( (bool) $parent_id && (bool) $element_id && ( $parent_id != $element_id ) )
 		{
-			$this->crud->put_element_parent($element_id, $parent_id);
+			$this->storage->put_element_parent($element_id, $parent_id);
 			$response = array(
 				'done' => TRUE
 			);
@@ -2108,7 +2108,7 @@ class Content extends CI_Controller {
 
 		if ( (bool) $parent_id && (bool) $content_id && ( $parent_id != $content_id ) )
 		{
-			$this->crud->put_content_parent($content_id, $parent_id);
+			$this->storage->put_content_parent($content_id, $parent_id);
 			$response = array(
 				'done' => TRUE
 			);
@@ -2170,20 +2170,20 @@ class Content extends CI_Controller {
 			/*
 			 * Content has ID. Just rename
 			 */
-			$this->crud->put_element_name($element_id, $name, $sname);
+			$this->storage->put_element_name($element_id, $name, $sname);
 		}
 		else
 		{
 			/*
 			 * Element ID not found, create new element
 			 */
-			$element_id = $this->crud->put_element($name, $sname, $type_id);
+			$element_id = $this->storage->put_element($name, $sname, $type_id);
 		}
 
 		/* 
 		 * Store element fields based on it's type
 		 */
-		foreach ( $this->crud->get_element_type_fields($type_id) as $type)
+		foreach ( $this->storage->get_element_type_fields($type_id) as $type)
 		{
 			/*
 			 * Check for multilanguage field
@@ -2207,7 +2207,7 @@ class Content extends CI_Controller {
 				 */
 				$value = $this->input->post($type['sname'], TRUE);
 			}
-			$this->crud->put_element_field($element_id, $type['id'], $value);
+			$this->storage->put_element_field($element_id, $type['id'], $value);
 		}
 		
 		/*
@@ -2215,23 +2215,23 @@ class Content extends CI_Controller {
 		 */
 		if ( $this->input->post('spread', TRUE) )
 		{
-			$this->crud->put_element_spread($element_id, TRUE);
+			$this->storage->put_element_spread($element_id, TRUE);
 		}
 		else
 		{
-			$this->crud->put_element_spread($element_id, FALSE);
+			$this->storage->put_element_spread($element_id, FALSE);
 		}
 
 		/*
 		 * Element's Parent
 		 */
 		$parent_id = $this->input->post('parent_id', TRUE);
-		$this->crud->put_element_parent($element_id, $parent_id);
+		$this->storage->put_element_parent($element_id, $parent_id);
 
 		/* 
 		 * Save status
 		 */
-		$this->crud->put_element_status($element_id, $this->input->post('status', TRUE));
+		$this->storage->put_element_status($element_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * Ajax response
@@ -2282,8 +2282,8 @@ class Content extends CI_Controller {
 		 */
 		$data['lang'] = $this->LANG;
 		
-		$data['content_hierarchy_content'] = $this->crud->get_contents_by_parent($id);
-		$data['content_hierarchy_element'] = $this->crud->get_elements_by_parent($id);
+		$data['content_hierarchy_content'] = $this->storage->get_contents_by_parent($id);
+		$data['content_hierarchy_element'] = $this->storage->get_elements_by_parent($id);
 		// Inner listings, if any
 		$data['content_listing_id'] = $listing_id;
 		$data['content_listing'] = $listing;
@@ -2337,23 +2337,23 @@ class Content extends CI_Controller {
 			$value = $this->input->post($name, TRUE);
 			if ( (bool) $value )
 			{
-				$this->crud->put_meta_field($id, $name, $value);
+				$this->storage->put_meta_field($id, $name, $value);
 			}
 			else
 			{
 				// Remove meta field
-				$this->crud->delete_meta_field($id, $name);
+				$this->storage->delete_meta_field($id, $name);
 			}
 		}
 		
-		$uri = $this->crud->get_content_uri($id);
+		$uri = $this->storage->get_content_uri($id);
 		$url = $this->input->post('url', TRUE);
 		if ( site_url($uri) != $url )
 		{
 			/*
 			 * Write url meta field
 			 */
-			$this->crud->put_meta_field($id, 'url', $url);
+			$this->storage->put_meta_field($id, 'url', $url);
 		}
 		
 		$response = array(
@@ -2389,7 +2389,7 @@ class Content extends CI_Controller {
 			/*
 			 * Home, always write template
 			 */
-			$this->crud->put_template($template_id, $template, $css, $javascript, $head);
+			$this->storage->put_template($template_id, $template, $css, $javascript, $head);
 		}
 		else
 		{
@@ -2398,21 +2398,21 @@ class Content extends CI_Controller {
 				/*
 				 * Exclusive template
 				 */
-				$content_type_template_id = $this->crud->get_content_type_template_id($this->crud->get_content_type_id($content_id));
+				$content_type_template_id = $this->storage->get_content_type_template_id($this->storage->get_content_type_id($content_id));
 				if ( $content_type_template_id != $template_id )
 				{
 					/*
 					 * Content already have exclusive template, update it!
 					 */
-					$this->crud->put_template($template_id, $template, $css, $javascript, $head);
+					$this->storage->put_template($template_id, $template, $css, $javascript, $head);
 				}
 				else
 				{
 					/*
 					 * Add a new template for this content
 					 */
-					$content_template_id = $this->crud->put_template(NULL, $template, $css, $javascript, $head);
-					$this->crud->put_content_template_id($content_id, $content_template_id);
+					$content_template_id = $this->storage->put_template(NULL, $template, $css, $javascript, $head);
+					$this->storage->put_content_template_id($content_id, $content_template_id);
 				}
 			}
 			else
@@ -2420,12 +2420,12 @@ class Content extends CI_Controller {
 				/*
 				 * Ensure that content has no exclusive template
 				 */
-				$content_type_template_id = $this->crud->get_content_type_template_id($this->crud->get_content_type_id($content_id));
-				$content_template_id = $this->crud->get_content_template_id($content_id);
+				$content_type_template_id = $this->storage->get_content_type_template_id($this->storage->get_content_type_id($content_id));
+				$content_template_id = $this->storage->get_content_template_id($content_id);
 				if ( $content_template_id != $content_type_template_id )
 				{
-					$this->crud->put_content_template_id($content_id, NULL);
-					$this->crud->delete_template($content_template_id);
+					$this->storage->put_content_template_id($content_id, NULL);
+					$this->storage->delete_template($content_template_id);
 				}
 	
 				/*
@@ -2436,7 +2436,7 @@ class Content extends CI_Controller {
 					/*
 					 * Overwrite type template
 					 */
-					$this->crud->put_template($content_type_template_id, $template, $css, $javascript, $head);
+					$this->storage->put_template($content_type_template_id, $template, $css, $javascript, $head);
 				}
 			}
 		}
@@ -2444,7 +2444,7 @@ class Content extends CI_Controller {
 		/*
 		 * Reload content's template
 		 */
-		$template = $this->crud->get_template($content_id);
+		$template = $this->storage->get_template($content_id);
 
 		/*
 		 * resposta
