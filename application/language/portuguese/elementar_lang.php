@@ -19,7 +19,7 @@ $lang['elementar_copyright']		= 'Todos os direitos reservados';
 $lang['elementar_content']		= 'Conte&uacute;do';
 $lang['elementar_contents']		= 'Conte&uacute;dos';
 $lang['elementar_element']		= 'Elemento';
-$lang['elementar_contents']		= 'Elementos';
+$lang['elementar_elements']		= 'Elementos';
 $lang['elementar_no_direct_script_access']		= 'O acesso direto ao recurso n&atilde;o &eacute; permitido';
 $lang['elementar_bad_request']		= 'Solicita&ccedil;&atilde;o incorreta';
 
