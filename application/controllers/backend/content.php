@@ -20,7 +20,7 @@
  *      MA 02110-1301, USA.
  */
 
-if ( ! defined('BASEPATH')) exit($this->lang->line('elementar_no_direct_script_access'));
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Content extends CI_Controller {
 
@@ -33,7 +33,7 @@ class Content extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		
+
 		/*
 		 *  CI helpers
 		 */
