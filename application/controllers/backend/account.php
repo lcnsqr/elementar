@@ -1,77 +1,115 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+/*
+ *      account.php
+ *      
+ *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Account extends CI_Controller {
+
+	/*
+	 * i18n settings
+	 */
+	var $LANG;
+	var $LANG_AVAIL = array();
 
 	function __construct()
 	{
 		parent::__construct();
-		
-		// string
-		$this->load->helper('string');
-		
-		// security
-		$this->load->helper('security');
-		
-		// session
+
+		/*
+		 *  CI helpers
+		 */
+		$this->load->helper(array('string', 'security', 'cookie', 'form', 'html', 'text', 'url'));
+
+		/*
+		 * CI libraries
+		 */
 		$this->load->library('session');
 		
-		// cookie
-		$this->load->helper('cookie');
+		/*
+		 * Elementar database
+		 */
+		$this->elementar = $this->load->database('elementar', TRUE);
 
-		// DB account
-		$this->db_acc = $this->load->database('account', TRUE);
+		/*
+		 * Access model
+		 */
+		$this->load->model('Access', 'access');
+		
+		/*
+		 * Create, read, update and delete Model
+		 */
+		$this->load->model('Storage', 'storage');
+		$this->storage->STATUS = 'all';
 
-		// Modelo session
-		$this->load->model('M_session', 'sess');
-
-		// Modelo account
-		$this->load->model('M_account', 'account');
-
-		// DB cms
-		$this->db_cms = $this->load->database('cms', TRUE);
-
-		// CMS Admin model
-		$this->load->model('M_cms_admin', 'cms');
+		/*
+		 * Backend language file
+		 */
+		$this->lang->load('elementar', $this->config->item('language'));
+		
+		/*
+		 * Load site config
+		 */
+		$settings = $this->storage->get_config();
+		if ( ! is_array($settings) )
+		{
+			exit($this->lang->line('elementar_config_error'));
+		}
+		foreach($settings as $setting)
+		{
+			switch ( $setting['name'] )
+			{
+				case 'i18n' :
+				/*
+				 * Language settings
+				 */
+				$i18n_settings = json_decode($setting['value'], TRUE);
+				foreach($i18n_settings as $i18n_setting)
+				{
+					if ( (bool) $i18n_setting['default'] )
+					{
+						$this->LANG = $i18n_setting['code'];
+						/*
+						 * Default language is first in array
+						 */
+						$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
+					}
+					else
+					{
+						$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
+					}
+				}
+				break;
+			}
+		}
 		
 		/*
 		 * CMS Common Library
 		 */
-		$this->load->library('common');
+		$this->load->library('common', array(
+			'lang' => $this->LANG, 
+			'uri_prefix' => ''
+		));
 
-		$this->load->helper(array('form', 'html', 'text', 'url'));
-		
-		// montar tabela
-		$this->load->library('table');
-
-		/*
-		 * Verificar sessão autenticada
-		 * de usuário autorizado no admin
-		 */
-		$user_id = $this->account->logged($this->sess->session_id());
-		if ( $user_id !== FALSE )
-		{
-			$data = array(
-				'is_logged' => TRUE,
-				'username' => $this->account->get_user_name($user_id)
-			);
-		}
-		else
-		{
-			$data = array(
-				'is_logged' => FALSE,
-				'title' => $this->config->item('site_name'),
-				'js' => array(
-					'/js/backend/jquery-1.6.2.min.js', 
-					'/js/backend/backend_session.js', 
-					'/js/backend/jquery.timers-1.2.js', 
-					'/js/backend/backend_client_warning.js'
-				),
-				'action' => '/' . uri_string(),
-				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
-			);
-			$login = $this->load->view('backend/backend_login', $data, TRUE);
-			exit($login);
-		}
+		$this->config->set_item('site_name', 'Elementar');
 
 	}
 	
@@ -81,9 +119,9 @@ class Account extends CI_Controller {
 		/*
 		 * User info
 		 */
-		$user_id = $this->account->logged($this->sess->session_id());
+		$user_id = $this->session->userdata('user_id');
 		$is_logged = TRUE;
-		$username = $this->account->get_user_name($user_id);
+		$username = $this->access->get_user_name($user_id);
 
 		/*
 		 * client controller (javascript)
@@ -93,24 +131,45 @@ class Account extends CI_Controller {
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
 			'/js/backend/backend_account.js',
-			'/js/backend/backend_anchor.js',
-			'/js/backend/backend_account_anchor_section.js',
-			'/js/backend/backend_upload.js',
-			'/js/backend/tinymce/jscripts/tiny_mce/jquery.tinymce.js'
+			'/js/backend/tiny_mce/jquery.tinymce.js',
+			'/js/backend/backend_client_warning.js',
+			'/js/backend/backend_anchor.js'
 		);
 		
 		/*
 		 * Resource menu
 		 */
-		$resource_menu = "<ul><li><strong>Usuários</strong></li><li>|</li><li><a href=\"/backend/content\" title=\"Conteúdo\">Conteúdo</a></li></ul>";
+		$resource_menu = array(
+			'<strong>' . $this->lang->line('elementar_accounts') . '</strong>',
+			span('&bull;', array('class' => 'top_menu_sep')),
+			anchor($this->lang->line('elementar_contents'), array('href' => '/backend/content', 'title' => $this->lang->line('elementar_contents')))
+		);
 
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
 			'is_logged' => $is_logged,
 			'username' => $username,
-			'resource_menu' => $resource_menu
+			'resource_menu' => ul($resource_menu)
 		);
+
+		$data['parent_id'] = 0;
+		$data['parent'] = $this->lang->line('elementar_groups');
+		$data['account_hierarchy_group'] = $this->access->get_groups();
+		$data['group_listing_id'] = NULL;
+		$data['group_listing'] = NULL;
+
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_delete'] = $this->lang->line('elementar_delete');
+		$data['elementar_edit_group'] = $this->lang->line('elementar_edit_group');
+		$data['elementar_new_group'] = $this->lang->line('elementar_new_group');
+
+		$data['elementar_exit'] = $this->lang->line('elementar_exit');
+		$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
+		$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
+		$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
 
 		$this->load->view('backend/backend_account', $data);
 
@@ -163,7 +222,7 @@ class Account extends CI_Controller {
 		
 		if ( $user_id > 1 )
 		{
-			$this->account->remove_user($user_id);
+			$this->access->remove_user($user_id);
 			$response = array('done' => TRUE);
 		}
 		else
@@ -197,7 +256,7 @@ class Account extends CI_Controller {
 			 * Verificação de usuário
 			 */
 			$username = $this->input->post('user_login', TRUE);
-			$valid = $this->account->validate_username($username);
+			$valid = $this->access->validate_username($username);
 			
 			if ( $valid !== TRUE )
 			{
@@ -209,7 +268,7 @@ class Account extends CI_Controller {
 			 * Verificação de email
 			 */
 			$email = $this->input->post('user_email', TRUE);
-			$valid = $this->account->validate_email($email);
+			$valid = $this->access->validate_email($email);
 			
 			if ( $valid !== TRUE )
 			{
@@ -221,7 +280,7 @@ class Account extends CI_Controller {
 			 * Verificação de senha
 			 */
 			$senha = $this->input->post('user_password', TRUE);
-			$valid = $this->account->validate_password($senha);
+			$valid = $this->access->validate_password($senha);
 			
 			if ( $valid !== TRUE )
 			{
@@ -234,7 +293,7 @@ class Account extends CI_Controller {
 			 */
 			if ( $response['done'] )
 			{
-				$user_id = $this->account->register_user($username, $email, $senha, '', TRUE);
+				$user_id = $this->access->register_user($username, $email, $senha, '', TRUE);
 				$response['html'] = $this->_get_users($user_id);
 			}
 			
@@ -247,7 +306,7 @@ class Account extends CI_Controller {
 	
 	function _get_users($id = NULL)
 	{
-		$users = $this->account->get_users($id);
+		$users = $this->access->get_users($id);
 		$html = "";
 		foreach ($users as $user)
 		{
@@ -257,6 +316,17 @@ class Account extends CI_Controller {
 			$html .= $this->table->generate();
 			$html .= "</div>";
 			$this->table->clear();
+		}
+		return $html;
+	}
+
+	function _get_accounts($group_id = NULL)
+	{
+		$accounts = $this->access->get_accounts($group_id);
+		$html = "";
+		foreach ($accounts as $account)
+		{
+			$html .= paragraph($account['name']);
 		}
 		return $html;
 	}

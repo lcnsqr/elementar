@@ -375,4 +375,99 @@ class Access extends CI_Model {
 		return $contents;
 	}
 
+	function get_contents_by_parent($parent_id = 1)
+	{
+		$contents = NULL;
+		
+		$this->elementar->select('content.id, content.name, content.sname');
+		$this->elementar->from('content');
+		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
+		$this->elementar->where('content_parent.parent_id', $parent_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('content.status', $this->STATUS);
+		}
+		$this->elementar->order_by('content.created', 'desc');
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$contents = array();
+			foreach ($query->result() as $row)
+			{
+				$contents[] = array(
+					'id' => $row->id, 
+					'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
+					'sname' => $row->sname,
+					'children' => $this->get_content_has_children($row->id)
+				);
+			}
+		}
+
+		return $contents;
+	}
+
+	/*
+	 * List all groups
+	 */
+	function get_groups()
+	{
+		$groups = array();
+		$this->elementar->select('group.id, group.name, group.description');
+		$this->elementar->from('group');
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			foreach ($query->result() as $row)
+			{
+				$groups[] = array(
+					'id' => $row->id, 
+					'name' => $row->name,
+					'description' => html_entity_decode($row->description, ENT_QUOTES, "UTF-8"),
+					'children' => $this->get_group_has_account($row->id)
+				);
+			}
+		}
+		return $groups;
+	}
+
+	/*
+	 * Check if group has any accounts
+	 */
+	function get_group_has_account($group_id)
+	{
+		$this->elementar->select('id');
+		$this->elementar->from('account_group');
+		$this->elementar->where('group_id', $group_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows > 0)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	
+	/*
+	 * List all accounts from group
+	 */
+	function get_accounts($group_id = NULL)
+	{
+		$accounts = array();
+		$this->elementar->select('account.id, account.user, account.email, account.created');
+		$this->elementar->from('account');
+		if ($id !== NULL)
+		{
+			$this->elementar->join('account_group', 'account_group.account_id = account.id', 'inner');
+			$this->elementar->where('account_group.group_id', $group_id);
+		}
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$accounts = $query->result_array();
+		}
+		return $accounts;
+	}
+
 }

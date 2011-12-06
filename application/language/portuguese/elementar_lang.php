@@ -16,12 +16,21 @@ $lang['elementar_exit']		= 'Sair';
 $lang['elementar_finished_in']		= 'Executado em';
 $lang['elementar_finished_elapsed']		= 'segundo';
 $lang['elementar_copyright']		= 'Todos os direitos reservados';
+$lang['elementar_account']		= 'Conta';
+$lang['elementar_accounts']		= 'Contas';
 $lang['elementar_content']		= 'Conte&uacute;do';
 $lang['elementar_contents']		= 'Conte&uacute;dos';
 $lang['elementar_element']		= 'Elemento';
 $lang['elementar_elements']		= 'Elementos';
 $lang['elementar_no_direct_script_access']		= 'O acesso direto ao recurso n&atilde;o &eacute; permitido';
 $lang['elementar_bad_request']		= 'Solicita&ccedil;&atilde;o incorreta';
+
+/*
+ * Account related
+ */
+$lang['elementar_groups']		= 'Grupos';
+$lang['elementar_edit_group']		= 'Editar grupo';
+$lang['elementar_new_group']		= 'Criar grupo';
 
 /*
  * Content/element related
