@@ -199,11 +199,11 @@ class Content extends CI_Controller {
 		$resource_menu = array(
 			anchor('Usuários', array('href' => '/backend/account', 'title' => 'Usuários')),
 			span("&bull;", array('class' => 'top_menu_sep')),
-			'<strong>' . $this->lang->line('elementar_content') . '</strong>'
+			'<strong>' . $this->lang->line('elementar_contents') . '</strong>'
 		);
 		*/
 		$resource_menu = array(
-			'<strong>' . $this->lang->line('elementar_content') . '</strong>'
+			'<strong>' . $this->lang->line('elementar_contents') . '</strong>'
 		);
 
 		$data = array(
