@@ -20,13 +20,13 @@ $(function() {
 				}
 				else {
 					showClientWarning(data.msg);
+					// Bloqueio
+					$("#blocker").fadeOut("fast");
 				}
 			}
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
-			// Bloqueio
-			$("#blocker").fadeOut("fast");
 		}, "json");
 	});
 
