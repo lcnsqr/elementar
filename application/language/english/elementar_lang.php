@@ -19,7 +19,7 @@ $lang['elementar_copyright']		= 'All rights reserved';
 $lang['elementar_content']		= 'Content';
 $lang['elementar_contents']		= 'Contents';
 $lang['elementar_element']		= 'Element';
-$lang['elementar_contents']		= 'Elements';
+$lang['elementar_elements']		= 'Elements';
 $lang['elementar_no_direct_script_access']		= 'No direct script access allowed';
 $lang['elementar_bad_request']		= 'Bad request';
 
