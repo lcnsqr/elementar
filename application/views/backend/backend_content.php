@@ -24,7 +24,7 @@
 		<div id="tree_parent_1" class="tree_parent">
 			
 			<div class="tree_listing_row dropable">
-				<div class="tree_listing_icon">
+				<div class="tree_listing_icon" style="cursor: default !important;">
 					<img style="margin: 0;" src="/css/backend/icon_home.png" alt="<?php echo $parent; ?>" />
 				</div>
 				<div class="tree_listing_header">
