@@ -262,69 +262,12 @@ class Account extends CI_Controller {
 		 * Group name
 		 */
 		$value = $this->access->get_group_name($group_id);
-		$form .= $this->_render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
-
-		/*
-		 * Element type fields
-		 */
-		$fields = $this->storage->get_element_type_fields($type_id);
-		foreach ( $fields as $field )
-		{
-			/*
-			 * Field value
-			 */
-			$value = $this->storage->get_element_field($element_id, $field['id']);
-			$form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
-		}
-
-		/*
-		 * Spread
-		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		if ( (bool) $element_id !== FALSE ) 
-		{
-			$checked = $this->storage->get_element_spread($element_id);
-		}
-		else
-		{
-			// Default new element to spread
-			$checked = TRUE;
-		}
-		$attributes = array('class' => 'field_label');
-		$form .= form_label($this->lang->line('elementar_element_spread'), "spread", $attributes);
-		$form .= div_close("<!-- form_window_column_label -->");
-
-		$form .= div_open(array('class' => 'form_window_column_input'));
-		$attributes = array(
-			'name'        => 'spread',
-			'id'          => 'spread',
-			'class' => 'noform',
-			'value'       => 'true',
-			'checked'     => $checked
-		);
-		$form .= form_checkbox($attributes);
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
-
-		/*
-		 * status
-		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$attributes = array('class' => 'field_label');
-		$form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
-		$form .= $this->_render_status_dropdown($this->storage->get_element_status($element_id));
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
-
-		$form .= div_open(array('class' => 'form_control_buttons'));
+		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
 		/*
 		 *  Botão envio
 		 */
+		$form .= div_open(array('class' => 'form_control_buttons'));
 		$attributes = array(
 		    'name' => 'button_element_save',
 		    'id' => 'button_element_save',
@@ -335,9 +278,9 @@ class Account extends CI_Controller {
 
 		$form .= div_close();
 		
-		$data['element_form'] = $form;
+		$data['group_form'] = $form;
 		
-		$html = $this->load->view('backend/backend_content_element_form', $data, true);
+		$html = $this->load->view('backend/backend_account_group_form', $data, true);
 
 		$response = array(
 			'done' => TRUE,
