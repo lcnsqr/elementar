@@ -54,7 +54,7 @@ $(function() {
 		event.preventDefault();
 
 		// Loading icon
-		$("#content_tree_loading").fadeIn("fast");
+		$("#account_tree_loading").fadeIn("fast");
 
 		var id = $(this).attr("href");
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
@@ -68,7 +68,7 @@ $(function() {
 				$(bullet).removeClass("fold");
 			}
 			// Loading icon
-			$("#content_tree_loading").fadeOut("fast");
+			$("#account_tree_loading").fadeOut("fast");
 		}, "json");
 	});
 	/*
@@ -157,7 +157,7 @@ $(function() {
 			}
 
 			// Loading icon
-			$("#content_tree_loading").fadeIn("fast");
+			$("#account_tree_loading").fadeIn("fast");
 
 			/*
 			 * Update item parent
@@ -171,13 +171,13 @@ $(function() {
 						$("#tree_listing_1").html(data.html);
 
 						// Loading icon
-						$("#content_tree_loading").fadeOut("fast");
+						$("#account_tree_loading").fadeOut("fast");
 
 					}, "json");
 				}
 				else {
 					// Loading icon
-					$("#content_tree_loading").fadeOut("fast");
+					$("#account_tree_loading").fadeOut("fast");
 					showClientWarning(data.message);
 				}
 			}, "json");
