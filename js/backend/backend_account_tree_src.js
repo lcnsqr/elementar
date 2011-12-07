@@ -35,7 +35,9 @@ $(function() {
 		/*
 		 * Positioning
 		 */
-		$(visible_menu).css({ 'left' : event.pageX + 'px', 'top' : event.pageY + 'px' });
+		var marginTop = -20;
+		var marginLeft = 5;
+		$(visible_menu).css({ 'left' : (event.pageX + marginLeft) + 'px', 'top' : (event.pageY + marginTop) + 'px' });
 		$('body').append(visible_menu);
 		$(visible_menu).fadeIn('fast');
 	});
