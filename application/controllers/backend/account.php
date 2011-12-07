@@ -115,7 +115,6 @@ class Account extends CI_Controller {
 	
 	function index()
 	{
-
 		/*
 		 * User info
 		 */
@@ -131,6 +130,7 @@ class Account extends CI_Controller {
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
 			'/js/backend/backend_account.js',
+			'/js/backend/backend_account_tree.js',
 			'/js/backend/tiny_mce/jquery.tinymce.js',
 			'/js/backend/backend_client_warning.js',
 			'/js/backend/backend_anchor.js'
@@ -154,7 +154,7 @@ class Account extends CI_Controller {
 		);
 
 		$data['parent_id'] = 0;
-		$data['parent'] = $this->lang->line('elementar_groups');
+		$data['parent'] = $this->lang->line('elementar_accounts');
 		$data['account_hierarchy_group'] = $this->access->get_groups();
 		$data['group_listing_id'] = NULL;
 		$data['group_listing'] = NULL;
@@ -173,6 +173,64 @@ class Account extends CI_Controller {
 
 		$this->load->view('backend/backend_account', $data);
 
+	}
+
+	/*
+	 * List accounts
+	 */
+	function xhr_render_tree_listing()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$group_id = $this->input->post('id');
+
+		if ( ! (bool) $group_id )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_bad_request')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+
+		$html = $this->_render_tree_listing($group_id);
+
+		$response = array(
+			'done' => TRUE,
+			'id' => $group_id,
+			'html' => $html
+		);
+		$this->common->ajax_response($response);
+		
+	}
+	
+	function _render_tree_listing($id, $listing = NULL, $listing_id = NULL)
+	{
+		$data['parent_id'] = $id;
+		
+		/*
+		 * Set default language for view
+		 */
+		$data['lang'] = $this->LANG;
+		
+		$data['account_hierarchy_account'] = $this->access->get_accounts($id);
+		// Inner listings, if any
+		$data['account_listing_id'] = $listing_id;
+		$data['account_listing'] = $listing;
+		
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_edit'] = $this->lang->line('elementar_edit');
+		$data['elementar_delete'] = $this->lang->line('elementar_delete');
+		$data['elementar_new_account'] = $this->lang->line('elementar_new_account');
+		$data['elementar_edit_account'] = $this->lang->line('elementar_edit_account');
+		
+		$html = $this->load->view('backend/backend_account_tree', $data, true);
+		
+		return $html;
 	}
 	
 	/**
@@ -302,33 +360,6 @@ class Account extends CI_Controller {
 			
 		}
 
-	}
-	
-	function _get_users($id = NULL)
-	{
-		$users = $this->access->get_users($id);
-		$html = "";
-		foreach ($users as $user)
-		{
-			$this->table->set_heading('Login', 'Email', 'Data', '');
-			$this->table->add_row($user['user'], $user['email'], $user['created'], "<a href=\"" . $user['id'] . "\" class=\"user_del\">Remover</a>");
-			$html .= "<div class=\"user_info\">";
-			$html .= $this->table->generate();
-			$html .= "</div>";
-			$this->table->clear();
-		}
-		return $html;
-	}
-
-	function _get_accounts($group_id = NULL)
-	{
-		$accounts = $this->access->get_accounts($group_id);
-		$html = "";
-		foreach ($accounts as $account)
-		{
-			$html .= paragraph($account['name']);
-		}
-		return $html;
 	}
 	
 }

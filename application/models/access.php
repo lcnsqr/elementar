@@ -27,6 +27,11 @@
 
 class Access extends CI_Model {
 	
+	/*
+	 * Account status defaults to “all” 
+	 */
+	var $STATUS = 'all';
+
 	function __construct()
 	{
 		// Call the Model constructor
@@ -375,35 +380,37 @@ class Access extends CI_Model {
 		return $contents;
 	}
 
-	function get_contents_by_parent($parent_id = 1)
+	function get_accounts($group_id = NULL)
 	{
-		$contents = NULL;
+		$accounts = NULL;
 		
-		$this->elementar->select('content.id, content.name, content.sname');
-		$this->elementar->from('content');
-		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
-		$this->elementar->where('content_parent.parent_id', $parent_id);
+		$this->elementar->select('account.id, account.user, account.email');
+		$this->elementar->from('account');
+		if ( (bool) $group_id )
+		{
+			$this->elementar->join('account_group', 'account_group.account_id = account.id', 'inner');
+			$this->elementar->where('account_group.group_id', $group_id);
+		}
 		if ( $this->STATUS != 'all' )
 		{
-			$this->elementar->where('content.status', $this->STATUS);
+			$this->elementar->where('account.status', $this->STATUS);
 		}
-		$this->elementar->order_by('content.created', 'desc');
+		$this->elementar->order_by('account.created', 'desc');
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
-			$contents = array();
+			$accounts = array();
 			foreach ($query->result() as $row)
 			{
-				$contents[] = array(
+				$accounts[] = array(
 					'id' => $row->id, 
-					'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
-					'sname' => $row->sname,
-					'children' => $this->get_content_has_children($row->id)
+					'user' => $row->user,
+					'email' => $row->email
 				);
 			}
 		}
 
-		return $contents;
+		return $accounts;
 	}
 
 	/*
@@ -411,7 +418,7 @@ class Access extends CI_Model {
 	 */
 	function get_groups()
 	{
-		$groups = array();
+		$groups = NULL;
 		$this->elementar->select('group.id, group.name, group.description');
 		$this->elementar->from('group');
 		$query = $this->elementar->get();
@@ -447,27 +454,6 @@ class Access extends CI_Model {
 		{
 			return FALSE;
 		}
-	}
-	
-	/*
-	 * List all accounts from group
-	 */
-	function get_accounts($group_id = NULL)
-	{
-		$accounts = array();
-		$this->elementar->select('account.id, account.user, account.email, account.created');
-		$this->elementar->from('account');
-		if ($id !== NULL)
-		{
-			$this->elementar->join('account_group', 'account_group.account_id = account.id', 'inner');
-			$this->elementar->where('account_group.group_id', $group_id);
-		}
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			$accounts = $query->result_array();
-		}
-		return $accounts;
 	}
 
 }

@@ -29,8 +29,10 @@ $lang['elementar_bad_request']		= 'Solicita&ccedil;&atilde;o incorreta';
  * Account related
  */
 $lang['elementar_groups']		= 'Grupos';
+$lang['elementar_new_group']		= 'Criar novo grupo';
 $lang['elementar_edit_group']		= 'Editar grupo';
-$lang['elementar_new_group']		= 'Criar grupo';
+$lang['elementar_new_account']		= 'Criar nova conta aqui';
+$lang['elementar_edit_account']		= 'Editar conta';
 
 /*
  * Content/element related

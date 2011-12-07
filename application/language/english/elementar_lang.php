@@ -29,9 +29,10 @@ $lang['elementar_bad_request']		= 'Bad request';
  * Account related
  */
 $lang['elementar_groups']		= 'Groups';
-$lang['elementar_account_new_group']		= 'Add group';
+$lang['elementar_new_group']		= 'Add new group';
 $lang['elementar_edit_group']		= 'Edit Group';
-$lang['elementar_new_group']		= 'Add new account here';
+$lang['elementar_new_account']		= 'Add new account here';
+$lang['elementar_edit_account']		= 'Edit account';
 
 /*
  * Content/element related
