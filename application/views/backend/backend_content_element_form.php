@@ -1,5 +1,5 @@
-<div id="content_editors_container">
-	<div id="content_editors_header">
+<div id="editors_container">
+	<div id="editors_header">
 		<p><?php echo $breadcrumb; ?></p>
 	</div>
 	

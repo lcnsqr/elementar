@@ -1,11 +1,11 @@
-<div id="content_editors_container">
-	<div id="content_editors_header">
+<div id="editors_container">
+	<div id="editors_header">
 <?php if ( $show_tabs ) : ?>
-		<div id="content_editors_menu">
+		<div id="editors_menu">
 			<ul>
-				<li><a class="content_editors_menu_item<?php echo ( $editor == 'content' ) ? ' current' : ''; ?>" href="content_editor_form"><?php echo $elementar_editor_content; ?></a></li>
-				<li><a class="content_editors_menu_item<?php echo ( $editor == 'template' ) ? ' current' : ''; ?>" href="template_editor_form"><?php echo $elementar_editor_template; ?></a></li>
-				<li><a class="content_editors_menu_item<?php echo ( $editor == 'meta' ) ? ' current' : ''; ?>" href="meta_editor_form"><?php echo $elementar_editor_meta; ?></a></li>
+				<li><a class="editors_menu_item<?php echo ( $editor == 'content' ) ? ' current' : ''; ?>" href="content_editor_form"><?php echo $elementar_editor_content; ?></a></li>
+				<li><a class="editors_menu_item<?php echo ( $editor == 'template' ) ? ' current' : ''; ?>" href="template_editor_form"><?php echo $elementar_editor_template; ?></a></li>
+				<li><a class="editors_menu_item<?php echo ( $editor == 'meta' ) ? ' current' : ''; ?>" href="meta_editor_form"><?php echo $elementar_editor_meta; ?></a></li>
 			</ul>
 		</div>
 <?php endif; ?>

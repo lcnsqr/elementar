@@ -5,4 +5,4 @@
 <div style="display: none;" id="type_define_new_container"></div>
 
 <!-- Container for after content type choose -->
-<div id="content_editors_container"></div>
+<div id="editors_container"></div>
