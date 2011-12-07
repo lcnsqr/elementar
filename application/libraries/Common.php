@@ -11,6 +11,7 @@ class Common {
 	 * i18n settings
 	 */
 	private $LANG = 'por';
+	private $LANG_AVAIL = array();
 	private $URI_PREFIX = '';
 
 	function __construct($params)
@@ -21,6 +22,7 @@ class Common {
 		 * i18n: Default language
 		 */
 		$this->LANG = $params['lang'];
+		$this->LANG_AVAIL = $params['lang_avail'];
 		$this->URI_PREFIX = $params['uri_prefix'];
 
 		/*
@@ -49,6 +51,379 @@ class Common {
 		$this->CI->output->set_output($data);
 	}
 	
+	/*
+	 * Render backend html columns with label and input(s)
+	 */
+	function render_form_field($type, $name, $sname, $description = NULL, $value = NULL, $i18n)
+	{
+		$field = div_open(array('class' => 'form_content_field'));
+		$field .= div_open(array('class' => 'form_window_column_label'));
+		$attributes = array('class' => 'field_label');
+		$field .= form_label($name, $sname, $attributes);
+		$field .= br(1);
+		$field .= div_close('<!-- form_window_column_label -->');
+		$field .= div_open(array('class' => 'form_window_column_input'));
+		
+		/*
+		 * Check multilanguage
+		 */
+		if ( (bool) $i18n )
+		{
+			/*
+			 * Value array index is language code
+			 */
+			$value = json_decode($value, TRUE);
+
+			/*
+			 * One tab link for each language
+			 */
+			$input_lang_tab_links = array();
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+			{
+				$current = ( $this->LANG == $lang_code ) ? ' current' : '';
+				$input_lang_tab_links[] = anchor($lang_name, array('href' => $lang_code, 'class' => 'input_lang_tab_link' . $current));
+			}
+			$field .= div_open(array('class' => 'input_lang_menu'));
+			$field .= ul($input_lang_tab_links);
+			//field .= hr(array('class' => 'clear'));
+			$field .= div_close('<!-- input_lang_menu -->');
+			/*
+			 * The input fields for each language
+			 */
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+			{
+				/*
+				 * If language index does not exist, set empty
+				 */
+				$value = ( $value == NULL ) ? array() : $value;
+				$lang_value = ( array_key_exists($lang_code, $value) ) ? $value[$lang_code] : '';
+	
+				$attributes = array('class' => 'input_lang_field input_lang_field_' . $lang_code);
+				if ( $this->LANG == $lang_code ) 
+				{
+					$attributes['style'] = 'display: block;';
+				}
+				$field .= div_open($attributes);
+				$field .= $this->_render_form_custom_field($type, $name, $sname . '_' . $lang_code, $description, $lang_value);
+				$field .= div_close('<!-- input_lang_field -->');
+			}
+		}
+		else
+		{
+			/*
+			 * No multilanguage, no language tabs
+			 */
+			$attributes = array('class' => 'input_lang_field');
+			$attributes['style'] = 'display: block;';
+			$field .= div_open($attributes);
+			$field .= $this->_render_form_custom_field($type, $name, $sname, $description, $value);
+			$field .= div_close('<!-- input_lang_field -->');
+			 
+		}
+		
+		$field .= div_close('<!-- form_window_column_input -->');
+		$field .= div_close('<!-- .form_content_field -->');
+		return $field;
+	}
+
+	function _render_form_custom_field($type, $name, $sname, $description, $value)
+	{
+		/*
+		 * Adequate input to field type
+		 */
+		switch ( $type )
+		{
+			case "name" :
+			case "line" :
+			$attributes = array(
+				'class' => 'noform',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field = div_open(array('class' => 'text_input_container'));
+			$field .= form_input($attributes);
+			$field .= div_close();
+			$field .= hr(array('class' => 'clear'));
+			break;
+
+			case "p" :
+			case "hypertext" :
+			case "textarea" :
+			$attributes = array(
+				'class' => 'noform ' . $type,
+				'name' => $sname,
+				'id' => $sname,
+				'rows' => 16,
+				'cols' => 32,
+				'value' => $value
+			);
+			$field = form_textarea($attributes);
+			break;
+			
+			case "menu" :
+			$field = div_open(array('class' => 'menu_field'));
+			/*
+			 * Render menu field
+			 */
+			$data = array(
+				'menu' => ( $value != '' ) ? json_decode($value, TRUE) : array(), 
+				'targets' => $this->_render_target_listing()
+			);
+			
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_menu_name'] = $this->CI->lang->line('elementar_menu_name');
+			$data['elementar_menu_target'] = $this->CI->lang->line('elementar_menu_target');
+			$data['elementar_menu_add'] = $this->CI->lang->line('elementar_menu_add');
+			$data['elementar_menu_move_up'] = $this->CI->lang->line('elementar_menu_move_up');
+			$data['elementar_menu_move_down'] = $this->CI->lang->line('elementar_menu_move_down');
+			$data['elementar_menu_delete'] = $this->CI->lang->line('elementar_menu_delete');
+			$data['elementar_menu_new_above'] = $this->CI->lang->line('elementar_menu_new_above');
+			$data['elementar_menu_new_below'] = $this->CI->lang->line('elementar_menu_new_below');			
+			
+			$field .= $this->CI->load->view('backend/backend_content_menu_field', $data, true);
+			/*
+			 * The actual field
+			 */
+			$attributes = array(
+				'class' => 'noform menu_actual_field',
+				'type' => 'hidden',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field .= form_input($attributes);
+			$field .= div_close();
+			break;
+
+			case "file" : 
+			$field = div_open(array('class' => 'file_field'));
+			$attributes = array(
+				'class' => 'noform ' . $type,
+				'type' => 'hidden',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field .= form_input($attributes);
+			/*
+			 * File field View variables
+			 */
+			$data = array();
+			$data['input_name'] = $sname;
+			if ( $value != '' )
+			{
+				$attributes = json_decode($value, TRUE);
+				$data['thumbnail'] = $attributes['thumbnail'];
+				$data['file_description'] = $attributes['title'];
+				$data['file_uri'] = $attributes['uri'];
+				$data['mime'] = $attributes['mime'];
+				$data['size'] = $attributes['size'];
+			}
+			else
+			{
+				$data['thumbnail'] = '';
+				$data['file_description'] = '';
+				$data['file_uri'] = '';
+				$data['mime'] = '';
+				$data['size'] = '';
+			}
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_file_description'] = $this->CI->lang->line('elementar_file_description');
+			$data['elementar_file_uri'] = $this->CI->lang->line('elementar_file_uri');
+			$data['elementar_file_type'] = $this->CI->lang->line('elementar_file_type');
+			$data['elementar_file_size'] = $this->CI->lang->line('elementar_file_size');
+			$data['elementar_file_browse'] = $this->CI->lang->line('elementar_file_browse');
+			$data['elementar_file_erase'] = $this->CI->lang->line('elementar_file_erase');
+
+			$field .= $this->CI->load->view("backend/backend_content_file_field", $data, TRUE);
+			$field .= div_close();
+			break;
+
+			case "file_gallery" : 
+			$field = div_open(array('class' => 'file_gallery_field'));
+			/*
+			 * Input holds json data with 
+			 * file uri, alt text, width, height,
+			 * thumbnail and size
+			 */
+			$attributes = array(
+				'class' => 'noform file_gallery_actual_field',
+				'type' => 'hidden',
+				'name' => $sname,
+				'value' => $value
+			);
+			$field .= form_input($attributes);
+			/*
+			 * Render gallery field
+			 */
+			$data = array(
+				'gallery' => ($value != '') ? json_decode($value, TRUE) : array()
+			);
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_file_description'] = $this->CI->lang->line('elementar_file_description');
+			$data['elementar_file_uri'] = $this->CI->lang->line('elementar_file_uri');
+			$data['elementar_file_type'] = $this->CI->lang->line('elementar_file_type');
+			$data['elementar_file_size'] = $this->CI->lang->line('elementar_file_size');
+			$data['elementar_file_browse'] = $this->CI->lang->line('elementar_file_browse');
+			$data['elementar_file_erase'] = $this->CI->lang->line('elementar_file_erase');
+			$data['elementar_file_add'] = $this->CI->lang->line('elementar_file_add');
+			$data['elementar_file_move_up'] = $this->CI->lang->line('elementar_file_move_up');
+			$data['elementar_file_move_down'] = $this->CI->lang->line('elementar_file_move_down');
+			$data['elementar_file_delete'] = $this->CI->lang->line('elementar_file_delete');
+			$data['elementar_file_new_above'] = $this->CI->lang->line('elementar_file_new_above');
+			$data['elementar_file_new_below'] = $this->CI->lang->line('elementar_file_new_below');
+
+			$field .= $this->CI->load->view("backend/backend_content_file_gallery_field", $data, TRUE);
+			$field .= div_close();
+			break;
+
+			case "youtube_gallery" :
+			$field = div_open(array('class' => 'youtube_gallery_field'));
+			/*
+			 * Render youtube_gallery field
+			 */
+			$data = array(
+				'videos' => json_decode($value, TRUE) // decode as associative array
+			);
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_youtube_description'] = $this->CI->lang->line('elementar_youtube_description');
+			$data['elementar_youtube_url'] = $this->CI->lang->line('elementar_youtube_url');
+			$data['elementar_youtube_add'] = $this->CI->lang->line('elementar_youtube_add');
+			$data['elementar_youtube_move_up'] = $this->CI->lang->line('elementar_youtube_move_up');
+			$data['elementar_youtube_move_down'] = $this->CI->lang->line('elementar_youtube_move_down');
+			$data['elementar_youtube_delete'] = $this->CI->lang->line('elementar_youtube_delete');
+			$data['elementar_youtube_new_above'] = $this->CI->lang->line('elementar_youtube_new_above');
+			$data['elementar_youtube_new_below'] = $this->CI->lang->line('elementar_youtube_new_below');
+
+			$field .= $this->CI->load->view('backend/backend_content_youtube_gallery_field', $data, true);
+			/*
+			 * The actual field
+			 */
+			$attributes = array(
+				'class' => 'noform youtube_gallery_actual_field',
+				'type' => 'hidden',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field .= form_input($attributes);
+			$field .= div_close();
+			break;
+
+			case "target" :
+			$attributes = array(
+				'class' => 'noform',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field = form_input($attributes);
+			break;
+
+			case "index" :
+			$attributes = array(
+				'class' => 'noform index_field',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field = form_input($attributes);
+			$field .= $this->_render_contents_listing();
+			break;
+		}
+		return $field;
+	}
+	
+	function _render_target_listing()
+	{
+		/*
+		 * dropdown target listing
+		 */
+		$listing = array();
+		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_inside_targets') . '</strong>');
+		/*
+		 * Conteúdos
+		 */
+		foreach ( $this->CI->storage->get_contents() as $content )
+		{
+			$listing[] = $this->breadcrumb_content($content['id']);
+		}
+		/*
+		 * Addons
+		 */
+		foreach ( $this->load_addons() as $addon ) 
+		{
+			$listing[] = $this->breadcrumb_path($addon['uri']);
+			// Methods
+			if ( count($addon['methods']) > 0 )
+			{
+				foreach ( $addon['methods'] as $method ) 
+				{
+	            // skip methods that begin with '_'
+	            if ( substr($method, 0, 1) == '_' ) continue;
+	
+	            // skip default method
+	            if ( $method == 'index' || $method == 'main' ) continue;
+	            
+					// skip XHR (ajax) methods
+	            if ( substr($method, 0, 4) == 'xhr_' ) continue;
+	
+	            // skip old-style constructor
+	            if ( strtolower($method) == strtolower($addon['name']) ) continue;
+
+					$listing[] = $this->breadcrumb_path($addon['uri'] . '/' . $method);
+				}				
+			}
+		}
+		$targets = div_open(array('class' => 'dropdown_items_listing_position'));
+		$targets .= div_open(array('class' => 'dropdown_items_listing'));
+		$attributes = array(
+			'class' => 'dropdown_items_listing_targets'
+		);
+		$targets .= ul($listing, $attributes);
+		$targets .= div_close();
+		$targets .= div_close();
+		return $targets;
+	}
+
+	function _render_contents_listing()
+	{
+		/*
+		 * dropdown target listing
+		 */
+		$listing = array();
+		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_contents') . '</strong>');
+		/*
+		 * Conteúdos
+		 */
+		foreach ( $this->CI->storage->get_contents_by_parent() as $content )
+		{
+			$content_name = json_decode($content['name'], TRUE);
+			$listing[] = anchor($content_name[$this->LANG], array('href' => $content['id']));
+		}
+		$contents = div_open(array('class' => 'dropdown_items_listing_position'));
+		$contents .= div_open(array('class' => 'dropdown_items_listing'));
+		$attributes = array(
+			'class' => 'dropdown_items_listing_contents'
+		);
+		$contents .= ul($listing, $attributes);
+		$contents .= div_close();
+		$contents .= div_close();
+		return $contents;
+	}
+
 	/*
 	 * Is an URI the current location ?
 	 */

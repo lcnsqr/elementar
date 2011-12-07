@@ -93,6 +93,7 @@ class File extends CI_Controller {
 		 */
 		$this->load->library('common', array(
 			'lang' => $this->LANG, 
+			'lang_avail' => $this->LANG_AVAIL, 
 			'uri_prefix' => ''
 		));
 
