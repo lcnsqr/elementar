@@ -130,9 +130,11 @@ class Account extends CI_Controller {
 			'/js/backend/jquery-1.6.2.min.js',
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
+			'/js/backend/tiny_mce/jquery.tinymce.js',
+			'/js/backend/backend_content_tinymce.js',
 			'/js/backend/backend_account.js',
 			'/js/backend/backend_account_tree.js',
-			'/js/backend/tiny_mce/jquery.tinymce.js',
+			'/js/backend/backend_account_window.js',
 			'/js/backend/backend_client_warning.js',
 			'/js/backend/backend_anchor.js'
 		);
@@ -154,19 +156,11 @@ class Account extends CI_Controller {
 			'resource_menu' => ul($resource_menu)
 		);
 
-		$data['parent_id'] = 0;
 		$data['parent'] = $this->lang->line('elementar_accounts');
-		$data['account_hierarchy_group'] = $this->access->get_groups();
-		$data['group_listing_id'] = NULL;
-		$data['group_listing'] = NULL;
 
-		/*
-		 * Localized texts
-		 */
-		$data['elementar_delete'] = $this->lang->line('elementar_delete');
-		$data['elementar_edit_group'] = $this->lang->line('elementar_edit_group');
-		$data['elementar_new_group'] = $this->lang->line('elementar_new_group');
-
+		// load tree
+		$data['backend_account_tree'] = $this->_render_tree_listing();
+		
 		$data['elementar_exit'] = $this->lang->line('elementar_exit');
 		$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
 		$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
@@ -174,6 +168,52 @@ class Account extends CI_Controller {
 
 		$this->load->view('backend/backend_account', $data);
 
+	}
+
+	/*
+	 * Render tree accounts by group
+	 */
+	function xhr_render_group_listing()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$group_id = $this->input->post('id');
+
+		if ( ! (bool) $group_id )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_bad_request')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+
+		$accounts = $this->access->get_accounts($group_id);
+		$group = array('accounts' => ( (bool) $accounts ) ? $accounts : array());
+
+		$data = array('group' => $group);
+
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_delete'] = $this->lang->line('elementar_delete');
+		$data['elementar_edit'] = $this->lang->line('elementar_edit');
+		$data['elementar_edit_group'] = $this->lang->line('elementar_edit_group');
+		$data['elementar_new_group'] = $this->lang->line('elementar_new_group');
+		$data['elementar_edit_account'] = $this->lang->line('elementar_edit_account');
+		$data['elementar_new_account'] = $this->lang->line('elementar_new_account');
+
+		$html = $this->load->view('backend/backend_account_tree_group', $data, TRUE);
+
+		$response = array(
+			'done' => TRUE,
+			'id' => $group_id,
+			'html' => $html
+		);
+		$this->common->ajax_response($response);
+		
 	}
 
 	/*
@@ -206,28 +246,42 @@ class Account extends CI_Controller {
 		$this->common->ajax_response($response);
 		
 	}
-	
-	function _render_tree_listing($id, $listing = NULL, $listing_id = NULL)
+
+	function _render_tree_listing($group_id = NULL)
 	{
-		$data['parent_id'] = $id;
+		$groups = array();
+		
+		foreach ($this->access->get_groups() as $group)
+		{
+			$accounts = ( $group['id'] == $group_id ) ? $this->access->get_accounts($group['id']) : array();
+			$display_accounts = ( $group['id'] == $group_id && count($accounts) > 0 ) ? TRUE : FALSE;
+			$groups[] = array(
+				'id' => $group['id'],
+				'name' => $group['name'],
+				'description' => $group['description'],
+				'children' => $group['children'],
+				'display_accounts' => $display_accounts,
+				'accounts' => $accounts
+			);
+		}
+		
+		$data['groups'] = $groups;
+
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_delete'] = $this->lang->line('elementar_delete');
+		$data['elementar_edit'] = $this->lang->line('elementar_edit');
+		$data['elementar_edit_group'] = $this->lang->line('elementar_edit_group');
+		$data['elementar_new_group'] = $this->lang->line('elementar_new_group');
+		$data['elementar_edit_account'] = $this->lang->line('elementar_edit_account');
+		$data['elementar_new_account'] = $this->lang->line('elementar_new_account');
+
 		
 		/*
 		 * Set default language for view
 		 */
 		$data['lang'] = $this->LANG;
-		
-		$data['account_hierarchy_account'] = $this->access->get_accounts($id);
-		// Inner listings, if any
-		$data['account_listing_id'] = $listing_id;
-		$data['account_listing'] = $listing;
-		
-		/*
-		 * Localized texts
-		 */
-		$data['elementar_edit'] = $this->lang->line('elementar_edit');
-		$data['elementar_delete'] = $this->lang->line('elementar_delete');
-		$data['elementar_new_account'] = $this->lang->line('elementar_new_account');
-		$data['elementar_edit_account'] = $this->lang->line('elementar_edit_account');
 		
 		$html = $this->load->view('backend/backend_account_tree', $data, true);
 		
@@ -252,7 +306,7 @@ class Account extends CI_Controller {
 		 */
 		$attributes = array(
 			'class' => 'noform',
-			'name' => 'group_id',
+			'name' => 'id',
 			'value'=> $group_id,
 			'type' => 'hidden'
 		);
@@ -265,12 +319,18 @@ class Account extends CI_Controller {
 		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
 		/*
+		 * Group description
+		 */
+		$value = $this->access->get_group_description($group_id);
+		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_group_description'), 'description', NULL, $value, FALSE);
+
+		/*
 		 *  Botão envio
 		 */
 		$form .= div_open(array('class' => 'form_control_buttons'));
 		$attributes = array(
-		    'name' => 'button_element_save',
-		    'id' => 'button_element_save',
+		    'name' => 'button_group_save',
+		    'id' => 'button_group_save',
 		    'class' => 'noform',
 		    'content' => $this->lang->line('elementar_save')
 		);
@@ -278,7 +338,16 @@ class Account extends CI_Controller {
 
 		$form .= div_close();
 		
-		$data['group_form'] = $form;
+		if ( (bool) $group_id )
+		{
+			$data['header'] = $this->lang->line('elementar_edit_group');
+		}
+		else
+		{
+			$data['header'] = $this->lang->line('elementar_new_group');
+		}
+		
+		$data['form'] = $form;
 		
 		$html = $this->load->view('backend/backend_account_group_form', $data, true);
 
@@ -290,6 +359,96 @@ class Account extends CI_Controller {
 		$this->common->ajax_response($response);
 
 	}
+
+	/*
+	 * Save group
+	 */
+	function xhr_write_group()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		/*
+		 * Create or update? Check for incoming group ID
+		 */
+		$group_id = $this->input->post('id', TRUE);
+
+		/*
+		 * Other group fields
+		 */
+		$name = $this->input->post('name', TRUE);
+		$description = $this->input->post('description', TRUE);
+		
+		/*
+		 * Value verification
+		 */
+		if ( $name == '' )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_return_name_error')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+		
+		if ( (bool) $group_id )
+		{
+			/*
+			 * Update group
+			 */
+			$this->access->put_group_name($group_id, $name);
+			$this->access->put_group_description($group_id, $description);
+		}
+		else
+		{
+			/*
+			 * Create group
+			 */
+			$group_id = $this->access->put_group($name, $description);
+		}
+		
+		$response = array(
+			'done' => TRUE,
+			'group_id' => $group_id,
+			'message' => $this->lang->line('elementar_xhr_write_group')
+		);
+		$this->common->ajax_response($response);
+
+	}
+
+	/*
+	 * Save group
+	 */
+	function xhr_erase_group()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$group_id = $this->input->post('id', TRUE);
+		$name = $this->access->get_group_name($group_id);
+
+		if ( (int) $group_id > 1 )
+		{
+			$this->access->delete_group($group_id);
+			$response = array(
+				'done' => TRUE,
+				'message' => $name . ' ' . $this->lang->line('elementar_xhr_erase')
+			);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_erase_admin') . ' ' . $name
+			);
+		}
+		
+		// Enviar resposta
+		$this->common->ajax_response($response);
+
+	}
+
 
 	/**
 	 * Remover conta

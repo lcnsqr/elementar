@@ -31,6 +31,7 @@ $lang['elementar_bad_request']		= 'Bad request';
 $lang['elementar_groups']		= 'Groups';
 $lang['elementar_new_group']		= 'Add new group';
 $lang['elementar_edit_group']		= 'Edit Group';
+$lang['elementar_group_description']		= 'Group description';
 $lang['elementar_new_account']		= 'Add new account here';
 $lang['elementar_edit_account']		= 'Edit account';
 
@@ -80,7 +81,7 @@ $lang['elementar_draft']		= 'Draft';
 $lang['elementar_published']		= 'Published';
 $lang['elementar_save']		= 'Save';
 
-$lang['elementar_return_name_error']		= 'Invalide name';
+$lang['elementar_return_name_error']		= 'Invalid name';
 $lang['elementar_return_save_error']		= 'Fatal error, please try again';
 
 $lang['elementar_inside_targets']		= 'inside targets';
@@ -105,6 +106,9 @@ $lang['elementar_xhr_write_content']		= 'Content saved';
 $lang['elementar_xhr_write_content_error']		= 'Error while saving content';
 $lang['elementar_xhr_write_content_type']		= 'Content template saved';
 $lang['elementar_xhr_write_template']		= 'Template saved';
+$lang['elementar_xhr_write_group']		= 'Group saved';
+$lang['elementar_xhr_erase_admin']		= 'Can not remove';
+$lang['elementar_xhr_erase']		= 'removed';
 
 /*
  * File field

@@ -458,6 +458,7 @@ class Access extends CI_Model {
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
+			$row = $query->row();
 			$group = array(
 				'id' => $row->id, 
 				'name' => $row->name,
@@ -480,6 +481,7 @@ class Access extends CI_Model {
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
+			$row = $query->row();
 			return $row->name;
 		}
 	}
@@ -496,6 +498,7 @@ class Access extends CI_Model {
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
+			$row = $query->row();
 			return $row->description;
 		}
 	}
@@ -517,6 +520,61 @@ class Access extends CI_Model {
 		{
 			return FALSE;
 		}
+	}
+	
+	/*
+	 * Write group
+	 */
+	function put_group($name, $description)
+	{
+		$data = array(
+			'name' => $name,
+			'description' => $description
+		);
+		$inserted = $this->elementar->insert('group', $data);
+		if ($inserted)
+		{
+			return $this->elementar->insert_id();
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/*
+	 * Rename group
+	 */
+	function put_group_name($group_id, $name)
+	{
+		$data = array(
+			'name' => $name
+		);
+		
+		$this->elementar->where('id', $group_id);
+		$this->elementar->update('group', $data); 
+	}
+
+	/*
+	 * Write group description
+	 */
+	function put_group_description($group_id, $description)
+	{
+		$data = array(
+			'description' => $description
+		);
+		
+		$this->elementar->where('id', $group_id);
+		$this->elementar->update('group', $data); 
+	}
+
+	/* 
+	 * Remove group
+	 */
+	function delete_group($group_id)
+	{
+		$this->elementar->delete('account_group', array('group_id' => $group_id)); 
+		$this->elementar->delete('group', array('id' => $group_id));
 	}
 
 }

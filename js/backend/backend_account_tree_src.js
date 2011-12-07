@@ -48,7 +48,7 @@ $(function() {
 	});
 
 	/*
-	 * Show existing contents listing and rotate bullet arrow
+	 * Show existing group listing and rotate bullet arrow
 	 */
 	$("a.fold.folder_switch").live("click", function(event) {
 		event.preventDefault();
@@ -60,7 +60,7 @@ $(function() {
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		var bullet = $(this);
 
-		$.post("/backend/account/xhr_render_tree_listing", { id : id }, function(data){
+		$.post("/backend/account/xhr_render_group_listing", { id : id }, function(data){
 			if ( data.done == true ) {
 				$(listing).html(data.html);
 				$(listing).slideDown("fast", "easeInSine");
@@ -82,6 +82,80 @@ $(function() {
 		$(this).removeClass("unfold");
 	});	
 	
+	/*
+	 * Show group create/edit form
+	 */
+	$("a.new.group,a.edit.group").live('click', function(event) {
+		event.preventDefault();
+
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+		
+		if ( $(this).hasClass('new') ) {
+			var id = '';
+		}
+		else if ( $(this).hasClass('edit') ) {
+			var id = $(this).attr('href');
+		}
+
+		$.post("/backend/account/xhr_render_group_form", { id : id }, function(data){
+			if ( data.done == true ) {
+				$("#account_window").html(data.html).show();
+			}
+
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}, "json");
+	});
+
+	/*
+	 * Item removal
+	 */
+	$("a.remove").live('click', function(event) {
+		event.preventDefault();
+
+		/*
+		 * Item type
+		 */
+		if ( $(this).hasClass("group") ) {
+			var action = "/backend/account/xhr_erase_group";
+		}
+		else if ( $(this).hasClass("account") ) {
+			var action = "/backend/account/xhr_erase_account";
+		}
+
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+		
+		var id = $(this).attr('href');
+		var erase = $('#tree_listing_1').find('p.label > a[href="' + id + '"]').parents('.tree_parent').first();
+		var parent_listing = $(erase).parents(".tree_listing").first();
+		var parent = $(erase).parents(".tree_parent").first();
+		
+		if (confirm($(this).attr("title") + "?")) { 
+
+			$.post(action, { id : id }, function(data){
+				if ( data.done == true ) {
+					$(erase).slideUp("fast", "easeOutSine", function() {
+						$(this).remove();
+						if ( $(parent_listing).children().length == 0 ) {
+							$(parent_listing).hide();
+							$(parent).find(".tree_listing_bullet").first().html("<span class=\"bullet_placeholder\">&nbsp;</span>");
+						}
+					});
+				}
+				showClientWarning(data.message);
+	
+				// Bloqueio
+				$("#blocker").stop().fadeOut("fast");
+			}, "json");
+		}
+		else {
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}
+	});
+
 	/*
 	 * Tree item drag and drop
 	 */

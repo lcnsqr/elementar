@@ -31,6 +31,7 @@ $lang['elementar_bad_request']		= 'Solicita&ccedil;&atilde;o incorreta';
 $lang['elementar_groups']		= 'Grupos';
 $lang['elementar_new_group']		= 'Criar novo grupo';
 $lang['elementar_edit_group']		= 'Editar grupo';
+$lang['elementar_group_description']		= 'Descri&ccedil;&atilde;o do grupo';
 $lang['elementar_new_account']		= 'Criar nova conta aqui';
 $lang['elementar_edit_account']		= 'Editar conta';
 
@@ -105,6 +106,9 @@ $lang['elementar_xhr_write_content']		= 'Conte&uacute;do salvo com sucesso';
 $lang['elementar_xhr_write_content_error']		= 'Erro ao salvar conte&uacute;do';
 $lang['elementar_xhr_write_content_type']		= 'Padr&atilde;o de conteúdo salvo';
 $lang['elementar_xhr_write_template']		= 'Padr&atilde;o salvo com sucesso';
+$lang['elementar_xhr_write_group']		= 'Grupo salvo com sucesso';
+$lang['elementar_xhr_erase_admin']		= 'Não é possível remover';
+$lang['elementar_xhr_erase']		= 'removido';
 
 
 /*
