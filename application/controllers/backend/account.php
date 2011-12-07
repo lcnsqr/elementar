@@ -233,41 +233,120 @@ class Account extends CI_Controller {
 		return $html;
 	}
 	
-	/**
-	 * Atualizar conteúdo da seção
+	/*
+	 * Create/edit group
 	 */
-	function xhr_render_section()
+	function xhr_render_group_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		/*
+		 * Create or update? Check for incoming group ID
+		 */
+		$group_id = $this->input->post('id', TRUE);
+
+		/*
+		 * Group ID (if any, hidden)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'group_id',
+			'value'=> $group_id,
+			'type' => 'hidden'
+		);
+		$form = form_input($attributes);
+
+		/*
+		 * Group name
+		 */
+		$value = $this->access->get_group_name($group_id);
+		$form .= $this->_render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
+
+		/*
+		 * Element type fields
+		 */
+		$fields = $this->storage->get_element_type_fields($type_id);
+		foreach ( $fields as $field )
+		{
+			/*
+			 * Field value
+			 */
+			$value = $this->storage->get_element_field($element_id, $field['id']);
+			$form .= $this->_render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
+		}
+
+		/*
+		 * Spread
+		 */
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
+		if ( (bool) $element_id !== FALSE ) 
+		{
+			$checked = $this->storage->get_element_spread($element_id);
+		}
+		else
+		{
+			// Default new element to spread
+			$checked = TRUE;
+		}
+		$attributes = array('class' => 'field_label');
+		$form .= form_label($this->lang->line('elementar_element_spread'), "spread", $attributes);
+		$form .= div_close("<!-- form_window_column_label -->");
+
+		$form .= div_open(array('class' => 'form_window_column_input'));
+		$attributes = array(
+			'name'        => 'spread',
+			'id'          => 'spread',
+			'class' => 'noform',
+			'value'       => 'true',
+			'checked'     => $checked
+		);
+		$form .= form_checkbox($attributes);
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
+
+		/*
+		 * status
+		 */
+		$form .= div_open(array('class' => 'form_content_field'));
+		$form .= div_open(array('class' => 'form_window_column_label'));
+		$attributes = array('class' => 'field_label');
+		$form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
+		$form .= div_close("<!-- form_window_column_label -->");
+		$form .= div_open(array('class' => 'form_window_column_input'));
+		$form .= $this->_render_status_dropdown($this->storage->get_element_status($element_id));
+		$form .= div_close("<!-- form_window_column_input -->");
+		$form .= div_close("<!-- .form_content_field -->");
+
+		$form .= div_open(array('class' => 'form_control_buttons'));
+
+		/*
+		 *  Botão envio
+		 */
+		$attributes = array(
+		    'name' => 'button_element_save',
+		    'id' => 'button_element_save',
+		    'class' => 'noform',
+		    'content' => $this->lang->line('elementar_save')
+		);
+		$form .= form_button($attributes);
+
+		$form .= div_close();
 		
-			$section = $this->input->post('section', TRUE);
-			
-			switch ($section)
-			{
-				case "users" :
-				$update = TRUE;
-				$data = array(
-					'users' => $this->_get_users()
-				);
-				$html = $this->load->view('backend/backend_account_users', $data, TRUE);
-				break;
-				
-				default :
-				$update = FALSE;
-				$html = "";
-				
-			}
+		$data['element_form'] = $form;
+		
+		$html = $this->load->view('backend/backend_content_element_form', $data, true);
 
 		$response = array(
 			'done' => TRUE,
-			'update' => $update,
 			'html' => $html
 		);
+
 		$this->common->ajax_response($response);
 
 	}
-	
+
 	/**
 	 * Remover conta
 	 */

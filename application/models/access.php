@@ -380,6 +380,14 @@ class Access extends CI_Model {
 		return $contents;
 	}
 
+
+
+	/*
+	 * new code
+	 */
+
+
+
 	function get_accounts($group_id = NULL)
 	{
 		$accounts = NULL;
@@ -429,12 +437,67 @@ class Access extends CI_Model {
 				$groups[] = array(
 					'id' => $row->id, 
 					'name' => $row->name,
-					'description' => html_entity_decode($row->description, ENT_QUOTES, "UTF-8"),
+					'description' => $row->description,
 					'children' => $this->get_group_has_account($row->id)
 				);
 			}
 		}
 		return $groups;
+	}
+
+	/*
+	 * Get group info
+	 */
+	function get_group($id)
+	{
+		$group = NULL;
+		$this->elementar->select('id, name, description');
+		$this->elementar->from('group');
+		$this->elementar->where('id', $id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$group = array(
+				'id' => $row->id, 
+				'name' => $row->name,
+				'description' => $row->description,
+				'children' => $this->get_group_has_account($row->id)
+			);
+		}
+		return $group;
+	}
+
+	/*
+	 * Get group name
+	 */
+	function get_group_name($id)
+	{
+		$this->elementar->select('name');
+		$this->elementar->from('group');
+		$this->elementar->where('id', $id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			return $row->name;
+		}
+	}
+
+	/*
+	 * Get group description
+	 */
+	function get_group_description($id)
+	{
+		$this->elementar->select('description');
+		$this->elementar->from('group');
+		$this->elementar->where('id', $id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			return $row->description;
+		}
 	}
 
 	/*
