@@ -597,47 +597,4 @@ $(function() {
 	
 });
 
-/*
- * Serialize composite fields for saving
- */
-$.extend({
-	prepareCompositeFields: function(){
-		/*
-		 * Update file field json data
-		 */
-		$("input.file").each(function() {
-			var file = $.parseJSON($(this).val());
-			if ( file != null ) {
-				/*
-				 * Push description text to array
-				 */
-				file.title = $('input#' + $(this).attr('id') + '_description').val();
-			}
-			$(this).val($.toJSON(file));
-		});
-
-		/*
-		 * Update file gallery json data
-		 */
-		$(".file_gallery_field").each(function() {
-			$(this).prepareFileGalleryField();
-		});
-
-		/*
-		 * Update menu field json data
-		 */
-		$(".menu_field").each(function() {
-			$(this).prepareMenuField();
-		});
-
-		/*
-		 * Update youtube gallery json data
-		 */
-		$(".youtube_gallery_field").each(function() {
-			$(this).prepareYoutubeGalleryField();
-		});
-	}
-});
-
-
 //]]>

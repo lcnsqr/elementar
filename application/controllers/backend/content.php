@@ -184,11 +184,7 @@ class Content extends CI_Controller {
 			'/js/backend/backend_client_warning.js',
 			'/js/backend/backend_content_tree.js',
 			'/js/backend/backend_content_window.js',
-			'/js/backend/backend_content_tinymce.js',
-			'/js/backend/backend_content_menu_field.js',
-			'/js/backend/backend_content_index_field.js',
-			'/js/backend/backend_content_file_gallery_field.js',
-			'/js/backend/backend_content_youtube_gallery_field.js',
+			'/js/backend/backend_composite_field.js',
 			'/js/backend/jquery.json-2.2.min.js',
 			'/js/backend/backend_anchor.js'
 		);
