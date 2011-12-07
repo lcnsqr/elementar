@@ -23,7 +23,7 @@
 	
 		<div id="tree_parent_1" class="tree_parent">
 			
-			<div class="tree_listing_row undropable">
+			<div class="tree_listing_row undroppable">
 				<div class="tree_listing_icon" style="cursor: auto !important;">
 					<img style="margin: 0;" src="/css/backend/icon_groups.png" alt="<?php echo $parent; ?>" />
 				</div>
@@ -54,7 +54,7 @@
 				<?php foreach($account_hierarchy_group as $group): ?>
 				<div class="tree_parent">
 			
-					<div class="tree_listing_row dropable">
+					<div class="tree_listing_row droppable">
 						<div class="tree_listing_bullet">
 							<?php if ( $group['children'] === TRUE ): ?>  		
 							<a href="<?php echo $group['id']; ?>" class="<?php echo ( (bool) $group_listing && $group_listing_id == $group['id'] ) ? "unfold" : "fold"; ?> folder_switch group"></a>
@@ -62,7 +62,7 @@
 							<span class="bullet_placeholder">&nbsp;</span>
 							<?php endif; ?>
 						</div>
-						<div class="tree_listing_icon">
+						<div class="tree_listing_icon" style="cursor: auto !important;">
 							<img src="/css/backend/icon_group.png" alt="<?php echo $group['description']; ?>" />
 						</div>
 						<div class="tree_listing_text">

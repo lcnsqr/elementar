@@ -2,11 +2,11 @@
 	<?php foreach($account_hierarchy_account as $account): ?>
 	<div class="tree_parent">
 
-		<div class="tree_listing_row undropable">
+		<div class="tree_listing_row undroppable">
 			<div class="tree_listing_bullet">
 				<span class="bullet_placeholder">&nbsp;</span>
 			</div>
-			<div class="tree_listing_icon">
+			<div class="tree_listing_icon draggable">
 				<img src="/css/backend/icon_account.png" alt="<?php echo $account['user']; ?>" />
 			</div>
 			<div class="tree_listing_text">

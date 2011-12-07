@@ -130,9 +130,9 @@ $(function() {
 			var parent_id = $(parent_label).children('a').attr('href');
 	
 			/*
-			 * Re-add dropable class to dragged row
+			 * Re-add droppable class to dragged row
 			 */
-			$('.tree_listing_row').not('.undropable').not('.dropable').addClass('dropable');
+			$('.tree_listing_row').not('.undroppable').not('.droppable').addClass('droppable');
 
 			/*
 			 * Unset droppable highlight
@@ -187,7 +187,7 @@ $(function() {
 	});
 	
 	/*
-	 * Move item and highlight dropable row behind
+	 * Move item and highlight droppable row behind
 	 */
 	$(window).mousemove(function(event){
 		if ( mouseButton == 1 && $('#tree_drag_container').children().length > 0 ) {
@@ -207,7 +207,7 @@ $(function() {
 			 */
 			var pointerY = event.pageY;
 			var pointerX = event.pageX;
-			$('.tree_listing_row.dropable').not('.dragging').each(function(){
+			$('.tree_listing_row.droppable').not('.dragging').each(function(){
 				var row_top = $(this).offset().top;
 				var row_right = $(this).offset().left + $(this).outerWidth();
 				var row_bottom = $(this).offset().top + $(this).outerHeight();
@@ -225,7 +225,7 @@ $(function() {
 	/*
 	 * Clone draggable row and add it to drag container
 	 */
-	$('.tree_listing_icon').live('mousedown', function(event){
+	$('.tree_listing_icon.draggable').live('mousedown', function(event){
 		event.preventDefault();
 		
 		/*
@@ -250,7 +250,7 @@ $(function() {
 		/*
 		 * Disable same item drop
 		 */
-		$(row).removeClass('dropable');
+		$(row).removeClass('droppable');
 		
 		var moving = $(row).clone();
 		$(moving).addClass('dragging');
