@@ -343,25 +343,25 @@
 /*
  * Content/template menu links
  */
-#content_editors_header {
+#editors_header {
 	position: relative;
 	border-bottom: 1px solid #888a85; 
 	margin-bottom: 8px;
 }
-#content_editors_header > p > a {
+#editors_header > p > a {
 	display: inline-block;
 	padding: 4px;
 }
-#content_editors_menu {
+#editors_menu {
 	position: absolute;
 	right: 0;
 	bottom: 0;
 }
-#content_editors_menu ul li {
+#editors_menu ul li {
 	position: relative;
 	float: left;
 }
-#content_editors_menu ul li a {
+#editors_menu ul li a {
 	display: block;
 	padding: 4px;
 	border-top: 1px solid #fff;
@@ -370,9 +370,9 @@
 	border-left: 1px solid #fff;
 	background-color: #fff;
 }
-#content_editors_menu ul li a:hover {
+#editors_menu ul li a:hover {
 }
-#content_editors_menu ul li a.current {
+#editors_menu ul li a.current {
 	border: 1px solid #888a85;
 	background-color: #888a85;
 	color: #fff;
@@ -380,7 +380,7 @@
 	text-shadow: 0 -1px 0 #2d2d2d;
 */
 }
-#content_editors_menu ul li a.current:hover {
+#editors_menu ul li a.current:hover {
 	text-decoration: none;
 }
 

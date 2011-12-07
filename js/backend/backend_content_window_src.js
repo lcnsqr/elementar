@@ -75,7 +75,7 @@ $(function() {
 			if ( data.done == true ) {
 				// Close type editor (if visible)
 				$("#type_define_new_container:visible").fadeOut("slow");
-				$("#content_editors_container").replaceWith(data.html).show(function(){
+				$("#editors_container").replaceWith(data.html).show(function(){
 					// WYSIWYG textarea activation
 					$('#content_editor_form').find('textarea').wysiwyg();
 				});
@@ -175,7 +175,7 @@ $(function() {
 			if ( data.done == true ) {
 				// Close type editor (if visible)
 				$("#type_define_new_container:visible").fadeOut("slow");
-				$("#content_editors_container").replaceWith(data.html).show(function(){
+				$("#editors_container").replaceWith(data.html).show(function(){
 					// WYSIWYG textarea activation
 					$('#content_editor_form').find('textarea').wysiwyg();
 				});
@@ -514,11 +514,11 @@ $(function() {
 	/*
 	 * Content/template editor tabs
 	 */
-	$("a.content_editors_menu_item").live('click', function(event) {
+	$("a.editors_menu_item").live('click', function(event) {
 		event.preventDefault();
 		var target = $(this).attr('href');
 		
-		$("a.content_editors_menu_item[href!='"+target+"']").removeClass("current");
+		$("a.editors_menu_item[href!='"+target+"']").removeClass("current");
 		$(this).addClass("current");
 		
 		$("div.editor_form[id!='"+target+"']").hide();
