@@ -12,7 +12,7 @@ $(function() {
 		/*
 		 * Composite fields
 		 */
-		//$.prepareCompositeFields();
+		$.prepareCompositeFields();
 		
 		$.post("/backend/account/xhr_write_group", $(".noform").serialize(), function(data){
 			if ( data.done == true ) {
@@ -30,7 +30,7 @@ $(function() {
 					if ( data.done == true ) {
 						$("#account_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							//$('#editor_form').find('textarea').wysiwyg();
+							$('#editor_form').find('textarea').wysiwyg();
 
 							showClientWarning(message);
 

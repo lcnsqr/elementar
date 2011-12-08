@@ -131,7 +131,7 @@ class Account extends CI_Controller {
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
 			'/js/backend/tiny_mce/jquery.tinymce.js',
-			'/js/backend/backend_content_tinymce.js',
+			'/js/backend/backend_composite_field.js',
 			'/js/backend/backend_account.js',
 			'/js/backend/backend_account_tree.js',
 			'/js/backend/backend_account_window.js',
