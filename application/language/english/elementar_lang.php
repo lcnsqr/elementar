@@ -109,6 +109,7 @@ $lang['elementar_xhr_write_template']		= 'Template saved';
 $lang['elementar_xhr_write_group']		= 'Group saved';
 $lang['elementar_xhr_erase_admin']		= 'Can not remove';
 $lang['elementar_xhr_erase']		= 'removed';
+$lang['elementar_xhr_not_allowed']		= 'Operation not allowed';
 
 /*
  * File field

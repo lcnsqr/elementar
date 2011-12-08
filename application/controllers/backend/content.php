@@ -1545,11 +1545,23 @@ class Content extends CI_Controller {
 		$type_id = $this->input->post('type_id', TRUE);
 
 		/*
-		 * Locate content ID
+		 * Locate content ID 
 		 */
 		$content_id = $this->input->post('content_id', TRUE);
 		if ( (bool) $content_id )
 		{
+			/*
+			 * check if its real
+			 */
+			if ( ! (bool) $this->storage->get_content_status($content_id) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_write_content_error')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
 			/*
 			 * Content has ID. Just rename
 			 */
@@ -1688,6 +1700,19 @@ class Content extends CI_Controller {
 		 */
 		$element_id = $this->input->post('child_id', TRUE);
 
+		/*
+		 * check if its real
+		 */
+		if ( ! (bool) $this->storage->get_content_status($parent_id) || ! (bool) $this->storage->get_element_status($element_id) )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_write_element_error')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+
 		if ( (bool) $parent_id && (bool) $element_id && ( $parent_id != $element_id ) )
 		{
 			$this->storage->put_element_parent($element_id, $parent_id);
@@ -1724,6 +1749,37 @@ class Content extends CI_Controller {
 		 * Content id
 		 */
 		$content_id = $this->input->post('child_id', TRUE);
+		
+		/*
+		 * check if its real
+		 */
+		if ( ! (bool) $this->storage->get_content_status($parent_id) || ! (bool) $this->storage->get_content_status($content_id) )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_write_content_error')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+
+		/*
+		 * Avoid placing into own children
+		 */
+		$above_id = $this->storage->get_content_parent_id($parent_id);
+		while ( (bool) $above_id )
+		{
+			if ( $content_id == $above_id )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_not_allowed')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+			$above_id = $this->storage->get_content_parent_id($above_id);
+		}
 
 		if ( (bool) $parent_id && (bool) $content_id && ( $parent_id != $content_id ) )
 		{
@@ -1786,6 +1842,18 @@ class Content extends CI_Controller {
 		$element_id = $this->input->post('element_id', TRUE);
 		if ( (bool) $element_id )
 		{
+			/*
+			 * check if its real
+			 */
+			if ( ! (bool) $this->storage->get_element_status($element_id) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_write_element_error')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
 			/*
 			 * Content has ID. Just rename
 			 */
@@ -1936,6 +2004,19 @@ class Content extends CI_Controller {
 		$id = $this->input->post('id', TRUE);
 		
 		/*
+		 * check if its real
+		 */
+		if ( ! (bool) $this->storage->get_content_status($id) )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_write_content_error')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+
+		/*
 		 * Meta fields
 		 */
 		$fields = array(
@@ -1991,6 +2072,19 @@ class Content extends CI_Controller {
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$content_id = $this->input->post('content_id', TRUE);
+		/*
+		 * check if its real
+		 */
+		if ( ! (bool) $this->storage->get_content_status($content_id) )
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_write_content_error')
+			);
+			$this->common->ajax_response($response);
+			return;
+		}
+
 		$template_id = $this->input->post('template_id', TRUE);		
 
 		$template = $this->input->post('template');  // dont use xss filter for template code
