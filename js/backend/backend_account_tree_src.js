@@ -83,12 +83,22 @@ $(function() {
 		$(this).addClass("fold");
 		$(this).removeClass("unfold");
 	});	
-	
+
 	/*
 	 * Show group create/edit form
 	 */
-	$("a.new.group,a.edit.group").live('click', function(event) {
+	$("a.new.group,a.edit.group,a.new.account,a.edit.account").live('click', function(event) {
 		event.preventDefault();
+
+		/*
+		 * Item type
+		 */
+		if ( $(this).hasClass("group") ) {
+			var action = "/backend/account/xhr_render_group_form";
+		}
+		else if ( $(this).hasClass("account") ) {
+			var action = "/backend/account/xhr_render_account_form";
+		}
 
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
@@ -100,7 +110,7 @@ $(function() {
 			var id = $(this).attr('href');
 		}
 
-		$.post("/backend/account/xhr_render_group_form", { id : id }, function(data){
+		$.post(action, { id : id }, function(data){
 			if ( data.done == true ) {
 				$("#account_window").html(data.html).show();
 			}

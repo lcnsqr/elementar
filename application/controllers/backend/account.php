@@ -386,7 +386,85 @@ class Account extends CI_Controller {
 		
 		$data['form'] = $form;
 		
-		$html = $this->load->view('backend/backend_account_group_form', $data, true);
+		$html = $this->load->view('backend/backend_account_form', $data, true);
+
+		$response = array(
+			'done' => TRUE,
+			'html' => $html
+		);
+
+		$this->common->ajax_response($response);
+
+	}
+
+	/*
+	 * Create/edit account
+	 */
+	function xhr_render_account_form()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		/*
+		 * Create or update? Check for incoming account ID
+		 */
+		$account_id = $this->input->post('id', TRUE);
+
+		/*
+		 * Account ID (if any, hidden)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'id',
+			'value'=> $account_id,
+			'type' => 'hidden'
+		);
+		$form = form_input($attributes);
+
+		/*
+		 * Account name
+		 */
+		$value = $this->access->get_account_user($account_id);
+		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_account_user'), 'user', NULL, $value, FALSE);
+
+		/*
+		 * Account email
+		 */
+		$value = $this->access->get_account_email($account_id);
+		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_account_email'), 'user', NULL, $value, FALSE);
+
+		/*
+		 * Account password
+		 */
+		$value = '';
+		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_account_password'), 'password', NULL, $value, FALSE);
+
+		/*
+		 *  Botão envio
+		 */
+		$form .= div_open(array('class' => 'form_control_buttons'));
+		$attributes = array(
+		    'name' => 'button_account_save',
+		    'id' => 'button_account_save',
+		    'class' => 'noform',
+		    'content' => $this->lang->line('elementar_save')
+		);
+		$form .= form_button($attributes);
+
+		$form .= div_close();
+		
+		if ( (bool) $account_id )
+		{
+			$data['header'] = $this->lang->line('elementar_edit_account');
+		}
+		else
+		{
+			$data['header'] = $this->lang->line('elementar_new_account');
+		}
+		
+		$data['form'] = $form;
+		
+		$html = $this->load->view('backend/backend_account_form', $data, true);
 
 		$response = array(
 			'done' => TRUE,

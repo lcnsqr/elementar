@@ -577,4 +577,118 @@ class Access extends CI_Model {
 		$this->elementar->delete('group', array('id' => $group_id));
 	}
 
+	/*
+	 * Get account user (login)
+	 */
+	function get_account_user($id)
+	{
+		$this->elementar->select('user');
+		$this->elementar->from('account');
+		$this->elementar->where('id', $id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->user;
+		}
+	}
+
+	/*
+	 * Get account password (hash)
+	 */
+	function get_account_password($id)
+	{
+		$this->elementar->select('password');
+		$this->elementar->from('account');
+		$this->elementar->where('id', $id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->password;
+		}
+	}
+
+	/*
+	 * Get account email
+	 */
+	function get_account_email($id)
+	{
+		$this->elementar->select('email');
+		$this->elementar->from('account');
+		$this->elementar->where('id', $id);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->email;
+		}
+	}
+
+	/*
+	 * Write account
+	 */
+	function put_account($user, $email, $password, $hash, $enabled = FALSE)
+	{
+		$data = array(
+			'user' => $user,
+			'email' => $email,
+			'password' => do_hash($password),
+			'register_hash' => $hash,
+			'created' => date("Y-m-d H:i:s"),
+			'enabled' => $enabled
+		);
+		$query = $this->elementar->insert('account', $data);
+		if ($query)
+		{
+			return $this->elementar->insert_id();
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/*
+	 * Write account user (login)
+	 */
+	function put_account_user($account_id, $user)
+	{
+		$data = array(
+			'user' => $user
+		);
+		
+		$this->elementar->where('id', $account_id);
+		$this->elementar->update('account', $data); 
+	}
+
+	/*
+	 * Write account email
+	 */
+	function put_account_email($account_id, $email)
+	{
+		$data = array(
+			'email' => $email
+		);
+		
+		$this->elementar->where('id', $account_id);
+		$this->elementar->update('account', $data); 
+	}
+
+	/*
+	 * Write account password
+	 */
+	function put_account_password($account_id, $password)
+	{
+		$data = array(
+			'password' => do_hash($password)
+		);
+		
+		$this->elementar->where('id', $account_id);
+		$this->elementar->update('account', $data); 
+	}
+
 }

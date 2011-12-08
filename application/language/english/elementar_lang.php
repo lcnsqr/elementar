@@ -32,8 +32,11 @@ $lang['elementar_groups']		= 'Groups';
 $lang['elementar_new_group']		= 'Add new group';
 $lang['elementar_edit_group']		= 'Edit Group';
 $lang['elementar_group_description']		= 'Group description';
-$lang['elementar_new_account']		= 'Add new account here';
+$lang['elementar_new_account']		= 'Add new account';
 $lang['elementar_edit_account']		= 'Edit account';
+$lang['elementar_account_user']		= 'User';
+$lang['elementar_account_email']		= 'Email';
+$lang['elementar_account_password']		= 'Password';
 
 /*
  * Content/element related
