@@ -94,6 +94,7 @@ $lang['elementar_xhr_write_content']		= 'Content saved';
 $lang['elementar_xhr_write_content_error']		= 'Error while saving content';
 $lang['elementar_xhr_write_content_type']		= 'Content template saved';
 $lang['elementar_xhr_write_template']		= 'Template saved';
+$lang['elementar_xhr_not_allowed']		= 'Operation not allowed';
 
 /*
  * File field

@@ -1729,6 +1729,24 @@ class Content extends CI_Controller {
 		 * Content id
 		 */
 		$content_id = $this->input->post('child_id', TRUE);
+		
+		/*
+		 * Avoid placing into own children
+		 */
+		$above_id = $this->storage->get_content_parent_id($parent_id);
+		while ( (bool) $above_id )
+		{
+			if ( $content_id == $above_id )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_not_allowed')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+			$above_id = $this->storage->get_content_parent_id($above_id);
+		}
 
 		if ( (bool) $parent_id && (bool) $content_id && ( $parent_id != $content_id ) )
 		{
