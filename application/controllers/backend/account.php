@@ -112,6 +112,43 @@ class Account extends CI_Controller {
 
 		$this->config->set_item('site_name', 'Elementar');
 
+		/*
+		 * Verificar sessão autenticada
+		 * de usuário autorizado no admin
+		 */
+		$user_id = $this->session->userdata('user_id');
+		if ( (int) $user_id != 1 )
+		{
+			$data = array(
+				'is_logged' => FALSE,
+				'title' => $this->config->item('site_name'),
+				'js' => array(
+					'/js/backend/jquery-1.6.2.min.js', 
+					'/js/backend/backend_account.js', 
+					'/js/backend/jquery.timers-1.2.js', 
+					'/js/backend/backend_client_warning.js'
+				),
+				'action' => '/' . uri_string(),
+				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
+			);
+
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_authentication_title'] = $this->lang->line('elementar_authentication_title');
+			$data['elementar_authentication_account'] = $this->lang->line('elementar_authentication_account');
+			$data['elementar_authentication_password'] = $this->lang->line('elementar_authentication_password');
+			$data['elementar_authentication_login'] = $this->lang->line('elementar_authentication_login');
+
+			$data['elementar_exit'] = $this->lang->line('elementar_exit');
+			$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
+			$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
+			$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
+
+			$login = $this->load->view('backend/backend_login', $data, TRUE);
+			exit($login);
+		}
+
 	}
 	
 	function index()
