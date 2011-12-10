@@ -47,6 +47,11 @@ class File extends CI_Controller {
 		$this->load->library('session');
 
 		/*
+		 * URI helper
+		 */
+		$this->load->helper('url');
+
+		/*
 		 * Create, read, update and delete Model
 		 */
 		$this->load->model('Storage', 'storage');
@@ -103,8 +108,8 @@ class File extends CI_Controller {
 		 * Verificar sessão autenticada
 		 * de usuário autorizado no admin
 		 */
-		$user_id = $this->session->userdata('user_id');
-		if ( (int) $user_id != 1 )
+		$account_id = $this->session->userdata('account_id');
+		if ( (int) $account_id != 1 )
 		{
 			$data = array(
 				'is_logged' => FALSE,
