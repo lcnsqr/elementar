@@ -128,8 +128,8 @@ class Content extends CI_Controller {
 		 * Verificar sessão autenticada
 		 * de usuário autorizado no admin
 		 */
-		$user_id = $this->session->userdata('user_id');
-		if ( (int) $user_id != 1 )
+		$account_id = $this->session->userdata('account_id');
+		if ( (int) $account_id != 1 )
 		{
 			$data = array(
 				'is_logged' => FALSE,
@@ -166,11 +166,11 @@ class Content extends CI_Controller {
 	function index()
 	{
 		/*
-		 * User info
+		 * Account info
 		 */
-		$user_id = $this->session->userdata('user_id');
+		$account_id = $this->session->userdata('account_id');
 		$is_logged = TRUE;
-		$username = $this->access->get_user_name($user_id);
+		$user = $this->access->get_account_user($account_id);
 
 		/*
 		 * client controller (javascript)
@@ -202,7 +202,7 @@ class Content extends CI_Controller {
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
 			'is_logged' => $is_logged,
-			'username' => $username,
+			'username' => $user,
 			'resource_menu' => ul($resource_menu)
 		);
 

@@ -10,7 +10,7 @@ $(function() {
 			
 		var action = $(this).attr("action") + document.location.hash;
 		
-		$.post("/user/login", $(this).serialize(), function(data) {
+		$.post("/account/login", $(this).serialize(), function(data) {
 			try {
 				if ( data.done == true ) {
 					// Encaminhar para o endereço solicitado
@@ -19,7 +19,7 @@ $(function() {
 					}
 				}
 				else {
-					showClientWarning(data.msg);
+					showClientWarning(data.message);
 					// Bloqueio
 					$("#blocker").fadeOut("fast");
 				}
@@ -34,7 +34,7 @@ $(function() {
 	{
 		event.preventDefault();
 		var location = $(this).attr('href');
-		$.post('/user/logout', function(data)
+		$.post('/account/logout', function(data)
 		{
 			if ( data.done == true ) 
 			{
@@ -42,7 +42,7 @@ $(function() {
 			}
 			else
 			{
-				alert(data.msg);
+				alert(data.message);
 			}
 		}, 'json');
 	});

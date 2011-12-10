@@ -110,9 +110,28 @@ $lang['elementar_xhr_write_content_error']		= 'Error while saving content';
 $lang['elementar_xhr_write_content_type']		= 'Content template saved';
 $lang['elementar_xhr_write_template']		= 'Template saved';
 $lang['elementar_xhr_write_group']		= 'Group saved';
+$lang['elementar_xhr_write_account']		= 'Account saved';
 $lang['elementar_xhr_erase_admin']		= 'Can not remove';
 $lang['elementar_xhr_erase']		= 'removed';
 $lang['elementar_xhr_not_allowed']		= 'Operation not allowed';
+
+$lang['elementar_xhr_user_field_missing']		= 'Enter the user (login)';
+$lang['elementar_xhr_user_field_small']		= 'The user (login) requires five or more characters';
+$lang['elementar_xhr_user_field_big']		= 'The user (login) cannot have more than twenty characters';
+$lang['elementar_xhr_user_field_invalid_chars']		= 'The user (login) can have only letters, numbers and underscores';
+$lang['elementar_xhr_user_field_used']		= 'The user (login) has already been used';
+$lang['elementar_xhr_email_field_missing']		= 'Enter the email';
+$lang['elementar_xhr_email_field_invalid']		= 'The entered email is invalid';
+$lang['elementar_xhr_email_field_used']		= 'The email entered has already been used';
+$lang['elementar_xhr_password_field_missing']		= 'Enter the password';
+$lang['elementar_xhr_password_field_missing_chars']		= 'The password requires a lowercase letter, an uppercase and a number';
+$lang['elementar_xhr_password_field_small']		= 'The password requires six or more characters';
+$lang['elementar_xhr_password_field_big']		= 'The password cannot have more than twenty characters';
+$lang['elementar_xhr_password_changed']		= 'Password changed';
+
+$lang['elementar_xhr_login_incorret']		= 'Login or password incorrect';
+$lang['elementar_xhr_email_not_found']		= 'Email not found';
+$lang['elementar_xhr_reset_email_sent']		= 'Password reset link sent to the resgistered email';
 
 /*
  * File field

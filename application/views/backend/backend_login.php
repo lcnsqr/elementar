@@ -13,13 +13,13 @@
 		<form name="login" id="login_form" action="<?php echo (isset($action)) ? $action : "/admin"; ?>">
 			
 			<p class="login_field">
-			<label for="login_usuario"><?php echo $elementar_authentication_account; ?></label><br />
-			<input name="login_usuario" id="login_usuario" type="text" />
+			<label for="user"><?php echo $elementar_authentication_account; ?></label><br />
+			<input name="user" id="user" type="text" />
 			</p>
 			
 			<p class="login_field">
-			<label for="login_senha"><?php echo $elementar_authentication_password; ?></label><br />
-			<input name="login_senha" id="login_senha" type="password" />
+			<label for="password"><?php echo $elementar_authentication_password; ?></label><br />
+			<input name="password" id="password" type="password" />
 			</p>
 			
 			<p class="login_field">

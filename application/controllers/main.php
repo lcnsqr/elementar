@@ -41,14 +41,23 @@ class Main extends CI_Controller {
 		parent::__construct();
 		
 		/*
+		 * CI libraries
+		 */
+		$this->load->library('session');
+
+		/*
 		 * Settings
 		 */
 		$this->config->set_item('site_name', 'Elementar');
 
-		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
-		$this->config->set_item('smtp_port', '465');
-		$this->config->set_item('smtp_user', 'lcnsqr@gmail.com');
-		$this->config->set_item('smtp_pass', '');
+		$config = array(
+			'smtp_host' => 'ssl://smtp.googlemail.com',
+			'smtp_port' => '465',
+			'smtp_user' => 'lcnsqr@gmail.com',
+			'smtp_pass' => ''
+		);
+		$this->load->library('email', $config);
+		$this->email->set_newline("\r\n");
 
 		//$this->output->enable_profiler(TRUE);
 		
@@ -486,6 +495,336 @@ class Main extends CI_Controller {
 		$javascript .= $this->storage->get_template_javascript($content_id);
 		$this->output->set_header("Content-type: text/javascript");
 		$this->output->set_output($javascript);
+	}
+	
+	function account()
+	{
+		/*
+		 * Security helper
+		 */
+		$this->load->helper(array('security', 'string', 'form'));
+		
+		// Access model 
+		$this->load->model('Access', 'access');
+
+		/*
+		 * Backend language file
+		 */
+		$this->lang->load('elementar', $this->config->item('language'));
+
+		/*
+		 * Fields validation library
+		 */
+		$this->load->library('validation');
+
+		/*
+		 * Determine action by second URI segment
+		 */
+		$action = $this->uri->segment($this->SEGMENT_STEP + 2);
+		
+		switch ( $action )
+		{
+			/*********
+			 * Login *
+			 *********/
+			case 'login' :
+			if ( ! $this->input->is_ajax_request() )
+				exit($this->lang->line('elementar_no_direct_script_access'));
+
+			$user = $this->input->post("user", TRUE);
+			$password = $this->input->post("password", TRUE);
+
+			$account_id = $this->access->get_account_by_user($user);
+			
+			/*
+			 * Avoid pending group
+			 */
+			$group_id = $this->access->get_account_group($account_id);
+			
+			if ( (bool) $account_id && do_hash($password) == $this->access->get_account_password($account_id) && (int) $group_id != 2 )
+			{
+				$this->session->set_userdata('account_id', $account_id);
+				$response = array(
+					'done' => TRUE
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+			else
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_login_incorret')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+			break;
+			
+			/**********
+			 * Logout *
+			 **********/
+			case 'logout' :
+			if ( ! $this->input->is_ajax_request() )
+				exit($this->lang->line('elementar_no_direct_script_access'));
+
+			$this->session->unset_userdata('account_id');
+			$response = array(
+				'done' => TRUE
+			);
+			$this->common->ajax_response($response);
+			break;
+			
+			/************
+			 * Register *
+			 ************/
+			case 'register' :
+			if ( ! $this->input->is_ajax_request() )
+				exit($this->lang->line('elementar_no_direct_script_access'));
+			
+			/*
+			 * Other account fields
+			 */
+			$user = $this->input->post('user', TRUE);
+			$email = $this->input->post('email', TRUE);
+			$password = $this->input->post('password', TRUE);
+
+			/*
+			 * Assess account user
+			 */
+			$response = $this->validation->assess_user($user);
+			if ( (bool) $response['done'] == FALSE )
+			{
+				$this->common->ajax_response($response);
+				return;
+			}
+	
+			if ( (bool) $this->access->get_account_by_user($user) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_user_field_used')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+
+			/*
+			 * Assess email
+			 */
+			$response = $this->validation->assess_email($email);
+			if ( (bool) $response['done'] == FALSE )
+			{
+				$this->common->ajax_response($response);
+				return;
+			}
+			if ( (bool) $this->access->get_account_by_email($email) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_email_field_used')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+
+			/*
+			 * Assess password
+			 */
+			$response = $this->validation->assess_password($password);
+			if ( (bool) $response['done'] == FALSE )
+			{
+				$this->common->ajax_response($response);
+				return;
+			}
+			
+			/*
+			 * Create account
+			 */
+			$register_hash = random_string('unique');
+			$account_id = $this->access->put_account($user, $email, $password, $register_hash);
+			/*
+			 * Add acount to pending group
+			 */
+			$this->access->put_account_group($account_id, 2);
+
+			/*
+			 * Mail confirmation
+			 */
+			$this->email->subject("Confirmação de cadastro");
+			$this->email->message(site_url('account/confirm') . '/' . $register_hash);
+			$this->email->from('support@elementar.com', 'Elementar');
+			$this->email->to($email);
+			$this->email->send();
+
+			$this->common->ajax_response($response);
+			break;
+			
+			/********************************
+			 * Confirm registration by hash *
+			 ********************************/
+			case 'confirm' :
+			/*
+			 * Search register hash
+			 */
+			$register_hash = $this->uri->segment($this->SEGMENT_STEP + 3);
+			if ( (bool) $register_hash )
+			{
+				/*
+				 * Check existence and pending account
+				 */
+				$account_id = $this->access->get_account_by_register_hash($register_hash);
+				if ( (bool) $account_id && (int) $this->access->get_account_group($account_id) == 2 )
+				{
+					/*
+					 * Detach account from pending group
+					 * attach account to default group
+					 */
+					$this->access->put_account_group($account_id, 3);
+					echo 'Confirmed';
+					return;
+				}
+			}
+			echo 'Not valid';
+			break;
+			
+			/****************************
+			 * Send reset hash by email *
+			 ****************************/
+			case 'forgot' :
+			if ( ! $this->input->is_ajax_request() )
+				exit($this->lang->line('elementar_no_direct_script_access'));
+
+			$email = $this->input->post('email', TRUE);
+			
+			/*
+			 * Assess email
+			 */
+			$response = $this->validation->assess_email($email);
+			if ( (bool) $response['done'] == FALSE )
+			{
+				$this->common->ajax_response($response);
+				return;
+			}
+			$account_id = $this->access->get_account_by_email($email);
+			if ( ! (bool) $account_id )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_email_not_found')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+			$reset_hash = random_string('unique');
+			$this->access->put_account_reset_hash($account_id, $reset_hash);
+
+			/*
+			 * Mail confirmation
+			 */
+			$this->email->subject("Redefinir senha");
+			$this->email->message(site_url('account/reset') . '/' . $reset_hash);
+			$this->email->from('support@elementar.com', 'Elementar');
+			$this->email->to($email);
+			$this->email->send();
+			
+			$response = array(
+				'done' => TRUE,
+				'message' => $this->lang->line('elementar_xhr_reset_email_sent')
+			);
+			$this->common->ajax_response($response);
+			break;
+			
+			/***********************
+			 * Reset password form *
+			 ***********************/
+			case 'reset' :
+			$reset_hash = $this->uri->segment($this->SEGMENT_STEP + 3);
+			if ( (bool) $reset_hash )
+			{
+				/*
+				 * Check existence and not pending account
+				 */
+				$account_id = $this->access->get_account_by_reset_hash($reset_hash);
+				if ( (bool) $account_id && (int) $this->access->get_account_group($account_id) != 2 )
+				{
+					/*
+					 * Show new password form
+					 */
+					$attributes = array('name' => 'reset_password', 'id' => 'reset_password');
+					$hidden = array('reset_hash' => $reset_hash);
+					$form = form_open('account/password', $attributes, $hidden);
+					$attributes = array('name' => 'password', 'id' => 'password');
+					$form .= form_password($attributes);
+					$form .= form_submit('send', 'Enviar');
+					$form .= form_close();
+					$data = array('form' => $form);
+					$this->load->view('account_password', $data);
+					return;
+				}
+			}
+			echo 'Not valid';
+			break;
+
+			
+			/******************
+			 * Reset password *
+			 ******************/
+			case 'password' :
+			$reset_hash = $this->input->post('reset_hash', TRUE);
+			$password = $this->input->post('password', TRUE);
+			$account_id = $this->access->get_account_by_reset_hash($reset_hash);
+			if ( (bool) $reset_hash && (bool) $account_id )
+			{
+				/*
+				 * Assess password
+				 */
+				$response = $this->validation->assess_password($password);
+				if ( (bool) $response['done'] == FALSE )
+				{
+					$this->common->ajax_response($response);
+					return;
+				}
+				else
+				{
+					/*
+					 * Change password and erase reset hash
+					 */
+					$this->access->put_account_password($account_id, $password);
+					$this->access->put_account_reset_hash($account_id, NULL);
+					$response = array(
+						'done' => TRUE,
+						'message' => $this->lang->line('elementar_xhr_password_changed')
+					);
+					$this->common->ajax_response($response);
+					return;
+				}
+			}
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_not_allowed')
+			);
+			$this->common->ajax_response($response);
+			break;
+			
+			default:
+			/*
+			 * Formulário de login
+			 */
+			$account_id = $this->session->userdata('account_id');
+			$data = array();
+			if ( (bool) $account_id !== FALSE )
+			{
+				$data['is_logged'] = TRUE;
+				$data['username'] = $this->access->get_account_user($account_id);
+			}
+			else
+			{
+				$data['is_logged'] = FALSE;
+			}
+			$this->load->view('account', $data);
+			break;
+		}
 	}
 
 }

@@ -61,11 +61,6 @@ class Account extends CI_Controller {
 		$this->storage->STATUS = 'all';
 
 		/*
-		 * Backend language file
-		 */
-		$this->lang->load('elementar', $this->config->item('language'));
-		
-		/*
 		 * Load site config
 		 */
 		$settings = $this->storage->get_config();
@@ -109,6 +104,16 @@ class Account extends CI_Controller {
 			'lang_avail' => $this->LANG_AVAIL, 
 			'uri_prefix' => ''
 		));
+		
+		/*
+		 * Backend language file
+		 */
+		$this->lang->load('elementar', $this->config->item('language'));
+		
+		/*
+		 * Fields validation library
+		 */
+		$this->load->library('validation');
 
 		$this->config->set_item('site_name', 'Elementar');
 
@@ -116,8 +121,8 @@ class Account extends CI_Controller {
 		 * Verificar sessão autenticada
 		 * de usuário autorizado no admin
 		 */
-		$user_id = $this->session->userdata('user_id');
-		if ( (int) $user_id != 1 )
+		$account_id = $this->session->userdata('account_id');
+		if ( (int) $account_id != 1 )
 		{
 			$data = array(
 				'is_logged' => FALSE,
@@ -156,9 +161,9 @@ class Account extends CI_Controller {
 		/*
 		 * User info
 		 */
-		$user_id = $this->session->userdata('user_id');
+		$account_id = $this->session->userdata('account_id');
 		$is_logged = TRUE;
-		$username = $this->access->get_user_name($user_id);
+		$username = $this->access->get_account_user($account_id);
 
 		/*
 		 * client controller (javascript)
@@ -215,7 +220,7 @@ class Account extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		$group_id = $this->input->post('id');
+		$group_id = $this->input->post('group_id');
 
 		if ( ! (bool) $group_id )
 		{
@@ -261,7 +266,7 @@ class Account extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		$group_id = $this->input->post('id');
+		$group_id = $this->input->post('group_id');
 
 		if ( ! (bool) $group_id )
 		{
@@ -336,14 +341,14 @@ class Account extends CI_Controller {
 		/*
 		 * Create or update? Check for incoming group ID
 		 */
-		$group_id = $this->input->post('id', TRUE);
+		$group_id = $this->input->post('group_id', TRUE);
 
 		/*
 		 * Group ID (if any, hidden)
 		 */
 		$attributes = array(
 			'class' => 'noform',
-			'name' => 'id',
+			'name' => 'group_id',
 			'value'=> $group_id,
 			'type' => 'hidden'
 		);
@@ -398,84 +403,6 @@ class Account extends CI_Controller {
 	}
 
 	/*
-	 * Create/edit account
-	 */
-	function xhr_render_account_form()
-	{
-		if ( ! $this->input->is_ajax_request() )
-			exit($this->lang->line('elementar_no_direct_script_access'));
-
-		/*
-		 * Create or update? Check for incoming account ID
-		 */
-		$account_id = $this->input->post('id', TRUE);
-
-		/*
-		 * Account ID (if any, hidden)
-		 */
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'id',
-			'value'=> $account_id,
-			'type' => 'hidden'
-		);
-		$form = form_input($attributes);
-
-		/*
-		 * Account name
-		 */
-		$value = $this->access->get_account_user($account_id);
-		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_account_user'), 'user', NULL, $value, FALSE);
-
-		/*
-		 * Account email
-		 */
-		$value = $this->access->get_account_email($account_id);
-		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_account_email'), 'user', NULL, $value, FALSE);
-
-		/*
-		 * Account password
-		 */
-		$value = '';
-		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_account_password'), 'password', NULL, $value, FALSE);
-
-		/*
-		 *  Botão envio
-		 */
-		$form .= div_open(array('class' => 'form_control_buttons'));
-		$attributes = array(
-		    'name' => 'button_account_save',
-		    'id' => 'button_account_save',
-		    'class' => 'noform',
-		    'content' => $this->lang->line('elementar_save')
-		);
-		$form .= form_button($attributes);
-
-		$form .= div_close();
-		
-		if ( (bool) $account_id )
-		{
-			$data['header'] = $this->lang->line('elementar_edit_account');
-		}
-		else
-		{
-			$data['header'] = $this->lang->line('elementar_new_account');
-		}
-		
-		$data['form'] = $form;
-		
-		$html = $this->load->view('backend/backend_account_form', $data, true);
-
-		$response = array(
-			'done' => TRUE,
-			'html' => $html
-		);
-
-		$this->common->ajax_response($response);
-
-	}
-
-	/*
 	 * Save group
 	 */
 	function xhr_write_group()
@@ -486,7 +413,7 @@ class Account extends CI_Controller {
 		/*
 		 * Create or update? Check for incoming group ID
 		 */
-		$group_id = $this->input->post('id', TRUE);
+		$group_id = $this->input->post('group_id', TRUE);
 
 		/*
 		 * Other group fields
@@ -564,99 +491,312 @@ class Account extends CI_Controller {
 
 	}
 
-
-	/**
-	 * Remover conta
+	/*
+	 * Create/edit account
 	 */
-	function xhr_erase_user()
+	function xhr_render_account_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		$user_id = $this->input->post('id', TRUE);
-		
-		if ( $user_id > 1 )
+		/*
+		 * Create or update? Check for incoming account ID
+		 */
+		$account_id = $this->input->post('account_id', TRUE);
+
+		/*
+		 * Account ID (if any, hidden)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'account_id',
+			'value'=> $account_id,
+			'type' => 'hidden'
+		);
+		$form = form_input($attributes);
+
+		/*
+		 * Group ID (hidden)
+		 */
+		if ( (bool) $account_id )
 		{
-			$this->access->remove_user($user_id);
-			$response = array('done' => TRUE);
+			$group_id = $this->access->get_account_group($account_id);
 		}
 		else
 		{
-			$response = array('done' => FALSE);
+			$group_id = $this->input->post('group_id', TRUE);
+		}
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'group_id',
+			'value'=> $group_id,
+			'type' => 'hidden'
+		);
+		$form .= form_input($attributes);
+
+		/*
+		 * Account name
+		 */
+		$value = $this->access->get_account_user($account_id);
+		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_account_user'), 'user', NULL, $value, FALSE);
+
+		/*
+		 * Account email
+		 */
+		$value = $this->access->get_account_email($account_id);
+		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_account_email'), 'email', NULL, $value, FALSE);
+
+		/*
+		 * Account password
+		 */
+		$value = '';
+		$form .= $this->common->render_form_field('password', $this->lang->line('elementar_account_password'), 'password', NULL, $value, FALSE);
+
+		/*
+		 *  Botão envio
+		 */
+		$form .= div_open(array('class' => 'form_control_buttons'));
+		$attributes = array(
+		    'name' => 'button_account_save',
+		    'id' => 'button_account_save',
+		    'class' => 'noform',
+		    'content' => $this->lang->line('elementar_save')
+		);
+		$form .= form_button($attributes);
+
+		$form .= div_close();
+		
+		if ( (bool) $account_id )
+		{
+			$data['header'] = $this->lang->line('elementar_edit_account');
+		}
+		else
+		{
+			$data['header'] = $this->lang->line('elementar_new_account');
+		}
+		
+		$data['form'] = $form;
+		
+		$html = $this->load->view('backend/backend_account_form', $data, true);
+
+		$response = array(
+			'done' => TRUE,
+			'html' => $html
+		);
+
+		$this->common->ajax_response($response);
+
+	}
+
+	/*
+	 * Save account
+	 */
+	function xhr_write_account()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		/*
+		 * Create or update? Check for incoming group ID
+		 */
+		$account_id = $this->input->post('account_id', TRUE);
+
+		/*
+		 * Other account fields
+		 */
+		$user = $this->input->post('user', TRUE);
+		$email = $this->input->post('email', TRUE);
+		$password = $this->input->post('password', TRUE);
+
+		/*
+		 * Assess account user
+		 */
+		$response = $this->validation->assess_user($user);
+		if ( (bool) $response['done'] == FALSE )
+		{
+			$this->common->ajax_response($response);
+			return;
+		}
+
+		if ( ! (bool) $account_id )
+		{
+			if ( (bool) $this->access->get_account_by_user($user) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_user_field_used')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+		}
+		else
+		{
+			if ( (bool) $this->access->get_account_by_user($user) && $user != $this->access->get_account_user($account_id) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_user_field_used')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+		}
+
+		/*
+		 * Assess email
+		 */
+		$response = $this->validation->assess_email($email);
+		if ( (bool) $response['done'] == FALSE )
+		{
+			$this->common->ajax_response($response);
+			return;
+		}
+		if ( ! (bool) $account_id )
+		{
+			if ( (bool) $this->access->get_account_by_email($email) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_email_field_used')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+		}
+		else
+		{
+			if ( (bool) $this->access->get_account_by_email($email) && $email != $this->access->get_account_email($account_id) )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_xhr_email_field_used')
+				);
+				$this->common->ajax_response($response);
+				return;
+			}
+		}
+
+		/*
+		 * Assess password
+		 */
+		$response = $this->validation->assess_password($password);
+		if ( (bool) $password )
+		{
+			if ( (bool) $response['done'] == FALSE )
+			{
+				$this->common->ajax_response($response);
+				return;
+			}
+		}
+
+		if ( (bool) $account_id )
+		{
+			/*
+			 * Update account
+			 */
+			$this->access->put_account_user($account_id, $user);
+			$this->access->put_account_email($account_id, $email);
+			if ( (bool) $password )
+			{
+				/*
+				 * Avoi writing empty password on update
+				 */
+				$this->access->put_account_password($account_id, $password);
+			}
+			$group_id = $this->input->post('group_id', TRUE);
+		}
+		else
+		{
+			/*
+			 * Create account
+			 */
+			$account_id = $this->access->put_account($user, $email, $password);
+			/*
+			 * Add acount to group
+			 */
+			$group_id = $this->input->post('group_id', TRUE);
+			$this->access->put_account_group($account_id, $group_id);
+		}
+		
+		$response = array(
+			'done' => TRUE,
+			'group_id' => $group_id,
+			'account_id' => $account_id,
+			'message' => $this->lang->line('elementar_xhr_write_account')
+		);
+		$this->common->ajax_response($response);
+
+	}
+
+	/*
+	 * Remove account
+	 */
+	function xhr_erase_account()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$account_id = $this->input->post('id', TRUE);
+		$user = $this->access->get_account_user($account_id);
+
+		if ( (int) $account_id > 1 )
+		{
+			$this->access->delete_account($account_id);
+			$response = array(
+				'done' => TRUE,
+				'message' => $user . ' ' . $this->lang->line('elementar_xhr_erase')
+			);
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_xhr_erase_admin') . ' ' . $user
+			);
 		}
 		
 		// Enviar resposta
 		$this->common->ajax_response($response);
+
 	}
 
-	/**
-	 * Verficiar campos e criar conta 
+	/*
+	 * Write account group
 	 */
-	function xhr_write_user()
+	function xhr_write_account_group()
 	{
 		if ( ! $this->input->is_ajax_request() )
-			exit('No direct script access allowed');
+			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
-		 * Verificar se existem dados POST
+		 * Group id
 		 */
-		if ($_POST)
+		$group_id = $this->input->post('group_id', TRUE);
+
+		/*
+		 * Account id
+		 */
+		$account_id = $this->input->post('account_id', TRUE);
+
+		if ( (bool) $group_id && (bool) $account_id && ( $group_id != $account_id ) )
 		{
-			/*
-			 * Verificação dos campos
-			 */
-			$response = array('done' => TRUE);
-						 
-			/*
-			 * Verificação de usuário
-			 */
-			$username = $this->input->post('user_login', TRUE);
-			$valid = $this->access->validate_username($username);
-			
-			if ( $valid !== TRUE )
-			{
-				$response['done'] = FALSE;
-				$response['user_login_erro'] = $valid;
-			}
-			
-			/*
-			 * Verificação de email
-			 */
-			$email = $this->input->post('user_email', TRUE);
-			$valid = $this->access->validate_email($email);
-			
-			if ( $valid !== TRUE )
-			{
-				$response['done'] = FALSE;
-				$response['user_email_erro'] = $valid;
-			}
-			
-			/*
-			 * Verificação de senha
-			 */
-			$senha = $this->input->post('user_password', TRUE);
-			$valid = $this->access->validate_password($senha);
-			
-			if ( $valid !== TRUE )
-			{
-				$response['done'] = FALSE;
-				$response['user_password_erro'] = $valid;
-			}
-			
-			/*
-			 * Se tudo válido, registrar 
-			 */
-			if ( $response['done'] )
-			{
-				$user_id = $this->access->register_user($username, $email, $senha, '', TRUE);
-				$response['html'] = $this->_get_users($user_id);
-			}
-			
-			// Enviar resposta
+			$this->access->put_account_group($account_id, $group_id);
+			$response = array(
+				'done' => TRUE,
+				'group_id' => $group_id
+			);
 			$this->common->ajax_response($response);
-			
+		}
+		else
+		{
+			$response = array(
+				'done' => FALSE,
+				'message' => $this->lang->line('elementar_bad_request')
+			);
+			$this->common->ajax_response($response);
 		}
 
 	}
-	
+
 }

@@ -147,6 +147,19 @@ class Common {
 			$field .= hr(array('class' => 'clear'));
 			break;
 
+			case "password" :
+			$attributes = array(
+				'class' => 'noform',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field = div_open(array('class' => 'text_input_container'));
+			$field .= form_password($attributes);
+			$field .= div_close();
+			$field .= hr(array('class' => 'clear'));
+			break;
+
 			case "p" :
 			case "hypertext" :
 			case "textarea" :

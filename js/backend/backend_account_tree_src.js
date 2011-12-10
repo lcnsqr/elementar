@@ -58,11 +58,11 @@ $(function() {
 		// Loading icon
 		$("#account_tree_loading").fadeIn("fast");
 
-		var id = $(this).attr("href");
+		var group_id = $(this).attr("href");
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		var bullet = $(this);
 
-		$.post("/backend/account/xhr_render_group_listing", { id : id }, function(data){
+		$.post("/backend/account/xhr_render_group_listing", { group_id : group_id }, function(data){
 			if ( data.done == true ) {
 				$(listing).html(data.html);
 				$(listing).slideDown("fast", "easeInSine");
@@ -87,30 +87,48 @@ $(function() {
 	/*
 	 * Show group create/edit form
 	 */
-	$("a.new.group,a.edit.group,a.new.account,a.edit.account").live('click', function(event) {
+	$("a.new.group,a.edit.group").live('click', function(event) {
 		event.preventDefault();
-
-		/*
-		 * Item type
-		 */
-		if ( $(this).hasClass("group") ) {
-			var action = "/backend/account/xhr_render_group_form";
-		}
-		else if ( $(this).hasClass("account") ) {
-			var action = "/backend/account/xhr_render_account_form";
-		}
 
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 		
 		if ( $(this).hasClass('new') ) {
-			var id = '';
+			var group_id = '';
 		}
 		else if ( $(this).hasClass('edit') ) {
-			var id = $(this).attr('href');
+			var group_id = $(this).attr('href');
 		}
 
-		$.post(action, { id : id }, function(data){
+		$.post("/backend/account/xhr_render_group_form", { group_id : group_id }, function(data){
+			if ( data.done == true ) {
+				$("#account_window").html(data.html).show();
+			}
+
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}, "json");
+	});
+
+	/*
+	 * Show account create/edit form
+	 */
+	$("a.new.account,a.edit.account").live('click', function(event) {
+		event.preventDefault();
+
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+		
+		if ( $(this).hasClass('new') ) {
+			var group_id = $(this).attr('href');
+			var account_id = '';
+		}
+		else if ( $(this).hasClass('edit') ) {
+			var group_id = '';
+			var account_id = $(this).attr('href');
+		}
+
+		$.post("/backend/account/xhr_render_account_form", { group_id : group_id, account_id : account_id }, function(data){
 			if ( data.done == true ) {
 				$("#account_window").html(data.html).show();
 			}
@@ -194,13 +212,7 @@ $(function() {
 			 * Store dragged item details before discarding it
 			 */
 			var child_label = $('#tree_drag_container').find('p.label').first();
-			var child_id = $(child_label).children('a').attr('href');
-			if ( $(child_label).hasClass('element') ) {
-				var child_type = 'element';
-			}
-			else if ( $(child_label).hasClass('content') ) {
-				var child_type = 'content';
-			}
+			var account_id = $(child_label).children('a').attr('href');
 			/*
 			 * Discard dragged item
 			 */
@@ -213,7 +225,7 @@ $(function() {
 			 * Trigger dropped action on selected row
 			 */
 			var parent_label = $('.tree_listing_row.hover').find('p.label').first();
-			var parent_id = $(parent_label).children('a').attr('href');
+			var group_id = $(parent_label).children('a').attr('href');
 	
 			/*
 			 * Re-add droppable class to dragged row
@@ -226,19 +238,9 @@ $(function() {
 			$('.tree_listing_row.hover').removeClass('hover');
 			
 			/*
-			 * Item type
-			 */
-			if ( child_type == "content" ) {
-				var action = "/backend/content/xhr_write_content_parent";
-			}
-			else if ( child_type == "element" ) {
-				var action = "/backend/content/xhr_write_element_parent";
-			}
-			
-			/*
 			 * Verify essential data before proceeding
 			 */
-			if ( ! parent_id || ! child_id ) {
+			if ( ! group_id || ! account_id ) {
 				return null;
 			}
 
@@ -248,17 +250,15 @@ $(function() {
 			/*
 			 * Update item parent
 			 */
-			$.post(action, { parent_id : parent_id, child_id : child_id }, function(data){
+			$.post("/backend/account/xhr_write_account_group", { group_id : group_id, account_id : account_id }, function(data){
 				if ( data.done == true ) {
 					/*
 					 * Reload Tree
 					 */
-					$.post("/backend/content/xhr_render_tree_unfold", { request : child_type, id : child_id }, function(data) {
+					$.post("/backend/account/xhr_render_tree_listing", { group_id : data.group_id }, function(data) {
 						$("#tree_listing_1").html(data.html);
-
 						// Loading icon
 						$("#account_tree_loading").fadeOut("fast");
-
 					}, "json");
 				}
 				else {
