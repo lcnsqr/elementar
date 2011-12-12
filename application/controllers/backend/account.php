@@ -779,7 +779,7 @@ class Account extends CI_Controller {
 		 */
 		$account_id = $this->input->post('account_id', TRUE);
 
-		if ( (bool) $group_id && (bool) $account_id && ( $group_id != $account_id ) )
+		if ( (bool) $group_id && (bool) $account_id && ( $group_id != $account_id ) && ( 1 != (int) $account_id ) )
 		{
 			$this->access->put_account_group($account_id, $group_id);
 			$response = array(
