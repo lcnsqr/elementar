@@ -742,6 +742,142 @@ class Content extends CI_Controller {
 
 	}
 
+	function _render_variables($content_id)
+	{
+		/*
+		 * Template pseudo variables available for this content
+		 */
+		$title = json_decode($this->storage->get_content_name($content_id), TRUE);
+		$template_variables = array(
+			'elementar_template_variables_title' => $this->lang->line('elementar_template_variables_title'),
+			'content_variables_title' => $title[$this->LANG],
+			'content_variables' => array(),
+			'relative_content_variables_title' => $this->lang->line('elementar_contents'),
+			'relative_content_variables' => array(),
+			'element_variables_title' => $this->lang->line('elementar_elements'),
+			'element_variables' => array()
+		);
+		/*
+		 * Default single variables
+		 */
+		$template_variables['content_variables'][] = array(
+			'sname' => '{name}',
+			'name' => 'Name'
+		);
+		$template_variables['content_variables'][] = array(
+			'sname' => '{breadcrumb}',
+			'name' => 'Breadcrumb'
+		);
+		/*
+		 * Content single variables
+		 */
+		$type_id = $this->storage->get_content_type_id($content_id);
+		foreach ( $this->storage->get_content_type_fields($type_id) as $content_field )
+		{
+			$template_variables['content_variables'][] = array(
+				'sname' => '{' . $content_field['sname'] . '}',
+				'name' => $content_field['name']
+			);
+		}
+		
+		/*
+		 * There are two "types" of relative contents: children and brother 
+		 */
+		if ( $this->storage->get_content_has_children($content_id, FALSE) )
+		{
+			/*
+			 * Children contents
+			 */
+			if ( ! isset($template_variables['relative_content_variables']['children'] ) )
+			{
+				/*
+				 * Variable pair with element type fields
+				 */
+				$pair = '{children}'  . "\n" ;
+				$pair .= "\t" . '{name}' . "\n";
+				$pair .= "\t" . '{sname}' . "\n";
+				$pair .= "\t" . '{uri}' . "\n";
+				$pair .= '{/children}'  . "\n" ;
+				$template_variables['relative_content_variables']['children'] = array(
+					'pair' => urlencode($pair)
+				);
+			}
+		}
+		/*
+		 * if not parent, render content brothers
+		 */
+		if ( $content_id != 1 )
+		{
+			$parent_id = $this->storage->get_content_parent_id($content_id);
+			if ( $this->storage->get_content_has_children($parent_id, FALSE) )
+			{
+				/*
+				 * Dont set if singleton (only child)
+				 */
+				if ( count($this->storage->get_contents_by_parent($parent_id)) > 1 )
+				{
+					/*
+					 * Brother contents
+					 */
+					if ( ! isset($template_variables['relative_content_variables']['brothers'] ) )
+					{
+						/*
+						 * Variable pair with element type fields
+						 */
+						$pair = '{brothers}'  . "\n" ;
+						$pair .= "\t" . '{name}' . "\n";
+						$pair .= "\t" . '{sname}' . "\n";
+						$pair .= "\t" . '{uri}' . "\n";
+						$pair .= '{/brothers}'  . "\n" ;
+						$template_variables['relative_content_variables']['brothers'] = array(
+							'pair' => urlencode($pair)
+						);
+					}
+				}
+			}
+		}
+
+		/*
+		 * Available elements variables
+		 */
+		foreach ( $this->storage->get_elements_by_parent_spreaded($content_id) as $element )
+		{
+			if ( ! isset($template_variables['element_variables'][$element['type_name']] ) )
+			{
+				/*
+				 * Variable pair with element type fields
+				 */
+				$pair = '{' . $element['type'] . '}'  . "\n" ;
+				$pair .= "\t" . '{name}' . "\n";
+				$pair .= "\t" . '{sname}' . "\n";
+				foreach( $this->storage->get_element_type_fields($element['type_id']) as $type_field )
+				{
+					$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
+				}
+				$pair .= '{/' . $element['type'] . '}'  . "\n" ;
+				$template_variables['element_variables'][$element['type_name']] = array(
+					'pair' => urlencode($pair),
+					'elements' => array()
+				);
+			}
+			/*
+			 * Join element fields for unique insert
+			 */
+			$fields = '';
+			$fields .= '{' . $element['sname'] . '.name}' . "\n";
+			$fields .= '{' . $element['sname'] . '.sname}' . "\n";
+			foreach ( $this->storage->get_element_fields($element['id']) as $element_field )
+			{
+				$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
+			}
+			$template_variables['element_variables'][$element['type_name']]['elements'][] = array(
+				'sname' => urlencode($fields),
+				'name' => $element['name']
+			);
+		}
+		return $this->load->view('backend/backend_content_form_variables', $template_variables, true);
+	}
+
 	/**
 	 * Gerar formulário para inserção/atualizacão de conteúdo
 	 */
@@ -798,7 +934,7 @@ class Content extends CI_Controller {
 		 */
 		$data['show_tabs'] = (bool) $content_id;
 		if ( $data['show_tabs'] )
-		{			
+		{
 			/*
 			 * Template editor
 			 */
@@ -842,137 +978,11 @@ class Content extends CI_Controller {
 			/*
 			 * Template pseudo variables available for this content
 			 */
-			$title = json_decode($this->storage->get_content_name($content_id), TRUE);
-			$template_variables = array(
-				'content_variables_title' => $title[$this->LANG],
-				'content_variables' => array(),
-				'relative_content_variables_title' => $this->lang->line('elementar_contents'),
-				'relative_content_variables' => array(),
-				'element_variables_title' => $this->lang->line('elementar_elements'),
-				'element_variables' => array()
-			);
-			/*
-			 * Default single variables
-			 */
-			$template_variables['content_variables'][] = array(
-				'sname' => '{name}',
-				'name' => 'Name'
-			);
-			$template_variables['content_variables'][] = array(
-				'sname' => '{breadcrumb}',
-				'name' => 'Breadcrumb'
-			);
-			/*
-			 * Content single variables
-			 */
-			foreach ( $this->storage->get_content_type_fields($type_id) as $content_field )
-			{
-				$template_variables['content_variables'][] = array(
-					'sname' => '{' . $content_field['sname'] . '}',
-					'name' => $content_field['name']
-				);
-			}
-			
-			/*
-			 * There are two "types" of relative contents: children and brother 
-			 */
-			if ( $this->storage->get_content_has_children($content_id, FALSE) )
-			{
-				/*
-				 * Children contents
-				 */
-				if ( ! isset($template_variables['relative_content_variables']['children'] ) )
-				{
-					/*
-					 * Variable pair with element type fields
-					 */
-					$pair = '{children}'  . "\n" ;
-					$pair .= "\t" . '{name}' . "\n";
-					$pair .= "\t" . '{sname}' . "\n";
-					$pair .= "\t" . '{uri}' . "\n";
-					$pair .= '{/children}'  . "\n" ;
-					$template_variables['relative_content_variables']['children'] = array(
-						'pair' => urlencode($pair)
-					);
-				}
-			}
-			/*
-			 * if not parent, render content brothers
-			 */
-			if ( $content_id != 1 )
-			{
-				$parent_id = $this->storage->get_content_parent_id($content_id);
-				if ( $this->storage->get_content_has_children($parent_id, FALSE) )
-				{
-					/*
-					 * Dont set if singleton (only child)
-					 */
-					if ( count($this->storage->get_contents_by_parent($parent_id)) > 1 )
-					{
-						/*
-						 * Brother contents
-						 */
-						if ( ! isset($template_variables['relative_content_variables']['brothers'] ) )
-						{
-							/*
-							 * Variable pair with element type fields
-							 */
-							$pair = '{brothers}'  . "\n" ;
-							$pair .= "\t" . '{name}' . "\n";
-							$pair .= "\t" . '{sname}' . "\n";
-							$pair .= "\t" . '{uri}' . "\n";
-							$pair .= '{/brothers}'  . "\n" ;
-							$template_variables['relative_content_variables']['brothers'] = array(
-								'pair' => urlencode($pair)
-							);
-						}
-					}
-				}
-			}
-
-			/*
-			 * Available elements variables
-			 */
-			foreach ( $this->storage->get_elements_by_parent_spreaded($content_id) as $element )
-			{
-				if ( ! isset($template_variables['element_variables'][$element['type_name']] ) )
-				{
-					/*
-					 * Variable pair with element type fields
-					 */
-					$pair = '{' . $element['type'] . '}'  . "\n" ;
-					$pair .= "\t" . '{name}' . "\n";
-					$pair .= "\t" . '{sname}' . "\n";
-					foreach( $this->storage->get_element_type_fields($element['type_id']) as $type_field )
-					{
-						$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
-					}
-					$pair .= '{/' . $element['type'] . '}'  . "\n" ;
-					$template_variables['element_variables'][$element['type_name']] = array(
-						'pair' => urlencode($pair),
-						'elements' => array()
-					);
-				}
-				/*
-				 * Join element fields for unique insert
-				 */
-				$fields = '';
-				$fields .= '{' . $element['sname'] . '.name}' . "\n";
-				$fields .= '{' . $element['sname'] . '.sname}' . "\n";
-				foreach ( $this->storage->get_element_fields($element['id']) as $element_field )
-				{
-					$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
-				}
-				$template_variables['element_variables'][$element['type_name']]['elements'][] = array(
-					'sname' => urlencode($fields),
-					'name' => $element['name']
-				);
-			}
+			$variables = $this->_render_variables($content_id);
 
 			/*
 			 * HTML Template editor
 			 */
-			$template_variables['elementar_template_variables_title'] = $this->lang->line('elementar_template_variables_title');
 			$template_form .= div_open(array('class' => 'form_content_field'));
 			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
@@ -980,7 +990,7 @@ class Content extends CI_Controller {
 			$template_form .= br(1);
 			$template_form .= div_close("<!-- form_window_column_label -->");
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
-			$template_form .= $this->load->view('backend/backend_content_form_variables', $template_variables, true);			
+			$template_form .= $variables;			
 			$attributes = array(
 				'name' => 'template',
 				'class' => 'template_textarea',
