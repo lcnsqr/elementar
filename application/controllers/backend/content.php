@@ -176,7 +176,7 @@ class Content extends CI_Controller {
 		 * client controller (javascript)
 		 */
 		$js = array(
-			'/js/backend/jquery-1.6.2.min.js',
+			'/js/backend/jquery-1.7.1.min.js',
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
 			'/js/backend/backend_account.js',
