@@ -135,7 +135,7 @@ class Content extends CI_Controller {
 				'is_logged' => FALSE,
 				'title' => $this->config->item('site_name'),
 				'js' => array(
-					'/js/backend/jquery-1.6.2.min.js', 
+					'/js/backend/jquery-1.7.1.min.js', 
 					'/js/backend/backend_account.js', 
 					'/js/backend/jquery.timers-1.2.js', 
 					'/js/backend/backend_client_warning.js'
@@ -385,7 +385,7 @@ class Content extends CI_Controller {
 			'cols' => 32,
 			'value' => ''
 		);
-		$form .= form_textarea($attributes);
+		$form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
 		$form .= div_close("<!-- form_window_column_input -->");
 		$form .= div_close("<!-- .form_content_field -->");
 
@@ -999,7 +999,7 @@ class Content extends CI_Controller {
 				'cols' => 32,
 				'value' => $template_html
 			);
-			$template_form .= form_textarea($attributes);
+			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
 			$template_form .= div_close("<!-- form_window_column_input -->");
 			$template_form .= div_close("<!-- .form_content_field -->");
 
@@ -1021,7 +1021,7 @@ class Content extends CI_Controller {
 				'cols' => 32,
 				'value' => $template_css
 			);
-			$template_form .= form_textarea($attributes);
+			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
 			$template_form .= div_close("<!-- form_window_column_input -->");
 			$template_form .= div_close("<!-- .form_content_field -->");
 
@@ -1043,7 +1043,7 @@ class Content extends CI_Controller {
 				'cols' => 32,
 				'value' => $template_javascript
 			);
-			$template_form .= form_textarea($attributes);
+			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
 			$template_form .= div_close("<!-- form_window_column_input -->");
 			$template_form .= div_close("<!-- .form_content_field -->");
 
@@ -1065,7 +1065,7 @@ class Content extends CI_Controller {
 				'cols' => 32,
 				'value' => $template_head
 			);
-			$template_form .= form_textarea($attributes);
+			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
 			$template_form .= div_close("<!-- form_window_column_input -->");
 			$template_form .= div_close("<!-- .form_content_field -->");
 

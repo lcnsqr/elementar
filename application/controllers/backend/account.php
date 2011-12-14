@@ -128,7 +128,7 @@ class Account extends CI_Controller {
 				'is_logged' => FALSE,
 				'title' => $this->config->item('site_name'),
 				'js' => array(
-					'/js/backend/jquery-1.6.2.min.js', 
+					'/js/backend/jquery-1.7.1.min.js', 
 					'/js/backend/backend_account.js', 
 					'/js/backend/jquery.timers-1.2.js', 
 					'/js/backend/backend_client_warning.js'

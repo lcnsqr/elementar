@@ -68,6 +68,7 @@ $(function() {
 					theme_advanced_statusbar_location : "bottom",
 					theme_advanced_resizing : true,
 					width : "100%",
+					height : "280px",
 				
 					force_br_newlines : true,
 					force_p_newlines : false,
@@ -97,6 +98,7 @@ $(function() {
 					theme_advanced_statusbar_location : "bottom",
 					theme_advanced_resizing : true,
 					width : "100%",
+					height : "280px",
 					
 					theme_advanced_source_editor_width : 800,
 					theme_advanced_source_editor_height : 480,

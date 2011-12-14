@@ -160,9 +160,20 @@ class Common {
 			$field .= hr(array('class' => 'clear'));
 			break;
 
+			case "textarea" :
+			$attributes = array(
+				'class' => 'noform ' . $type,
+				'name' => $sname,
+				'id' => $sname,
+				'rows' => 16,
+				'cols' => 32,
+				'value' => $value
+			);
+			$field = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+			break;
+
 			case "p" :
 			case "hypertext" :
-			case "textarea" :
 			$attributes = array(
 				'class' => 'noform ' . $type,
 				'name' => $sname,
