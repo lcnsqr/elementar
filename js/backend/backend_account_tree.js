@@ -1,1 +1,356 @@
-$(function(){$("body").click(function(){$("body > .tree_listing_menu").fadeOut("fast",function(){$(this).remove()});$(".label > a.current").removeClass("current")});$(".label > a").live("click",function(b){b.preventDefault();$("body > .tree_listing_menu").fadeOut("fast",function(){$(this).remove()});$(".label > a.current").removeClass("current");$(this).addClass("current");var a=$(this).parents(".tree_listing_row").first().find(".tree_listing_menu");var e=$(a).clone();var d=-20;var c=5;$(e).css({left:(b.pageX+c)+"px",top:(b.pageY+d)+"px"});$("body").append(e);$(e).fadeIn("fast")});$(".label > a").live("mousedown",function(a){a.preventDefault()});$("a.fold.folder_switch").live("click",function(c){c.preventDefault();$("#account_tree_loading").fadeIn("fast");var b=$(this).attr("href");var d=$(this).parents(".tree_parent").first().find(".tree_listing").first();var a=$(this);$.post("/backend/account/xhr_render_group_listing",{group_id:b},function(e){if(e.done==true){$(d).html(e.html);$(d).slideDown("fast","easeInSine");$(a).addClass("unfold");$(a).removeClass("fold")}$("#account_tree_loading").fadeOut("fast")},"json")});$("a.unfold.folder_switch").live("click",function(a){a.preventDefault();var b=$(this).parents(".tree_parent").first().find(".tree_listing").first();$(b).slideUp("fast","easeOutSine");$(this).addClass("fold");$(this).removeClass("unfold")});$("a.new.group,a.edit.group").live("click",function(b){b.preventDefault();$("#blocker").fadeIn("fast");if($(this).hasClass("new")){var a=""}else{if($(this).hasClass("edit")){var a=$(this).attr("href")}}$.post("/backend/account/xhr_render_group_form",{group_id:a},function(c){if(c.done==true){$("#account_window").html(c.html).show()}$("#blocker").stop().fadeOut("fast")},"json")});$("a.new.account,a.edit.account").live("click",function(c){c.preventDefault();$("#blocker").fadeIn("fast");if($(this).hasClass("new")){var b=$(this).attr("href");var a=""}else{if($(this).hasClass("edit")){var b="";var a=$(this).attr("href")}}$.post("/backend/account/xhr_render_account_form",{group_id:b,account_id:a},function(d){if(d.done==true){$("#account_window").html(d.html).show()}$("#blocker").stop().fadeOut("fast")},"json")});$("a.remove").live("click",function(d){d.preventDefault();if($(this).hasClass("group")){var e="/backend/account/xhr_erase_group"}else{if($(this).hasClass("account")){var e="/backend/account/xhr_erase_account"}}$("#blocker").fadeIn("fast");var f=$(this).attr("href");var b=$("#tree_listing_1").find('p.label > a[href="'+f+'"]').parents(".tree_parent").first();var a=$(b).parents(".tree_listing").first();var c=$(b).parents(".tree_parent").first();if(confirm($(this).attr("title")+"?")){$.post(e,{id:f},function(g){if(g.done==true){$(b).slideUp("fast","easeOutSine",function(){$(this).remove();if($(a).children().length==0){$(a).hide();$(c).find(".tree_listing_bullet").first().html('<span class="bullet_placeholder">&nbsp;</span>')}})}showClientWarning(g.message);$("#blocker").stop().fadeOut("fast")},"json")}else{$("#blocker").stop().fadeOut("fast")}});$(window).mousedown(function(a){mouseButton=1});$(window).mouseup(function(d){mouseButton=0;if($("#tree_drag_container").children().length>0){var e=$("#tree_drag_container").find("p.label").first();var b=$(e).children("a").attr("href");$("#tree_drag_container").fadeOut("fast",function(){$("#tree_drag_container").html("");$("#tree_drag_container").hide()});var a=$(".tree_listing_row.hover").find("p.label").first();var c=$(a).children("a").attr("href");$(".tree_listing_row").not(".undroppable").not(".droppable").addClass("droppable");$(".tree_listing_row.hover").removeClass("hover");if(!c||!b){return null}$("#account_tree_loading").fadeIn("fast");$.post("/backend/account/xhr_write_account_group",{group_id:c,account_id:b},function(f){if(f.done==true){$.post("/backend/account/xhr_render_tree_listing",{group_id:f.group_id},function(g){$("#tree_listing_1").html(g.html);$("#account_tree_loading").fadeOut("fast")},"json")}else{$("#account_tree_loading").fadeOut("fast");showClientWarning(f.message)}},"json")}});$(window).mousemove(function(b){if(mouseButton==1&&$("#tree_drag_container").children().length>0){$("#tree_drag_container:hidden").fadeIn("fast");$("#tree_drag_container").css("top",(b.pageY-offsetY)+"px");$("#tree_drag_container").css("left",(b.pageX-offsetX)+"px");var a=b.pageY;var c=b.pageX;$(".tree_listing_row.droppable").not(".dragging").each(function(){var e=$(this).offset().top;var f=$(this).offset().left+$(this).outerWidth();var d=$(this).offset().top+$(this).outerHeight();var g=$(this).offset().left;if(a>e&&c<f&&a<d&&a>g){$(this).addClass("hover")}else{$(this).removeClass("hover")}})}});$(".tree_listing_icon.draggable").live("mousedown",function(b){b.preventDefault();var d=$(this).parent(".tree_listing_row");if($(d).parent("#tree_parent_1").length>0){return null}var c=$(d).offset();offsetY=b.pageY-c.top;offsetX=b.pageX-c.left;$(d).removeClass("droppable");var a=$(d).clone();$(a).addClass("dragging");$(a).children().addClass("dragging");$("#tree_drag_container").html(a)})});var offsetY=0;var offsetX=0;var mouseButton=0;
+//<![CDATA[
+
+$(function() {
+
+	// Hide floating menus
+	$("body").click(function() {
+		$('body > .tree_listing_menu').fadeOut('fast', function() {
+			$(this).remove();
+		});
+		$(".label > a.current").removeClass('current');
+	});
+	
+	/*
+	 * Item menu
+	 */
+	$('.label > a').live('click', function(event){
+		event.preventDefault();
+
+		/*
+		 * Hide visible menus first
+		 */
+		$('body > .tree_listing_menu').fadeOut('fast', function() {
+			$(this).remove();
+		});
+		/*
+		 * Turn current bold
+		 */
+		$(".label > a.current").removeClass('current');
+		$(this).addClass('current');
+		/*
+		 * Show menu
+		 */
+		var hidden_menu = $(this).parents('.tree_listing_row').first().find('.tree_listing_menu');
+		var visible_menu = $(hidden_menu).clone();
+		/*
+		 * Positioning
+		 */
+		var marginTop = -20;
+		var marginLeft = 5;
+		$(visible_menu).css({ 'left' : (event.pageX + marginLeft) + 'px', 'top' : (event.pageY + marginTop) + 'px' });
+		$('body').append(visible_menu);
+		$(visible_menu).fadeIn('fast');
+	});
+	
+	/*
+	 * Prevent unintended default browser draging of link
+	 */
+	$('.label > a').live('mousedown', function(event){
+		event.preventDefault();
+	});
+
+	/*
+	 * Show existing group listing and rotate bullet arrow
+	 */
+	$("a.fold.folder_switch").live("click", function(event) {
+		event.preventDefault();
+
+		// Loading icon
+		$("#account_tree_loading").fadeIn("fast");
+
+		var group_id = $(this).attr("href");
+		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
+		var bullet = $(this);
+
+		$.post("/backend/account/xhr_render_group_listing", { group_id : group_id }, function(data){
+			if ( data.done == true ) {
+				$(listing).html(data.html);
+				$(listing).slideDown("fast", "easeInSine");
+				$(bullet).addClass("unfold");
+				$(bullet).removeClass("fold");
+			}
+			// Loading icon
+			$("#account_tree_loading").fadeOut("fast");
+		}, "json");
+	});
+	/*
+	 * Hide contents listing and rotate bullet arrow
+	 */
+	$("a.unfold.folder_switch").live("click", function(event) {
+		event.preventDefault();
+		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
+		$(listing).slideUp("fast", "easeOutSine");
+		$(this).addClass("fold");
+		$(this).removeClass("unfold");
+	});	
+
+	/*
+	 * Show group create/edit form
+	 */
+	$("a.new.group,a.edit.group").live('click', function(event) {
+		event.preventDefault();
+
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+		
+		if ( $(this).hasClass('new') ) {
+			var group_id = '';
+		}
+		else if ( $(this).hasClass('edit') ) {
+			var group_id = $(this).attr('href');
+		}
+
+		$.post("/backend/account/xhr_render_group_form", { group_id : group_id }, function(data){
+			if ( data.done == true ) {
+				$("#account_window").html(data.html).show();
+			}
+
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}, "json");
+	});
+
+	/*
+	 * Show account create/edit form
+	 */
+	$("a.new.account,a.edit.account").live('click', function(event) {
+		event.preventDefault();
+
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+		
+		if ( $(this).hasClass('new') ) {
+			var group_id = $(this).attr('href');
+			var account_id = '';
+		}
+		else if ( $(this).hasClass('edit') ) {
+			var group_id = '';
+			var account_id = $(this).attr('href');
+		}
+
+		$.post("/backend/account/xhr_render_account_form", { group_id : group_id, account_id : account_id }, function(data){
+			if ( data.done == true ) {
+				$("#account_window").html(data.html).show();
+			}
+
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}, "json");
+	});
+
+	/*
+	 * Item removal
+	 */
+	$("a.remove").live('click', function(event) {
+		event.preventDefault();
+
+		/*
+		 * Item type
+		 */
+		if ( $(this).hasClass("group") ) {
+			var action = "/backend/account/xhr_erase_group";
+		}
+		else if ( $(this).hasClass("account") ) {
+			var action = "/backend/account/xhr_erase_account";
+		}
+
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+		
+		var id = $(this).attr('href');
+		var erase = $('#tree_listing_1').find('p.label > a[href="' + id + '"]').parents('.tree_parent').first();
+		var parent_listing = $(erase).parents(".tree_listing").first();
+		var parent = $(erase).parents(".tree_parent").first();
+		
+		if (confirm($(this).attr("title") + "?")) { 
+
+			$.post(action, { id : id }, function(data){
+				if ( data.done == true ) {
+					$(erase).slideUp("fast", "easeOutSine", function() {
+						$(this).remove();
+						if ( $(parent_listing).children().length == 0 ) {
+							$(parent_listing).hide();
+							$(parent).find(".tree_listing_bullet").first().html("<span class=\"bullet_placeholder\">&nbsp;</span>");
+						}
+					});
+				}
+				showClientWarning(data.message);
+	
+				// Bloqueio
+				$("#blocker").stop().fadeOut("fast");
+			}, "json");
+		}
+		else {
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}
+	});
+
+	/*
+	 * Tree item drag and drop
+	 */
+
+	/*
+	 * Register pressed mouse button
+	 */
+	$(window).mousedown(function(event){
+		mouseButton = 1;
+	});
+
+	/*
+	 * Discard dragging item upon mouse button up
+	 */
+	$(window).mouseup(function(event){
+		/*
+		 * Unset mouse button
+		 */
+		mouseButton = 0;
+			
+		if ( $('#tree_drag_container').children().length > 0 )
+		{
+			/*
+			 * Store dragged item details before discarding it
+			 */
+			var child_label = $('#tree_drag_container').find('p.label').first();
+			var account_id = $(child_label).children('a').attr('href');
+			/*
+			 * Discard dragged item
+			 */
+			$('#tree_drag_container').fadeOut('fast', function(){
+				$('#tree_drag_container').html('');
+				$('#tree_drag_container').hide();
+			});
+			
+			/*
+			 * Trigger dropped action on selected row
+			 */
+			var parent_label = $('.tree_listing_row.hover').find('p.label').first();
+			var group_id = $(parent_label).children('a').attr('href');
+	
+			/*
+			 * Re-add droppable class to dragged row
+			 */
+			$('.tree_listing_row').not('.undroppable').not('.droppable').addClass('droppable');
+
+			/*
+			 * Unset droppable highlight
+			 */
+			$('.tree_listing_row.hover').removeClass('hover');
+			
+			/*
+			 * Verify essential data before proceeding
+			 */
+			if ( ! group_id || ! account_id ) {
+				return null;
+			}
+
+			// Loading icon
+			$("#account_tree_loading").fadeIn("fast");
+
+			/*
+			 * Update item parent
+			 */
+			$.post("/backend/account/xhr_write_account_group", { group_id : group_id, account_id : account_id }, function(data){
+				if ( data.done == true ) {
+					/*
+					 * Reload Tree
+					 */
+					$.post("/backend/account/xhr_render_tree_listing", { group_id : data.group_id }, function(data) {
+						$("#tree_listing_1").html(data.html);
+						// Loading icon
+						$("#account_tree_loading").fadeOut("fast");
+					}, "json");
+				}
+				else {
+					// Loading icon
+					$("#account_tree_loading").fadeOut("fast");
+					showClientWarning(data.message);
+				}
+			}, "json");
+
+		}
+		
+	});
+	
+	/*
+	 * Move item and highlight droppable row behind
+	 */
+	$(window).mousemove(function(event){
+		if ( mouseButton == 1 && $('#tree_drag_container').children().length > 0 ) {
+			/*
+			 * Show draging container if not visible
+			 */
+			$('#tree_drag_container:hidden').fadeIn('fast');
+
+			/*
+			 * Verify if there is dragging content and drag it
+			 */
+			$('#tree_drag_container').css('top', (event.pageY - offsetY) + 'px');
+			$('#tree_drag_container').css('left', (event.pageX - offsetX) + 'px');
+			
+			/*
+			 * Highlight row behind
+			 */
+			var pointerY = event.pageY;
+			var pointerX = event.pageX;
+			$('.tree_listing_row.droppable').not('.dragging').each(function(){
+				var row_top = $(this).offset().top;
+				var row_right = $(this).offset().left + $(this).outerWidth();
+				var row_bottom = $(this).offset().top + $(this).outerHeight();
+				var row_left = $(this).offset().left;
+				if ( pointerY > row_top && pointerX < row_right && pointerY < row_bottom && pointerY > row_left ) {
+					$(this).addClass('hover');
+				}
+				else {
+					$(this).removeClass('hover');
+				}
+			});
+		}
+	});
+	
+	/*
+	 * Clone draggable row and add it to drag container
+	 */
+	$('.tree_listing_icon.draggable').live('mousedown', function(event){
+		event.preventDefault();
+		
+		/*
+		 * Get item row
+		 */
+		var row = $(this).parent('.tree_listing_row');
+		
+		/*
+		 * Reject tree first parent (Home)
+		 */
+		if ( $(row).parent('#tree_parent_1').length > 0 ) {
+			return null;
+		}
+		
+		/*
+		 * Offset position
+		 */
+		var offset = $(row).offset();
+		offsetY = event.pageY - offset.top;
+		offsetX = event.pageX - offset.left;
+		
+		/*
+		 * Disable same item drop
+		 */
+		$(row).removeClass('droppable');
+		
+		var moving = $(row).clone();
+		$(moving).addClass('dragging');
+		$(moving).children().addClass('dragging');
+		$('#tree_drag_container').html(moving);
+	});
+
+})
+
+/*
+ * Drag and drop settings
+ */
+var offsetY = 0;
+var offsetX = 0;
+var mouseButton = 0;
+
+//]]>

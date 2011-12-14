@@ -1,1 +1,256 @@
-#account_tree,#content_tree{width:220px;top:4px;left:4px;bottom:4px}#tree_parent_1{position:absolute;top:10px;right:14px;bottom:10px;left:14px;overflow:auto;padding-top:10px;padding-bottom:10px}#account_tree_loading,#content_tree_loading{display:none;position:absolute;z-index:1;top:6px;left:6px;width:16px;height:16px;opacity:.5;background-color:#fff;background-image:url("/css/backend/working_small.gif");background-position:center center;background-repeat:no-repeat}#account_tree a,#content_tree a{color:#666;text-decoration:none;display:block}#account_tree a:hover,#content_tree a:hover{color:#666;text-decoration:none}#account_tree a.current,#content_tree a.current{color:#000}.tree_parent{position:relative}.tree_listing{display:none;margin-left:16px;line-height:16px}#tree_listing_1{display:block;margin-left:0}.tree_listing_row{height:16px;margin-bottom:4px}.unfold{display:block;width:16px;height:16px;background-image:url("/css/backend/bullet_down.png");background-repeat:no-repeat;background-position:center center}.fold{display:block;width:16px;height:16px;background-image:url("/css/backend/bullet_right.png");background-repeat:no-repeat;background-position:center center}.bullet_placeholder{display:block;width:16px;height:16px}.tree_listing_row .tree_listing_bullet{float:left;height:16px;line-height:16px}.tree_listing_row .tree_listing_icon{float:left;height:16px;line-height:16px;cursor:url('/css/backend/openhand.cur'),auto!important}.tree_listing_row .tree_listing_icon img{margin-top:2px}.tree_listing_menu{display:none;position:absolute}.tree_listing_menu>ul{position:relative;margin:16px}.tree_listing_menu>ul li{margin-bottom:4px}.tree_listing_menu .title{color:#888a85;font-style:oblique}.tree_listing_menu a:hover{text-decoration:none}.tree_listing_menu hr{border:0;height:1px;background-color:#eeeeec}.tree_listing_row .tree_listing_header{margin-left:16px;margin-right:16px;height:16px;line-height:16px}.tree_listing_row .tree_listing_text{margin-left:32px;margin-right:0;height:16px;line-height:16px;white-space:nowrap}.white_board{position:absolute}.white_board .border{position:absolute}.white_board .top_side{height:14px;top:0;left:14px;right:14px;background:url('/css/backend/white_board_border_horizontal.png') repeat-x center top}.white_board .right_side{width:14px;top:14px;right:0;bottom:14px;background:url('/css/backend/white_board_border_vertical.png') repeat-y left center}.white_board .bottom_side{height:14px;right:14px;bottom:0;left:14px;background:url('/css/backend/white_board_border_horizontal.png') repeat-x center top;background-position:0 -14px}.white_board .left_side{width:14px;bottom:14px;left:0;top:14px;background:url('/css/backend/white_board_border_vertical.png') repeat-y left center;background-position:-14px 0}.white_board .corner{position:absolute;width:14px;height:14px;background:url('/css/backend/white_board_corners.png') no-repeat left top}.white_board .top_left{top:0;left:0}.white_board .top_right{top:0;right:0;background-position:-14px 0}.white_board .bottom_right{bottom:0;right:0;background-position:-28px 0}.white_board .bottom_left{bottom:0;left:0;background-position:-42px 0}.white_board .foreground{position:absolute;top:14px;bottom:14px;left:14px;right:14px;background-color:#fff}#tree_drag_container{display:none;position:fixed;z-index:999;top:0;left:0;opacity:.5;width:400px;height:20px}#tree_drag_container .dragging,#tree_drag_container .dragging a:hover{cursor:url('/css/backend/closedhand.cur'),auto!important}#account_tree .hover,#content_tree .hover{background-color:#eeeeec}
+
+/*
+ * Functional features
+ */
+
+#account_tree, 
+#content_tree 
+{
+	width: 220px;
+	top: 4px;
+	left: 4px;
+	bottom: 4px;
+}
+
+#tree_parent_1 {
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	bottom: 10px;
+	left: 14px;
+	overflow: auto;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#account_tree_loading,
+#content_tree_loading
+{
+	display: none;
+	position: absolute;
+	z-index: 1;
+	top: 6px;
+	left: 6px;
+	width: 16px;
+	height: 16px;
+	opacity: .5;
+	background-color: #fff;
+	background-image: url("/css/backend/working_small.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+#account_tree a, 
+#content_tree a 
+{
+	color: #666;
+	text-decoration: none;
+	display: block;
+}
+#account_tree a:hover, 
+#content_tree a:hover 
+{
+	color: #666;
+	text-decoration: none;
+}
+#account_tree a.current, 
+#content_tree a.current 
+{
+	color: #000;
+}
+
+.tree_parent {
+	position: relative;
+}
+.tree_listing {
+	display: none;
+	margin-left: 16px;
+	line-height: 16px;
+/*
+	padding-bottom: 3px;
+*/
+}
+#tree_listing_1 {
+	display: block;
+	margin-left: 0;
+}
+
+.tree_listing_row {
+	height: 16px;
+	margin-bottom: 4px;
+}
+.unfold {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-image: url("/css/backend/bullet_down.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.fold {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-image: url("/css/backend/bullet_right.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.bullet_placeholder {
+	display: block;
+	width: 16px;
+	height: 16px;
+}
+
+.tree_listing_row .tree_listing_bullet {
+	float: left;
+	height: 16px;
+	line-height: 16px;
+}
+.tree_listing_row .tree_listing_icon {
+	float: left;
+	height: 16px;
+	line-height: 16px;
+	cursor: url('/css/backend/openhand.cur'), auto !important;
+}
+.tree_listing_row .tree_listing_icon img {
+/*
+	vertical-align: middle;
+*/
+	margin-top: 2px;
+}
+.tree_listing_menu {
+	display: none;
+	position: absolute;
+}
+.tree_listing_menu > ul {
+	position: relative;
+	margin: 16px;
+}
+.tree_listing_menu > ul li {
+	margin-bottom: 4px;
+}
+.tree_listing_menu .title {
+	color: #888a85;
+	font-style: oblique;
+}
+.tree_listing_menu a:hover {
+	text-decoration: none;
+}
+.tree_listing_menu hr {
+	border: 0;
+	height: 1px;
+	background-color: #eeeeec;
+}
+.tree_listing_row .tree_listing_header {
+	margin-left: 16px;
+	margin-right: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+
+.tree_listing_row .tree_listing_text {
+	margin-left: 32px;
+	margin-right: 0;
+	height: 16px;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+/*
+ * Floating menu visual decoration
+ */
+.white_board {
+	position: absolute;
+}
+.white_board .border {
+	position: absolute;
+}
+.white_board .top_side {
+	height: 14px;
+	top: 0;
+	left: 14px;
+	right: 14px;
+	background: url('/css/backend/white_board_border_horizontal.png') repeat-x center top;
+}
+.white_board .right_side {
+	width: 14px;
+	top: 14px;
+	right: 0;
+	bottom: 14px;
+	background: url('/css/backend/white_board_border_vertical.png') repeat-y left center;
+}
+.white_board .bottom_side {
+	height: 14px;
+	right: 14px;
+	bottom: 0;
+	left: 14px;
+	background: url('/css/backend/white_board_border_horizontal.png') repeat-x center top;
+	background-position: 0 -14px;
+}
+.white_board .left_side {
+	width: 14px;
+	bottom: 14px;
+	left: 0;
+	top: 14px;
+	background: url('/css/backend/white_board_border_vertical.png') repeat-y left center;
+	background-position: -14px 0;
+}
+.white_board .corner {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	background: url('/css/backend/white_board_corners.png') no-repeat left top;
+}
+.white_board .top_left {
+	top: 0;
+	left: 0;
+}
+.white_board .top_right {
+	top: 0;
+	right: 0;
+	background-position: -14px 0;
+}
+.white_board .bottom_right {
+	bottom: 0;
+	right: 0;
+	background-position: -28px 0;
+}
+.white_board .bottom_left {
+	bottom: 0;
+	left: 0;
+	background-position: -42px 0;
+}
+.white_board .foreground {
+	position: absolute;
+	top: 14px;
+	bottom: 14px;
+	left: 14px;
+	right: 14px;
+	background-color: #fff;
+}
+
+/*
+ * Drag and drop
+ */
+#tree_drag_container {
+	display: none;
+	position: fixed;
+	z-index: 999;
+	top: 0;
+	left: 0;
+	opacity: .5;
+	width: 400px;
+	height: 20px;
+}
+#tree_drag_container .dragging, #tree_drag_container .dragging a:hover {
+	cursor: url('/css/backend/closedhand.cur'), auto !important;
+}
+
+#account_tree .hover, 
+#content_tree .hover 
+{
+	background-color: #eeeeec;
+}
+
