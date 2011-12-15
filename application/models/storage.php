@@ -1799,7 +1799,7 @@ class Storage extends CI_Model {
 	/*
 	 * Verify if content has any elements/contents associated to it
 	 */
-	function get_content_has_children($content_id, $elements = FALSE)
+	function get_content_has_children($content_id, $elements = TRUE)
 	{
 		$this->elementar->select('*');
 		$this->elementar->from('content_parent');
