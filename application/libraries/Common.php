@@ -1096,6 +1096,7 @@ class Common {
 			/*
 			 * Custom fields
 			 */
+			$data[$element['sname'] . '.id'] = $element_id;
 			foreach ($fields as $field)
 			{
 				/*
