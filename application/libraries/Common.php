@@ -1038,19 +1038,17 @@ class Common {
 		return $content;
 	}
 
-	function render_elements($content_id = 1) 
+	function render_elements($content_id = 1, $filter) 
 	{
 		$elements = $this->CI->storage->get_elements_by_parent_spreaded($content_id);
 		$data = array();
 		foreach ($elements as $key => $element)
 		{
-			/*
-			 * Localized name
-			 */
-			$names = json_decode($element['name'], TRUE);
 			$element_id = $element['id'];
 			$element_sname = $element['sname'];
-			$element_name = $names[$this->LANG];
+			$element_name = $element['name'];
+			$element_created = $element['created'];
+			$element_modified = $element['modified'];
 			$element_type_id = $element['type_id'];
 			$element_type = $element['type'];
 			
@@ -1073,30 +1071,32 @@ class Common {
 			/*
 			 * Initialize element type inner array
 			 */
-			if ( ! array_key_exists($element_type, $data) )
+			if ( ! array_key_exists($element['type'], $data) )
 			{
-				$data[$element_type] = array();
+				$data[$element['type']] = array();
 			}
 
 			/*
 			 * Render loop entries by element type sname
 			 */
-			$fields = $this->CI->storage->get_element_fields($element_id);
+			$fields = $this->CI->storage->get_element_fields($element['id']);
 
 			/*
 			 * To be added in the element type array
 			 */
 			$entry = array(
-				'id' => $element_id,
-				'name' => $element_name,
-				'sname' => $element_sname,
+				'id' => $element['id'],
+				'name' => $element['name'],
+				'sname' => $element['sname'],
+				'created' => $element['created'],
+				'modified' => $element['modified'],
 				'lineup' => $lineup
 			);
 			
 			/*
 			 * Custom fields
 			 */
-			$data[$element['sname'] . '.id'] = $element_id;
+			$data[$element['sname'] . '.id'] = $element['id'];
 			foreach ($fields as $field)
 			{
 				/*
@@ -1111,15 +1111,67 @@ class Common {
 				
 				// Add element direct access (without a template loop)
 				// Adapt to template pseudo variables
-				$data[$element['sname'] . '.sname'] = $element_sname;
-				$data[$element['sname'] . '.name'] = $element_name;
+				$data[$element['sname'] . '.sname'] = $element['sname'];
+				$data[$element['sname'] . '.name'] = $element['name'];
+				$data[$element['sname'] . '.created'] = $element['created'];
+				$data[$element['sname'] . '.modified'] = $element['modified'];
 				$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;
 			}
+			
 			/*
 			 * Add element entry as a pseudo variable pair (loop)
 			 */
-			$data[$element_type][] = $entry;
+			$data[$element['type']][] = $entry;
 		}
+
+		/*
+		 * Retrieve filters for template
+		 * and parse on element type
+		 */
+		$rules = json_decode($filter, TRUE);
+		if ( is_array($rules) )
+		{
+			foreach ( $rules as $element_type => $rule )
+			{
+				if ( array_key_exists($element_type, $data) )
+				{
+					/*
+					 * One or more element matching rule, 
+					 * perform filtering first by the specified
+					 * ordering field
+					 */
+					$order_by = $rule['order_by'];
+					/*
+					 * Sorting criteria (like in SQL, ASC or DESC)
+					 */
+					switch ( $rule['direction'] )
+					{
+						case 'asc':
+						usort($data[$element_type], function($a, $b) use($order_by)
+						{
+							return strcmp($a[$order_by], $b[$order_by]);
+						});
+						break;
+						
+						case 'desc':
+						usort($data[$element_type], function($a, $b) use($order_by)
+						{
+							return ( -1 * strcmp($a[$order_by], $b[$order_by]) );
+						});
+						break;
+					}
+
+					/*
+					 * Limit number of elements (if specified)
+					 */
+					if ( (bool) $rule['limit'] )
+					{
+						$data[$element_type] = array_slice($data[$element_type], 0, $rule['limit']);
+					}
+				}
+			}
+		}
+
 		return $data;
 	}
 

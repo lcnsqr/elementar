@@ -387,11 +387,11 @@ class Storage extends CI_Model {
 	/*
 	 * get element type sname
 	 */
-	function get_element_type_sname($element_id)
+	function get_element_type_sname($id)
 	{
 		$this->elementar->select('sname');
 		$this->elementar->from('element_type');
-		$this->elementar->where('id', $element_id);
+		$this->elementar->where('id', $id);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1060,6 +1060,66 @@ class Storage extends CI_Model {
 	}
 
 	/*
+	 * Read template filter 
+	 */
+	function get_template_filter($template_id)
+	{
+		$template_id = $this->get_content_template_id($content_id);
+		$this->elementar->select('filter');
+		$this->elementar->from('template');
+		$this->elementar->limit(1);
+		$this->elementar->where('id', $template_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->filter;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * Write template filter
+	 */
+	function put_template_filter($template_id = NULL, $filter)
+	{
+		if ( (bool) $template_id )
+		{
+			/*
+			 * Update
+			 */
+			$data = array(
+				'filter' => $filter
+			);
+			$this->elementar->where('id', $template_id);
+			$this->elementar->update('template', $data);
+			return $template_id;
+		}
+		else
+		{
+			/*
+			 * Insert
+			 */
+			$data = array(
+				'filter' => $filter,
+				'created' => date("Y-m-d H:i:s")
+			);
+			$inserted = $this->elementar->insert('template', $data);
+			if ($inserted)
+			{
+				return $this->elementar->insert_id();
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+	}
+
+	/*
 	 * Read content HTML
 	 */
 	function get_template_html($content_id)
@@ -1339,11 +1399,11 @@ class Storage extends CI_Model {
 	/*
 	 * get element type
 	 */
-	function get_element_type_id($element_id)
+	function get_element_type_id($id)
 	{
 		$this->elementar->select('element_type_id');
 		$this->elementar->from('element');
-		$this->elementar->where('id', $element_id);
+		$this->elementar->where('id', $id);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1430,7 +1490,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * get content type html template
+	 * get content type template
 	 */
 	function get_content_type_template($content_type_id)
 	{
@@ -1501,7 +1561,7 @@ class Storage extends CI_Model {
 	function get_template($content_id)
 	{
 		$template_id = $this->get_content_template_id($content_id);
-		$this->elementar->select('html, css, javascript, head');
+		$this->elementar->select('filter, html, css, javascript, head');
 		$this->elementar->from('template');
 		$this->elementar->where('id', $template_id);
 		$this->elementar->limit(1);
@@ -1510,6 +1570,7 @@ class Storage extends CI_Model {
 		{
 			$row = $query->row();
 			$template = array(
+				'filter' => $row->filter,
 				'html' => $row->html,
 				'css' => $row->css,
 				'javascript' => $row->javascript,
@@ -1735,7 +1796,7 @@ class Storage extends CI_Model {
 		/*
 		 * Elemento associado/herdado a conteúdo
 		 */
-		$this->elementar->select('element.id, element_type.id as type_id, element_type.sname as type, element_type.name as type_name, element.name, element.sname, content_parent.parent_id');
+		$this->elementar->select('element.id, element_type.id as type_id, element_type.sname as type, element_type.name as type_name, element.name, element.sname, element.created, element.modified, content_parent.parent_id');
 		$this->elementar->from('element');
 		$this->elementar->join('element_parent', 'element_parent.element_id = element.id', 'inner');
 		$this->elementar->join('element_type', 'element_type.id = element.element_type_id', 'inner');
@@ -1769,6 +1830,8 @@ class Storage extends CI_Model {
 					'id' => $row->id, 
 					'name' => $row->name,
 					'sname' => $row->sname,
+					'created' => $row->created,
+					'modified' => $row->modified,
 					'type_id' => $row->type_id,
 					'type_name' => $row->type_name,
 					'type' => $row->type

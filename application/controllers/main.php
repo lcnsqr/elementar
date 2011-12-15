@@ -339,15 +339,16 @@ class Main extends CI_Controller {
 			$content = array_merge($content, $this->common->render_content($content_id));
 
 			/*
-			 * Render elements and allow them to be hard coded in template
-			 */
-			$data['elements'] = $this->common->render_elements($content_id);
-			$content = array_merge($content, $data['elements']);
-
-			/*
 			 * Template
 			 */
 			$template = $this->storage->get_template($content_id);
+
+			/*
+			 * Render elements, parse them by filter
+			 * and allow them to be hard coded in template
+			 */
+			$data['elements'] = $this->common->render_elements($content_id, $template['filter']);
+			$content = array_merge($content, $data['elements']);
 		}
 		else
 		{
@@ -411,9 +412,10 @@ class Main extends CI_Controller {
 				$content = array_merge($content, $this->common->render_content($content_id));
 
 				/*
-				 * Render elements and allow them to be hard coded in template
+				 * Render elements, parse them by filter
+				 * and allow them to be hard coded in template
 				 */
-				$data['elements'] = $this->common->render_elements($content_id);
+				$data['elements'] = $this->common->render_elements($content_id, $template['filter']);
 				$content = array_merge($content, $data['elements']);
 			}
 			else
