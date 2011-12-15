@@ -649,6 +649,11 @@ class Content extends CI_Controller {
 			 * Element name
 			 */
 			$value = $this->storage->get_element_name($element_id);
+			/*
+			 * If no name, generate a default one 
+			 * from element type name and last id + 1
+			 */
+			$value = ( (bool) $value ) ? $value : $this->storage->get_element_type_name($type_id) . ' #' . ( $this->storage->get_element_last_id($type_id) + 1 );
 			$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
 			/*

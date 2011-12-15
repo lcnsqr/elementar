@@ -407,11 +407,11 @@ class Storage extends CI_Model {
 	/*
 	 * get element type name
 	 */
-	function get_element_type_name($element_id)
+	function get_element_type_name($id)
 	{
 		$this->elementar->select('name');
 		$this->elementar->from('element_type');
-		$this->elementar->where('id', $element_id);
+		$this->elementar->where('id', $id);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -510,7 +510,29 @@ class Storage extends CI_Model {
 			return NULL;
 		}
 	}
-	
+
+	/*
+	 * get last element_id for element type
+	 */
+	function get_element_last_id($type_id)
+	{
+		$this->elementar->select('id');
+		$this->elementar->from('element');
+		$this->elementar->where('element_type_id', $type_id);
+		$this->elementar->order_by('id', 'DESC');
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->id;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
 	/*
 	 * Gravar conteúdo
 	 */
