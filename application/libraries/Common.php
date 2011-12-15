@@ -1087,6 +1087,7 @@ class Common {
 			 * To be added in the element type array
 			 */
 			$entry = array(
+				'id' => $element_id,
 				'name' => $element_name,
 				'sname' => $element_sname,
 				'lineup' => $lineup
