@@ -31,7 +31,23 @@
 	<p><strong><?php echo $element_variables_title; ?></strong></p>
 	<ul>
 <?php foreach ( $element_variables as $element_variable_type => $element_variable_type_list ) : ?>
-		<li><a class="add_variable_pair" href="<?php echo $element_variable_type_list['pair']; ?>"><strong><?php echo $element_variable_type; ?></strong></a>
+		<li><a class="variable_pair_menu" href="<?php echo $element_variable_type_list['pair']; ?>"><strong><?php echo $element_variable_type; ?></strong></a>
+		<div class="element_filter_menu white_board">
+			<div class="border top_side"></div>
+			<div class="border right_side"></div>
+			<div class="border bottom_side"></div>
+			<div class="border left_side"></div>
+			<div class="corner top_left"></div>
+			<div class="corner top_right"></div>
+			<div class="corner bottom_right"></div>
+			<div class="corner bottom_left"></div>
+			<div class="foreground"></div>
+			<div class="menu_indicator"></div>
+			<ul>
+				<li><span class="title"><?php echo $element_variables_title; ?></span></li>
+				<li><hr /></li>
+			</ul>
+		</div>
 		<ul class="pseudo_variables_element_list">
 <?php foreach ( $element_variable_type_list['elements'] as $element_single ) : ?>
 		<li><a class="add_variable_single" href="<?php echo $element_single['sname']; ?>"><?php echo $element_single['name']; ?></a></li>

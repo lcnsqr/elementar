@@ -498,3 +498,30 @@
 .template_confirm_overwrite {
 	display: none;
 }
+
+/*
+ * Element filters menu
+ */
+.element_filter_menu {
+	display: none;
+	position: absolute;
+}
+.element_filter_menu > ul {
+	position: relative;
+	margin: 16px;
+}
+.element_filter_menu > ul li {
+	margin-bottom: 4px;
+}
+.element_filter_menu .title {
+	color: #888a85;
+	font-style: oblique;
+}
+.element_filter_menu a:hover {
+	text-decoration: none;
+}
+.element_filter_menu hr {
+	border: 0;
+	height: 1px;
+	background-color: #eeeeec;
+}

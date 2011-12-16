@@ -293,6 +293,40 @@ $(function() {
 			$(this).addClass('collapsed');
 		}
 	});
+
+	// Hide pseudo variables floating menus
+	$("body").click(function() {
+		$('body > .element_filter_menu').fadeOut('fast', function() {
+			$(this).remove();
+		});
+	});
+	
+	/*
+	 * pseudo variables filtering/insertion menu
+	 */
+	$('.variable_pair_menu').live('click', function(event){
+		event.preventDefault();
+
+		/*
+		 * Hide visible menus first
+		 */
+		$('body > .element_filter_menu').fadeOut('fast', function() {
+			$(this).remove();
+		});
+		/*
+		 * Show menu
+		 */
+		var hidden_menu = $(this).next('.element_filter_menu');
+		var visible_menu = $(hidden_menu).clone();
+		/*
+		 * Positioning
+		 */
+		var marginTop = -20;
+		var marginLeft = 5;
+		$(visible_menu).css({ 'left' : (event.pageX + marginLeft) + 'px', 'top' : (event.pageY + marginTop) + 'px' });
+		$('body').append(visible_menu);
+		$(visible_menu).fadeIn('fast');
+	});
 	
 	/*
 	 * Add pseudo variable to template
