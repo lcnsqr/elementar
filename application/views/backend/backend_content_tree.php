@@ -23,6 +23,7 @@
 				<div class="corner bottom_right"></div>
 				<div class="corner bottom_left"></div>
 				<div class="foreground"></div>
+				<div class="menu_indicator"></div>
 				<ul>
 					<li><span class="title"><?php echo $element['name']; ?></span></li>
 					<li><hr /></li>
@@ -65,6 +66,7 @@
 				<div class="corner bottom_right"></div>
 				<div class="corner bottom_left"></div>
 				<div class="foreground"></div>
+				<div class="menu_indicator"></div>
 				<ul>
 					<li><span class="title"><?php echo current(json_decode($content['name'], TRUE)); ?></span></li>
 					<li><hr /></li>

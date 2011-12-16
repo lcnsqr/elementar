@@ -10,6 +10,13 @@ $(function() {
 		$(".label > a.current").removeClass('current');
 	});
 	
+	$('#tree_parent_1').scroll(function(event){
+		$('body > .tree_listing_menu').fadeOut('fast', function() {
+			$(this).remove();
+		});
+		$(".label > a.current").removeClass('current');
+	});
+	
 	/*
 	 * Item menu
 	 */
@@ -32,12 +39,34 @@ $(function() {
 		 */
 		var hidden_menu = $(this).parents('.tree_listing_row').first().find('.tree_listing_menu');
 		var visible_menu = $(hidden_menu).clone();
+
 		/*
 		 * Positioning
 		 */
-		var marginTop = -20;
-		var marginLeft = 5;
-		$(visible_menu).css({ 'left' : (event.pageX + marginLeft) + 'px', 'top' : (event.pageY + marginTop) + 'px' });
+		var marginTop = -40;
+		var marginLeft = 10;
+
+		/*
+		 * Menu indicator position
+		 */
+		var menu_indicator = $(visible_menu).children('.menu_indicator');
+		var menu_indicator_top = $(this).offset().top - 5;
+		var menu_indicator_left = event.pageX + 1;
+		$(menu_indicator).css({position : 'fixed', top : menu_indicator_top + 'px', left : menu_indicator_left});
+		/*
+		 * Limit menu bottom position to the page bottom
+		 */
+		var menuBottom = ( ( event.pageY + $(hidden_menu).height() ) + marginTop ) - 20;
+		if ( menuBottom > $(document).height() )
+		{
+			marginTop = marginTop - ( menuBottom - $(document).height() );
+			$(visible_menu).css({position : 'fixed', left : (event.pageX + marginLeft) + 'px', bottom : '20px' });
+		}
+		else
+		{
+			$(visible_menu).css({position : 'fixed', left : (event.pageX + marginLeft) + 'px', top : (event.pageY + marginTop) + 'px' });
+		}
+		
 		$('body').append(visible_menu);
 		$(visible_menu).fadeIn('fast');
 	});

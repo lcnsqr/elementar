@@ -40,6 +40,7 @@
 					<div class="corner bottom_right"></div>
 					<div class="corner bottom_left"></div>
 					<div class="foreground"></div>
+					<div class="menu_indicator"></div>
 					<ul>
 						<li><span class="title"><?php echo $parent; ?></span></li>
 						<li><a class="new group" href="<?php echo $parent; ?>"><?php echo $elementar_new_group; ?></a></li>
