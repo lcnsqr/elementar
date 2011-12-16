@@ -279,7 +279,7 @@ a:visited {
 
 
 /*
- * Visual decoration
+ * Visual decoration of main containers
  */
 .pool_board {
 	position: absolute;
@@ -443,6 +443,20 @@ a:visited {
 	left: 14px;
 	right: 14px;
 	background-color: #fff;
+}
+
+/*
+ * Menu indicator arrow
+ */
+.white_board .menu_indicator
+{
+	position: absolute;
+	width: 13px;
+	height: 26px;
+	top: 25px;
+	left: -9px;
+	background-image: url('/css/backend/menu_indicator.png');
+	background-repeat: no-repeat;
 }
 
 

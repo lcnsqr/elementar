@@ -21,6 +21,7 @@
 				<div class="corner bottom_right"></div>
 				<div class="corner bottom_left"></div>
 				<div class="foreground"></div>
+				<div class="menu_indicator"></div>
 				<ul>
 					<li><span class="title"><?php echo $account['user']; ?></span></li>
 					<li><hr /></li>
