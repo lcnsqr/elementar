@@ -14,7 +14,7 @@
 				<img src="/css/backend/icon_group.png" alt="<?php echo $group['description']; ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label group"><a href="<?php echo $group['id']; ?>" title="<?php echo $group['description']; ?>"><?php echo $group['name']; ?></a></p>
+				<p class="label group"><a href="<?php echo $group['id']; ?>"><?php echo $group['name']; ?></a></p>
 			</div>
 			<div class="tree_listing_menu white_board">
 				<div class="border top_side"></div>

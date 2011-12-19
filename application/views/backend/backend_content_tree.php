@@ -11,7 +11,7 @@
 				<img src="/css/backend/icon_element.png" alt="<?php echo $element['name']; ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label element"><a href="<?php echo $element['id']; ?>" title="<?php echo $element['name']; ?>"><?php echo $element['name']; ?></a></p>
+				<p class="label element"><a href="<?php echo $element['id']; ?>"><?php echo $element['name']; ?></a></p>
 			</div>
 			<div class="tree_listing_menu white_board">
 				<div class="border top_side"></div>
@@ -54,7 +54,7 @@
 				<img src="/css/backend/icon_content.png" alt="<?php echo current(json_decode($content['name'], TRUE)); ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label content"><a href="<?php echo $content['id']; ?>" title="<?php echo current(json_decode($content['name'], TRUE)); ?>"><?php echo current(json_decode($content['name'], TRUE)); ?></a></p>
+				<p class="label content"><a href="<?php echo $content['id']; ?>"><?php echo current(json_decode($content['name'], TRUE)); ?></a></p>
 			</div>
 			<div class="tree_listing_menu white_board">
 				<div class="border top_side"></div>

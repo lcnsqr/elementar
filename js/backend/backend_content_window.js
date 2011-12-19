@@ -294,13 +294,12 @@ $(function() {
 		}
 	});
 
-	// Hide pseudo variables floating menus
-	$("body").click(function() {
-		$('body > .element_filter_menu').fadeOut('fast', function() {
+	// Hide pseudo variables floating menus indicator arrow on scroll
+	$('#content_window').scroll(function(event){
+		$('body > .element_filter_menu > .menu_indicator').fadeOut('fast', function() {
 			$(this).remove();
 		});
 	});
-	
 	/*
 	 * pseudo variables filtering/insertion menu
 	 */
@@ -321,13 +320,74 @@ $(function() {
 		/*
 		 * Positioning
 		 */
-		var marginTop = -20;
-		var marginLeft = 5;
-		$(visible_menu).css({ 'left' : (event.pageX + marginLeft) + 'px', 'top' : (event.pageY + marginTop) + 'px' });
+		var marginTop = -40;
+		var marginLeft = 10;
+
+		/*
+		 * Menu indicator position
+		 */
+		var menu_indicator = $(visible_menu).children('.menu_indicator');
+		var menu_indicator_top = $(this).offset().top - 5;
+		var menu_indicator_left = event.pageX + 1;
+		$(menu_indicator).css({position : 'fixed', top : menu_indicator_top + 'px', left : menu_indicator_left});
+		/*
+		 * Limit menu bottom position to the page bottom
+		 */
+		var menuBottom = ( ( event.pageY + $(hidden_menu).height() ) + marginTop ) - 20;
+		if ( menuBottom > $(document).height() )
+		{
+			marginTop = marginTop - ( menuBottom - $(document).height() );
+			$(visible_menu).css({left : (event.pageX + marginLeft) + 'px', bottom : '20px' });
+		}
+		else
+		{
+			$(visible_menu).css({left : (event.pageX + marginLeft) + 'px', top : (event.pageY + marginTop) + 'px' });
+		}
+
 		$('body').append(visible_menu);
 		$(visible_menu).fadeIn('fast');
 	});
-	
+
+	/*
+	 * Save filter
+	 */
+	$('.save_filter').live('click', function(event)
+	{
+		event.preventDefault();
+		// Bloqueio
+		$("#blocker").fadeIn("fast");
+
+		var filter_form = $(this).parents('.filter_forms').find('div.order_by');
+
+		$.post("/backend/content/xhr_write_template_filter", $(filter_form).find('input').serialize(), function(data){
+			if ( data.done == true ) {
+				showClientWarning(data.message);
+			}
+			// Bloqueio
+			$("#blocker").stop().fadeOut("fast");
+		}, "json");
+
+	});
+
+	/*
+	 * Close variables filter menu button hover
+	 */
+	$('.close_menu').live('mouseenter', function(event){
+		$(this).addClass('close_menu_hover');
+	});
+	$('.close_menu').live('mouseleave', function(event){
+		$(this).removeClass('close_menu_hover');
+	});
+
+	// Close pseudo variables floating menus
+	$('.close_menu').live('click', function(event) {
+		event.preventDefault();
+		var menu = $(this).parents('.element_filter_menu').first();
+		$(menu).fadeOut('fast', function() {
+			$(menu).remove();
+		});
+	});
+
 	/*
 	 * Add pseudo variable to template
 	 */
@@ -343,9 +403,19 @@ $(function() {
 	 */
 	$('.add_variable_pair').live('click', function(event) {
 		event.preventDefault();
-		var variable = unescape($(this).attr('href'));
-		var textarea = $(this).parents('.form_window_column_input').first().find('.template_textarea');
-		$(textarea).insertAtCursor(variable);
+
+		var insertion_form = $(this).parents('.filter_forms').find('div.insertion');
+
+		var variable = '{' + $(this).attr('href') + '}' + "\n";
+
+		$(insertion_form).find('input[checked="checked"]:checkbox').each(function(index)
+		{
+			variable = variable.concat('{' + $(this).attr('value') + '}' + "\n");
+		});
+
+		variable = variable.concat('{/' + $(this).attr('href') + '}' + "\n");
+
+		$('.template_textarea').insertAtCursor(variable);
 	});
 	
 	/*

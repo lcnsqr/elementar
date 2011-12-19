@@ -705,7 +705,7 @@ class Content extends CI_Controller {
 			$form .= div_open(array('class' => 'form_content_field'));
 			$form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
+			$form .= form_label($this->lang->line('elementar_status'), NULL, $attributes);
 			$form .= div_close("<!-- form_window_column_label -->");
 			$form .= div_open(array('class' => 'form_window_column_input'));
 			$form .= $this->_render_status_dropdown($this->storage->get_element_status($element_id));
@@ -750,10 +750,18 @@ class Content extends CI_Controller {
 	function _render_variables($content_id)
 	{
 		/*
+		 * Load template element filters (if any)
+		 */
+		$content_type_id = $this->storage->get_content_type_id($content_id);
+		$template_id = $this->storage->get_content_template_id($content_id);
+		$template_filter = json_decode($this->storage->get_template_filter($template_id), TRUE);
+		/*
 		 * Template pseudo variables available for this content
 		 */
 		$title = json_decode($this->storage->get_content_name($content_id), TRUE);
 		$template_variables = array(
+			'template_id' => $template_id,
+			'type_name' => $this->storage->get_content_type_name($this->storage->get_content_type_id($content_id)),
 			'elementar_template_variables_title' => $this->lang->line('elementar_template_variables_title'),
 			'content_variables_title' => $title[$this->LANG],
 			'content_variables' => array(),
@@ -850,23 +858,85 @@ class Content extends CI_Controller {
 			if ( ! isset($template_variables['element_variables'][$element['type_name']] ) )
 			{
 				/*
-				 * Variable pair with element type fields
+				 * Check for element filter in template and render filter form
 				 */
-				$pair = '{' . $element['type'] . '}'  . "\n" ;
-				$pair .= "\t" . '{name}' . "\n";
-				$pair .= "\t" . '{sname}' . "\n";
-				foreach( $this->storage->get_element_type_fields($element['type_id']) as $type_field )
+				if ( (bool) count($template_filter) && array_key_exists($element['type'], $template_filter) )
 				{
-					$pair .= "\t" . '{' . $type_field['sname'] . '}' . "\n";
+					$order_by = $template_filter[$element['type']]['order_by'];
+					$direction = $template_filter[$element['type']]['direction'];
+					$limit = $template_filter[$element['type']]['limit'];
 				}
-				$pair .= '{/' . $element['type'] . '}'  . "\n" ;
+				else
+				{
+					/*
+					 * Default rules for unavailable element filter
+					 */
+					$order_by = 'created';
+					$direction = 'desc';
+					$limit = '';
+				}
+
+				/*
+				 * Element type fields
+				 */
+				$element_fields = $this->storage->get_element_type_fields($element['type_id']);
+				/*
+				 * Element filter form
+				 */
+				$filter_form = array(
+					'order_by' => array(
+						'created' => array(
+							'name' => 'Criação',
+							'selected' => ( $order_by == 'created' ) ? TRUE : FALSE
+						),
+						'modified' => array(
+							'name' => 'Modificação',
+							'selected' => ( $order_by == 'modified' ) ? TRUE : FALSE
+						),
+						'name' => array(
+							'name' => 'Nome',
+							'selected' => ( $order_by == 'name' ) ? TRUE : FALSE
+						)
+					),
+					'direction' => $direction,
+					'limit' => $limit,
+					'insert' => array(
+						'created' => array(
+							'name' => 'Criação'
+						),
+						'modified' => array(
+							'name' => 'Modificação'
+						),
+						'name' => array(
+							'name' => 'Nome'
+						)
+					)
+				);
+				/*
+				 * Add element type fields to filter form
+				 */
+				foreach ( $element_fields as $element_field )
+				{
+					$filter_form['order_by'][$element_field['sname']] = array(
+						'name' => $element_field['name'],
+						'selected' => ( $order_by == $element_field['sname'] ) ? TRUE : FALSE
+					);
+					$filter_form['insert'][$element_field['sname']] = array(
+						'name' => $element_field['name']
+					);
+				}
+
+				/*
+				 * Element type variable pair
+				 */
 				$template_variables['element_variables'][$element['type_name']] = array(
-					'pair' => urlencode($pair),
+					'sname' => $element['type'],
+					'filter_form' => $filter_form,
 					'elements' => array()
 				);
 			}
 			/*
-			 * Join element fields for unique insert
+			 * Join element fields for exclusive insert
 			 */
 			$fields = '';
 			$fields .= '{' . $element['sname'] . '.name}' . "\n";
@@ -1256,7 +1326,7 @@ class Content extends CI_Controller {
 			$content_form .= div_open(array('class' => 'form_content_field'));
 			$content_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$content_form .= form_label($this->lang->line('elementar_status'), "status", $attributes);
+			$content_form .= form_label($this->lang->line('elementar_status'), NULL, $attributes);
 			$content_form .= br(1);
 			$content_form .= div_close("<!-- form_window_column_label -->");
 			$content_form .= div_open(array('class' => 'form_window_column_input'));
@@ -2184,6 +2254,58 @@ class Content extends CI_Controller {
 			'javascript' => $template['javascript'],
 			'head' => $template['head'],
 			'message' => $this->lang->line('elementar_xhr_write_template')
+		);
+		$this->common->ajax_response($response);
+	}
+
+	/*
+	 * Save template filter
+	 */
+	function xhr_write_template_filter()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$template_id = $this->input->post('template_id', TRUE);
+		$element_type = $this->input->post('element_type', TRUE);
+		
+		/*
+		 * Filter values
+		 */
+		$order_by = $this->input->post('order_by', TRUE);
+		$direction = $this->input->post('direction', TRUE);
+		$limit = (int) $this->input->post('limit', TRUE);
+
+		$template_filter = json_decode($this->storage->get_template_filter($template_id), TRUE);
+
+		if ( (bool) count($template_filter) )
+		{
+			$template_filter[$element_type]['order_by'] = $order_by;
+			$template_filter[$element_type]['direction'] = $direction;
+			$template_filter[$element_type]['limit'] = $limit;
+		}
+		else
+		{
+			$template_filter = array(
+				$element_type => array(
+					'order_by' => $order_by,
+					'direction' => $direction,
+					'limit' => $limit
+				)
+			);
+		}
+		
+		/*
+		 * write filter
+		 */
+		$this->storage->put_template_filter($template_id, json_encode($template_filter));
+
+		/*
+		 * resposta
+		 */
+		$response = array(
+			'done' => TRUE,
+			'message' => $this->lang->line('elementar_xhr_write_template_filter')
 		);
 		$this->common->ajax_response($response);
 	}

@@ -1064,7 +1064,6 @@ class Storage extends CI_Model {
 	 */
 	function get_template_filter($template_id)
 	{
-		$template_id = $this->get_content_template_id($content_id);
 		$this->elementar->select('filter');
 		$this->elementar->from('template');
 		$this->elementar->limit(1);

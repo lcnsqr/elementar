@@ -134,6 +134,11 @@ $lang['elementar_xhr_email_not_found']		= 'Email not found';
 $lang['elementar_xhr_reset_email_sent']		= 'Password reset link sent to the resgistered email';
 
 /*
+ * Template filter
+ */
+$lang['elementar_xhr_write_template_filter']		= 'Filter saved';
+
+/*
  * File field
  */
 $lang['elementar_file_description']		= 'File description';

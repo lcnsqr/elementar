@@ -466,6 +466,9 @@
 	text-align: center;
 	margin-top: 2px;
 }
+.pseudo_variables_menu a.variable_pair_menu {
+	display: block;
+}
 .pseudo_variables_accordion {
 	display: none;
 	margin: 2px 6px;
@@ -505,6 +508,7 @@
 .element_filter_menu {
 	display: none;
 	position: absolute;
+	opacity: .9;
 }
 .element_filter_menu > ul {
 	position: relative;
@@ -524,4 +528,75 @@
 	border: 0;
 	height: 1px;
 	background-color: #eeeeec;
+}
+.element_filter_menu .close_menu
+{
+	display: block;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	top: 8px;
+	right: 8px;
+	background-repeat: no-repeat;
+	background-position: -16px 0;
+	background-image: url("/css/backend/close.png");
+}
+.element_filter_menu .close_menu_hover
+{
+	background-position: 0 0;
+	background-image: url("/css/backend/close.png");
+}
+.element_filter_menu .title
+{
+	position: relative;
+	margin: 16px 32px 0 16px;
+}
+.filter_forms
+{
+	position: relative;
+	margin: 6px 14px 16px 14px;
+	border-top: 1px solid #eeeeec;
+}
+.filter_forms .title
+{
+	margin: 6px 0 6px 0;
+}
+.filter_forms .form_action
+{
+	margin: 6px 0 6px 0;
+	text-align: center;
+}
+.filter_forms .order_by 
+{
+	float: left;
+	width: 180px;
+}
+.filter_forms .order_by .filter_fields_left
+{
+	float: left;
+	width: 110px;
+}
+.filter_forms .order_by .filter_fields_right
+{
+	margin-left: 106px;
+	border-left: 1px solid #eeeeec;
+	padding-left: 6px;
+}
+.filter_forms .order_by input[type="text"]
+{
+	width: 32px;
+}
+.filter_forms .insertion
+{
+	margin-left:190px;
+	width: 110px;
+	border-left: 1px solid #eeeeec;
+	padding-left: 6px;
+}
+.filter_forms .hr_clear
+{
+	margin: 0;
+	clear: both;
+	border: 0;
+	height: 0;
 }

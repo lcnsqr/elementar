@@ -59,7 +59,7 @@ class Common {
 		$field = div_open(array('class' => 'form_content_field'));
 		$field .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$field .= form_label($name, $sname, $attributes);
+		$field .= form_label($name, NULL, $attributes);
 		$field .= br(1);
 		$field .= div_close('<!-- form_window_column_label -->');
 		$field .= div_open(array('class' => 'form_window_column_input'));

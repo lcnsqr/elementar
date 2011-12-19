@@ -28,7 +28,7 @@
 					<img style="margin: 0;" src="/css/backend/icon_home.png" alt="<?php echo $parent; ?>" />
 				</div>
 				<div class="tree_listing_header">
-					<p class="label content"><a href="<?php echo $parent_id; ?>" title="<?php echo $parent; ?>"><?php echo $parent; ?></a></p>
+					<p class="label content"><a href="<?php echo $parent_id; ?>"><?php echo $parent; ?></a></p>
 				</div>
 				<div class="tree_listing_menu white_board">
 					<div class="border top_side"></div>
@@ -78,7 +78,7 @@
 	<div class="corner bottom_left"></div>
 	<div class="foreground"></div>
 	
-	<div id="content_window" style="display: none;">
+	<div id="content_window">
 	</div> <!-- #content_editor_window -->
 	
 	<div class="shade_top"></div>

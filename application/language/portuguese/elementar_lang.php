@@ -134,6 +134,11 @@ $lang['elementar_xhr_email_not_found']		= 'Email n&atilde;o localizado';
 $lang['elementar_xhr_reset_email_sent']		= 'O endereço de redefinição da senha foi enviado para o email cadastrado';
 
 /*
+ * Template filter
+ */
+$lang['elementar_xhr_write_template_filter']		= 'Filtro salvo';
+
+/*
  * File field
  */
 $lang['elementar_file_description']		= 'Descri&ccedil;&atilde;o do arquivo';

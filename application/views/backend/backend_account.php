@@ -28,7 +28,7 @@
 					<img style="margin: 0;" src="/css/backend/icon_groups.png" alt="<?php echo $parent; ?>" />
 				</div>
 				<div class="tree_listing_header">
-					<p class="label content"><a href="<?php echo $parent; ?>" title="<?php echo $parent; ?>"><?php echo $parent; ?></a></p>
+					<p class="label content"><a href="<?php echo $parent; ?>"><?php echo $parent; ?></a></p>
 				</div>
 				<div class="tree_listing_menu white_board">
 					<div class="border top_side"></div>
@@ -72,7 +72,7 @@
 	<div class="corner bottom_left"></div>
 	<div class="foreground"></div>
 	
-	<div id="account_window" style="display: none;">
+	<div id="account_window">
 	</div> <!-- #content_editor_window -->
 	
 	<div class="shade_top"></div>

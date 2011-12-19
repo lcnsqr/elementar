@@ -10,8 +10,11 @@ $(function() {
 		$(".label > a.current").removeClass('current');
 	});
 	
+	/*
+	 * Hide floating menu indicator arrow on scroll
+	 */
 	$('#tree_parent_1').scroll(function(event){
-		$('body > .tree_listing_menu').fadeOut('fast', function() {
+		$('body > .tree_listing_menu > .menu_indicator').fadeOut('fast', function() {
 			$(this).remove();
 		});
 		$(".label > a.current").removeClass('current');
@@ -60,11 +63,11 @@ $(function() {
 		if ( menuBottom > $(document).height() )
 		{
 			marginTop = marginTop - ( menuBottom - $(document).height() );
-			$(visible_menu).css({position : 'fixed', left : (event.pageX + marginLeft) + 'px', bottom : '20px' });
+			$(visible_menu).css({left : (event.pageX + marginLeft) + 'px', bottom : '20px' });
 		}
 		else
 		{
-			$(visible_menu).css({position : 'fixed', left : (event.pageX + marginLeft) + 'px', top : (event.pageY + marginTop) + 'px' });
+			$(visible_menu).css({left : (event.pageX + marginLeft) + 'px', top : (event.pageY + marginTop) + 'px' });
 		}
 		
 		$('body').append(visible_menu);

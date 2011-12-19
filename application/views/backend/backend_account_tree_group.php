@@ -9,7 +9,7 @@
 				<img src="/css/backend/icon_account.png" alt="<?php echo $account['user']; ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label account"><a href="<?php echo $account['id']; ?>" title="<?php echo $account['user']; ?>"><?php echo $account['user']; ?></a></p>
+				<p class="label account"><a href="<?php echo $account['id']; ?>"><?php echo $account['user']; ?></a></p>
 			</div>
 			<div class="tree_listing_menu white_board">
 				<div class="border top_side"></div>
