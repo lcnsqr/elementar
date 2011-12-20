@@ -2325,6 +2325,7 @@ class Content extends CI_Controller {
 		 */
 		$response = array(
 			'done' => TRUE,
+			'element_type' => $element_type,
 			'message' => $this->lang->line('elementar_xhr_write_template_filter')
 		);
 		$this->common->ajax_response($response);

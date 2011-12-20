@@ -296,9 +296,7 @@ $(function() {
 
 	// Hide pseudo variables floating menus indicator arrow on scroll
 	$('#content_window').scroll(function(event){
-		$('body > .element_filter_menu > .menu_indicator').fadeOut('fast', function() {
-			$(this).remove();
-		});
+		$('body > .element_filter_menu > .menu_indicator').fadeOut('fast');
 	});
 	/*
 	 * pseudo variables filtering/insertion menu
@@ -358,9 +356,19 @@ $(function() {
 		$("#blocker").fadeIn("fast");
 
 		var filter_form = $(this).parents('.filter_forms').find('div.order_by');
+		
+		var visible_menu = $(this).parents('div.element_filter_menu').first().clone();
+		$(visible_menu).removeAttr('style');
+		$(visible_menu).children('.menu_indicator').removeAttr('style');
 
 		$.post("/backend/content/xhr_write_template_filter", $(filter_form).find('input').serialize(), function(data){
 			if ( data.done == true ) {
+				/*
+				 * Update hidden menu
+				 */
+				var hidden_menu = $('.variable_pair_menu[href="' + data.element_type + '"]').next('div.element_filter_menu');
+				$(hidden_menu).replaceWith(visible_menu);
+				
 				showClientWarning(data.message);
 			}
 			// Bloqueio
