@@ -1014,9 +1014,27 @@ class Content extends CI_Controller {
 			 * Template editor
 			 */
 			$template_form = '';
+			/*
 			$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
 			$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
 			$template_form .= form_open('/backend/content/xhr_write_template', $attributes, $hidden);
+			*/
+
+			$attributes = array(
+				'class' => 'noform',
+				'name' => 'template_id',
+				'value'=> $template_id,
+				'type' => 'hidden'
+			);
+			$template_form .= form_input($attributes);
+
+			$attributes = array(
+				'class' => 'noform',
+				'name' => 'content_id',
+				'value'=> $content_id,
+				'type' => 'hidden'
+			);
+			$template_form .= form_input($attributes);
 
 			/*
 			 * Show Sole template checkbox (if not home)
@@ -1040,7 +1058,7 @@ class Content extends CI_Controller {
 				$attributes = array(
 					'name'        => 'template_sole',
 					'id'          => 'template_sole_' . $content_id,
-					'class' => 'template_form',
+					'class' => 'template_form noform',
 					'value'       => 'true',
 					'checked'     => (bool) $checked
 				);
@@ -1068,7 +1086,7 @@ class Content extends CI_Controller {
 			$template_form .= $variables;			
 			$attributes = array(
 				'name' => 'template',
-				'class' => 'template_textarea',
+				'class' => 'template_textarea noform',
 				'id' => 'template_' . $content_id,
 				'rows' => 16,
 				'cols' => 32,
@@ -1090,7 +1108,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'name' => 'css',
-				'class' => 'css_textarea',
+				'class' => 'css_textarea noform',
 				'id' => 'css_' . $content_id,
 				'rows' => 16,
 				'cols' => 32,
@@ -1112,7 +1130,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'name' => 'javascript',
-				'class' => 'javascript_textarea',
+				'class' => 'javascript_textarea noform',
 				'id' => 'javascript_' . $content_id,
 				'rows' => 16,
 				'cols' => 32,
@@ -1134,7 +1152,7 @@ class Content extends CI_Controller {
 			$template_form .= div_open(array('class' => 'form_window_column_input'));
 			$attributes = array(
 				'name' => 'head',
-				'class' => 'head_textarea',
+				'class' => 'head_textarea noform',
 				'id' => 'head_' . $content_id,
 				'rows' => 16,
 				'cols' => 32,
@@ -1152,7 +1170,9 @@ class Content extends CI_Controller {
 			);
 			$template_form .= form_submit($attributes);
 			$template_form .= div_close("<!-- form_control_buttons -->");
+			/*
 			$template_form .= form_close();
+			*/
 			$data['template_form'] = $template_form;
 
 			/* 

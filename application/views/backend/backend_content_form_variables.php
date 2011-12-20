@@ -48,6 +48,7 @@
 			<a href="close" class="close_menu"></a>
 			<div class="filter_forms">
 				<div class="order_by">
+				<form action="/backend/content/xhr_write_template_filter" name="<?php echo $element_variable_type; ?>_form">
 					<p class="title">Ordenar por</p>
 					<input type="hidden" name="template_id" value="<?php echo $template_id; ?>" />
 					<input type="hidden" name="element_type" value="<?php echo $element_variable_type_list['sname']; ?>" />
@@ -67,8 +68,10 @@
 							</ul>
 						</div> <!-- filter_fields_right -->
 						<hr class="hr_clear" />
+					</form>
 				</div> <!-- order_by -->
 				<div class="insertion">
+				<form action="/backend/content" name="<?php echo $element_variable_type; ?>_insert">
 					<p class="title">Selecionar</p>
 					<input type="hidden" name="template_id" value="<?php echo $template_id; ?>" />
 					<ul>
@@ -76,6 +79,7 @@
 						<li><input type="checkbox" name="variable[]" value="<?php echo $sname; ?>" /><label><?php echo $insert['name']; ?></label></li>
 						<?php endforeach; ?>
 					</ul>
+				</form>
 				</div> <!-- insertion -->
 				<hr class="hr_clear" />
 				<div class="order_by">

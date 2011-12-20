@@ -632,15 +632,17 @@ $(function() {
 	/*
 	 * Template save
 	 */
-	$("form.template_form").live('submit', function(event) {
+	$("#button_template_save").live('click', function(event) {
 		event.preventDefault();
 		
+		var template_form = $(this).parents('#template_editor_form').first();
+
 		/*
 		 * Requires confirmation if default
 		 * template is about to be overwritten
 		 */
 		var overwrite = true;
-		var sole = $(this).find('input[name="template_sole"]').first();
+		var sole = $(template_form).find('input[name="template_sole"]').first();
 		if ( ! $(sole).attr('checked') && $(sole).length > 0 ) {
 			overwrite = confirm($('label.template_confirm_overwrite').html());
 		}
@@ -652,9 +654,9 @@ $(function() {
 			/*
 			 * Template textarea
 			 */
-			var template_textarea = $(this).find('.template_textarea');
+			var template_textarea = $(template_form).find('.template_textarea');
 	
-			$.post("/backend/content/xhr_write_template", $(this).serialize() + '&overwrite=' + overwrite, function(data){
+			$.post("/backend/content/xhr_write_template", $(template_form).find('.noform').serialize() + '&overwrite=' + overwrite, function(data){
 				if ( data.done == true ) {
 					//$(template_textarea).val(data.template);
 					showClientWarning(data.message);
