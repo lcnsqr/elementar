@@ -1140,26 +1140,8 @@ class Common {
 					 * perform filtering first by the specified
 					 * ordering field
 					 */
-					$order_by = $rule['order_by'];
-					/*
-					 * Sorting criteria (like in SQL, ASC or DESC)
-					 */
-					switch ( $rule['direction'] )
-					{
-						case 'asc':
-						usort($data[$element_type], function($a, $b) use($order_by)
-						{
-							return strcmp($a[$order_by], $b[$order_by]);
-						});
-						break;
-						
-						case 'desc':
-						usort($data[$element_type], function($a, $b) use($order_by)
-						{
-							return ( -1 * strcmp($a[$order_by], $b[$order_by]) );
-						});
-						break;
-					}
+					$filter = new Filter($rule['order_by'], $rule['direction']);
+					usort($data[$element_type], array($filter, 'sortElement'));
 
 					/*
 					 * Limit number of elements (if specified)
@@ -1175,6 +1157,45 @@ class Common {
 		return $data;
 	}
 
+}
+
+/*
+ * Element filtering callback
+ * Sorting criteria (like in SQL, ASC or DESC)
+ */
+class Filter {
+	private $order_by = 'created';
+	private $direction = 'desc';
+
+	function __construct($order_by, $direction)
+	{
+		$this->order_by = $order_by;
+		$this->direction = $direction;
+	}
+
+	function set_order_by($order_by)
+	{
+		$this->order_by = $order_by;
+	}
+	
+	function set_direction($order_by)
+	{
+		$this->direction = $direction;
+	}
+	
+	function sortElement($a, $b)
+	{
+		switch ( $this->direction )
+		{
+			case 'desc' :
+			return ( -1 * strcmp($a[$this->order_by], $b[$this->order_by]) );
+			break;
+			
+			case 'asc' :
+			return strcmp($a[$this->order_by], $b[$this->order_by]);
+			break;
+		}
+	}
 }
 
 /* End of file Common.php */
