@@ -61,8 +61,8 @@
 						</div> <!-- filter_fields_left -->
 						<div class="filter_fields_right">
 							<ul>
-							<li><input type="radio" name="direction" value="asc" <?php echo ( (bool) $element_variable_type_list['filter_form']['direction'] == 'asc' ) ? 'checked="checked"' : ''; ?> /><label>Asc</label></li>
-							<li><input type="radio" name="direction" value="desc" <?php echo ( (bool) $element_variable_type_list['filter_form']['direction'] == 'desc' ) ? 'checked="checked"' : ''; ?> /><label>Desc</label></li>
+							<li><input type="radio" name="direction" value="asc" <?php echo ( $element_variable_type_list['filter_form']['direction'] == 'asc' ) ? 'checked="checked"' : ''; ?> /><label>Asc</label></li>
+							<li><input type="radio" name="direction" value="desc" <?php echo ( $element_variable_type_list['filter_form']['direction'] == 'desc' ) ? 'checked="checked"' : ''; ?> /><label>Desc</label></li>
 							<li><hr /></li>
 							<li>Limite:<br /><input type="text" name="limit" value="<?php echo $element_variable_type_list['filter_form']['limit']; ?>" /></li>
 							</ul>

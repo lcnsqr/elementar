@@ -357,17 +357,86 @@ class Common {
 			break;
 
 			case "index" :
+			/*
+			 * index content root and filters form
+			 */
+			$filter = ( $value != '' ) ? json_decode($value, TRUE) : array();
+			if ( (bool) count($filter) )
+			{
+				$content_id = $filter['content_id'];
+				$content_names = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
+				$content_name = $content_names[$this->LANG];
+				$order_by = $filter['order_by'];
+				$direction = $filter['direction'];
+				$limit = $filter['limit'];
+				$depth = $filter['depth'];
+				$form = $this->_render_index_field_form($sname, $content_id, $order_by, $direction, $limit, $depth);
+			}
+			else
+			{
+				$content_name = 'Escolher raiz...';
+				$form = $this->_render_index_field_form($sname);
+			}
+			$field = div_open(array('class' => 'index_field'));
+			$field .= div_open(array('class' => 'dropdown_items_listing_inline'));
+			$field .= anchor($content_name, array('href' => $sname));
+			$field .= $this->_render_contents_listing();
+			$field .= div_close();
+			$field .= div_open(array('class' => 'filter_forms', 'id' => $sname . '_filter_forms'));
+			$field .= $form;
+			$field .= div_close();
+
+			/*
+			 * The actual field
+			 */
 			$attributes = array(
-				'class' => 'noform index_field',
+				'class' => 'noform index_actual_field',
+				'type' => 'hidden',
 				'name' => $sname,
 				'id' => $sname,
 				'value' => $value
 			);
-			$field = form_input($attributes);
-			$field .= $this->_render_contents_listing();
+			$field .= form_input($attributes);
+			$field .= div_close();
+
 			break;
 		}
 		return $field;
+	}
+	
+	function _render_index_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $depth = 1)
+	{
+		if ( ! (bool) $content_id )
+		{
+			/*
+			 * No content_id, dont render form
+			 */
+			return NULL;
+		}
+
+		$content_type_id = $this->CI->storage->get_content_type_id($content_id);
+		
+		$default_fields = array(
+			array('name' => 'Criado', 'sname' => 'created'),
+			array('name' => 'Modificado', 'sname' => 'modified'),
+			array('name' => 'Nome', 'sname' => 'name')
+		);
+		
+		$fields = $this->CI->storage->get_content_type_fields($content_type_id);
+		
+		$data = array(
+			'index_sname' => $field_sname,
+			'content_id' => $content_id,
+			'order_by' => array_merge($default_fields, $fields),
+			'order_by_checked' => $order_by_checked,
+			'index_filter' => array(
+				'direction' => $direction,
+				'limit' => $limit,
+				'depth' => $depth
+			)
+		);
+		
+		return $this->CI->load->view('backend/backend_content_index_field', $data, true);
 	}
 	
 	function _render_target_listing()
@@ -435,12 +504,12 @@ class Common {
 		foreach ( $this->CI->storage->get_contents_by_parent() as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
-			$listing[] = anchor($content_name[$this->LANG], array('href' => $content['id']));
+			$listing[] = anchor($content_name[$this->LANG], array('href' => $content['id'], 'class' => 'root_content'));
 		}
 		$contents = div_open(array('class' => 'dropdown_items_listing_position'));
 		$contents .= div_open(array('class' => 'dropdown_items_listing'));
 		$attributes = array(
-			'class' => 'dropdown_items_listing_contents'
+			'class' => 'dropdown_items_listing_targets'
 		);
 		$contents .= ul($listing, $attributes);
 		$contents .= div_close();
@@ -892,9 +961,17 @@ class Common {
 			
 			case 'index' :
 			/*
+			 * Index filter values
+			 */
+			$filter = json_decode($field_value, TRUE);
+			$content_id = $filter['content_id'];
+			$order_by = $filter['order_by'];
+			$direction = $filter['direction'];
+			$limit = (int) $filter['limit'];
+			$depth = (int) $filter['depth'];
+			/*
 			 * Index listing
 			 */
-			$content_id = $field_value;
 			$index = array();
 			/*
 			 * localized parent title
@@ -911,15 +988,14 @@ class Common {
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
-			if ( $this->CI->storage->get_content_has_children($content_id, FALSE) )
+			if ( $this->CI->storage->get_content_has_children($content_id, FALSE) && $depth > 0 )
 			{
-				$index[$link] = $this->_index_field($content_id);
+				$index[$link] = $this->_index_field($content_id, $order_by, $direction, $limit, $depth);
 			}
 			else
 			{
 				$index[] = $link;
 			}
-
 			return ul($index);
 			break;
 
@@ -929,11 +1005,31 @@ class Common {
 		}
 	}
 	
-	function _index_field($content_id)
+	function _index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count = 1)
 	{
-		$index = array();
 		$children = $this->CI->storage->get_content_children($content_id);
 		$children = ( is_array($children) ) ? $children : array();
+		/*
+		 * Perform filtering first by the specified
+		 * ordering field
+		 */
+		$filter = new Filter($order_by, $direction);
+		if ( $order_by == 'created' || $order_by == 'modified' )
+		{
+			$filter->set_is_date(TRUE);
+		}
+		$filter->set_lang($this->LANG);
+		usort($children, array($filter, 'sortElement'));
+
+		/*
+		 * Limit number of elements (if specified)
+		 */
+		if ( (bool) $limit )
+		{
+			$children = array_slice($children, 0, $limit);
+		}
+
+		$index = array();
 		foreach($children as $child)
 		{
 			$content_id = $child['id'];
@@ -952,9 +1048,10 @@ class Common {
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
-			if ( (bool) $child['children'] )
+			if ( (bool) $child['children'] && $depth >= $depth_count )
 			{
-				$index[$link] = $this->_index_field($content_id);
+				$depth_count++;
+				$index[$link] = $this->_index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count);
 			}
 			else
 			{
@@ -1141,6 +1238,10 @@ class Common {
 					 * ordering field
 					 */
 					$filter = new Filter($rule['order_by'], $rule['direction']);
+					if ( $rule['order_by'] == 'created' || $rule['order_by'] == 'modified' )
+					{
+						$filter->set_is_date(TRUE);
+					}
 					usort($data[$element_type], array($filter, 'sortElement'));
 
 					/*
@@ -1166,6 +1267,8 @@ class Common {
 class Filter {
 	private $order_by = 'created';
 	private $direction = 'desc';
+	private $is_date;
+	private $LANG;
 
 	function __construct($order_by, $direction)
 	{
@@ -1178,21 +1281,54 @@ class Filter {
 		$this->order_by = $order_by;
 	}
 	
-	function set_direction($order_by)
+	function set_direction($direction)
 	{
 		$this->direction = $direction;
 	}
 	
+	function set_is_date($is_date)
+	{
+		$this->is_date = $is_date;
+	}
+	
+	function set_lang($lang)
+	{
+		$this->LANG = $lang;
+	}
+	
 	function sortElement($a, $b)
 	{
+		$previous = $a[$this->order_by];
+		$next = $b[$this->order_by];
+
+		/*
+		 * Use apropriate language
+		 */
+		if ( (bool) $this->LANG )
+		{
+			$localized = json_decode($a[$this->order_by], TRUE);
+			$previous = $localized[$this->LANG];
+			$localized = json_decode($b[$this->order_by], TRUE);
+			$next = $localized[$this->LANG];
+		}
+
+		/*
+		 * Convert to unix timestamp
+		 */
+		if ( (bool) $this->is_date )
+		{
+			$previous = strtotime($a[$this->order_by]);
+			$next = strtotime($b[$this->order_by]);
+		}
+
 		switch ( $this->direction )
 		{
 			case 'desc' :
-			return ( -1 * strcmp($a[$this->order_by], $b[$this->order_by]) );
+			return ( -1 * strcmp($previous, $next) );
 			break;
 			
 			case 'asc' :
-			return strcmp($a[$this->order_by], $b[$this->order_by]);
+			return strcmp($previous, $next);
 			break;
 		}
 	}

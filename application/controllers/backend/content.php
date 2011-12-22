@@ -500,6 +500,27 @@ class Content extends CI_Controller {
 	/**
 	 * Gerar formulário para inserção de conteúdo
 	 */
+	function xhr_render_index_filter()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$content_id = $this->input->post('content_id', TRUE);
+		
+		$field_sname = $this->input->post('field_sname', TRUE);
+		
+		$html = $this->common->_render_index_field_form($field_sname, $content_id);
+		
+		$response = array(
+			'done' => TRUE,
+			'html' => $html
+		);
+		$this->common->ajax_response($response);
+	}
+
+	/**
+	 * Gerar formulário para inserção de conteúdo
+	 */
 	function xhr_render_content_new()
 	{
 		if ( ! $this->input->is_ajax_request() )

@@ -100,6 +100,15 @@
 	width: 98%;
 }
 
+.index_field
+{
+	position: relative;
+	margin-bottom: 6px;
+	padding-left: 6px;
+	border: 1px solid #d9d9d7;
+	background-color: #fff;
+}
+
 .form_control_buttons {
 	text-align: right;
 	margin-bottom: 20px;
@@ -524,7 +533,8 @@
 .element_filter_menu a:hover {
 	text-decoration: none;
 }
-.element_filter_menu hr {
+.filter_fields_right hr 
+{
 	border: 0;
 	height: 1px;
 	background-color: #eeeeec;
