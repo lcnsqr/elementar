@@ -368,8 +368,8 @@ class Common {
 				$content_name = $content_names[$this->LANG];
 				$order_by = $filter['order_by'];
 				$direction = $filter['direction'];
-				$limit = $filter['limit'];
-				$depth = $filter['depth'];
+				$limit = (int) $filter['limit'];
+				$depth = (int) $filter['depth'];
 				$form = $this->_render_index_field_form($sname, $content_id, $order_by, $direction, $limit, $depth);
 			}
 			else
@@ -1048,7 +1048,7 @@ class Common {
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
-			if ( (bool) $child['children'] && $depth >= $depth_count )
+			if ( (bool) $child['children'] && $depth > $depth_count )
 			{
 				$depth_count++;
 				$index[$link] = $this->_index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count);
