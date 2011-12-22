@@ -1049,7 +1049,7 @@ class Common {
 			);
 			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
 			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
-			if ( (bool) $child['children'] && $depth > $depth_count )
+			if ( (bool) $child['children'] && $depth >= $depth_count )
 			{
 				$index[$link] = $this->_index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count);
 			}
