@@ -13,7 +13,7 @@
 			<div class="tree_listing_text">
 				<p class="label element"><a href="<?php echo $element['id']; ?>"><?php echo $element['name']; ?></a></p>
 			</div>
-			<div class="tree_listing_menu white_board">
+			<div class="tree_listing_menu dark_board">
 				<div class="border top_side"></div>
 				<div class="border right_side"></div>
 				<div class="border bottom_side"></div>
@@ -56,7 +56,7 @@
 			<div class="tree_listing_text">
 				<p class="label content"><a href="<?php echo $content['id']; ?>"><?php echo current(json_decode($content['name'], TRUE)); ?></a></p>
 			</div>
-			<div class="tree_listing_menu white_board">
+			<div class="tree_listing_menu dark_board">
 				<div class="border top_side"></div>
 				<div class="border right_side"></div>
 				<div class="border bottom_side"></div>

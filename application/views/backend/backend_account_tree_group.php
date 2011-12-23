@@ -11,7 +11,7 @@
 			<div class="tree_listing_text">
 				<p class="label account"><a href="<?php echo $account['id']; ?>"><?php echo $account['user']; ?></a></p>
 			</div>
-			<div class="tree_listing_menu white_board">
+			<div class="tree_listing_menu dark_board">
 				<div class="border top_side"></div>
 				<div class="border right_side"></div>
 				<div class="border bottom_side"></div>

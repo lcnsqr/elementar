@@ -33,7 +33,7 @@
 <?php foreach ( $element_variables as $element_variable_type => $element_variable_type_list ) : ?>
 		<li><a class="variable_pair_menu" href="<?php echo $element_variable_type_list['sname']; ?>"><strong><?php echo $element_variable_type; ?></strong></a>
 		<!-- filters menu -->
-		<div class="element_filter_menu white_board">
+		<div class="element_filter_menu dark_board">
 			<div class="border top_side"></div>
 			<div class="border right_side"></div>
 			<div class="border bottom_side"></div>

@@ -549,12 +549,12 @@
 	right: 8px;
 	background-repeat: no-repeat;
 	background-position: -16px 0;
-	background-image: url("/css/backend/close.png");
+	background-image: url("/css/backend/close_white.png");
 }
 .element_filter_menu .close_menu_hover
 {
 	background-position: 0 0;
-	background-image: url("/css/backend/close.png");
+	background-image: url("/css/backend/close_white.png");
 }
 .element_filter_menu .title
 {
