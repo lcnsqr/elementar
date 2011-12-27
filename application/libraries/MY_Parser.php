@@ -115,6 +115,18 @@ class MY_Parser extends CI_Parser {
 		foreach ($data as $row)
 		{
 			$temp = $match['1'];
+
+			/*
+			 * Subarray check
+			 */
+			if (is_array($row))
+			{
+				foreach ($row as $key => $val)
+				{
+					$temp = $this->_parse_pair($key, $val, $temp);
+				}
+			}
+
 			foreach ($row as $key => $val)
 			{
 				if ( ! is_array($val))

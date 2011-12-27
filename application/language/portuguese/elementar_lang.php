@@ -169,6 +169,7 @@ $lang['elementar_menu_move_down']		= 'Mover para baixo';
 $lang['elementar_menu_delete']		= 'Remover';
 $lang['elementar_menu_new_above']		= 'Novo menu acima';
 $lang['elementar_menu_new_below']		= 'Novo menu abaixo';
+$lang['elementar_menu_new_submenu']		= 'Novo submenu';
 
 /*
  * youtube gallery field

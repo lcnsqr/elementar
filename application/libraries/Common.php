@@ -186,28 +186,10 @@ class Common {
 			break;
 			
 			case "menu" :
-			$field = div_open(array('class' => 'menu_field'));
-			/*
-			 * Render menu field
-			 */
-			$data = array(
-				'menu' => ( $value != '' ) ? json_decode($value, TRUE) : array(), 
-				'targets' => $this->_render_target_listing()
-			);
-			
-			/*
-			 * Localized texts
-			 */
-			$data['elementar_menu_name'] = $this->CI->lang->line('elementar_menu_name');
-			$data['elementar_menu_target'] = $this->CI->lang->line('elementar_menu_target');
-			$data['elementar_menu_add'] = $this->CI->lang->line('elementar_menu_add');
-			$data['elementar_menu_move_up'] = $this->CI->lang->line('elementar_menu_move_up');
-			$data['elementar_menu_move_down'] = $this->CI->lang->line('elementar_menu_move_down');
-			$data['elementar_menu_delete'] = $this->CI->lang->line('elementar_menu_delete');
-			$data['elementar_menu_new_above'] = $this->CI->lang->line('elementar_menu_new_above');
-			$data['elementar_menu_new_below'] = $this->CI->lang->line('elementar_menu_new_below');			
-			
-			$field .= $this->CI->load->view('backend/backend_content_menu_field', $data, true);
+			$menu = ( $value != '' ) ? json_decode($value, TRUE) : array();
+			$html = div_open(array('class' => 'menu_parent'));
+			$html .= $this->_render_menu_field($menu);
+			$html .= div_close();
 			/*
 			 * The actual field
 			 */
@@ -218,8 +200,11 @@ class Common {
 				'id' => $sname,
 				'value' => $value
 			);
-			$field .= form_input($attributes);
-			$field .= div_close();
+			$html .= form_input($attributes);
+			$data = array(
+				'html' => $html
+			);
+			$field = $this->CI->load->view("backend/backend_content_menu_field", $data, TRUE);
 			break;
 
 			case "file" : 
@@ -404,6 +389,49 @@ class Common {
 		return $field;
 	}
 	
+	function _render_menu_field($menus)
+	{
+		$html = '';
+		$targets = $this->_render_target_listing();
+		foreach ( $menus as $menu )
+		{
+			/*
+			 * Render menu field
+			 */
+			$data = array(
+				'name' => $menu['name'], 
+				'target' => $menu['target'], 
+				'targets' => $targets
+			);
+			
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_menu_name'] = $this->CI->lang->line('elementar_menu_name');
+			$data['elementar_menu_target'] = $this->CI->lang->line('elementar_menu_target');
+			$data['elementar_menu_add'] = $this->CI->lang->line('elementar_menu_add');
+			$data['elementar_menu_move_up'] = $this->CI->lang->line('elementar_menu_move_up');
+			$data['elementar_menu_move_down'] = $this->CI->lang->line('elementar_menu_move_down');
+			$data['elementar_menu_delete'] = $this->CI->lang->line('elementar_menu_delete');
+			$data['elementar_menu_new_above'] = $this->CI->lang->line('elementar_menu_new_above');
+			$data['elementar_menu_new_below'] = $this->CI->lang->line('elementar_menu_new_below');			
+			$data['elementar_menu_new_submenu'] = $this->CI->lang->line('elementar_menu_new_submenu');	
+	
+			$html .= div_open(array('class' => 'menu_item'));
+			$html .= $this->CI->load->view('backend/backend_content_menu_field_item', $data, true);
+
+			if ( is_array($menu['menu']) )
+			{
+				$html .= div_open(array('class' => 'menu_parent'));
+				$html .= $this->_render_menu_field($menu['menu']);
+				$html .= div_close();
+			}
+
+			$html .= div_close();
+		}
+		return $html;
+	}
+
 	function _render_index_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $depth = 1)
 	{
 		if ( ! (bool) $content_id )

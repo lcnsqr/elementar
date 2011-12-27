@@ -32,7 +32,8 @@ $(function() {
 			 * Update menu field json data
 			 */
 			$(".menu_field").each(function() {
-				$(this).prepareMenuField();
+				var menus = $(this).prepareMenuField();
+				$(this).find('input.menu_actual_field').val($.toJSON(menus));
 			});
 	
 			/*
@@ -530,7 +531,7 @@ $(function() {
 					menus.push( { name : name, target : target, menu : submenu } );
 				});
 			});
-			$(this).find('input.menu_actual_field').val($.toJSON(menus));
+			return menus;
 		}
 	});
 

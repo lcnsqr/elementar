@@ -169,6 +169,7 @@ $lang['elementar_menu_move_down']		= 'Move down';
 $lang['elementar_menu_delete']		= 'Delete';
 $lang['elementar_menu_new_above']		= 'Add menu above';
 $lang['elementar_menu_new_below']		= 'Add menu below';
+$lang['elementar_menu_new_submenu']		= 'Add submenu';
 
 /*
  * youtube gallery field
