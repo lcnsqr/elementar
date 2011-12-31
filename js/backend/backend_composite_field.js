@@ -330,7 +330,7 @@ $(function() {
 		/*
 		 * Load index field filters
 		 */
-		$.post('/backend/content/xhr_render_index_filter', { content_id : content_id, field_sname : $(root_selector).attr('href') }, function(data)
+		$.post('/backend/editor/xhr_render_index_filter', { content_id : content_id, field_sname : $(root_selector).attr('href') }, function(data)
 		{
 			$(root_selector).html(content_name);
 			$( 'div#' + $(root_selector).attr('href') + '_filter_forms' ).html(data.html);

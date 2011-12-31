@@ -204,6 +204,20 @@ class Common {
 			$data = array(
 				'html' => $html
 			);
+			/*
+			 * Localized texts
+			 */
+			$data['elementar_menu_name'] = $this->CI->lang->line('elementar_menu_name');
+			$data['elementar_menu_target'] = $this->CI->lang->line('elementar_menu_target');
+			$data['elementar_menu_add'] = $this->CI->lang->line('elementar_menu_add');
+			$data['elementar_menu_move_up'] = $this->CI->lang->line('elementar_menu_move_up');
+			$data['elementar_menu_move_down'] = $this->CI->lang->line('elementar_menu_move_down');
+			$data['elementar_menu_delete'] = $this->CI->lang->line('elementar_menu_delete');
+			$data['elementar_menu_new_above'] = $this->CI->lang->line('elementar_menu_new_above');
+			$data['elementar_menu_new_below'] = $this->CI->lang->line('elementar_menu_new_below');			
+			$data['elementar_menu_new_submenu'] = $this->CI->lang->line('elementar_menu_new_submenu');	
+			$data['targets'] = $this->_render_target_listing();
+
 			$field = $this->CI->load->view("backend/backend_content_menu_field", $data, TRUE);
 			break;
 

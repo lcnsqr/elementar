@@ -18,6 +18,7 @@ $lang['elementar_finished_elapsed']		= 'second';
 $lang['elementar_copyright']		= 'All rights reserved';
 $lang['elementar_account']		= 'Account';
 $lang['elementar_accounts']		= 'Accounts';
+$lang['elementar_editor']		= 'Editor';
 $lang['elementar_content']		= 'Content';
 $lang['elementar_contents']		= 'Contents';
 $lang['elementar_element']		= 'Element';

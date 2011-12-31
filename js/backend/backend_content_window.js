@@ -28,7 +28,7 @@ $(function() {
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 
-		$.post("/backend/content/xhr_write_meta", $(".noform").serialize(), function(data){
+		$.post("/backend/editor/xhr_write_meta", $(".noform").serialize(), function(data){
 			if ( data.done == true ) {
 				showClientWarning(data.message);
 			}
@@ -71,7 +71,7 @@ $(function() {
 			return null;
 		}
 
-		$.post("/backend/content/xhr_render_element_form", { parent_id : parent_id, type_id : type_id }, function(data){
+		$.post("/backend/editor/xhr_render_element_form", { parent_id : parent_id, type_id : type_id }, function(data){
 			if ( data.done == true ) {
 				// Close type editor (if visible)
 				$("#type_define_new_container:visible").fadeOut("slow");
@@ -108,19 +108,19 @@ $(function() {
 		 */
 		$.prepareCompositeFields();
 		
-		$.post("/backend/content/xhr_write_element", $(".noform").serialize(), function(data){
+		$.post("/backend/editor/xhr_write_element", $(".noform").serialize(), function(data){
 			if ( data.done == true ) {
 				var message = data.message;
 				/*
 				 * Reload Tree
 				 */
-				$.post("/backend/content/xhr_render_tree_unfold", { request : 'element', id : data.element_id }, function(data) {
+				$.post("/backend/editor/xhr_render_tree_unfold", { request : 'element', id : data.element_id }, function(data) {
 					$("#tree_listing_1").html(data.html);
 				}, "json");
 				/*
 				 * Reload editor window
 				 */
-				$.post("/backend/content/xhr_render_element_form", { id : data.element_id }, function(data){
+				$.post("/backend/editor/xhr_render_element_form", { id : data.element_id }, function(data){
 					if ( data.done == true ) {
 						$("#content_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
@@ -171,7 +171,7 @@ $(function() {
 			return null;
 		}
 
-		$.post("/backend/content/xhr_render_content_form", { parent_id : parent_id, type_id : type_id, editor : 'content' }, function(data){
+		$.post("/backend/editor/xhr_render_content_form", { parent_id : parent_id, type_id : type_id, editor : 'content' }, function(data){
 			if ( data.done == true ) {
 				// Close type editor (if visible)
 				$("#type_define_new_container:visible").fadeOut("slow");
@@ -243,18 +243,18 @@ $(function() {
 		 */
 		$.prepareCompositeFields();
 
-		$.post("/backend/content/xhr_write_content", $(".noform").serialize(), function(data){
+		$.post("/backend/editor/xhr_write_content", $(".noform").serialize(), function(data){
 			if ( data.done == true ) {
 				var message = data.message;
 				/*
 				 * Reload Tree & editor window if not home
 				 */
 				if ( data.content_id != 1 ) {
-					$.post("/backend/content/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
+					$.post("/backend/editor/xhr_render_tree_unfold", { request : 'content', id : data.content_id }, function(data) {
 						$("#tree_listing_1").html(data.html);
 					}, "json");
 				}
-				$.post("/backend/content/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
+				$.post("/backend/editor/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
 					if ( data.done == true ) {
 						$("#content_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
@@ -361,7 +361,7 @@ $(function() {
 		$(visible_menu).removeAttr('style');
 		$(visible_menu).children('.menu_indicator').removeAttr('style');
 
-		$.post("/backend/content/xhr_write_template_filter", $(filter_form).find('input').serialize(), function(data){
+		$.post("/backend/editor/xhr_write_template_filter", $(filter_form).find('input').serialize(), function(data){
 			if ( data.done == true ) {
 				/*
 				 * Update hidden menu
@@ -480,7 +480,7 @@ $(function() {
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 
-		$.post("/backend/content/xhr_render_content_type_form", function(data){
+		$.post("/backend/editor/xhr_render_content_type_form", function(data){
 			if ( data.done == true ) {
 				$("#type_define_new_container").html(data.html).show("slow");
 			}
@@ -501,7 +501,7 @@ $(function() {
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 
-		$.post("/backend/content/xhr_render_element_type_form", function(data){
+		$.post("/backend/editor/xhr_render_element_type_form", function(data){
 			if ( data.done == true ) {
 				$("#type_define_new_container").html(data.html).show("slow");
 			}
@@ -529,7 +529,7 @@ $(function() {
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 
-		$.post("/backend/content/xhr_write_content_type", $(this).serialize(), function(data){
+		$.post("/backend/editor/xhr_write_content_type", $(this).serialize(), function(data){
 			if ( data.done == true ) {
 				showClientWarning(data.message);
 				$("#type_define_new_container").hide('slow', function() {
@@ -537,7 +537,7 @@ $(function() {
 					// Reload types dropdown widget with new value
 					var id = $("#choose_content_type_for_parent_id").attr('href');
 			
-					$.post("/backend/content/xhr_render_content_new", { id : id, type_id : data.type_id }, function(data){
+					$.post("/backend/editor/xhr_render_content_new", { id : id, type_id : data.type_id }, function(data){
 						if ( data.done == true ) {
 							$("#content_window").html(data.html).show();
 						}
@@ -563,7 +563,7 @@ $(function() {
 		event.preventDefault();
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
-		$.post("/backend/content/xhr_write_element_type", $(this).serialize(), function(data){
+		$.post("/backend/editor/xhr_write_element_type", $(this).serialize(), function(data){
 			if ( data.done == true ) {
 				showClientWarning(data.message);
 				$("#type_define_new_container").hide('slow', function() {
@@ -573,7 +573,7 @@ $(function() {
 				// Reload types dropdown widget with new value
 				var id = $("#choose_element_type_for_parent_id").attr("href");
 		
-				$.post("/backend/content/xhr_render_element_new", { id : id, type_id : data.type_id }, function(data){
+				$.post("/backend/editor/xhr_render_element_new", { id : id, type_id : data.type_id }, function(data){
 					if ( data.done == true ) {
 						$("#content_window").html(data.html).show();
 					}
@@ -664,7 +664,7 @@ $(function() {
 			 */
 			var template_textarea = $(template_form).find('.template_textarea');
 	
-			$.post("/backend/content/xhr_write_template", $(template_form).find('.noform').serialize() + '&overwrite=' + overwrite, function(data){
+			$.post("/backend/editor/xhr_write_template", $(template_form).find('.noform').serialize() + '&overwrite=' + overwrite, function(data){
 				if ( data.done == true ) {
 					//$(template_textarea).val(data.template);
 					showClientWarning(data.message);

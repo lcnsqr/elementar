@@ -187,7 +187,7 @@ class Account extends CI_Controller {
 		$resource_menu = array(
 			'<strong>' . $this->lang->line('elementar_accounts') . '</strong>',
 			span('&bull;', array('class' => 'top_menu_sep')),
-			anchor($this->lang->line('elementar_contents'), array('href' => '/backend/content', 'title' => $this->lang->line('elementar_contents')))
+			anchor($this->lang->line('elementar_editor'), array('href' => '/backend/editor', 'title' => $this->lang->line('elementar_contents')))
 		);
 
 		$data = array(

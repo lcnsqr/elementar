@@ -94,7 +94,7 @@ $(function() {
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		var bullet = $(this);
 
-		$.post("/backend/content/xhr_render_tree_listing", { id : id }, function(data){
+		$.post("/backend/editor/xhr_render_tree_listing", { id : id }, function(data){
 			if ( data.done == true ) {
 				$(listing).html(data.html);
 				$(listing).slideDown("fast", "easeInSine");
@@ -128,7 +128,7 @@ $(function() {
 
 		var id = $(this).attr('href');
 
-		$.post("/backend/content/xhr_render_content_new", { id : id }, function(data){
+		$.post("/backend/editor/xhr_render_content_new", { id : id }, function(data){
 			if ( data.done == true ) {
 				$("#content_window").html(data.html).show();
 			}
@@ -149,7 +149,7 @@ $(function() {
 
 		var id = $(this).attr('href');
 
-		$.post("/backend/content/xhr_render_element_new", { id : id }, function(data){
+		$.post("/backend/editor/xhr_render_element_new", { id : id }, function(data){
 			if ( data.done == true ) {
 				$("#content_window").html(data.html).show();
 			}
@@ -183,7 +183,7 @@ $(function() {
 			var editor = 'meta';
 		}
 
-		$.post("/backend/content/xhr_render_content_form", { id : id, editor : editor }, function(data){
+		$.post("/backend/editor/xhr_render_content_form", { id : id, editor : editor }, function(data){
 			if ( data.done == true ) {
 				$("#content_window").html(data.html).show(function() {
 					// WYSIWYG textarea activation
@@ -207,7 +207,7 @@ $(function() {
 
 		var id = $(this).attr('href');
 
-		$.post("/backend/content/xhr_render_element_form", { id : id }, function(data){
+		$.post("/backend/editor/xhr_render_element_form", { id : id }, function(data){
 			if ( data.done == true ) {
 				$("#content_window").html(data.html).show(function() {
 					// WYSIWYG textarea activation
@@ -230,10 +230,10 @@ $(function() {
 		 * Item type
 		 */
 		if ( $(this).hasClass("content") ) {
-			var action = "/backend/content/xhr_erase_content";
+			var action = "/backend/editor/xhr_erase_content";
 		}
 		else if ( $(this).hasClass("element") ) {
-			var action = "/backend/content/xhr_erase_element";
+			var action = "/backend/editor/xhr_erase_element";
 		}
 
 		// Bloqueio
@@ -330,10 +330,10 @@ $(function() {
 			 * Item type
 			 */
 			if ( child_type == "content" ) {
-				var action = "/backend/content/xhr_write_content_parent";
+				var action = "/backend/editor/xhr_write_content_parent";
 			}
 			else if ( child_type == "element" ) {
-				var action = "/backend/content/xhr_write_element_parent";
+				var action = "/backend/editor/xhr_write_element_parent";
 			}
 			
 			/*
@@ -354,7 +354,7 @@ $(function() {
 					/*
 					 * Reload Tree
 					 */
-					$.post("/backend/content/xhr_render_tree_unfold", { request : child_type, id : child_id }, function(data) {
+					$.post("/backend/editor/xhr_render_tree_unfold", { request : child_type, id : child_id }, function(data) {
 						$("#tree_listing_1").html(data.html);
 
 						// Loading icon

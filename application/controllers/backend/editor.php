@@ -1,6 +1,6 @@
 <?php
 /*
- *      content.php
+ *      editor.php
  *      
  *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
  *      
@@ -22,7 +22,7 @@
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Content extends CI_Controller {
+class Editor extends CI_Controller {
 
 	/*
 	 * i18n settings
@@ -102,7 +102,7 @@ class Content extends CI_Controller {
 		}
 		
 		/*
-		 * CMS Common Library
+		 * Elementar Common Library
 		 */
 		$this->load->library('common', array(
 			'lang' => $this->LANG, 
@@ -195,7 +195,7 @@ class Content extends CI_Controller {
 		$resource_menu = array(
 			anchor($this->lang->line('elementar_accounts'), array('href' => '/backend/account', 'title' => $this->lang->line('elementar_accounts'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
-			'<strong>' . $this->lang->line('elementar_contents') . '</strong>'
+			'<strong>' . $this->lang->line('elementar_editor') . '</strong>'
 		);
 
 		$data = array(
@@ -309,21 +309,15 @@ class Content extends CI_Controller {
 		/*
 		 * Type name
 		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$form .= form_label($this->lang->line('elementar_type_name'), 'name', $attributes);
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
+		$label = form_label($this->lang->line('elementar_type_name'), 'name', $attributes);
 		$attributes = array(
 			'name' => 'name',
 			'id' => 'name'
 		);
-		$form .= form_input($attributes);
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
-		
+		$input = form_input($attributes);
+		$form .= backend_input_columns($label, $input);
+
 		/*
 		 * div field model
 		 */
@@ -332,32 +326,20 @@ class Content extends CI_Controller {
 		/*
 		 * field name
 		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_type_field_name'), "field_0");
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
+		$label = form_label($this->lang->line('elementar_type_field_name'), "field_0");
 		$attributes = array(
 			"id" => "field_0",
 			"name" => "field_0"
 		);
-		$form .= form_input($attributes);
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
+		$input = form_input($attributes);
+		$form .= backend_input_columns($label, $input);
 
 		/*
 		 * field type
 		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_type_field_type'), "field_type_0");
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
-		$form .= $this->_render_field_type_dropdown();
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
+		$label = form_label($this->lang->line('elementar_type_field_type'), "field_type_0");
+		$input = $this->_render_field_type_dropdown();
+		$form .= backend_input_columns($label, $input);
 
 		/*
 		 * close div field model
@@ -371,12 +353,7 @@ class Content extends CI_Controller {
 		 */
 		$form .= paragraph($this->lang->line('elementar_type_markup'), array('class' => 'page_subtitle'));
 
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_type_markup_template'), "template");
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
+		$label = form_label($this->lang->line('elementar_type_markup_template'), "template");
 		$attributes = array(
 			'name' => 'template',
 			'id' => 'template',
@@ -385,9 +362,8 @@ class Content extends CI_Controller {
 			'cols' => 32,
 			'value' => ''
 		);
-		$form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
+		$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+		$form .= backend_input_columns($label, $input);
 
 		$form .= div_open(array('class' => 'form_control_buttons'));
 
@@ -406,8 +382,8 @@ class Content extends CI_Controller {
 
 	}
 
-	/**
-	 * Gerar formulário para inserção de tipo de elemento
+	/*
+	 * Element type creation form
 	 */
 	function xhr_render_element_type_form()
 	{
@@ -423,20 +399,14 @@ class Content extends CI_Controller {
 		/*
 		 * Type name
 		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
 		$attributes = array('class' => 'field_label');
-		$form .= form_label($this->lang->line('elementar_type_name'), 'name', $attributes);
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
+		$label = form_label($this->lang->line('elementar_type_name'), 'name', $attributes);
 		$attributes = array(
 			'name' => 'name',
 			'id' => 'name'
 		);
-		$form .= form_input($attributes);
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
+		$input = form_input($attributes);
+		$form .= backend_input_columns($label, $input);
 		
 		/*
 		 * div field model
@@ -446,32 +416,20 @@ class Content extends CI_Controller {
 		/*
 		 * field name
 		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_type_field_name'), "field_0");
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
+		$label = form_label($this->lang->line('elementar_type_field_name'), "field_0");
 		$attributes = array(
 			"id" => "field_0",
 			"name" => "field_0"
 		);
-		$form .= form_input($attributes);
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
+		$input = form_input($attributes);
+		$form .= backend_input_columns($label, $input);
 
 		/*
 		 * field type
 		 */
-		$form .= div_open(array('class' => 'form_content_field'));
-		$form .= div_open(array('class' => 'form_window_column_label'));
-		$form .= form_label($this->lang->line('elementar_type_field_type'), "field_type_0");
-		$form .= br(1);
-		$form .= div_close("<!-- form_window_column_label -->");
-		$form .= div_open(array('class' => 'form_window_column_input'));
-		$form .= $this->_render_field_type_dropdown();
-		$form .= div_close("<!-- form_window_column_input -->");
-		$form .= div_close("<!-- .form_content_field -->");
+		$label = form_label($this->lang->line('elementar_type_field_type'), "field_type_0");
+		$input = $this->_render_field_type_dropdown();
+		$form .= backend_input_columns($label, $input);
 
 		/*
 		 * close div field model
@@ -497,8 +455,8 @@ class Content extends CI_Controller {
 
 	}
 
-	/**
-	 * Gerar formulário para inserção de conteúdo
+	/*
+	 * Filters for index field type
 	 */
 	function xhr_render_index_filter()
 	{
@@ -518,8 +476,8 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 	}
 
-	/**
-	 * Gerar formulário para inserção de conteúdo
+	/*
+	 * Choose type for content creation
 	 */
 	function xhr_render_content_new()
 	{
@@ -534,11 +492,22 @@ class Content extends CI_Controller {
 		 */
 		$type_id = $this->input->post('type_id', TRUE);;
 		
+		/*
+		 * Content instance
+		 */
+		$this->load->library('content');
+
+		/*
+		 * Set initial values
+		 */
+		$this->content->set_parent_id($parent_id);
+		$this->content->set_type_id($type_id);
+
 		$data = array();
 		$data['content_id'] = NULL;
 		$data['parent_id'] = $parent_id;
 		$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
-		$data['content_types_dropdown'] = $this->_render_content_types_dropdown($type_id);
+		$data['content_types_dropdown'] = $this->content->render_content_types_dropdown();
 		
 		/*
 		 * Localized texts
@@ -555,8 +524,8 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 	}
 
-	/**
-	 * Gerar formulário para escolha do tipo de elemento
+	/*
+	 * Choose type for element creation form
 	 */
 	function xhr_render_element_new()
 	{
@@ -574,11 +543,22 @@ class Content extends CI_Controller {
 		 */
 		$type_id = $this->input->post('type_id', TRUE);;
 
+		/*
+		 * Element instance
+		 */
+		$this->load->library('element');
+
+		/*
+		 * Set initial values
+		 */
+		$this->element->set_parent_id($parent_id);
+		$this->element->set_type_id($type_id);
+
 		$data = array();
 		$data['element_id'] = NULL;
 		$data['parent_id'] = $parent_id;
-		$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
-		$data['element_types_dropdown'] = $this->_render_element_types_dropdown($type_id);
+		$data['breadcrumb'] = $this->common->breadcrumb_content( (int) $parent_id );
+		$data['element_types_dropdown'] = $this->element->render_element_types_dropdown();
 
 		/*
 		 * Localized texts
@@ -595,8 +575,8 @@ class Content extends CI_Controller {
 		$this->common->ajax_response($response);
 	}
 
-	/**
-	 * Gerar formulário para inserção de elemento
+	/*
+	 * Element creation/editing form
 	 */
 	function xhr_render_element_form()
 	{
@@ -606,17 +586,43 @@ class Content extends CI_Controller {
 		/*
 		 * Create or update? Check for incoming element ID
 		 */
-		$element_id = $this->input->post('id', TRUE);
+		$id = $this->input->post('id', TRUE);
+
+		/*
+		 * View data array
+		 */
 		$data = array();
 
-		if ( (bool) $element_id !== FALSE ) 
+		/*
+		 * Element instance
+		 */
+		$this->load->library('element');
+
+		if ( (bool) $id === TRUE ) 
 		{
 			/*
 			 * Update
 			 */
-			$parent_id = $this->storage->get_element_parent_id($element_id);
-			$type_id = $this->storage->get_element_type_id($element_id);		
-			$data['breadcrumb'] = $this->common->breadcrumb_element($element_id);
+			$this->element->set_id($id);
+			/*
+			 * check if its real
+			 */
+			if ( ! (bool) $this->element->exists() )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_bad_request')
+				);
+				$this->common->ajax_response($response);
+				return NULL;
+			}
+
+			/*
+			 * Load values from database
+			 */
+			$this->element->load();
+
+			$data['breadcrumb'] = $this->common->breadcrumb_element($id);
 		}
 		else
 		{
@@ -625,145 +631,140 @@ class Content extends CI_Controller {
 			 */
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
+
+			/*
+			 * Set initial values
+			 */
+			$this->element->set_parent_id($parent_id);
+			$this->element->set_type_id($type_id);
+
 			$data['breadcrumb'] = $this->common->breadcrumb_element((int)$parent_id);
 		}
-		
+		/*
+		 * HTML rendered form
+		 */
 		$form = "";
 
-		if ( (bool) $type_id ) 
-		{
-
-			/*
-			 * Element ID (if any, hidden)
-			 */
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'element_id',
-				'value'=> $element_id,
-				'type' => 'hidden'
-			);
-			$form .= form_input($attributes);
-
-			/*
-			 * Element parent_id (hidden)
-			 */
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'parent_id',
-				'value'=> $parent_id,
-				'type' => 'hidden'
-			);
-			$form .= form_input($attributes);
-
-			/*
-			 * Element type id (hidden)
-			 */
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'type_id',
-				'value'=> $type_id,
-				'type' => 'hidden'
-			);
-			$form .= form_input($attributes);
-
-			/*
-			 * Element name
-			 */
-			$value = $this->storage->get_element_name($element_id);
-			/*
-			 * If no name, generate a default one 
-			 * from element type name and last id + 1
-			 */
-			$value = ( (bool) $value ) ? $value : $this->storage->get_element_type_name($type_id) . ' #' . ( $this->storage->get_element_last_id($type_id) + 1 );
-			$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
-
-			/*
-			 * Element type fields
-			 */
-			$fields = $this->storage->get_element_type_fields($type_id);
-			foreach ( $fields as $field )
-			{
-				/*
-				 * Field value
-				 */
-				$value = $this->storage->get_element_field($element_id, $field['id']);
-				$form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
-			}
-
-			/*
-			 * Spread
-			 */
-			$form .= div_open(array('class' => 'form_content_field'));
-			$form .= div_open(array('class' => 'form_window_column_label'));
-			if ( (bool) $element_id !== FALSE ) 
-			{
-				$checked = $this->storage->get_element_spread($element_id);
-			}
-			else
-			{
-				// Default new element to spread
-				$checked = TRUE;
-			}
-			$attributes = array('class' => 'field_label');
-			$form .= form_label($this->lang->line('elementar_element_spread'), "spread", $attributes);
-			$form .= div_close("<!-- form_window_column_label -->");
-
-			$form .= div_open(array('class' => 'form_window_column_input'));
-			$attributes = array(
-				'name'        => 'spread',
-				'id'          => 'spread',
-				'class' => 'noform',
-				'value'       => 'true',
-				'checked'     => $checked
-			);
-			$form .= form_checkbox($attributes);
-			$form .= div_close("<!-- form_window_column_input -->");
-			$form .= div_close("<!-- .form_content_field -->");
-
-			/*
-			 * status
-			 */
-			$form .= div_open(array('class' => 'form_content_field'));
-			$form .= div_open(array('class' => 'form_window_column_label'));
-			$attributes = array('class' => 'field_label');
-			$form .= form_label($this->lang->line('elementar_status'), NULL, $attributes);
-			$form .= div_close("<!-- form_window_column_label -->");
-			$form .= div_open(array('class' => 'form_window_column_input'));
-			$form .= $this->_render_status_dropdown($this->storage->get_element_status($element_id));
-			$form .= div_close("<!-- form_window_column_input -->");
-			$form .= div_close("<!-- .form_content_field -->");
-
-			$form .= div_open(array('class' => 'form_control_buttons'));
-
-			/*
-			 *  Botão envio
-			 */
-			$attributes = array(
-			    'name' => 'button_element_save',
-			    'id' => 'button_element_save',
-			    'class' => 'noform',
-			    'content' => $this->lang->line('elementar_save')
-			);
-			$form .= form_button($attributes);
-
-			$form .= div_close();
-			
-			$data['element_form'] = $form;
-			
-			$html = $this->load->view('backend/backend_content_element_form', $data, true);
-
-			$response = array(
-				'done' => TRUE,
-				'html' => $html
-			);
-		}
-		else 
+		/*
+		 * Error exit if type_id not present
+		 */
+		if ( ! (bool) $this->element->get_type_id() ) 
 		{
 			$response = array(
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
+			$this->common->ajax_response($response);
+			return NULL;
 		}
+
+		/*
+		 * Element ID (if any, hidden)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'id',
+			'value'=> $this->element->get_id(),
+			'type' => 'hidden'
+		);
+		$form .= form_input($attributes);
+
+		/*
+		 * Element parent_id (hidden)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'parent_id',
+			'value'=> $this->element->get_parent_id(),
+			'type' => 'hidden'
+		);
+		$form .= form_input($attributes);
+
+		/*
+		 * Element type id (hidden)
+		 */
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'type_id',
+			'value'=> $this->element->get_type_id(),
+			'type' => 'hidden'
+		);
+		$form .= form_input($attributes);
+
+		/*
+		 * Element name
+		 */
+		if ( (bool) $this->element->get_id() )
+		{
+			$value = $this->element->get_name();
+		}
+		else
+		{
+			/*
+			 * Generate a default name for element
+			 */
+			$value = $this->element->get_default_name();
+		}
+
+		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
+
+		/*
+		 * Element type fields
+		 */
+		foreach ( $this->element->get_type_fields() as $field )
+		{
+			/*
+			 * Field value
+			 */
+			$value = $this->element->get_field($field['id']);
+			$form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
+		}
+
+		/*
+		 * Spread
+		 */
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_element_spread'), "spread", $attributes);
+		$attributes = array(
+			'name' => 'spread',
+			'id' => 'spread',
+			'class' => 'noform',
+			'value' => 'true',
+			'checked' => $this->element->get_spread()
+		);
+		$input = form_checkbox($attributes);
+		$form .= backend_input_columns($label, $input);
+
+		/*
+		 * status
+		 */
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_status'), NULL, $attributes);
+		$input = $this->_render_status_dropdown($this->element->get_status());
+		$form .= backend_input_columns($label, $input);
+
+		/*
+		 *  Save button
+		 */
+		$form .= div_open(array('class' => 'form_control_buttons'));
+		$attributes = array(
+		    'name' => 'button_element_save',
+		    'id' => 'button_element_save',
+		    'class' => 'noform',
+		    'content' => $this->lang->line('elementar_save')
+		);
+		$form .= form_button($attributes);
+		$form .= div_close();
+		
+		$data['element_form'] = $form;
+		
+		$html = $this->load->view('backend/backend_content_element_form', $data, true);
+
+		$response = array(
+			'done' => TRUE,
+			'html' => $html
+		);
+
 		$this->common->ajax_response($response);
 
 	}
@@ -974,8 +975,8 @@ class Content extends CI_Controller {
 		return $this->load->view('backend/backend_content_form_variables', $template_variables, true);
 	}
 
-	/**
-	 * Gerar formulário para inserção/atualizacão de conteúdo
+	/*
+	 * Render form for content creation or editing
 	 */
 	function xhr_render_content_form()
 	{
@@ -985,28 +986,40 @@ class Content extends CI_Controller {
 		/*
 		 * Create or update? Check for incoming content ID
 		 */
-		$content_id = $this->input->post('id', TRUE);
+		$id = $this->input->post('id', TRUE);
 		$data = array();
 		/*
 		 * Which editor to display
 		 */
 		$data['editor'] = $this->input->post('editor', TRUE);
 
-		if ( (bool) $content_id ) 
+		/*
+		 * Content instance
+		 */
+		$this->load->library('content');
+		$this->content->set_id($id);
+
+		if ( (bool) $this->content->get_id() ) 
 		{
 			/*
-			 * Update
+			 * check if its real
 			 */
-			$parent_id = $this->storage->get_content_parent_id($content_id);
-			$type_id = $this->storage->get_content_type_id($content_id);
-			$template_id = $this->storage->get_content_template_id($content_id);
-			$template = $this->storage->get_template($content_id);
-			$template_html = $template['html'];
-			$template_css = $template['css'];
-			$template_javascript = $template['javascript'];
-			$template_head = $template['head'];
+			if ( ! (bool) $this->content->exists() )
+			{
+				$response = array(
+					'done' => FALSE,
+					'message' => $this->lang->line('elementar_bad_request')
+				);
+				$this->common->ajax_response($response);
+				return NULL;
+			}
 
-			$data['breadcrumb'] = $this->common->breadcrumb_content($content_id);
+			/*
+			 * Load values from database
+			 */
+			$this->content->load();
+
+			$data['breadcrumb'] = $this->common->breadcrumb_content($id);
 		}
 		else
 		{
@@ -1015,12 +1028,19 @@ class Content extends CI_Controller {
 			 */
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
-			$template_id = $this->storage->get_content_type_template_id($type_id);
+
+			/*
+			 * Set initial values
+			 */
+			$this->content->set_parent_id($parent_id);
+			$this->content->set_type_id($type_id);
+			$this->content->set_template_id($this->storage->get_content_type_template_id($type_id));
+			$this->content->set_template($this->storage->get_content_type_template($type_id));
 			$template = $this->storage->get_content_type_template($type_id);
-			$template_html = $template['html'];
-			$template_css = $template['css'];
-			$template_javascript = $template['javascript'];
-			$template_head = $template['head'];
+			$this->content->set_template_html($template['html']);
+			$this->content->set_template_css($template['css']);
+			$this->content->set_template_javascript($template['javascript']);
+			$this->content->set_template_head($template['head']);
 
 			$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		}
@@ -1028,7 +1048,8 @@ class Content extends CI_Controller {
 		/*
 		 * Show template tab only to existing contents
 		 */
-		$data['show_tabs'] = (bool) $content_id;
+		$data['show_tabs'] = (bool) $this->content->get_id();
+
 		if ( $data['show_tabs'] )
 		{
 			/*
@@ -1044,7 +1065,7 @@ class Content extends CI_Controller {
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'template_id',
-				'value'=> $template_id,
+				'value'=> $this->content->get_template_id(),
 				'type' => 'hidden'
 			);
 			$template_form .= form_input($attributes);
@@ -1052,7 +1073,7 @@ class Content extends CI_Controller {
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'content_id',
-				'value'=> $content_id,
+				'value'=> $this->content->get_id(),
 				'type' => 'hidden'
 			);
 			$template_form .= form_input($attributes);
@@ -1060,17 +1081,13 @@ class Content extends CI_Controller {
 			/*
 			 * Show Sole template checkbox (if not home)
 			 */
-			if ( $content_id != 1 )
+			if ( $this->content->get_id() != 1 )
 			{
-				$template_form .= div_open(array('class' => 'form_content_field'));
-				$template_form .= div_open(array('class' => 'form_window_column_label'));
 				$attributes = array('class' => 'field_label');
-				$template_form .= form_label($this->lang->line('elementar_template_sole'), "sole", $attributes);
-				$template_form .= div_close("<!-- form_window_column_label -->");
-				$template_form .= div_open(array('class' => 'form_window_column_input'));
-				if ( (bool) $content_id ) 
+				$label = form_label($this->lang->line('elementar_template_sole'), "sole", $attributes);
+				if ( (bool) $this->content->get_id() ) 
 				{
-					$checked = $this->storage->get_content_type_template_id($type_id) != $this->storage->get_content_template_id($content_id) ;
+					$checked = $this->storage->get_content_type_template_id($this->content->get_type_id()) != $this->content->get_template_id() ;
 				}
 				else 
 				{
@@ -1078,110 +1095,85 @@ class Content extends CI_Controller {
 				}
 				$attributes = array(
 					'name'        => 'template_sole',
-					'id'          => 'template_sole_' . $content_id,
+					'id'          => 'template_sole_' . $this->content->get_id(),
 					'class' => 'template_form noform',
 					'value'       => 'true',
 					'checked'     => (bool) $checked
 				);
-				$template_form .= form_checkbox($attributes);
-				$template_form .= '<label class="template_confirm_overwrite" for="' . 'template_sole_' . $content_id . '">' . $this->lang->line('elementar_template_confirm_overwrite') . '</label>';
-				$template_form .= div_close("<!-- form_window_column_input -->");
-				$template_form .= div_close("<!-- .form_content_field -->");
+				$input = form_checkbox($attributes);
+				$input .= '<label class="template_confirm_overwrite" for="' . 'template_sole_' . $this->content->get_id() . '">' . $this->lang->line('elementar_template_confirm_overwrite') . '</label>';
+				$template_form .= backend_input_columns($label, $input);
 			}
 			
 			/*
 			 * Template pseudo variables available for this content
 			 */
-			$variables = $this->_render_variables($content_id);
+			$variables = $this->_render_variables($this->content->get_id());
 
 			/*
 			 * HTML Template editor
 			 */
-			$template_form .= div_open(array('class' => 'form_content_field'));
-			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_type_markup_template'), 'template_' . $content_id, $attributes);
-			$template_form .= br(1);
-			$template_form .= div_close("<!-- form_window_column_label -->");
-			$template_form .= div_open(array('class' => 'form_window_column_input'));
-			$template_form .= $variables;			
+			$label = form_label($this->lang->line('elementar_type_markup_template'), 'template_' . $this->content->get_id(), $attributes);
+			$input = $variables;			
 			$attributes = array(
 				'name' => 'template',
 				'class' => 'template_textarea noform',
-				'id' => 'template_' . $content_id,
+				'id' => 'template_' . $this->content->get_id(),
 				'rows' => 16,
 				'cols' => 32,
-				'value' => $template_html
+				'value' => $this->content->get_template_html()
 			);
-			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= div_close("<!-- form_window_column_input -->");
-			$template_form .= div_close("<!-- .form_content_field -->");
+			$input .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+			$template_form .= backend_input_columns($label, $input);
 
 			/*
 			 * CSS editor
 			 */
-			$template_form .= div_open(array('class' => 'form_content_field'));
-			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_type_css'), 'css_' . $content_id, $attributes);
-			$template_form .= br(1);
-			$template_form .= div_close("<!-- form_window_column_label -->");
-			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$label = form_label($this->lang->line('elementar_type_css'), 'css_' . $this->content->get_id(), $attributes);
 			$attributes = array(
 				'name' => 'css',
 				'class' => 'css_textarea noform',
-				'id' => 'css_' . $content_id,
+				'id' => 'css_' . $this->content->get_id(),
 				'rows' => 16,
 				'cols' => 32,
-				'value' => $template_css
+				'value' => $this->content->get_template_css()
 			);
-			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= div_close("<!-- form_window_column_input -->");
-			$template_form .= div_close("<!-- .form_content_field -->");
+			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+			$template_form .= backend_input_columns($label, $input);
 
 			/*
 			 * Javascript editor
 			 */
-			$template_form .= div_open(array('class' => 'form_content_field'));
-			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_type_javascript'), 'css_' . $content_id, $attributes);
-			$template_form .= br(1);
-			$template_form .= div_close("<!-- form_window_column_label -->");
-			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$label = form_label($this->lang->line('elementar_type_javascript'), 'css_' . $this->content->get_id(), $attributes);
 			$attributes = array(
 				'name' => 'javascript',
 				'class' => 'javascript_textarea noform',
-				'id' => 'javascript_' . $content_id,
+				'id' => 'javascript_' . $this->content->get_id(),
 				'rows' => 16,
 				'cols' => 32,
-				'value' => $template_javascript
+				'value' => $this->content->get_template_javascript()
 			);
-			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= div_close("<!-- form_window_column_input -->");
-			$template_form .= div_close("<!-- .form_content_field -->");
+			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+			$template_form .= backend_input_columns($label, $input);
 
 			/*
 			 * Extra Head editor
 			 */
-			$template_form .= div_open(array('class' => 'form_content_field'));
-			$template_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$template_form .= form_label($this->lang->line('elementar_type_extra_head'), 'head_' . $content_id, $attributes);
-			$template_form .= br(1);
-			$template_form .= div_close("<!-- form_window_column_label -->");
-			$template_form .= div_open(array('class' => 'form_window_column_input'));
+			$label = form_label($this->lang->line('elementar_type_extra_head'), 'head_' . $this->content->get_id(), $attributes);
 			$attributes = array(
 				'name' => 'head',
 				'class' => 'head_textarea noform',
-				'id' => 'head_' . $content_id,
+				'id' => 'head_' . $this->content->get_id(),
 				'rows' => 16,
 				'cols' => 32,
-				'value' => $template_head
+				'value' => $this->content->get_template_head()
 			);
-			$template_form .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= div_close("<!-- form_window_column_input -->");
-			$template_form .= div_close("<!-- .form_content_field -->");
+			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+			$template_form .= backend_input_columns($label, $input);
 
 			$template_form .= div_open(array('class' => 'form_control_buttons'));
 			$attributes = array(
@@ -1203,7 +1195,7 @@ class Content extends CI_Controller {
 			$attributes = array(
 				'class' => 'noform',
 				'name' => 'id',
-				'value'=> $content_id,
+				'value'=> $this->content->get_id(),
 				'type' => 'hidden'
 			);
 			$meta_form .= form_input($attributes);
@@ -1217,48 +1209,37 @@ class Content extends CI_Controller {
 				$this->lang->line('elementar_meta_author') => 'copyright'
 			);
 			
-			if ( (int) $content_id == 1 )
+			if ( (int) $this->content->get_id() == 1 )
 			{
 				$fields[$this->lang->line('elementar_meta_google-site-verification')] = 'google-site-verification';
 			}
 			foreach ( $fields as $label => $name )
 			{
-				$meta_form .= div_open(array('class' => 'form_content_field'));
-				$meta_form .= div_open(array('class' => 'form_window_column_label'));
 				$attributes = array('class' => 'field_label');
-				$meta_form .= form_label($label, $name, $attributes);
-				$meta_form .= br(1);
-				$meta_form .= div_close("<!-- form_window_column_label -->");
-				$meta_form .= div_open(array('class' => 'form_window_column_input'));
+				$label = form_label($label, $name, $attributes);
 				$attributes = array(
 					'class' => 'noform',
 					'name' => $name,
 					'id' => $name,
-					'value' => html_entity_decode($this->storage->get_meta_field($content_id, $name), ENT_QUOTES, "UTF-8")
+					'value' => html_entity_decode($this->storage->get_meta_field($this->content->get_id(), $name), ENT_QUOTES, "UTF-8")
 				);
-				$meta_form .= form_input($attributes);
-				$meta_form .= div_close("<!-- form_window_column_input -->");
-				$meta_form .= div_close("<!-- .form_content_field -->");
+				$input = form_input($attributes);
+				$meta_form .= backend_input_columns($label, $input);
 			}
 
 			/*
 			 * URL
 			 */
-			$meta_form .= div_open(array('class' => 'form_content_field'));
-			$meta_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$meta_form .= form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
-			$meta_form .= br(1);
-			$meta_form .= div_close("<!-- form_window_column_label -->");
-			$meta_form .= div_open(array('class' => 'form_window_column_input'));
-			$uri = $this->storage->get_content_uri($content_id);
-			$url = $this->storage->get_meta_field($content_id, 'url');
+			$label = form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
+			$uri = $this->storage->get_content_uri($this->content->get_id());
+			$url = $this->storage->get_meta_field($this->content->get_id(), 'url');
 			if ( $url == '' )
 			{
 				/*
 				 * Change "/home" to "/" or use default path to content
 				 */
-				$url = ( $uri == '/home' ) ? site_url('/') : site_url($uri);
+				$url = ( $this->content->get_id() == 1 ) ? site_url('/') : site_url($uri);
 			}
 			$attributes = array(
 				'class' => 'noform',
@@ -1266,20 +1247,14 @@ class Content extends CI_Controller {
 				'id' => 'url',
 				'value' => $url
 			);
-			$meta_form .= form_input($attributes);
-			$meta_form .= div_close("<!-- form_window_column_input -->");
-			$meta_form .= div_close("<!-- .form_content_field -->");
+			$input = form_input($attributes);
+			$meta_form .= backend_input_columns($label, $input);
 
 			/*
 			 * Priority
 			 */
-			$meta_form .= div_open(array('class' => 'form_content_field'));
-			$meta_form .= div_open(array('class' => 'form_window_column_label'));
 			$attributes = array('class' => 'field_label');
-			$meta_form .= form_label($this->lang->line('elementar_meta_priority'), 'priority', $attributes);
-			$meta_form .= br(1);
-			$meta_form .= div_close("<!-- form_window_column_label -->");
-			$meta_form .= div_open(array('class' => 'form_window_column_input'));
+			$label = form_label($this->lang->line('elementar_meta_priority'), 'priority', $attributes);
 			$values = array(
 				'0.0' => '0.0',
 				'0.1' => '0.1',
@@ -1293,11 +1268,11 @@ class Content extends CI_Controller {
 				'0.9' => '0.9',
 				'1.0' => '1.0'
 			);
-			$value = $this->storage->get_meta_field($content_id, 'priority');
+			$value = $this->storage->get_meta_field($this->content->get_id(), 'priority');
 			$selected = ( (bool) $value ) ? $value : '0.5';
-			$meta_form .= form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
-			$meta_form .= div_close("<!-- form_window_column_input -->");
-			$meta_form .= div_close("<!-- .form_content_field -->");
+			$input = form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
+			$meta_form .= backend_input_columns($label, $input);
+
 			/*
 			 *  Botão envio
 			 */
@@ -1314,188 +1289,104 @@ class Content extends CI_Controller {
 
 		}
 
+		/*
+		 * Content main form
+		 */
 		$content_form = "";
 		
-		if ( $type_id != "" ) 
-		{
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'content_id',
-				'value'=> $content_id,
-				'type' => 'hidden'
-			);
-			$content_form .= form_input($attributes);
-
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'type_id',
-				'value'=> $type_id,
-				'type' => 'hidden'
-			);
-			$content_form .= form_input($attributes);
-
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'parent_id',
-				'value'=> $parent_id,
-				'type' => 'hidden'
-			);
-			$content_form .= form_input($attributes);
-
-			/*
-			 * Content name
-			 */
-			$value = $this->storage->get_content_name($content_id);
-			$content_form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, TRUE);
-
-			/*
-			 * Render custom fields
-			 */
-			$fields = $this->storage->get_content_type_fields($type_id);
-			foreach ( $fields as $field )
-			{
-				/*
-				 * Field value
-				 */
-				$value = $this->storage->get_content_field($content_id, $field['id']);
-				$content_form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
-			}
-
-			/*
-			 * status
-			 */
-			$content_form .= div_open(array('class' => 'form_content_field'));
-			$content_form .= div_open(array('class' => 'form_window_column_label'));
-			$attributes = array('class' => 'field_label');
-			$content_form .= form_label($this->lang->line('elementar_status'), NULL, $attributes);
-			$content_form .= br(1);
-			$content_form .= div_close("<!-- form_window_column_label -->");
-			$content_form .= div_open(array('class' => 'form_window_column_input'));
-			$content_form .= $this->_render_status_dropdown($this->storage->get_content_status($content_id));
-			$content_form .= div_close("<!-- form_window_column_input -->");
-			$content_form .= div_close("<!-- .form_content_field -->");
-
-			$content_form .= div_open(array('class' => 'form_control_buttons'));
-			/*
-			 *  Botão envio
-			 */
-			$attributes = array(
-			    'name' => 'button_content_save',
-			    'id' => 'button_content_save',
-			    'class' => 'noform',
-			    'content' => $this->lang->line('elementar_save')
-			);
-			$content_form .= form_button($attributes);
-
-			$content_form .= div_close("<!-- form_control_buttons -->");
-			
-			$data['content_form'] = $content_form;
-			
-			/*
-			 * Localized texts
-			 */
-			$data['elementar_editor_content'] = $this->lang->line('elementar_editor_content');
-			$data['elementar_editor_template'] = $this->lang->line('elementar_editor_template');
-			$data['elementar_editor_meta'] = $this->lang->line('elementar_editor_meta');
-			
-			$html = $this->load->view('backend/backend_content_form', $data, true);
-			
-			$response = array(
-				'done' => TRUE,
-				'html' => $html
-			);
-		}
-		else 
+		if ( ! (bool) $this->content->get_type_id() ) 
 		{
 			$response = array(
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
+			$this->common->ajax_response($response);
+			return NULL;
 		}
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'content_id',
+			'value'=> $this->content->get_id(),
+			'type' => 'hidden'
+		);
+		$content_form .= form_input($attributes);
+
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'type_id',
+			'value'=> $this->content->get_type_id(),
+			'type' => 'hidden'
+		);
+		$content_form .= form_input($attributes);
+
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'parent_id',
+			'value'=> $this->content->get_parent_id(),
+			'type' => 'hidden'
+		);
+		$content_form .= form_input($attributes);
+
+		/*
+		 * Content name
+		 */
+		$content_form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $this->content->get_name(), TRUE);
+
+		/*
+		 * Render custom fields
+		 */
+		$fields = $this->storage->get_content_type_fields($this->content->get_type_id());
+		foreach ( $fields as $field )
+		{
+			/*
+			 * Field value
+			 */
+			$value = $this->content->get_field($field['id']);
+			$content_form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
+		}
+
+		/*
+		 * status
+		 */
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_status'), NULL, $attributes);
+		$input = $this->_render_status_dropdown($this->content->get_status());
+		$content_form .= backend_input_columns($label, $input);
+
+		$content_form .= div_open(array('class' => 'form_control_buttons'));
+		/*
+		 *  Botão envio
+		 */
+		$attributes = array(
+		    'name' => 'button_content_save',
+		    'id' => 'button_content_save',
+		    'class' => 'noform',
+		    'content' => $this->lang->line('elementar_save')
+		);
+		$content_form .= form_button($attributes);
+
+		$content_form .= div_close("<!-- form_control_buttons -->");
+		
+		$data['content_form'] = $content_form;
+		
+		/*
+		 * Localized texts
+		 */
+		$data['elementar_editor_content'] = $this->lang->line('elementar_editor_content');
+		$data['elementar_editor_template'] = $this->lang->line('elementar_editor_template');
+		$data['elementar_editor_meta'] = $this->lang->line('elementar_editor_meta');
+		
+		$html = $this->load->view('backend/backend_content_form', $data, true);
+		
+		$response = array(
+			'done' => TRUE,
+			'html' => $html
+		);
+
 		$this->common->ajax_response($response);
 
 	}
-
-	/**
-	 * Content types HTML dropdown
-	 * @param integer $selected Selected content type (id)
-	 * @return HTML content (html widget)
-	 */
-	function _render_content_types_dropdown($selected = NULL)
-	{
-		$dropdown = div_open(array('class' => 'dropdown_items_listing_inline'));
-		$types = $this->storage->get_content_types();
-		if ( count($types) > 0 )
-		{
-			if ( (bool) $selected )
-			{
-				$dropdown .= anchor($this->storage->get_content_type_name($selected), array('href' => $selected));
-			}
-			else
-			{
-				$dropdown .= anchor(current($types), array('href' => key($types)));
-			}
-		}
-		else
-		{
-			$dropdown .= anchor($this->lang->line('elementar_new') . '...', array('href' => '0'));
-		}
-		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
-		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
-		$dropdown_items = array();
-		foreach ( $types as $type_id => $type )
-		{
-			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_content_type_target', 'href' => $type_id));
-		}
-		// "New" link
-		$dropdown_items[] = anchor($this->lang->line('elementar_new') . '...', array('id' => 'content_type_create', 'class' => 'dropdown_items_listing_content_type_target', 'href' => '0'));
-		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
-		$dropdown .= div_close();
-		$dropdown .= div_close();
-		$dropdown .= div_close();
-		return $dropdown;
-	}
 	
-	/**
-	 * Element types HTML dropdown
-	 * @param integer $selected Selected content type (id)
-	 * @return HTML content (html dropdown widget)
-	 */
-	function _render_element_types_dropdown($selected = NULL )
-	{
-		$dropdown = div_open(array('class' => 'dropdown_items_listing_inline'));
-		$types = $this->storage->get_element_types();
-		if ( count($types) > 0 )
-		{
-			if ( (bool) $selected )
-			{
-				$dropdown .= anchor($this->storage->get_element_type_name($selected), array('href' => $selected));
-			}
-			else
-			{
-				$dropdown .= anchor(current($types), array('href' => key($types)));
-			}
-		}
-		else
-		{
-			$dropdown .= anchor($this->lang->line('elementar_new') . '...', array('href' => '0'));
-		}
-		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
-		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
-		$dropdown_items = array();
-		foreach ( $types as $type_id => $type )
-		{
-			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_element_type_target', 'href' => $type_id));
-		}
-		// "New" link
-		$dropdown_items[] = anchor($this->lang->line('elementar_new') . '...', array('id' => 'element_type_create', 'class' => 'dropdown_items_listing_element_type_target', 'href' => '0'));
-		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
-		$dropdown .= div_close();
-		$dropdown .= div_close();
-		$dropdown .= div_close();
-		return $dropdown;
-	}
-
 	/**
 	 * Status HTML dropdown
 	 * @param string $selected Selected item
@@ -1654,6 +1545,12 @@ class Content extends CI_Controller {
 		}
 
 		/*
+		 * Content instance
+		 */
+		$this->load->library('content');
+		$this->content->set_sname($sname);
+		
+		/*
 		 * For content name saving,
 		 * Group each language's value 
 		 * on a array before saving
@@ -1664,52 +1561,62 @@ class Content extends CI_Controller {
 			$values[$lang_code] = htmlentities($this->input->post('name_' . $lang_code, TRUE), ENT_QUOTES, "UTF-8");
 		}
 		$name = json_encode($values);
-
+		$this->content->set_name($name);
+		
 		/*
 		 * Locate content type
 		 */
-		$type_id = $this->input->post('type_id', TRUE);
+		$this->content->set_type_id($this->input->post('type_id', TRUE));
 
 		/*
-		 * Locate content ID 
+		 * Content's Parent
 		 */
-		$content_id = $this->input->post('content_id', TRUE);
+		$this->content->set_parent_id($this->input->post('parent_id', TRUE));
+
+		/*
+		 * Content Status
+		 */
+		$this->content->set_status($this->input->post('status', TRUE));
+
+		/*
+		 * Locate content ID
+		 */
+		$content_id = $this->input->post('id', TRUE);
+
 		if ( (bool) $content_id )
 		{
 			/*
+			 * Content rewrite
+			 */
+			$this->content->set_id($content_id);
+			/*
 			 * check if its real
 			 */
-			if ( ! (bool) $this->storage->get_content_status($content_id) )
+			if ( ! (bool) $this->content->exists() )
 			{
 				$response = array(
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_write_content_error')
 				);
 				$this->common->ajax_response($response);
-				return;
+				return NULL;
 			}
-			/*
-			 * Content has ID. Just rename
-			 */
-			$this->storage->put_content_name($content_id, $name, $sname);
 		}
-		else
-		{
-			/*
-			 * Content ID not found, create new content
-			 */
-			$content_id = $this->storage->put_content($name, $sname, $type_id);
-		}
+
+		/*
+		 * Save new or rewrite content (main fields)
+		 */
+		$this->content->save();
 		
 		/* 
 		 * Store content fields based on it's type
 		 */
-		foreach ( $this->storage->get_content_type_fields($type_id) as $type)
+		foreach ( $this->content->get_type_fields() as $field)
 		{
 			/*
 			 * Check for multilanguage field
 			 */
-			if ( (bool) $type['i18n'] )
+			if ( (bool) $field['i18n'] )
 			{
 				/*
 				 * Group each language's value on a array before saving
@@ -1717,7 +1624,7 @@ class Content extends CI_Controller {
 				$values = array();
 				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
-					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
+					$values[$lang_code] = $this->input->post($field['sname'] . '_' . $lang_code, TRUE);
 				}
 				$value = json_encode($values);
 			}
@@ -1726,21 +1633,10 @@ class Content extends CI_Controller {
 				/*
 				 * Not multilanguage
 				 */
-				$value = $this->input->post($type['sname'], TRUE);
+				$value = $this->input->post($field['sname'], TRUE);
 			}
-			$this->storage->put_content_field($content_id, $type['id'], $value);
+			$this->content->set_field($field['id'], $value);
 		}
-		
-		/*
-		 * Save content's parent
-		 */
-		$parent_id = (int) $this->input->post('parent_id', TRUE);
-		$this->storage->put_content_parent($content_id, $parent_id);
-
-		/* 
-		 * Save status
-		 */
-		$this->storage->put_content_status($content_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * Return ajax response
@@ -1781,8 +1677,8 @@ class Content extends CI_Controller {
 
 	}
 
-	/**
-	 * Remover elemento
+	/*
+	 * Remove element
 	 */
 	function xhr_erase_element()
 	{
@@ -1792,12 +1688,17 @@ class Content extends CI_Controller {
 		$element_id = $this->input->post('id', TRUE);
 
 		/*
-		 * remover elemento
+		 * Element instance
 		 */
-		$this->storage->delete_element($element_id);
+		$this->load->library('element', $element_id);
 
 		/*
-		 * resposta
+		 * remove element
+		 */
+		$this->element->delete();
+
+		/*
+		 * answer to client
 		 */
 		$response = array(
 			'done' => TRUE,
@@ -1817,19 +1718,26 @@ class Content extends CI_Controller {
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
-		 * Parent id
-		 */
-		$parent_id = $this->input->post('parent_id', TRUE);
-
-		/*
 		 * Element id
 		 */
 		$element_id = $this->input->post('child_id', TRUE);
 
 		/*
+		 * Element instance
+		 */
+		$this->load->library('element');
+		$this->element->set_id($element_id);
+		$this->element->load();
+
+		/*
+		 * Parent id
+		 */
+		$parent_id = $this->input->post('parent_id', TRUE);
+
+		/*
 		 * check if its real
 		 */
-		if ( ! (bool) $this->storage->get_content_status($parent_id) || ! (bool) $this->storage->get_element_status($element_id) )
+		if ( ! (bool) $this->storage->get_content_status($parent_id) || ! (bool) $this->element->exists() )
 		{
 			$response = array(
 				'done' => FALSE,
@@ -1841,7 +1749,8 @@ class Content extends CI_Controller {
 
 		if ( (bool) $parent_id && (bool) $element_id && ( $parent_id != $element_id ) )
 		{
-			$this->storage->put_element_parent($element_id, $parent_id);
+			$this->element->set_parent_id($parent_id);
+			$this->element->save();
 			$response = array(
 				'done' => TRUE
 			);
@@ -1867,19 +1776,26 @@ class Content extends CI_Controller {
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
-		 * Parent id
-		 */
-		$parent_id = $this->input->post('parent_id', TRUE);
-
-		/*
 		 * Content id
 		 */
 		$content_id = $this->input->post('child_id', TRUE);
 		
 		/*
+		 * Content instance
+		 */
+		$this->load->library('content');
+		$this->content->set_id($content_id);
+		$this->content->load();
+
+		/*
+		 * Parent id
+		 */
+		$parent_id = $this->input->post('parent_id', TRUE);
+
+		/*
 		 * check if its real
 		 */
-		if ( ! (bool) $this->storage->get_content_status($parent_id) || ! (bool) $this->storage->get_content_status($content_id) )
+		if ( ! (bool) $this->storage->get_content_status($parent_id) || ! (bool) $this->content->exists() )
 		{
 			$response = array(
 				'done' => FALSE,
@@ -1909,7 +1825,8 @@ class Content extends CI_Controller {
 
 		if ( (bool) $parent_id && (bool) $content_id && ( $parent_id != $content_id ) )
 		{
-			$this->storage->put_content_parent($content_id, $parent_id);
+			$this->content->set_parent_id($parent_id);
+			$this->content->save();
 			$response = array(
 				'done' => TRUE
 			);
@@ -1927,7 +1844,7 @@ class Content extends CI_Controller {
 	}
 
 	/*
-	 * Salvar elemento
+	 * Save element
 	 */
 	function xhr_write_element()
 	{
@@ -1935,7 +1852,7 @@ class Content extends CI_Controller {
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		/*
-		 * Elements snames are not multilanguage
+		 * Element sname are not multilanguage
 		 */
 		$sname = $this->common->normalize_string($this->input->post('name', TRUE));
 
@@ -1953,55 +1870,75 @@ class Content extends CI_Controller {
 		}
 
 		/*
-		 * Elements names are not multilanguage
+		 * Element instance
 		 */
-		$name = $this->input->post('name', TRUE);
+		$this->load->library('element');
+		$this->element->set_sname($sname);
+		
+		/*
+		 * Element name are not multilanguage
+		 */
+		$this->element->set_name($this->input->post('name', TRUE));
 		
 		/*
 		 * Locate element type
 		 */
-		$type_id = $this->input->post('type_id', TRUE);
-		
+		$this->element->set_type_id($this->input->post('type_id', TRUE));
+
+		/*
+		 * Element's Parent
+		 */
+		$this->element->set_parent_id($this->input->post('parent_id', TRUE));
+
+		/*
+		 * Spread option
+		 */
+		$this->element->set_spread( (bool) $this->input->post('spread', TRUE) );
+
+		/*
+		 * Element Status
+		 */
+		$this->element->set_status($this->input->post('status', TRUE));
+
 		/*
 		 * Locate element ID
 		 */
-		$element_id = $this->input->post('element_id', TRUE);
+		$element_id = $this->input->post('id', TRUE);
+		
 		if ( (bool) $element_id )
 		{
 			/*
+			 * Element rewrite
+			 */
+			$this->element->set_id($element_id);
+			/*
 			 * check if its real
 			 */
-			if ( ! (bool) $this->storage->get_element_status($element_id) )
+			if ( ! (bool) $this->element->exists() ) 
 			{
 				$response = array(
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_write_element_error')
 				);
 				$this->common->ajax_response($response);
-				return;
+				return NULL;
 			}
-			/*
-			 * Content has ID. Just rename
-			 */
-			$this->storage->put_element_name($element_id, $name, $sname);
 		}
-		else
-		{
-			/*
-			 * Element ID not found, create new element
-			 */
-			$element_id = $this->storage->put_element($name, $sname, $type_id);
-		}
+
+		/*
+		 * Save new or rewrite element (main fields)
+		 */
+		$this->element->save();
 
 		/* 
 		 * Store element fields based on it's type
 		 */
-		foreach ( $this->storage->get_element_type_fields($type_id) as $type)
+		foreach ( $this->element->get_type_fields() as $field)
 		{
 			/*
 			 * Check for multilanguage field
 			 */
-			if ( (bool) $type['i18n'] )
+			if ( (bool) $field['i18n'] )
 			{
 				/*
 				 * Group each language's value on a array before saving
@@ -2009,7 +1946,7 @@ class Content extends CI_Controller {
 				$values = array();
 				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
-					$values[$lang_code] = $this->input->post($type['sname'] . '_' . $lang_code, TRUE);
+					$values[$lang_code] = $this->input->post($field['sname'] . '_' . $lang_code, TRUE);
 				}
 				$value = json_encode($values);
 			}
@@ -2018,33 +1955,10 @@ class Content extends CI_Controller {
 				/*
 				 * Not multilanguage
 				 */
-				$value = $this->input->post($type['sname'], TRUE);
+				$value = $this->input->post($field['sname'], TRUE);
 			}
-			$this->storage->put_element_field($element_id, $type['id'], $value);
+			$this->element->set_field($field['id'], $value);
 		}
-		
-		/*
-		 * Write spread option
-		 */
-		if ( $this->input->post('spread', TRUE) )
-		{
-			$this->storage->put_element_spread($element_id, TRUE);
-		}
-		else
-		{
-			$this->storage->put_element_spread($element_id, FALSE);
-		}
-
-		/*
-		 * Element's Parent
-		 */
-		$parent_id = $this->input->post('parent_id', TRUE);
-		$this->storage->put_element_parent($element_id, $parent_id);
-
-		/* 
-		 * Save status
-		 */
-		$this->storage->put_element_status($element_id, $this->input->post('status', TRUE));
 		
 		/*
 		 * Ajax response

@@ -18,6 +18,7 @@ $lang['elementar_finished_elapsed']		= 'segundo';
 $lang['elementar_copyright']		= 'Todos os direitos reservados';
 $lang['elementar_account']		= 'Conta';
 $lang['elementar_accounts']		= 'Contas';
+$lang['elementar_editor']		= 'Editor';
 $lang['elementar_content']		= 'Conte&uacute;do';
 $lang['elementar_contents']		= 'Conte&uacute;dos';
 $lang['elementar_element']		= 'Elemento';

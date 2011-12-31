@@ -1,5 +1,22 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+if ( ! function_exists('backend_input_columns'))
+{
+	function backend_input_columns($label = '', $input = '')
+	{
+		$html = div_open(array('class' => 'form_content_field'));
+		$html .= div_open(array('class' => 'form_window_column_label'));
+		$html .= $label;
+		$html .= br(1);
+		$html .= div_close("<!-- form_window_column_label -->");
+		$html .= div_open(array('class' => 'form_window_column_input'));
+		$html .= $input;
+		$html .= div_close("<!-- form_window_column_input -->");
+		$html .= div_close("<!-- .form_content_field -->");
+		return $html;
+	}
+}
+
 if ( ! function_exists('div_open'))
 {
 	function div_open($attributes = '')

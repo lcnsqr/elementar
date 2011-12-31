@@ -385,6 +385,30 @@ class Storage extends CI_Model {
 	}
 
 	/*
+	 * get element aname 
+	 */
+	function get_element_sname($element_id)
+	{
+		$this->elementar->select('sname');
+		$this->elementar->from('element');
+		$this->elementar->where('id', $element_id);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->sname;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * get element type sname
 	 */
 	function get_element_type_sname($id)
