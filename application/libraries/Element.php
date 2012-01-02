@@ -176,7 +176,7 @@ class Element {
 
 	function delete()
 	{
-		$this->storage->delete_element($this->id);
+		$this->CI->storage->delete_element($this->id);
 	}
 	
 	/*

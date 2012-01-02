@@ -238,7 +238,7 @@ class Content {
 
 	function delete()
 	{
-		$this->storage->delete_content($this->id);
+		$this->CI->storage->delete_content($this->id);
 	}
 	
 	/*
