@@ -226,21 +226,23 @@ $(function() {
 	$("a.remove").live('click', function(event) {
 		event.preventDefault();
 
+		var id = $(this).attr('href');
+
 		/*
 		 * Item type
 		 */
 		if ( $(this).hasClass("content") ) {
 			var action = "/backend/editor/xhr_erase_content";
+			var erase = $('#tree_listing_1').find('p.label.content > a[href="' + id + '"]').parents('.tree_parent').first();
 		}
 		else if ( $(this).hasClass("element") ) {
 			var action = "/backend/editor/xhr_erase_element";
+			var erase = $('#tree_listing_1').find('p.label.element > a[href="' + id + '"]').parents('.tree_parent').first();
 		}
 
 		// Bloqueio
 		$("#blocker").fadeIn("fast");
 		
-		var id = $(this).attr('href');
-		var erase = $('#tree_listing_1').find('p.label > a[href="' + id + '"]').parents('.tree_parent').first();
 		var parent_listing = $(erase).parents(".tree_listing").first();
 		var parent = $(erase).parents(".tree_parent").first();
 		

@@ -1643,7 +1643,7 @@ class Editor extends CI_Controller {
 		 */
 		$response = array(
 			'done' => TRUE,
-			'content_id' => $content_id,
+			'content_id' => $this->content->get_id(),
 			'message' => $this->lang->line('elementar_xhr_write_content')
 		);
 		$this->common->ajax_response($response);
@@ -1661,12 +1661,18 @@ class Editor extends CI_Controller {
 		$content_id = $this->input->post('id', TRUE);
 
 		/*
-		 * remover conteúdo
+		 * Content instance
 		 */
-		$this->storage->delete_content($content_id);
+		$this->load->library('content');
+		$this->content->set_id($content_id);
 
 		/*
-		 * resposta
+		 * remove content
+		 */
+		$this->content->delete();
+
+		/*
+		 * Answer to client
 		 */
 		$response = array(
 			'done' => TRUE,
@@ -1690,7 +1696,8 @@ class Editor extends CI_Controller {
 		/*
 		 * Element instance
 		 */
-		$this->load->library('element', $element_id);
+		$this->load->library('element');
+		$this->element->set_id($element_id);
 
 		/*
 		 * remove element
@@ -1965,7 +1972,7 @@ class Editor extends CI_Controller {
 		 */
 		$response = array(
 			'done' => TRUE,
-			'element_id' => $element_id,
+			'element_id' => $this->element->get_id(),
 			'message' => $this->lang->line('elementar_xhr_write_element')
 		);
 		$this->common->ajax_response($response);
