@@ -241,7 +241,7 @@ $(function() {
 		event.preventDefault();
 
 		var file_item = $(this).parents("div.file_item").first();
-		$(file_item).hide("slow", function() {
+		$(file_item).hide("fast", 'easeOutSine', function() {
 			$(this).remove();
 		});
 	});
@@ -452,15 +452,15 @@ $(function() {
 
 		var menu_item = $(this).parents("div.menu_item").first();
 		var parent = $(this).parents("div.menu_parent").first();
-		if ( $(parent).find("div.menu_item").length == 1 && $(this).parents(".menu_field").first().find("div.menu_item:visible").length > 1)
+		if ( $(parent).find("div.menu_item:visible").length == 1 )
 		{
-			$(parent).hide("slow", function() {
+			$(parent).hide("fast", 'easeOutSine', function() {
 				$(this).remove();
 			});
 		}
-		else if ( $(this).parents(".menu_field").first().find("div.menu_item:visible").length > 1 )
+		else if ( $(parent).find("div.menu_item:visible").length > 1 )
 		{
-			$(menu_item).hide("slow", function() {
+			$(menu_item).hide("fast", 'easeOutSine', function() {
 				$(this).remove();
 			});
 		}
@@ -592,13 +592,13 @@ $(function() {
 		var parent = $(this).parents("div.youtube_parent").first();
 		if ( $(parent).find("div.youtube_item").length == 1 && $(this).parents(".youtube_gallery_field").first().find("div.youtube_item:visible").length > 1)
 		{
-			$(parent).hide("slow", function() {
+			$(parent).hide("fast", 'easeOutSine', function() {
 				$(this).remove();
 			});
 		}
 		else if ( $(this).parents(".youtube_gallery_field").first().find("div.youtube_item:visible").length > 1 )
 		{
-			$(youtube_item).hide("slow", function() {
+			$(youtube_item).hide("fast", 'easeOutSine', function() {
 				$(this).remove();
 			});
 		}
