@@ -10,6 +10,7 @@ class Common {
 	/*
 	 * i18n settings
 	 */
+	private $DEFAULT_LANG;
 	private $LANG = 'por';
 	private $LANG_AVAIL = array();
 	private $URI_PREFIX = '';
@@ -24,6 +25,9 @@ class Common {
 		$this->LANG = $params['lang'];
 		$this->LANG_AVAIL = $params['lang_avail'];
 		$this->URI_PREFIX = $params['uri_prefix'];
+
+		reset($this->LANG_AVAIL);
+		$this->DEFAULT_LANG = key($this->LANG_AVAIL);
 
 		/*
 		 * BUG: By default
@@ -925,10 +929,18 @@ class Common {
 			$field_values = json_decode($field_value, TRUE);
 			$field_value = $field_values[$this->LANG];
 		}
-		
+
 		switch ( $field_attr['type'] )
 		{
 			case 'file' :
+			/*
+			 * If value for specific language is not present,
+			 * get the default for the site primary language
+			 */
+			if ( ! (bool) count(json_decode($field_value, TRUE)) && $this->LANG != $this->DEFAULT_LANG )
+			{
+				$field_value = $field_values[$this->DEFAULT_LANG];
+			}
 			$attributes = json_decode($field_value, TRUE);
 			if ( count( $attributes ) > 0 )
 			{
@@ -949,6 +961,14 @@ class Common {
 			break;
 
 			case 'file_gallery' :
+			/*
+			 * If value for specific language is not present,
+			 * get the default for the site primary language
+			 */
+			if ( ! (bool) count(json_decode($field_value, TRUE)) && $this->LANG != $this->DEFAULT_LANG )
+			{
+				$field_value = $field_values[$this->DEFAULT_LANG];
+			}
 			$images = json_decode($field_value, TRUE);
 			$gallery = array();
 			foreach ( $images as $index => $image_item )
@@ -969,6 +989,14 @@ class Common {
 			break;
 
 			case 'youtube_gallery' :
+			/*
+			 * If value for specific language is not present,
+			 * get the default for the site primary language
+			 */
+			if ( ! (bool) count(json_decode($field_value, TRUE)) && $this->LANG != $this->DEFAULT_LANG )
+			{
+				$field_value = $field_values[$this->DEFAULT_LANG];
+			}
 			$videos = json_decode($field_value, TRUE);
 			$gallery = array();
 			foreach ( $videos as $index => $video )
@@ -996,12 +1024,28 @@ class Common {
 
 			case 'menu' :
 			/*
+			 * If value for specific language is not present,
+			 * get the default for the site primary language
+			 */
+			if ( ! (bool) count(json_decode($field_value, TRUE)) && $this->LANG != $this->DEFAULT_LANG )
+			{
+				$field_value = $field_values[$this->DEFAULT_LANG];
+			}
+			/*
 			 * Generate links with semantic classes
 			 */
 			return $this->_make_menu(json_decode($field_value, TRUE));
 			break;
 			
 			case 'index' :
+			/*
+			 * If value for specific language is not present,
+			 * get the default for the site primary language
+			 */
+			if ( ! (bool) count(json_decode($field_value, TRUE)) && $this->LANG != $this->DEFAULT_LANG )
+			{
+				$field_value = $field_values[$this->DEFAULT_LANG];
+			}
 			/*
 			 * Index filter values
 			 */
@@ -1042,6 +1086,14 @@ class Common {
 			break;
 
 			default:
+			/*
+			 * If value for specific language is not present,
+			 * get the default for the site primary language
+			 */
+			if ( ! (bool) $field_value && $this->LANG != $this->DEFAULT_LANG )
+			{
+				$field_value = $field_values[$this->DEFAULT_LANG];
+			}
 			return (string) $field_value;
 			break;
 		}
