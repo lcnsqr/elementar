@@ -30,6 +30,7 @@ class Main extends CI_Controller {
 	 */
 	var $LANG;
 	var $LANG_AVAIL = array();
+	var $URI_PREFIX;
 	
 	/*
 	 * Starting URI segment
@@ -141,11 +142,11 @@ class Main extends CI_Controller {
 		 */
 		if ( $this->LANG == key($this->LANG_AVAIL) )
 		{
-			$uri_prefix = '';
+			$this->URI_PREFIX = '';
 		}
 		else
 		{
-			$uri_prefix = '/' . $this->LANG;
+			$this->URI_PREFIX = '/' . $this->LANG;
 		}
 		
 		/*
@@ -155,7 +156,7 @@ class Main extends CI_Controller {
 		$this->load->library('common', array(
 			'lang' => $this->LANG, 
 			'lang_avail' => $this->LANG_AVAIL, 
-			'uri_prefix' => $uri_prefix
+			'uri_prefix' => $this->URI_PREFIX
 		));
 
 		/*
@@ -188,7 +189,7 @@ class Main extends CI_Controller {
 					 */
 					$$addon['name'] = new $addon['name'](array(
 						'lang' => $this->LANG, 
-						'uri_prefix' => $uri_prefix
+						'uri_prefix' => $this->URI_PREFIX
 					));
 					/*
 					 * Check method
@@ -254,7 +255,8 @@ class Main extends CI_Controller {
 		 * and other useful variables & rendered data
 		 */
 		$content = array(
-			'year' => date("Y")
+			'year' => date("Y"),
+			'uri_prefix' => $this->URI_PREFIX
 		);
 
 		/*
