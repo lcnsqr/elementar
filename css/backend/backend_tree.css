@@ -123,6 +123,7 @@
 .tree_listing_menu {
 	display: none;
 	position: absolute;
+	overflow: visible;
 	opacity: .9;
 }
 .tree_listing_menu > ul {

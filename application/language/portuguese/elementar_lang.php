@@ -134,6 +134,8 @@ $lang['elementar_xhr_login_incorret']		= 'Usuário ou senha incorreta';
 $lang['elementar_xhr_email_not_found']		= 'Email n&atilde;o localizado';
 $lang['elementar_xhr_reset_email_sent']		= 'O endereço de redefinição da senha foi enviado para o email cadastrado';
 
+$lang['elementar_xhr_missing_required_fields']		= 'Campos obrigatórios ausentes';
+
 /*
  * Template filter
  */

@@ -134,6 +134,8 @@ $lang['elementar_xhr_login_incorret']		= 'Login or password incorrect';
 $lang['elementar_xhr_email_not_found']		= 'Email not found';
 $lang['elementar_xhr_reset_email_sent']		= 'Password reset link sent to the resgistered email';
 
+$lang['elementar_xhr_missing_required_fields']		= 'Missing required fields';
+
 /*
  * Template filter
  */
