@@ -35,7 +35,7 @@ $lang['elementar_edit_group']		= 'Edit Group';
 $lang['elementar_group_description']		= 'Group description';
 $lang['elementar_new_account']		= 'Add new account';
 $lang['elementar_edit_account']		= 'Edit account';
-$lang['elementar_account_user']		= 'User';
+$lang['elementar_account_username']		= 'User';
 $lang['elementar_account_email']		= 'Email';
 $lang['elementar_account_password']		= 'Password';
 
@@ -116,11 +116,11 @@ $lang['elementar_xhr_erase_admin']		= 'Can not remove';
 $lang['elementar_xhr_erase']		= 'removed';
 $lang['elementar_xhr_not_allowed']		= 'Operation not allowed';
 
-$lang['elementar_xhr_user_field_missing']		= 'Enter the user (login)';
-$lang['elementar_xhr_user_field_small']		= 'The user (login) requires five or more characters';
-$lang['elementar_xhr_user_field_big']		= 'The user (login) cannot have more than twenty characters';
-$lang['elementar_xhr_user_field_invalid_chars']		= 'The user (login) can have only letters, numbers and underscores';
-$lang['elementar_xhr_user_field_used']		= 'The user (login) has already been used';
+$lang['elementar_xhr_username_field_missing']		= 'Enter the user name (login)';
+$lang['elementar_xhr_username_field_small']		= 'The user (login) requires five or more characters';
+$lang['elementar_xhr_username_field_big']		= 'The user (login) cannot have more than twenty characters';
+$lang['elementar_xhr_username_field_invalid_chars']		= 'The user (login) can have only letters, numbers and underscores';
+$lang['elementar_xhr_username_field_used']		= 'The user (login) has already been used';
 $lang['elementar_xhr_email_field_missing']		= 'Enter the email';
 $lang['elementar_xhr_email_field_invalid']		= 'The entered email is invalid';
 $lang['elementar_xhr_email_field_used']		= 'The email entered has already been used';

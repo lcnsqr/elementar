@@ -6,10 +6,10 @@
 				<span class="bullet_placeholder">&nbsp;</span>
 			</div>
 			<div class="tree_listing_icon draggable">
-				<img src="/css/backend/icon_account.png" alt="<?php echo $account['user']; ?>" />
+				<img src="/css/backend/icon_account.png" alt="<?php echo $account['username']; ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label account"><a href="<?php echo $account['id']; ?>"><?php echo $account['user']; ?></a></p>
+				<p class="label account"><a href="<?php echo $account['id']; ?>"><?php echo $account['username']; ?></a></p>
 			</div>
 			<div class="tree_listing_menu dark_board">
 				<div class="border top_side"></div>
@@ -23,11 +23,11 @@
 				<div class="foreground"></div>
 				<div class="menu_indicator"></div>
 				<ul>
-					<li><span class="title"><?php echo $account['user']; ?></span></li>
+					<li><span class="title"><?php echo $account['username']; ?></span></li>
 					<li><hr /></li>
 					<li><a class="edit account" href="<?php echo $account['id']; ?>"><?php echo $elementar_edit_account; ?></a></li>
 					<li><hr /></li>
-					<li><a class="remove account" href="<?php echo $account['id']; ?>" title="<?php echo $elementar_delete; ?> “<?php echo $account['user']; ?>”"><?php echo $elementar_delete; ?></a></li>
+					<li><a class="remove account" href="<?php echo $account['id']; ?>" title="<?php echo $elementar_delete; ?> “<?php echo $account['username']; ?>”"><?php echo $elementar_delete; ?></a></li>
 				</ul>
 			</div>
 		</div> <!-- .tree_listing_row -->

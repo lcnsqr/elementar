@@ -163,7 +163,7 @@ class Account extends CI_Controller {
 		 */
 		$account_id = $this->session->userdata('account_id');
 		$is_logged = TRUE;
-		$username = $this->access->get_account_user($account_id);
+		$username = $this->access->get_account_username($account_id);
 
 		/*
 		 * client controller (javascript)
@@ -537,8 +537,8 @@ class Account extends CI_Controller {
 		/*
 		 * Account name
 		 */
-		$value = $this->access->get_account_user($account_id);
-		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_account_user'), 'user', NULL, $value, FALSE);
+		$value = $this->access->get_account_username($account_id);
+		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_account_username'), 'username', NULL, $value, FALSE);
 
 		/*
 		 * Account email
@@ -604,14 +604,14 @@ class Account extends CI_Controller {
 		/*
 		 * Other account fields
 		 */
-		$user = $this->input->post('user', TRUE);
+		$username = $this->input->post('username', TRUE);
 		$email = $this->input->post('email', TRUE);
 		$password = $this->input->post('password', TRUE);
 
 		/*
-		 * Assess account user
+		 * Assess account username
 		 */
-		$response = $this->validation->assess_user($user);
+		$response = $this->validation->assess_username($username);
 		if ( (bool) $response['done'] == FALSE )
 		{
 			$this->common->ajax_response($response);
@@ -620,11 +620,11 @@ class Account extends CI_Controller {
 
 		if ( ! (bool) $account_id )
 		{
-			if ( (bool) $this->access->get_account_by_user($user) )
+			if ( (bool) $this->access->get_account_by_username($username) )
 			{
 				$response = array(
 					'done' => FALSE,
-					'message' => $this->lang->line('elementar_xhr_user_field_used')
+					'message' => $this->lang->line('elementar_xhr_username_field_used')
 				);
 				$this->common->ajax_response($response);
 				return;
@@ -632,11 +632,11 @@ class Account extends CI_Controller {
 		}
 		else
 		{
-			if ( (bool) $this->access->get_account_by_user($user) && $user != $this->access->get_account_user($account_id) )
+			if ( (bool) $this->access->get_account_by_username($username) && $username != $this->access->get_account_username($account_id) )
 			{
 				$response = array(
 					'done' => FALSE,
-					'message' => $this->lang->line('elementar_xhr_user_field_used')
+					'message' => $this->lang->line('elementar_xhr_username_field_used')
 				);
 				$this->common->ajax_response($response);
 				return;
@@ -695,7 +695,7 @@ class Account extends CI_Controller {
 			/*
 			 * Update account
 			 */
-			$this->access->put_account_user($account_id, $user);
+			$this->access->put_account_username($account_id, $username);
 			$this->access->put_account_email($account_id, $email);
 			if ( (bool) $password )
 			{
@@ -711,7 +711,7 @@ class Account extends CI_Controller {
 			/*
 			 * Create account
 			 */
-			$account_id = $this->access->put_account($user, $email, $password);
+			$account_id = $this->access->put_account($username, $email, $password);
 			/*
 			 * Add acount to group
 			 */
@@ -738,21 +738,21 @@ class Account extends CI_Controller {
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
 		$account_id = $this->input->post('id', TRUE);
-		$user = $this->access->get_account_user($account_id);
+		$username = $this->access->get_account_username($account_id);
 
 		if ( (int) $account_id > 1 )
 		{
 			$this->access->delete_account($account_id);
 			$response = array(
 				'done' => TRUE,
-				'message' => $user . ' ' . $this->lang->line('elementar_xhr_erase')
+				'message' => $username . ' ' . $this->lang->line('elementar_xhr_erase')
 			);
 		}
 		else
 		{
 			$response = array(
 				'done' => FALSE,
-				'message' => $this->lang->line('elementar_xhr_erase_admin') . ' ' . $user
+				'message' => $this->lang->line('elementar_xhr_erase_admin') . ' ' . $username
 			);
 		}
 		

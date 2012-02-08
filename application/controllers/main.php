@@ -535,10 +535,10 @@ class Main extends CI_Controller {
 			if ( ! $this->input->is_ajax_request() )
 				exit($this->lang->line('elementar_no_direct_script_access'));
 
-			$user = $this->input->post("user", TRUE);
+			$username = $this->input->post("username", TRUE);
 			$password = $this->input->post("password", TRUE);
 
-			$account_id = $this->access->get_account_by_user($user);
+			$account_id = $this->access->get_account_by_username($username);
 			
 			/*
 			 * Avoid pending group
@@ -589,25 +589,25 @@ class Main extends CI_Controller {
 			/*
 			 * Other account fields
 			 */
-			$user = $this->input->post('user', TRUE);
+			$username = $this->input->post('username', TRUE);
 			$email = $this->input->post('email', TRUE);
 			$password = $this->input->post('password', TRUE);
 
 			/*
-			 * Assess account user
+			 * Assess account username
 			 */
-			$response = $this->validation->assess_user($user);
+			$response = $this->validation->assess_username($username);
 			if ( (bool) $response['done'] == FALSE )
 			{
 				$this->common->ajax_response($response);
 				return;
 			}
 	
-			if ( (bool) $this->access->get_account_by_user($user) )
+			if ( (bool) $this->access->get_account_by_username($username) )
 			{
 				$response = array(
 					'done' => FALSE,
-					'message' => $this->lang->line('elementar_xhr_user_field_used')
+					'message' => $this->lang->line('elementar_xhr_username_field_used')
 				);
 				$this->common->ajax_response($response);
 				return;
@@ -646,7 +646,7 @@ class Main extends CI_Controller {
 			 * Create account
 			 */
 			$register_hash = random_string('unique');
-			$account_id = $this->access->put_account($user, $email, $password, $register_hash);
+			$account_id = $this->access->put_account($username, $email, $password, $register_hash);
 			/*
 			 * Add acount to pending group
 			 */
@@ -820,7 +820,7 @@ class Main extends CI_Controller {
 			if ( (bool) $account_id !== FALSE )
 			{
 				$data['is_logged'] = TRUE;
-				$data['username'] = $this->access->get_account_user($account_id);
+				$data['username'] = $this->access->get_account_username($account_id);
 			}
 			else
 			{
