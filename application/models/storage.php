@@ -2046,7 +2046,7 @@ class Storage extends CI_Model {
 		if ( $upload_session_id == NULL )
 		{
 			$data = array(
-				'id' => $upload_session_id
+				'name' => ''
 			);
 			$inserted = $this->elementar->insert('upload_session', $data);
 			if ($inserted)
