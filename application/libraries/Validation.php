@@ -14,9 +14,9 @@ class Validation {
 	}
 
 	/*
-	 * Assess account user
+	 * Assess account username
 	 */
-	function assess_user($value)
+	function assess_username($value)
 	{
 		/*
 		 * Default reponse
@@ -29,28 +29,28 @@ class Validation {
 		{
 			$response = array(
 				'done' => FALSE,
-				'message' => $this->CI->lang->line('elementar_xhr_user_field_missing')
+				'message' => $this->CI->lang->line('elementar_xhr_username_field_missing')
 			);
 		}	
 		if ( preg_match("/[^a-z0-9_]/i", $value) ) 
 		{
 			$response = array(
 				'done' => FALSE,
-				'message' => $this->CI->lang->line('elementar_xhr_user_field_invalid_chars')
+				'message' => $this->CI->lang->line('elementar_xhr_username_field_invalid_chars')
 			);
 		}		
 		if ( strlen(trim($value)) < 5 ) 
 		{
 			$response = array(
 				'done' => FALSE,
-				'message' => $this->CI->lang->line('elementar_xhr_user_field_small')
+				'message' => $this->CI->lang->line('elementar_xhr_username_field_small')
 			);
 		}	
 		if ( strlen(trim($value)) > 20 ) 
 		{
 			$response = array(
 				'done' => FALSE,
-				'message' => $this->CI->lang->line('elementar_xhr_user_field_big')
+				'message' => $this->CI->lang->line('elementar_xhr_username_field_big')
 			);
 		}
 		return $response;

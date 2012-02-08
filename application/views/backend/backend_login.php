@@ -13,8 +13,8 @@
 		<form name="login" id="login_form" action="<?php echo (isset($action)) ? $action : "/admin"; ?>">
 			
 			<p class="login_field">
-			<label for="user"><?php echo $elementar_authentication_account; ?></label><br />
-			<input name="user" id="user" type="text" />
+			<label for="username"><?php echo $elementar_authentication_account; ?></label><br />
+			<input name="username" id="username" type="text" />
 			</p>
 			
 			<p class="login_field">

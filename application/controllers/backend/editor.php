@@ -170,7 +170,7 @@ class Editor extends CI_Controller {
 		 */
 		$account_id = $this->session->userdata('account_id');
 		$is_logged = TRUE;
-		$user = $this->access->get_account_user($account_id);
+		$username = $this->access->get_account_username($account_id);
 
 		/*
 		 * client controller (javascript)
@@ -202,7 +202,7 @@ class Editor extends CI_Controller {
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
 			'is_logged' => $is_logged,
-			'username' => $user,
+			'username' => $username,
 			'resource_menu' => ul($resource_menu)
 		);
 

@@ -35,7 +35,7 @@ $lang['elementar_edit_group']		= 'Editar grupo';
 $lang['elementar_group_description']		= 'Descri&ccedil;&atilde;o do grupo';
 $lang['elementar_new_account']		= 'Criar nova conta';
 $lang['elementar_edit_account']		= 'Editar conta';
-$lang['elementar_account_user']		= 'Usu&aacute;rio';
+$lang['elementar_account_username']		= 'Usu&aacute;rio';
 $lang['elementar_account_email']		= 'Email';
 $lang['elementar_account_password']		= 'Senha';
 
@@ -116,11 +116,11 @@ $lang['elementar_xhr_erase_admin']		= 'Não é possível remover';
 $lang['elementar_xhr_erase']		= 'removido';
 $lang['elementar_xhr_not_allowed']		= 'Opera&ccedil;&atilde;o n&atilde;o permitida';
 
-$lang['elementar_xhr_user_field_missing']		= 'Informe o nome de usu&aacute;rio';
-$lang['elementar_xhr_user_field_small']		= 'O nome de usu&aacute;rio requer cinco d&iacute;gitos ou mais';
-$lang['elementar_xhr_user_field_big']		= 'O nome de usu&aacute;rio excedeu vinte dígitos';
-$lang['elementar_xhr_user_field_invalid_chars']		= 'O nome de usu&aacute;rio pode conter apenas letras (sem acentos), n&uacute;meros e tra&ccedil;o baixo';
-$lang['elementar_xhr_user_field_used']		= 'Este nome de usuário j&aacute; foi utilizado';
+$lang['elementar_xhr_username_field_missing']		= 'Informe o nome de usu&aacute;rio';
+$lang['elementar_xhr_username_field_small']		= 'O nome de usu&aacute;rio requer cinco d&iacute;gitos ou mais';
+$lang['elementar_xhr_username_field_big']		= 'O nome de usu&aacute;rio excedeu vinte dígitos';
+$lang['elementar_xhr_username_field_invalid_chars']		= 'O nome de usu&aacute;rio pode conter apenas letras (sem acentos), n&uacute;meros e tra&ccedil;o baixo';
+$lang['elementar_xhr_username_field_used']		= 'Este nome de usuário j&aacute; foi utilizado';
 $lang['elementar_xhr_email_field_missing']		= 'Informe o email';
 $lang['elementar_xhr_email_field_invalid']		= 'O email informado n&atilde;o &eacute; v&aacute;lido';
 $lang['elementar_xhr_email_field_used']		= 'Este email j&aacute; foi utilizado';

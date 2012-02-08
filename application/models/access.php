@@ -36,7 +36,7 @@ class Access extends CI_Model {
 	{
 		$accounts = NULL;
 		
-		$this->elementar->select('account.id, account.user, account.email');
+		$this->elementar->select('account.id, account.username, account.email');
 		$this->elementar->from('account');
 		if ( (bool) $group_id )
 		{
@@ -52,7 +52,7 @@ class Access extends CI_Model {
 			{
 				$accounts[] = array(
 					'id' => $row->id, 
-					'user' => $row->user,
+					'username' => $row->username,
 					'email' => $row->email
 				);
 			}
@@ -249,11 +249,11 @@ class Access extends CI_Model {
 	}
 
 	/*
-	 * Get account user (login)
+	 * Get account username (login)
 	 */
-	function get_account_user($id)
+	function get_account_username($id)
 	{
-		$this->elementar->select('user');
+		$this->elementar->select('username');
 		$this->elementar->from('account');
 		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
@@ -261,18 +261,18 @@ class Access extends CI_Model {
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->user;
+			return $row->username;
 		}
 	}
 
 	/*
-	 * Get account id by user (login)
+	 * Get account id by username (login)
 	 */
-	function get_account_by_user($user)
+	function get_account_by_username($username)
 	{
 		$this->elementar->select('id');
 		$this->elementar->from('account');
-		$this->elementar->where('user', $user);
+		$this->elementar->where('username', $username);
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -370,10 +370,10 @@ class Access extends CI_Model {
 	/*
 	 * Write account
 	 */
-	function put_account($user, $email, $password, $hash = NULL)
+	function put_account($username, $email, $password, $hash = NULL)
 	{
 		$data = array(
-			'user' => $user,
+			'username' => $username,
 			'email' => $email,
 			'password' => do_hash($password),
 			'register_hash' => $hash,
@@ -391,12 +391,12 @@ class Access extends CI_Model {
 	}
 
 	/*
-	 * Write account user (login)
+	 * Write account username (login)
 	 */
-	function put_account_user($account_id, $user)
+	function put_account_username($account_id, $username)
 	{
 		$data = array(
-			'user' => $user
+			'username' => $username
 		);
 		
 		$this->elementar->where('id', $account_id);
