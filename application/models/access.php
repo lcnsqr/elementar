@@ -93,7 +93,7 @@ class Access extends CI_Model {
 		$group = NULL;
 		$this->elementar->select('id, name, description');
 		$this->elementar->from('group');
-		$this->elementar->where('id', $id);
+		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -116,7 +116,7 @@ class Access extends CI_Model {
 	{
 		$this->elementar->select('name');
 		$this->elementar->from('group');
-		$this->elementar->where('id', $id);
+		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -133,7 +133,7 @@ class Access extends CI_Model {
 	{
 		$this->elementar->select('description');
 		$this->elementar->from('group');
-		$this->elementar->where('id', $id);
+		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -255,7 +255,7 @@ class Access extends CI_Model {
 	{
 		$this->elementar->select('user');
 		$this->elementar->from('account');
-		$this->elementar->where('id', $id);
+		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -289,7 +289,7 @@ class Access extends CI_Model {
 	{
 		$this->elementar->select('password');
 		$this->elementar->from('account');
-		$this->elementar->where('id', $id);
+		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -306,7 +306,7 @@ class Access extends CI_Model {
 	{
 		$this->elementar->select('email');
 		$this->elementar->from('account');
-		$this->elementar->where('id', $id);
+		$this->elementar->where('id', intval($id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)

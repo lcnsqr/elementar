@@ -314,7 +314,7 @@ class Storage extends CI_Model {
 	{
 		$this->elementar->select('parent_id');
 		$this->elementar->from('content_parent');
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		if ( $this->STATUS != 'all' )
 		{
 			$this->elementar->join('content', 'content.id = content_parent.parent_id', 'inner');
@@ -664,7 +664,7 @@ class Storage extends CI_Model {
 	{
 		$this->elementar->select('id');
 		$this->elementar->from('content_field');
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		$this->elementar->where('content_type_field_id', $content_type_field_id);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -675,7 +675,7 @@ class Storage extends CI_Model {
 			$data = array(
 				'value' => $value
 			);
-			$this->elementar->where('content_id', $content_id);
+			$this->elementar->where('content_id', intval($content_id));
 			$this->elementar->where('content_type_field_id', $content_type_field_id);
 			$this->elementar->update('content_field', $data); 
 			/*
@@ -692,7 +692,7 @@ class Storage extends CI_Model {
 			 * Save
 			 */
 			$data = array(
-				'content_id' => $content_id,
+				'content_id' => intval($content_id),
 				'content_type_field_id' => $content_type_field_id,
 				'value' => $value
 			);
@@ -802,7 +802,7 @@ class Storage extends CI_Model {
 	function put_element_spread($element_id, $spread)
 	{
 		$data = array(
-			'spread' => $spread
+			'spread' => (bool) $spread
 		);
 		$this->elementar->where('id', $element_id);
 		$this->elementar->update('element', $data); 
@@ -815,7 +815,7 @@ class Storage extends CI_Model {
 	{
 		$this->elementar->select('name, value');
 		$this->elementar->from('html_meta');
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		/*
 		 * Priority used only in sitemap.xml
 		 */
@@ -840,7 +840,7 @@ class Storage extends CI_Model {
 		$this->elementar->from('html_meta');
 		$this->elementar->where('name', $name);
 		$this->elementar->limit(1);
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -858,7 +858,7 @@ class Storage extends CI_Model {
 	 */
 	function delete_meta_field($content_id, $name)
 	{
-		$this->elementar->delete('html_meta', array('content_id' => $content_id, 'name' => $name));
+		$this->elementar->delete('html_meta', array('content_id' => intval($content_id), 'name' => $name));
 	}
 
 	/*
@@ -874,7 +874,7 @@ class Storage extends CI_Model {
 		$this->elementar->select('id');
 		$this->elementar->from('html_meta');
 		$this->elementar->where('name', $name);
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -890,7 +890,7 @@ class Storage extends CI_Model {
 		else
 		{
 			$data = array(
-				'content_id' => $content_id,
+				'content_id' => intval($content_id),
 				'name' => $name,
 				'value' => htmlentities($value, ENT_QUOTES, "UTF-8")
 			);
@@ -1202,7 +1202,7 @@ class Storage extends CI_Model {
 	{
 		$this->elementar->select('value');
 		$this->elementar->from('content_field');
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		$this->elementar->where('content_type_field_id', $content_type_field_id);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1281,7 +1281,7 @@ class Storage extends CI_Model {
 	{
 		$this->elementar->select('id');
 		$this->elementar->from('content_field');
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		$this->elementar->where('content_type_field_id', $content_type_field_id);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
@@ -1330,8 +1330,8 @@ class Storage extends CI_Model {
 		 */
 		$this->elementar->select('id');
 		$this->elementar->from('content_parent');
-		$this->elementar->where('content_id', $content_id);
-		$this->elementar->where('parent_id', $parent_id);
+		$this->elementar->where('content_id', intval($content_id));
+		$this->elementar->where('parent_id', intval($parent_id));
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1342,15 +1342,15 @@ class Storage extends CI_Model {
 		/*
 		 * Remove previous parent
 		 */
-		$this->elementar->where('content_id', $content_id);
+		$this->elementar->where('content_id', intval($content_id));
 		$this->elementar->delete('content_parent');
 
 		/*
 		 * Criar relacionamento
 		 */
 		$data = array(
-			'content_id' => $content_id,
-			'parent_id' => $parent_id
+			'content_id' => intval($content_id),
+			'parent_id' => intval($parent_id)
 		);
 		$inserted = $this->elementar->insert('content_parent', $data);
 		if ($inserted)
@@ -1371,7 +1371,7 @@ class Storage extends CI_Model {
 		$this->elementar->select('id');
 		$this->elementar->from('element_parent');
 		$this->elementar->where('element_id', $element_id);
-		$this->elementar->where('parent_id', $parent_id);
+		$this->elementar->where('parent_id', intval($parent_id));
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
@@ -1390,7 +1390,7 @@ class Storage extends CI_Model {
 		 */
 		$data = array(
 			'element_id' => $element_id,
-			'parent_id' => $parent_id
+			'parent_id' => intval($parent_id)
 		);
 		$inserted = $this->elementar->insert('element_parent', $data);
 		if ($inserted)
@@ -1835,7 +1835,7 @@ class Storage extends CI_Model {
 			 * It's a second run. We're on a upper parent now,
 			 * so ignore non spreaded elements
 			 */
-			$this->elementar->where('element.spread', TRUE);
+			$this->elementar->where('element.spread', (string) TRUE);
 		}
 		else
 		{
@@ -2025,7 +2025,7 @@ class Storage extends CI_Model {
 			 */
 			$this->elementar->select('parent_id');
 			$this->elementar->from('content_parent');
-			$this->elementar->where('content_id', $content_id);
+			$this->elementar->where('content_id', intval($content_id));
 			$this->elementar->where('parent_id >', 1);
 			$this->elementar->limit(1);
 			$query = $this->elementar->get();
@@ -2159,14 +2159,14 @@ class Storage extends CI_Model {
 			}
 		}
 		
-		$this->elementar->delete('content_parent', array('content_id' => $content_id)); 
-		$this->elementar->delete('content_field', array('content_id' => $content_id)); 
-		$this->elementar->delete('content', array('id' => $content_id));
+		$this->elementar->delete('content_parent', array('content_id' => intval($content_id))); 
+		$this->elementar->delete('content_field', array('content_id' => intval($content_id))); 
+		$this->elementar->delete('content', array('id' => intval($content_id)));
 		
 		/*
 		 * Delete associated meta fields
 		 */
-		$this->elementar->delete('html_meta', array('content_id' => $content_id));
+		$this->elementar->delete('html_meta', array('content_id' => intval($content_id)));
 	}
 	
 	/*
