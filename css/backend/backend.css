@@ -464,6 +464,7 @@ a:visited {
  */
 .dark_board {
 	position: absolute;
+	padding-left: 12px;
 /*
 	text-shadow: 0 -1px 0 #000;
 */
@@ -478,7 +479,7 @@ a:visited {
 .dark_board .top_side {
 	height: 14px;
 	top: 0;
-	left: 14px;
+	left: 26px;
 	right: 14px;
 	background: url('/css/backend/dark_board_border_horizontal.png') repeat-x center top;
 }
@@ -493,14 +494,14 @@ a:visited {
 	height: 14px;
 	right: 14px;
 	bottom: 0;
-	left: 14px;
+	left: 26px;
 	background: url('/css/backend/dark_board_border_horizontal.png') repeat-x center top;
 	background-position: 0 -14px;
 }
 .dark_board .left_side {
 	width: 14px;
 	bottom: 14px;
-	left: 0;
+	left: 12px;
 	top: 14px;
 	background: url('/css/backend/dark_board_border_vertical.png') repeat-y left center;
 	background-position: -14px 0;
@@ -513,7 +514,7 @@ a:visited {
 }
 .dark_board .top_left {
 	top: 0;
-	left: 0;
+	left: 12px;
 }
 .dark_board .top_right {
 	top: 0;
@@ -527,14 +528,14 @@ a:visited {
 }
 .dark_board .bottom_left {
 	bottom: 0;
-	left: 0;
+	left: 12px;
 	background-position: -42px 0;
 }
 .dark_board .foreground {
 	position: absolute;
 	top: 14px;
 	bottom: 14px;
-	left: 14px;
+	left: 26px;
 	right: 14px;
 	background-image: url('/css/backend/dark_board_foreground.png');
 }
