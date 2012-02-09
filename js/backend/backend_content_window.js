@@ -326,7 +326,7 @@ $(function() {
 		 */
 		var menu_indicator = $(visible_menu).children('.menu_indicator');
 		var menu_indicator_top = $(this).offset().top - 5;
-		var menu_indicator_left = event.pageX + 2;
+		var menu_indicator_left = event.pageX + 14;
 		$(menu_indicator).css({position : 'fixed', top : menu_indicator_top + 'px', left : menu_indicator_left});
 		/*
 		 * Limit menu bottom position to the page bottom
