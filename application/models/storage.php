@@ -802,7 +802,7 @@ class Storage extends CI_Model {
 	function put_element_spread($element_id, $spread)
 	{
 		$data = array(
-			'spread' => (bool) $spread
+			'spread' => ( (bool) $spread ) ? '1' : '0'
 		);
 		$this->elementar->where('id', $element_id);
 		$this->elementar->update('element', $data); 
@@ -1909,6 +1909,26 @@ class Storage extends CI_Model {
 	 */
 	function get_content_has_children($content_id, $elements = TRUE)
 	{
+		if ( $elements )
+		{
+			/*
+			 * Check for elements too
+			 */
+			$this->elementar->select('*');
+			$this->elementar->from('element_parent');
+			$this->elementar->where('element_parent.parent_id', $content_id);
+			if ( $this->STATUS != 'all' )
+			{
+				$this->elementar->join('element', 'element.id = element_parent.element_id', 'inner');
+				$this->elementar->where('element.status', $this->STATUS);
+			}
+			$query = $this->elementar->get();
+			if ($query->num_rows() > 0) 
+			{
+				return TRUE;
+			}
+		}
+
 		$this->elementar->select('*');
 		$this->elementar->from('content_parent');
 		$this->elementar->where('content_parent.parent_id', $content_id);
@@ -1916,19 +1936,6 @@ class Storage extends CI_Model {
 		{
 			$this->elementar->join('content', 'content.id = content_parent.content_id', 'inner');
 			$this->elementar->where('content.status', $this->STATUS);
-		}
-		if ( $elements )
-		{
-			/*
-			 * Check for elements too
-			 */
-			$this->elementar->from('element_parent');
-			$this->elementar->or_where('element_parent.parent_id', $content_id);
-			if ( $this->STATUS != 'all' )
-			{
-				$this->elementar->join('element', 'element.id = element_parent.element_id', 'inner');
-				$this->elementar->where('element.status', $this->STATUS);
-			}
 		}
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
