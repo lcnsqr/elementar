@@ -1641,7 +1641,7 @@ class Editor extends CI_Controller {
 		/*
 		 * Erase cached content
 		 */
-		$this->common->erase_cache($this->content->get_uri());
+		$this->common->erase_cache($this->content->get_id());
 		
 		/*
 		 * Return ajax response

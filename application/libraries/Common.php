@@ -62,7 +62,7 @@ class Common {
 	 * @param 	string
 	 * @return	void
 	 */
-	function erase_cache($uri, $associated = TRUE)
+	function erase_cache($content_id)
 	{
 		$path = $this->CI->config->item('cache_path');
 
@@ -73,23 +73,22 @@ class Common {
 			log_message('error', "Unable to write cache file: ".$cache_path);
 			return;
 		}
-
-		$cache_path .= md5(site_url($uri));
-
-		if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-		{
-			log_message('error', "Unable to write cache file: ".$cache_path);
-			return;
-		}
-
-		unlink($cache_path);
 		
-		if ( $associated )
+		$cache_files = array(
+			$cache_path . md5(site_url($this->CI->storage->get_content_uri($content_id))),
+			$cache_path . md5(site_url('/main/css/' . $content_id)),
+			$cache_path . md5(site_url('/main/javascript/' . $content_id)),
+			$cache_path . md5(site_url('/sitemap.xml'))
+		);
+
+		foreach ( $cache_files as $cache_path )
 		{
-			/*
-			* Erase cached sitemap.xml
-			*/
-			$this->erase_cache('/sitemap.xml', FALSE);
+			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+			{
+				log_message('error', "Unable to write cache file: ".$cache_path);
+				return;
+			}
+			unlink($cache_path);
 		}
 	}
 
