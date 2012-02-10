@@ -16,6 +16,7 @@ class Content {
 	private $status = 'draft';
 	private $sname;
 	private $name;
+	private $uri;
 
 	private $template_id;
 	private $template = array();
@@ -39,6 +40,7 @@ class Content {
 		$this->status = $this->CI->storage->get_content_status($this->id);
 		$this->sname = $this->CI->storage->get_content_sname($this->id);
 		$this->name = $this->CI->storage->get_content_name($this->id);
+		$this->uri = $this->CI->storage->get_content_uri($this->id);
 
 		$this->template_id = $this->CI->storage->get_content_template_id($this->id);
 		$this->template = $this->CI->storage->get_template($this->id);
@@ -114,6 +116,16 @@ class Content {
 	function set_sname($value)
 	{
 		$this->sname = $value;
+	}
+	
+	function get_uri()
+	{
+		return $this->uri;
+	}
+
+	function set_uri($value)
+	{
+		$this->uri = $value;
 	}
 	
 	function get_name()

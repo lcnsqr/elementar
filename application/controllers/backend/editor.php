@@ -1232,14 +1232,14 @@ class Editor extends CI_Controller {
 			 */
 			$attributes = array('class' => 'field_label');
 			$label = form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
-			$uri = $this->storage->get_content_uri($this->content->get_id());
+			$uri = $this->content->get_uri();
 			$url = $this->storage->get_meta_field($this->content->get_id(), 'url');
 			if ( $url == '' )
 			{
 				/*
-				 * Change "/home" to "/" or use default path to content
+				 * Default URL based on content's sname
 				 */
-				$url = ( $this->content->get_id() == 1 ) ? site_url('/') : site_url($uri);
+				$url = site_url($uri);
 			}
 			$attributes = array(
 				'class' => 'noform',
@@ -1641,7 +1641,7 @@ class Editor extends CI_Controller {
 		/*
 		 * Erase cached content
 		 */
-		$this->common->erase_cache($this->storage->get_content_uri($this->content->get_id()));
+		$this->common->erase_cache($this->content->get_uri());
 		
 		/*
 		 * Return ajax response
