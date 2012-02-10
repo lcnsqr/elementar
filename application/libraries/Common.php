@@ -54,7 +54,45 @@ class Common {
 		$data = json_encode($response);
 		$this->CI->output->set_output($data);
 	}
-	
+
+	/**
+	 * Removed a Cached URI File
+	 *
+	 * @access	public
+	 * @param 	string
+	 * @return	void
+	 */
+	function erase_cache($uri, $associated = TRUE)
+	{
+		$path = $this->CI->config->item('cache_path');
+
+		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
+
+		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
+		{
+			log_message('error', "Unable to write cache file: ".$cache_path);
+			return;
+		}
+
+		$cache_path .= md5(site_url($uri));
+
+		if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+		{
+			log_message('error', "Unable to write cache file: ".$cache_path);
+			return;
+		}
+
+		unlink($cache_path);
+		
+		if ( $associated )
+		{
+			/*
+			* Erase cached sitemap.xml
+			*/
+			$this->erase_cache('/sitemap.xml', FALSE);
+		}
+	}
+
 	/*
 	 * Render backend html columns with label and input(s)
 	 */

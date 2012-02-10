@@ -62,8 +62,8 @@ class Main extends CI_Controller {
 
 		//$this->output->enable_profiler(TRUE);
 		
-		// View cache
-		//$this->output->cache(1);
+		// 60 minutes caching
+		$this->output->cache(60);
 
 		// DB
 		$this->elementar = $this->load->database('elementar', TRUE);
