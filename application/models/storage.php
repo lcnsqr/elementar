@@ -2012,6 +2012,14 @@ class Storage extends CI_Model {
 	 */
 	function get_content_uri($content_id)
 	{
+		/*
+		 * Return "/" to index content id 1
+		 */
+		if ( intval($content_id) == 1 )
+		{
+			return '/';
+		}
+
 		$this->elementar->select('content.id, content.name, content.sname');
 		$this->elementar->from('content');
 		$this->elementar->where('content.id', $content_id);
