@@ -862,9 +862,9 @@ class Common {
 			if ( $url == '' )
 			{
 				/*
-				 * Change "/home" to "/" or use default path to content
+				 * Using default content's URL
 				 */
-				$url = ( $uri == '/' . $this->CI->storage->get_content_sname(1) ) ? site_url('/') : site_url($uri);
+				$url = site_url($uri);
 			}
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
