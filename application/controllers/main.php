@@ -490,7 +490,7 @@ class Main extends CI_Controller {
 			$this->output->cache($this->cache_expire);
 		}
 
-// 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
+ 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$css = '';
 		if ( $content_id != 1 )
 		{
