@@ -37,6 +37,11 @@ class Main extends CI_Controller {
 	 */
 	var $SEGMENT_STEP = 0;
 	
+	/*
+	 * 24 hours caching
+	 */
+	var $cache_expire = 1440;
+		
 	function __construct()
 	{
 		parent::__construct();
@@ -46,15 +51,6 @@ class Main extends CI_Controller {
 		 */
 		$this->load->library('session');
 		
-		/*
-		 * Enable caching only in anonymous session
-		 */
-		if ( ! (bool) $this->session->userdata('account_id') )
-		{
-			// 24 hours caching
-			$this->output->cache(1440);
-		}
-
 		/*
 		 * Settings
 		 */
@@ -250,6 +246,15 @@ class Main extends CI_Controller {
 
 	function index()
 	{
+		/*
+		 * Enable caching only in anonymous session
+		 */
+		if ( ! (bool) $this->session->userdata('account_id') )
+		{
+			// 24 hours caching
+			$this->output->cache($this->cache_expire);
+		}
+
 		/*
 		 * Default content values
 		 */
@@ -460,6 +465,14 @@ class Main extends CI_Controller {
 	 */
 	function sitemap()
 	{
+		/*
+		 * Enable caching only in anonymous session
+		 */
+		if ( ! (bool) $this->session->userdata('account_id') )
+		{
+			// 24 hours caching
+			$this->output->cache($this->cache_expire);
+		}
 		$this->common->sitemap();
 	}
 	
@@ -468,7 +481,16 @@ class Main extends CI_Controller {
 	 */
 	function css()
 	{
-		$content_id = (int) $this->uri->segment($this->uri->total_segments());
+		/*
+		 * Enable caching only in anonymous session
+		 */
+		if ( ! (bool) $this->session->userdata('account_id') )
+		{
+			// 24 hours caching
+			$this->output->cache($this->cache_expire);
+		}
+
+// 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$css = '';
 		if ( $content_id != 1 )
 		{
@@ -490,6 +512,15 @@ class Main extends CI_Controller {
 	 */
 	function javascript()
 	{
+		/*
+		 * Enable caching only in anonymous session
+		 */
+		if ( ! (bool) $this->session->userdata('account_id') )
+		{
+			// 24 hours caching
+			$this->output->cache($this->cache_expire);
+		}
+
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$javascript = '';
 		if ( $content_id != 1 )
