@@ -45,6 +45,15 @@ class Main extends CI_Controller {
 		 * CI libraries
 		 */
 		$this->load->library('session');
+		
+		/*
+		 * Enable caching only in anonymous session
+		 */
+		if ( ! (bool) $this->session->userdata('account_id') )
+		{
+			// 24 hours caching
+			$this->output->cache(1440);
+		}
 
 		/*
 		 * Settings
@@ -62,9 +71,6 @@ class Main extends CI_Controller {
 
 		//$this->output->enable_profiler(TRUE);
 		
-		// 60 minutes caching
-		$this->output->cache(60);
-
 		// DB
 		$this->elementar = $this->load->database('elementar', TRUE);
 
