@@ -37,6 +37,23 @@ class Storage extends CI_Model {
 	{
 		// Call the Model constructor
 		parent::__construct();
+
+		/*
+		* Correct boolean type for each DB driver
+		*/
+		switch ( $this->elementar->dbdriver )
+		{
+			case 'mysql':
+			case 'mysqli':
+			define('DB_TRUE', TRUE);
+			define('DB_FALSE', FALSE);
+			break;
+
+			case 'postgre':
+			define('DB_TRUE', 't');
+			define('DB_FALSE', 'f');
+			break;
+		}
 	}
 
 	/*
@@ -507,7 +524,7 @@ class Storage extends CI_Model {
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->spread;
+			return $row->spread == DB_TRUE;
 		}
 		else
 		{
@@ -802,7 +819,7 @@ class Storage extends CI_Model {
 	function put_element_spread($element_id, $spread)
 	{
 		$data = array(
-			'spread' => ( (bool) $spread ) ? '1' : '0'
+			'spread' => ( (bool) $spread ) ? DB_TRUE : DB_FALSE
 		);
 		$this->elementar->where('id', $element_id);
 		$this->elementar->update('element', $data); 
@@ -1189,7 +1206,7 @@ class Storage extends CI_Model {
 				'value' => html_entity_decode($row->value, ENT_QUOTES, "UTF-8"),
 				'type' => $row->type,
 				'description' => $row->description,
-				'i18n' => $row->i18n
+				'i18n' => $row->i18n == DB_TRUE
 			);
 		}
 		return $fields;
@@ -1242,7 +1259,7 @@ class Storage extends CI_Model {
 				'value' => html_entity_decode($row->value, ENT_QUOTES, "UTF-8"),
 				'type' => $row->type,
 				'description' => $row->description,
-				'i18n' => $row->i18n
+				'i18n' => $row->i18n == DB_TRUE
 			);
 		}
 		return $fields;
@@ -1627,7 +1644,7 @@ class Storage extends CI_Model {
 				'sname' => $row->sname,
 				'type' => $row->field_type_sname,
 				'description' => $row->field_type_description,
-				'i18n' => $row->field_type_i18n
+				'i18n' => $row->field_type_i18n == DB_TRUE
 			);
 		}
 		return $fields;
@@ -1653,7 +1670,7 @@ class Storage extends CI_Model {
 				'sname' => $row->sname,
 				'type' => $row->field_type_sname,
 				'description' => $row->field_type_description,
-				'i18n' => $row->field_type_i18n
+				'i18n' => $row->field_type_i18n == DB_TRUE
 			);
 		}
 		return $fields;
@@ -1832,10 +1849,10 @@ class Storage extends CI_Model {
 		if ( $elements !== NULL )
 		{
 			/*
-			 * It's a second run. We're on a upper parent now,
+			 * It's a second run. We're on a parent now,
 			 * so ignore non spreaded elements
 			 */
-			$this->elementar->where('element.spread', (string) TRUE);
+			$this->elementar->where('element.spread', DB_TRUE);
 		}
 		else
 		{
@@ -2075,6 +2092,13 @@ class Storage extends CI_Model {
 		}
 		else
 		{
+			/*
+			 * boolean fields
+			 */
+			if ( $field == 'done' || $field == 'error' )
+			{
+				$value = ( (bool) $value == TRUE ) ? DB_TRUE : DB_FALSE;
+			}
 			$data = array(
 				$field => $value
 			);
@@ -2095,7 +2119,7 @@ class Storage extends CI_Model {
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
-			return $row->done;
+			return $row->done == DB_TRUE;
 		}
 		else
 		{
