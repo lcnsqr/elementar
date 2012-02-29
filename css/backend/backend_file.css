@@ -77,7 +77,7 @@
 	padding: 10px;
 */
 	background-color: #e7e9e5;
-	font-family: "Trebuchet MS",Helvetica,sans-serif;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -216,8 +216,11 @@
 	font-size: 13px;
 	display: block;
 }
+.tree_listing_row .tree_listing_text a:link, .tree_listing_row .tree_listing_text a:visited {
+	color: #666666;
+}
 .tree_listing_row .tree_listing_text a.current {
-	font-weight: bold;
+	color: #000;
 }
 
 
