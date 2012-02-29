@@ -1,10 +1,6 @@
 body {
-/*
-	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-*/
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
-	
-	font-size: 13px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size: 12px;
 	/*
 	background-image: url("/css/backend/body_bg.gif");
 	background-repeat: repeat-x; 
@@ -132,7 +128,8 @@ a:visited {
 	position: relative;
 	float: left;
 	margin-right: 4px;
-	color: #eeeeec;
+	color: #fff;
+	font-weight: bold;
 }
 #user_menu ul li a, #resource_menu ul li a {
 	display: block;
@@ -141,8 +138,8 @@ a:visited {
 	color: #d7dadc;
 	*/
 	text-decoration: none;
-	padding: 0px;
-	color: #eeeeec;
+	padding: 0;
+	color: #9eabb0;
 }
 #user_menu ul li a:hover, #resource_menu ul li a:hover {
 	text-decoration: underline;
@@ -564,6 +561,24 @@ a:visited {
 .dark_board .filter_forms .insertion
 {
     border-left: 1px solid #555753;
+}
+
+/*
+ * Main config page
+ */
+#main_tree
+{
+	width: 220px;
+	top: 4px;
+	left: 4px;
+	bottom: 4px;
+}
+#main_window
+{
+	top: 4px;
+	right: 4px;
+	bottom: 4px;
+	left: 222px;
 }
 
 /*

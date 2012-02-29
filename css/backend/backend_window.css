@@ -417,6 +417,7 @@
 	display: block;
 	padding: 4px;
 	margin: 1px 1px 0 1px;
+	line-height: 13px;
 }
 .input_lang_menu ul li a.current {
 	border-top: 1px solid #ccc;

@@ -1,5 +1,5 @@
 $(function(){
-	$('.settings').click(function(event){
+	$('.settings > a').click(function(event){
 		event.preventDefault();
 
 		// Loading blocker in

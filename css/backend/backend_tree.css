@@ -40,6 +40,7 @@
 	background-repeat: no-repeat;
 }
 
+#main_tree a, 
 #account_tree a, 
 #content_tree a 
 {
@@ -47,12 +48,14 @@
 	text-decoration: none;
 	display: block;
 }
+#main_tree a:hover, 
 #account_tree a:hover, 
 #content_tree a:hover 
 {
 	color: #666;
 	text-decoration: none;
 }
+#main_tree a.current, 
 #account_tree a.current, 
 #content_tree a.current 
 {

@@ -18,14 +18,32 @@
 	<div class="foreground"></div>
 	<div class="face_light"></div>
 	<div id="tree_parent_1" class="tree_parent">
+	
 		<div class="tree_listing_row">
-			<p><a href="main" class="settings"><?php echo $elementar_main; ?></a></p>
+			<div class="tree_listing_icon">
+				<img src="/css/backend/icon_settings.png" alt="<?php echo $elementar_main; ?>" />
+			</div>
+			<div class="tree_listing_header">
+				<p class="label settings"><a href="main"><?php echo $elementar_main; ?></a></p>
+			</div>
 		</div>
+		
 		<div class="tree_listing_row">
-			<p><a href="languages" class="settings"><?php echo $elementar_languages; ?></a></p>
+			<div class="tree_listing_icon">
+				<img src="/css/backend/icon_settings.png" alt="<?php echo $elementar_languages; ?>" />
+			</div>
+			<div class="tree_listing_header">
+				<p class="label settings"><a href="languages"><?php echo $elementar_languages; ?></a></p>
+			</div>
 		</div>
+
 		<div class="tree_listing_row">
-			<p><a href="email" class="settings"><?php echo $elementar_email; ?></a></p>
+			<div class="tree_listing_icon">
+				<img src="/css/backend/icon_settings.png" alt="<?php echo $elementar_email; ?>" />
+			</div>
+			<div class="tree_listing_header">
+				<p class="label settings"><a href="email"><?php echo $elementar_email; ?></a></p>
+			</div>
 		</div>
 	</div>
 </div>

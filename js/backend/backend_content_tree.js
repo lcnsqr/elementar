@@ -6,8 +6,8 @@ $(function() {
 	$("body").click(function() {
 		$('body > .tree_listing_menu').fadeOut('fast', function() {
 			$(this).remove();
+			$(".label > a.current").removeClass('current');
 		});
-		$(".label > a.current").removeClass('current');
 	});
 	
 	/*
@@ -16,8 +16,8 @@ $(function() {
 	$('#tree_parent_1').scroll(function(event){
 		$('body > .tree_listing_menu > .menu_indicator').fadeOut('fast', function() {
 			$(this).remove();
+			$(".label > a.current").removeClass('current');
 		});
-		$(".label > a.current").removeClass('current');
 	});
 	
 	/*
@@ -41,8 +41,16 @@ $(function() {
 		 * Show menu
 		 */
 		var hidden_menu = $(this).parents('.tree_listing_row').first().find('.tree_listing_menu');
-		var visible_menu = $(hidden_menu).clone();
 
+		/*
+		 * Exit if no menu
+		 */
+		if ( $(hidden_menu).length == 0 ) {
+			return;
+		}
+
+		var visible_menu = $(hidden_menu).clone();
+		
 		/*
 		 * Positioning
 		 */
