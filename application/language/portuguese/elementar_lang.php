@@ -16,6 +16,7 @@ $lang['elementar_exit']		= 'Sair';
 $lang['elementar_finished_in']		= 'Executado em';
 $lang['elementar_finished_elapsed']		= 'segundo';
 $lang['elementar_copyright']		= 'Todos os direitos reservados';
+$lang['elementar_settings']		= 'Configurações';
 $lang['elementar_account']		= 'Conta';
 $lang['elementar_accounts']		= 'Contas';
 $lang['elementar_editor']		= 'Editor';
@@ -25,6 +26,22 @@ $lang['elementar_element']		= 'Elemento';
 $lang['elementar_elements']		= 'Elementos';
 $lang['elementar_no_direct_script_access']		= 'O acesso direto ao recurso n&atilde;o &eacute; permitido';
 $lang['elementar_bad_request']		= 'Solicita&ccedil;&atilde;o incorreta';
+
+/*
+ * Backend main page
+ */
+$lang['elementar_main'] = 'Principal';
+$lang['elementar_languages'] = 'Idiomas';
+$lang['elementar_email'] = 'Email';
+$lang['elementar_site_name'] = 'Nome do Site';
+
+$lang['elementar_smtp_host'] = 'Host SMTP';
+$lang['elementar_smtp_port'] = 'Porta SMTP';
+$lang['elementar_smtp_user'] = 'Usuário SMTP';
+$lang['elementar_smtp_password'] = 'Senha SMTP';
+
+$lang['elementar_language_codes'] = 'Idiomas (ISO-639-1)';
+$lang['elementar_language_default'] = 'Idioma padrão';
 
 /*
  * Account related
@@ -135,6 +152,9 @@ $lang['elementar_xhr_email_not_found']		= 'Email n&atilde;o localizado';
 $lang['elementar_xhr_reset_email_sent']		= 'O endereço de redefinição da senha foi enviado para o email cadastrado';
 
 $lang['elementar_xhr_missing_required_fields']		= 'Campos obrigatórios ausentes';
+
+$lang['elementar_xhr_write_config'] = 'Configurações salvas com sucesso';
+$lang['elementar_xhr_language_undefined'] = 'Idioma indefinido';
 
 /*
  * Template filter

@@ -51,20 +51,6 @@ class Main extends CI_Controller {
 		 */
 		$this->load->library('session');
 		
-		/*
-		 * Settings
-		 */
-		$this->config->set_item('site_name', 'Elementar');
-
-		$config = array(
-			'smtp_host' => 'ssl://smtp.googlemail.com',
-			'smtp_port' => '465',
-			'smtp_user' => 'lcnsqr@gmail.com',
-			'smtp_pass' => ''
-		);
-		$this->load->library('email', $config);
-		$this->email->set_newline("\r\n");
-
 		//$this->output->enable_profiler(TRUE);
 		
 		// DB
@@ -136,7 +122,20 @@ class Main extends CI_Controller {
 		}
 		
 		/*
-		 * CMS Common Library called instead of
+		 * Language related Settings
+		 */
+		$site_names = json_decode($this->storage->get_config('name'), TRUE);
+		$this->config->set_item('site_name', (array_key_exists($this->LANG, $site_names)) ? $site_names[$this->LANG] : '');
+
+		/*
+		 * Email settings
+		 */
+		$email_settings = json_decode($this->storage->get_config('email') ,TRUE);
+		$this->load->library('email', $email_settings);
+		$this->email->set_newline("\r\n");
+
+		/*
+		 * CMS Common Library called here instead of
 		 * in construct to pass the LANG parameter
 		 */
 		$this->load->library('common', array(
@@ -322,7 +321,7 @@ class Main extends CI_Controller {
 			 * localized title
 			 */
 			$titles = json_decode($this->storage->get_content_name($content_id), TRUE);
-			$data['title'] = $titles[$this->LANG];
+			$data['title'] = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			/*
 			 * Metafields
 			 */
@@ -365,7 +364,7 @@ class Main extends CI_Controller {
 					 * localized name
 					 */
 					$names = json_decode($segment['name'], TRUE);
-					$content_name = $names[$this->LANG];
+					$content_name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 				}
 				else
 				{

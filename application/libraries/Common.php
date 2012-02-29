@@ -405,7 +405,7 @@ class Common {
 			{
 				$content_id = $filter['content_id'];
 				$content_names = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
-				$content_name = $content_names[$this->LANG];
+				$content_name = (array_key_exists($this->LANG, $content_names)) ? $content_names[$this->LANG] : '';
 				$order_by = $filter['order_by'];
 				$direction = $filter['direction'];
 				$limit = (int) $filter['limit'];
@@ -587,7 +587,7 @@ class Common {
 		foreach ( $this->CI->storage->get_contents_by_parent() as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
-			$listing[] = anchor($content_name[$this->LANG], array('href' => $content['id'], 'class' => 'root_content'));
+			$listing[] = anchor((array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('href' => $content['id'], 'class' => 'root_content'));
 		}
 		$contents = div_open(array('class' => 'dropdown_items_listing_position'));
 		$contents .= div_open(array('class' => 'dropdown_items_listing'));
@@ -735,7 +735,7 @@ class Common {
 			 * Localized name
 			 */
 			$names = json_decode($content['name'], TRUE);
-			$name = $names[$this->LANG];
+			$name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 			$content_uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($content_id);
 			if ( (int) $content['parent_id'] > 1 ) 
 			{
@@ -964,7 +964,7 @@ class Common {
 			 * Choose language
 			 */
 			$field_values = json_decode($field_value, TRUE);
-			$field_value = $field_values[$this->LANG];
+			$field_value = (array_key_exists($this->LANG, $field_values)) ? $field_values[$this->LANG] : '';
 		}
 
 		switch ( $field_attr['type'] )
@@ -1100,7 +1100,7 @@ class Common {
 			 * localized parent title
 			 */
 			$titles = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
-			$content_name = $titles[$this->LANG];
+			$content_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			$content_uri = $this->CI->storage->get_content_uri($content_id);
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
@@ -1129,7 +1129,7 @@ class Common {
 			 */
 			if ( ! (bool) $field_value && $this->LANG != $this->DEFAULT_LANG )
 			{
-				$field_value = $field_values[$this->DEFAULT_LANG];
+				$field_value = (array_key_exists($this->DEFAULT_LANG, $field_values)) ? $field_values[$this->DEFAULT_LANG] : '';
 			}
 			return (string) $field_value;
 			break;
@@ -1169,7 +1169,7 @@ class Common {
 			 * localized title
 			 */
 			$titles = json_decode($child['name'], TRUE);
-			$content_name = $titles[$this->LANG];
+			$content_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			$content_uri = $this->CI->storage->get_content_uri($content_id);
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
@@ -1225,7 +1225,7 @@ class Common {
 				$children_variables[] = array(
 					'id' => $child['id'],
 					'sname' => $child['sname'],
-					'name' => $names[$this->LANG],
+					'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
 					'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($child['id']),
 					'children' => $child['children']
 				);
@@ -1255,7 +1255,7 @@ class Common {
 					$brothers_variables[] = array(
 						'id' => $brother['id'],
 						'sname' => $brother['sname'],
-						'name' => $names[$this->LANG],
+						'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
 						'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($brother['id']),
 						'children' => $brother['children']
 					);
@@ -1389,6 +1389,203 @@ class Common {
 		return $data;
 	}
 
+	function which_language($code)
+	{
+		$languages = array(
+			'aa' => 'Afar',
+			'ab' => 'Abkhazian',
+			'af' => 'Afrikaans',
+			'ak' => 'Akan',
+			'sq' => 'Albanian',
+			'am' => 'Amharic',
+			'ar' => 'Arabic',
+			'an' => 'Aragonese',
+			'hy' => 'Armenian',
+			'as' => 'Assamese',
+			'av' => 'Avaric',
+			'ae' => 'Avestan',
+			'ay' => 'Aymara',
+			'az' => 'Azerbaijani',
+			'ba' => 'Bashkir',
+			'bm' => 'Bambara',
+			'eu' => 'Basque',
+			'be' => 'Belarusian',
+			'bn' => 'Bengali',
+			'bh' => 'Bihari languages',
+			'bi' => 'Bislama',
+			'bs' => 'Bosnian',
+			'br' => 'Breton',
+			'bg' => 'Bulgarian',
+			'my' => 'Burmese',
+			'ca' => 'Catalan',
+			'ch' => 'Chamorro',
+			'ce' => 'Chechen',
+			'zh' => 'Chinese',
+			'cu' => 'Church Slavic',
+			'cv' => 'Chuvash',
+			'kw' => 'Cornish',
+			'co' => 'Corsican',
+			'cr' => 'Cree',
+			'cs' => 'Czech',
+			'da' => 'Danish',
+			'dv' => 'Divehi',
+			'nl' => 'Dutch',
+			'dz' => 'Dzongkha',
+			'en' => 'English',
+			'eo' => 'Esperanto',
+			'et' => 'Estonian',
+			'ee' => 'Ewe',
+			'fo' => 'Faroese',
+			'fj' => 'Fijian',
+			'fi' => 'Finnish',
+			'fr' => 'French',
+			'fy' => 'Western Frisian',
+			'ff' => 'Fulah',
+			'ka' => 'Georgian',
+			'de' => 'German',
+			'gd' => 'Gaelic',
+			'ga' => 'Irish',
+			'gl' => 'Galician',
+			'gv' => 'Manx',
+			'el' => 'Greek, Modern (1453-)',
+			'gn' => 'Guarani',
+			'gu' => 'Gujarati',
+			'ht' => 'Haitian',
+			'ha' => 'Hausa',
+			'he' => 'Hebrew',
+			'hz' => 'Herero',
+			'hi' => 'Hindi',
+			'ho' => 'Hiri Motu',
+			'hr' => 'Croatian',
+			'hu' => 'Hungarian',
+			'ig' => 'Igbo',
+			'is' => 'Icelandic',
+			'io' => 'Ido',
+			'ii' => 'Sichuan Yi',
+			'iu' => 'Inuktitut',
+			'ie' => 'Interlingue',
+			'ia' => 'Interlingua',
+			'id' => 'Indonesian',
+			'ik' => 'Inupiaq',
+			'it' => 'Italian',
+			'jv' => 'Javanese',
+			'ja' => 'Japanese',
+			'kl' => 'Kalaallisut',
+			'kn' => 'Kannada',
+			'ks' => 'Kashmiri',
+			'kr' => 'Kanuri',
+			'kk' => 'Kazakh',
+			'km' => 'Central Khmer',
+			'ki' => 'Kikuyu',
+			'rw' => 'Kinyarwanda',
+			'ky' => 'Kirghiz',
+			'kv' => 'Komi',
+			'kg' => 'Kongo',
+			'ko' => 'Korean',
+			'kj' => 'Kuanyama',
+			'ku' => 'Kurdish',
+			'lo' => 'Lao',
+			'la' => 'Latin',
+			'lv' => 'Latvian',
+			'li' => 'Limburgan',
+			'ln' => 'Lingala',
+			'lt' => 'Lithuanian',
+			'lb' => 'Luxembourgish',
+			'lu' => 'Luba-Katanga',
+			'lg' => 'Ganda',
+			'mk' => 'Macedonian',
+			'mh' => 'Marshallese',
+			'ml' => 'Malayalam',
+			'mi' => 'Maori',
+			'mr' => 'Marathi',
+			'ms' => 'Malay',
+			'mg' => 'Malagasy',
+			'mt' => 'Maltese',
+			'mn' => 'Mongolian',
+			'na' => 'Nauru',
+			'nv' => 'Navajo',
+			'nr' => 'Ndebele, South',
+			'nd' => 'Ndebele, North',
+			'ng' => 'Ndonga',
+			'ne' => 'Nepali',
+			'nn' => 'Norwegian Nynorsk',
+			'nb' => 'Bokmål, Norwegian',
+			'no' => 'Norwegian',
+			'ny' => 'Chichewa',
+			'oc' => 'Occitan (post 1500)',
+			'oj' => 'Ojibwa',
+			'or' => 'Oriya',
+			'om' => 'Oromo',
+			'os' => 'Ossetian',
+			'pa' => 'Panjabi',
+			'fa' => 'Persian',
+			'pi' => 'Pali',
+			'pl' => 'Polish',
+			'pt' => 'Português',
+			'ps' => 'Pushto',
+			'qu' => 'Quechua',
+			'rm' => 'Romansh',
+			'ro' => 'Romanian',
+			'rn' => 'Rundi',
+			'ru' => 'Russian',
+			'sg' => 'Sango',
+			'sa' => 'Sanskrit',
+			'si' => 'Sinhala',
+			'sk' => 'Slovak',
+			'sl' => 'Slovenian',
+			'se' => 'Northern Sami',
+			'sm' => 'Samoan',
+			'sn' => 'Shona',
+			'sd' => 'Sindhi',
+			'so' => 'Somali',
+			'st' => 'Sotho, Southern',
+			'es' => 'Español',
+			'sc' => 'Sardinian',
+			'sr' => 'Serbian',
+			'ss' => 'Swati',
+			'su' => 'Sundanese',
+			'sw' => 'Swahili',
+			'sv' => 'Swedish',
+			'ty' => 'Tahitian',
+			'ta' => 'Tamil',
+			'tt' => 'Tatar',
+			'te' => 'Telugu',
+			'tg' => 'Tajik',
+			'tl' => 'Tagalog',
+			'th' => 'Thai',
+			'bo' => 'Tibetan',
+			'ti' => 'Tigrinya',
+			'to' => 'Tonga (Tonga Islands)',
+			'tn' => 'Tswana',
+			'ts' => 'Tsonga',
+			'tk' => 'Turkmen',
+			'tr' => 'Turkish',
+			'tw' => 'Twi',
+			'ug' => 'Uighur',
+			'uk' => 'Ukrainian',
+			'ur' => 'Urdu',
+			'uz' => 'Uzbek',
+			've' => 'Venda',
+			'vi' => 'Vietnamese',
+			'vo' => 'Volapük',
+			'cy' => 'Welsh',
+			'wa' => 'Walloon',
+			'wo' => 'Wolof',
+			'xh' => 'Xhosa',
+			'yi' => 'Yiddish',
+			'yo' => 'Yoruba',
+			'za' => 'Zhuang',
+			'zu' => 'Zulu'
+		);
+		if ( array_key_exists($code, $languages) )
+		{
+			return $languages[$code];
+		}
+		else
+		{
+			return $code;
+		}
+	}
 }
 
 /*
@@ -1438,9 +1635,9 @@ class Filter {
 		if ( (bool) $this->LANG )
 		{
 			$localized = json_decode($a[$this->order_by], TRUE);
-			$previous = $localized[$this->LANG];
+			$previous = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
 			$localized = json_decode($b[$this->order_by], TRUE);
-			$next = $localized[$this->LANG];
+			$next = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
 		}
 
 		/*
@@ -1462,7 +1659,7 @@ class Filter {
 			return strcmp($previous, $next);
 			break;
 		}
-	}
+	}	
 }
 
 /* End of file Common.php */

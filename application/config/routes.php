@@ -46,6 +46,10 @@ $route['404_override'] = 'main';
  */
 $route['sitemap.xml'] = 'main/sitemap';
 
+/*
+ * Backend main controller
+ */
+$route['backend'] = 'backend/main';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

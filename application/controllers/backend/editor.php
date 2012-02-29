@@ -86,6 +86,19 @@ class Editor extends CI_Controller {
 		}
 		
 		/*
+		 * Language related Settings
+		 */
+		$site_names = json_decode($this->storage->get_config('name'), TRUE);
+		$this->config->set_item('site_name', (array_key_exists($this->LANG, $site_names)) ? $site_names[$this->LANG] : '');
+
+		/*
+		 * Email settings
+		 */
+		$email_settings = json_decode($this->storage->get_config('email') ,TRUE);
+		$this->load->library('email', $email_settings);
+		$this->email->set_newline("\r\n");
+
+		/*
 		 * Elementar Common Library
 		 */
 		$this->load->library('common', array(
@@ -93,20 +106,6 @@ class Editor extends CI_Controller {
 			'lang_avail' => $this->LANG_AVAIL, 
 			'uri_prefix' => ''
 		));
-
-		$this->config->set_item('site_name', 'Elementar');
-
-		/*
-		 * Email config
-		 */
-		/*
-		$this->config->set_item('smtp_host', 'ssl://smtp.googlemail.com');
-		$this->config->set_item('smtp_port', '465');
-		$this->config->set_item('smtp_user', '');
-		$this->config->set_item('smtp_pass', '');
-		$this->load->library('email', $config);
-		$this->email->set_newline("\r\n");
-		*/
 
 		/*
 		 * Verificar sessão autenticada
@@ -177,6 +176,8 @@ class Editor extends CI_Controller {
 		 * Resource menu
 		 */
 		$resource_menu = array(
+			anchor($this->lang->line('elementar_settings'), array('href' => '/backend', 'title' => $this->lang->line('elementar_settings'))),
+			span('&bull;', array('class' => 'top_menu_sep')),
 			anchor($this->lang->line('elementar_accounts'), array('href' => '/backend/account', 'title' => $this->lang->line('elementar_accounts'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
 			'<strong>' . $this->lang->line('elementar_editor') . '</strong>'
@@ -769,7 +770,7 @@ class Editor extends CI_Controller {
 			'template_id' => $template_id,
 			'type_name' => $this->storage->get_content_type_name($this->storage->get_content_type_id($content_id)),
 			'elementar_template_variables_title' => $this->lang->line('elementar_template_variables_title'),
-			'content_variables_title' => $title[$this->LANG],
+			'content_variables_title' => (array_key_exists($this->LANG, $title)) ? $title[$this->LANG] : '',
 			'content_variables' => array(),
 			'relative_content_variables_title' => $this->lang->line('elementar_contents'),
 			'relative_content_variables' => array(),

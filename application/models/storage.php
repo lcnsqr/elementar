@@ -77,10 +77,36 @@ class Storage extends CI_Model {
 	function put_config($name, $value)
 	{
 		$data = array(
+			'name' => $name,
 			'value' => $value
 		);
+		/*
+		 * Check for existing entry first
+		 */
+		$this->elementar->select('id');
+		$this->elementar->from('config');
 		$this->elementar->where('name', $name);
-		$this->elementar->update('config', $data);
+		$this->elementar->limit(1);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$this->elementar->where('name', $name);
+			$this->elementar->update('config', $data);
+			return $row->id;
+		}
+		else
+		{
+			/*
+			 * Insert new entry
+			 */
+			$inserted = $this->elementar->insert('config', $data);
+			if ($inserted)
+			{
+				return $this->elementar->insert_id();
+			}
+		}
+		return FALSE;
 	}
 
 	/*

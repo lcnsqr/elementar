@@ -16,6 +16,7 @@ $lang['elementar_exit']		= 'Logout';
 $lang['elementar_finished_in']		= 'Finished in';
 $lang['elementar_finished_elapsed']		= 'second';
 $lang['elementar_copyright']		= 'All rights reserved';
+$lang['elementar_settings']		= 'Settings';
 $lang['elementar_account']		= 'Account';
 $lang['elementar_accounts']		= 'Accounts';
 $lang['elementar_editor']		= 'Editor';
@@ -25,6 +26,22 @@ $lang['elementar_element']		= 'Element';
 $lang['elementar_elements']		= 'Elements';
 $lang['elementar_no_direct_script_access']		= 'No direct script access allowed';
 $lang['elementar_bad_request']		= 'Bad request';
+
+/*
+ * Backend main page
+ */
+$lang['elementar_main'] = 'Main';
+$lang['elementar_languages'] = 'Languages';
+$lang['elementar_email'] = 'Email';
+$lang['elementar_site_name'] = 'Site Name';
+
+$lang['elementar_smtp_host'] = 'SMTP Host';
+$lang['elementar_smtp_port'] = 'SMTP Port';
+$lang['elementar_smtp_user'] = 'SMTP User';
+$lang['elementar_smtp_pass'] = 'SMTP Password';
+
+$lang['elementar_language_codes'] = 'Languages (ISO-639-1)';
+$lang['elementar_language_default'] = 'Default Language';
 
 /*
  * Account related
@@ -135,6 +152,9 @@ $lang['elementar_xhr_email_not_found']		= 'Email not found';
 $lang['elementar_xhr_reset_email_sent']		= 'Password reset link sent to the resgistered email';
 
 $lang['elementar_xhr_missing_required_fields']		= 'Missing required fields';
+
+$lang['elementar_xhr_write_config'] = 'Settings saved';
+$lang['elementar_xhr_language_undefined'] = 'Undefined Language';
 
 /*
  * Template filter
