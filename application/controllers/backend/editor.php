@@ -66,38 +66,22 @@ class Editor extends CI_Controller {
 		$this->lang->load('elementar', $this->config->item('language'));
 		
 		/*
-		 * Load site config
+		 * Load site i18n config
 		 */
-		$settings = $this->storage->get_config();
-		if ( ! is_array($settings) )
+		$i18n_settings = json_decode($this->storage->get_config('i18n'), TRUE);
+		foreach($i18n_settings as $i18n_setting)
 		{
-			exit($this->lang->line('elementar_config_error'));
-		}
-		foreach($settings as $setting)
-		{
-			switch ( $setting['name'] )
+			if ( (bool) $i18n_setting['default'] )
 			{
-				case 'i18n' :
+				$this->LANG = $i18n_setting['code'];
 				/*
-				 * Language settings
+				 * Default language is the first in array
 				 */
-				$i18n_settings = json_decode($setting['value'], TRUE);
-				foreach($i18n_settings as $i18n_setting)
-				{
-					if ( (bool) $i18n_setting['default'] )
-					{
-						$this->LANG = $i18n_setting['code'];
-						/*
-						 * Default language is first in array
-						 */
-						$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
-					}
-					else
-					{
-						$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
-					}
-				}
-				break;
+				$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
+			}
+			else
+			{
+				$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
 			}
 		}
 		

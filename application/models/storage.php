@@ -59,19 +59,28 @@ class Storage extends CI_Model {
 	/*
 	 * get site config
 	 */
-	function get_config()
+	function get_config($name)
 	{
-		$this->elementar->select('*');
+		$this->elementar->select('value');
 		$this->elementar->from('config');
+		$this->elementar->where('name', $name);
+		$this->elementar->limit(1);
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
-			return $query->result_array();
+			$row = $query->row();
+			return $row->value;
 		}
-		else
-		{
-			return NULL;
-		}
+		return NULL;
+	}
+	
+	function put_config($name, $value)
+	{
+		$data = array(
+			'value' => $value
+		);
+		$this->elementar->where('name', $name);
+		$this->elementar->update('config', $data);
 	}
 
 	/*
