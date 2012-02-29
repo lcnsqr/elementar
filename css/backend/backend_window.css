@@ -519,6 +519,7 @@
 	display: none;
 	position: absolute;
 	opacity: .9;
+	filter: alpha(opacity = 90);
 }
 .element_filter_menu > ul {
 	position: relative;

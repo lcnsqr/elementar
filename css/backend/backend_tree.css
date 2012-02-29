@@ -34,6 +34,7 @@
 	width: 16px;
 	height: 16px;
 	opacity: .5;
+	filter: alpha(opacity = 50);
 	background-color: #fff;
 	background-image: url("/css/backend/working_small.gif");
 	background-position: center center;
@@ -128,6 +129,7 @@
 	position: absolute;
 	overflow: visible;
 	opacity: .9;
+	filter: alpha(opacity = 90);
 }
 .tree_listing_menu > ul {
 	position: relative;
@@ -173,6 +175,7 @@
 	top: 0;
 	left: 0;
 	opacity: .5;
+	filter: alpha(opacity = 50);
 	width: 400px;
 	height: 20px;
 }

@@ -430,6 +430,7 @@
 	left: 0;
 	right: 0;
 	opacity: .5;
+	filter: alpha(opacity = 50);
 	background-color: #fff;
 	background-image: url("/css/backend/working.gif");
 	background-position: center center;
