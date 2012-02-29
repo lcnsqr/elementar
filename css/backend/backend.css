@@ -26,7 +26,6 @@ body {
 	left: 0;
 	right: 0;
 	opacity: .5;
-	filter: alpha(opacity = 50);
 	background-color: #fff;
 	background-image: url("/css/backend/working.gif");
 	background-position: center center;
@@ -63,7 +62,6 @@ a:visited {
 	background-color: #000;
 	border-radius: 7px;
 	opacity: .6;
-	filter: alpha(opacity = 60);
 	line-height: 18px;
 }
 #client_warning #client_msg {
@@ -247,7 +245,6 @@ a:visited {
 	left: 0;
 	right: 0;
 	opacity: .5;
-	filter: alpha(opacity = 50);
 	background-color: #fff;
 	background-image: url("/css/backend/working.gif");
 	background-position: center center;

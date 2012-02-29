@@ -362,7 +362,6 @@
 	left: 0;
 	bottom: 0;
 	opacity: 0;
-	filter: alpha(opacity=0);
 }
 #file_manager_action .upload_form_container input.upload_file {
 	position: absolute;
@@ -430,7 +429,6 @@
 	left: 0;
 	right: 0;
 	opacity: .5;
-	filter: alpha(opacity = 50);
 	background-color: #fff;
 	background-image: url("/css/backend/working.gif");
 	background-position: center center;
