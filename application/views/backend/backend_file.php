@@ -19,6 +19,9 @@
 <div id="file_manager">
 
 	<div id="file_manager_tree_board" class="pool_board">
+
+	<div id="tree_loading"></div>
+
 	<div class="border top_side"></div>
 	<div class="border right_side"></div>
 	<div class="border bottom_side"></div>

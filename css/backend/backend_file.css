@@ -115,6 +115,22 @@
 	bottom: 4px;
 }
 
+#tree_loading
+{
+	display: none;
+	position: absolute;
+	z-index: 1;
+	top: 6px;
+	left: 6px;
+	width: 16px;
+	height: 16px;
+	opacity: .5;
+	background-color: #fff;
+	background-image: url("/css/backend/working_small.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
 #tree_parent_1 {
 	position: absolute;
 	top: 10px;

@@ -19,7 +19,7 @@ $(function() {
 				var listing = this;
 				
 				// File listing loading animation
-				$(listing).children(".loading").fadeIn("fast");
+				$(listing).next(".loading").fadeIn("fast");
 	
 				$.post('/backend/file/xhr_render_contents', { path : path, parent : $.getUrlVar('parent') }, function(data) {
 					try {
@@ -83,7 +83,7 @@ $(function() {
 						showClientWarning("Erro de comunicação com o servidor");
 					}
 					// File listing loading animation
-					$(listing).children(".loading").stop().fadeOut("fast");
+					$(listing).next(".loading").stop().fadeOut("fast");
 				}, 'json');
 	
 			}
@@ -200,6 +200,9 @@ $(function() {
 	$("a.fold.folder_switch").live("click", function(event) {
 		event.preventDefault();
 
+		// Loading icon
+		$("#tree_loading").fadeIn("fast");
+
 		var path = $(this).attr("href");
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		var bullet = $(this);
@@ -216,6 +219,9 @@ $(function() {
 			catch (err) {
 				showClientWarning("Erro de comunicação com o servidor");
 			}
+			// Loading icon
+			$("#tree_loading").fadeOut("fast");
+
 		}, "json");
 	});
 	/*
