@@ -107,7 +107,7 @@ class Setup extends CI_Controller {
 		 * Check for database
 		 */
 		$this->load->dbutil();
-		if (! $this->dbutil->database_exists('elementar'))
+		if (! $this->dbutil->database_exists($this->db->database))
 		{
 			$pending_message[] = 'Database not found';
 		}
@@ -155,9 +155,12 @@ class Setup extends CI_Controller {
 		/*
 		 * Admin password
 		 */
-		if ( (bool) $this->access->get_account_password(1) )
+		if ($this->db->table_exists('account'))
 		{
-			$pending_message[] = 'Configuração concluída';
+			if ( (bool) $this->access->get_account_password(1) )
+			{
+				$pending_message[] = 'Configuração concluída';
+			}
 		}
 		return $pending_message;
 	}
