@@ -1,6 +1,18 @@
 <?php
 
 /*
+ * Setup
+ */
+$lang['elementar_setup_pending'] = 'Ações pendentes';
+$lang['elementar_setup_username'] = 'Usuário administrador';
+$lang['elementar_setup_email'] = 'Email do administrador';
+$lang['elementar_setup_password'] = 'Senha do administrador';
+$lang['elementar_setup_submit'] = 'Salvar';
+$lang['elementar_setup_database_not_found'] = 'Banco de dados inacessível';
+$lang['elementar_setup_no_write_perms_in'] = 'Sem permissão para escrever em '; 
+$lang['elementar_setup_done'] = 'Configuração concluída';
+
+/*
  * Auth
  */
 $lang['elementar_authentication_title'] = 'Identificação';

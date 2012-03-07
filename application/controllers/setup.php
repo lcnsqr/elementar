@@ -87,11 +87,11 @@ class Setup extends CI_Controller {
 		/*
 		 * Localized texts
 		 */
-		$data['elementar_setup_pending'] = 'Ações pendentes';
-		$data['elementar_setup_username'] = 'Nome de usuário do administrador';
-		$data['elementar_setup_email'] = 'Email do administrador';
-		$data['elementar_setup_password'] = 'Senha do administrador';
-		$data['elementar_setup_submit'] = 'Salvar';
+		$data['elementar_setup_pending'] = $this->lang->line('elementar_setup_pending');
+		$data['elementar_setup_username'] = $this->lang->line('elementar_setup_username');
+		$data['elementar_setup_email'] = $this->lang->line('elementar_setup_email');
+		$data['elementar_setup_password'] = $this->lang->line('elementar_setup_password');
+		$data['elementar_setup_submit'] = $this->lang->line('elementar_setup_submit');
 		$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
 		$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
 		$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
@@ -109,7 +109,7 @@ class Setup extends CI_Controller {
 		$this->load->dbutil();
 		if (! $this->dbutil->database_exists($this->db->database))
 		{
-			$pending_message[] = 'Database not found';
+			$pending_message[] = $this->lang->line('elementar_setup_database_not_found');
 		}
 		else
 		{
@@ -129,7 +129,7 @@ class Setup extends CI_Controller {
 		$cache_path = ( $this->config->item('cache_path') == '' ) ? FCPATH . APPPATH . 'cache/' : $this->config->item('cache_path');
 		if (! is_really_writable($cache_path) )
 		{
-			$pending_message[] = 'Sem permissão para escrever em ' . $cache_path;
+			$pending_message[] = $this->lang->line('elementar_setup_no_write_perms_in') . $cache_path;
 		}
 
 		/*
@@ -138,7 +138,7 @@ class Setup extends CI_Controller {
 		$files_path = FCPATH . 'files/';
 		if (! is_really_writable($files_path) )
 		{
-			$pending_message[] = 'Sem permissão para escrever em ' . $files_path;
+			$pending_message[] = $this->lang->line('elementar_setup_no_write_perms_in') . $files_path;
 		}
 
 		/*
@@ -148,7 +148,7 @@ class Setup extends CI_Controller {
 		$migrations_path = FCPATH . APPPATH . 'migrations/';
 		if (! is_really_writable($migrations_path) )
 		{
-			$pending_message[] = 'Sem permissão para escrever em ' . $migrations_path;
+			$pending_message[] = $this->lang->line('elementar_setup_no_write_perms_in') . $migrations_path;
 		}
 		*/
 		
@@ -159,7 +159,7 @@ class Setup extends CI_Controller {
 		{
 			if ( (bool) $this->access->get_account_password(1) )
 			{
-				$pending_message[] = 'Configuração concluída';
+				$pending_message[] = $this->lang->line('elementar_setup_done');
 			}
 		}
 		return $pending_message;
