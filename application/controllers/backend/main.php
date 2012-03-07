@@ -239,7 +239,7 @@ class Main extends CI_Controller {
 			break;
 		}
 		
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 	
 	function xhr_write_settings()
@@ -271,7 +271,7 @@ class Main extends CI_Controller {
 			break;
 		}
 		
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	function _render_main_form()

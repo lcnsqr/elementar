@@ -225,7 +225,7 @@ class Account extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -251,7 +251,7 @@ class Account extends CI_Controller {
 			'id' => $group_id,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 
@@ -271,7 +271,7 @@ class Account extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -282,7 +282,7 @@ class Account extends CI_Controller {
 			'id' => $group_id,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 
@@ -395,7 +395,7 @@ class Account extends CI_Controller {
 			'html' => $html
 		);
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -427,7 +427,7 @@ class Account extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_return_name_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 		
@@ -452,7 +452,7 @@ class Account extends CI_Controller {
 			'group_id' => $group_id,
 			'message' => $this->lang->line('elementar_xhr_write_group')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -484,7 +484,7 @@ class Account extends CI_Controller {
 		}
 		
 		// Enviar resposta
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -581,7 +581,7 @@ class Account extends CI_Controller {
 			'html' => $html
 		);
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -611,7 +611,7 @@ class Account extends CI_Controller {
 		$response = $this->validation->assess_username($username);
 		if ( (bool) $response['done'] == FALSE )
 		{
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -623,7 +623,7 @@ class Account extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_username_field_used')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 		}
@@ -635,7 +635,7 @@ class Account extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_username_field_used')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 		}
@@ -646,7 +646,7 @@ class Account extends CI_Controller {
 		$response = $this->validation->assess_email($email);
 		if ( (bool) $response['done'] == FALSE )
 		{
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 		if ( ! (bool) $account_id )
@@ -657,7 +657,7 @@ class Account extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_email_field_used')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 		}
@@ -669,7 +669,7 @@ class Account extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_email_field_used')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 		}
@@ -682,7 +682,7 @@ class Account extends CI_Controller {
 		{
 			if ( (bool) $response['done'] == FALSE )
 			{
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 		}
@@ -722,7 +722,7 @@ class Account extends CI_Controller {
 			'account_id' => $account_id,
 			'message' => $this->lang->line('elementar_xhr_write_account')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -754,7 +754,7 @@ class Account extends CI_Controller {
 		}
 		
 		// Enviar resposta
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -783,7 +783,7 @@ class Account extends CI_Controller {
 				'done' => TRUE,
 				'group_id' => $group_id
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 		else
 		{
@@ -791,7 +791,7 @@ class Account extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 
 	}

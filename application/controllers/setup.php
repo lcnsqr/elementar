@@ -46,15 +46,6 @@ class Setup extends CI_Controller {
 		$this->load->model('Access', 'access');
 
 		/*
-		 * Elementar Common Library
-		 */
-		$this->load->library('common', array(
-			'lang' => '', 
-			'lang_avail' => array(), 
-			'uri_prefix' => ''
-		));
-
-		/*
 		 * Fields validation library
 		 */
 		$this->load->library('validation');
@@ -185,7 +176,7 @@ class Setup extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -199,7 +190,7 @@ class Setup extends CI_Controller {
 		$response = $this->validation->assess_username($username);
 		if ( (bool) $response['done'] == FALSE )
 		{
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -209,7 +200,7 @@ class Setup extends CI_Controller {
 		$response = $this->validation->assess_email($email);
 		if ( (bool) $response['done'] == FALSE )
 		{
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -219,7 +210,7 @@ class Setup extends CI_Controller {
 		$response = $this->validation->assess_password($password);
 		if ( (bool) $response['done'] == FALSE )
 		{
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -241,7 +232,7 @@ class Setup extends CI_Controller {
 			'location' => site_url("backend"),
 			'message' => $this->lang->line('elementar_xhr_write_account')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 }
 

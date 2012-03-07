@@ -571,7 +571,7 @@ class Main extends CI_Controller {
 				$response = array(
 					'done' => TRUE
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			else
@@ -580,7 +580,7 @@ class Main extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_login_incorret')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			break;
@@ -596,7 +596,7 @@ class Main extends CI_Controller {
 			$response = array(
 				'done' => TRUE
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			break;
 			
 			/************
@@ -619,7 +619,7 @@ class Main extends CI_Controller {
 			$response = $this->validation->assess_username($username);
 			if ( (bool) $response['done'] == FALSE )
 			{
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 	
@@ -629,7 +629,7 @@ class Main extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_username_field_used')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 
@@ -639,7 +639,7 @@ class Main extends CI_Controller {
 			$response = $this->validation->assess_email($email);
 			if ( (bool) $response['done'] == FALSE )
 			{
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			if ( (bool) $this->access->get_account_by_email($email) )
@@ -648,7 +648,7 @@ class Main extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_email_field_used')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 
@@ -658,7 +658,7 @@ class Main extends CI_Controller {
 			$response = $this->validation->assess_password($password);
 			if ( (bool) $response['done'] == FALSE )
 			{
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			
@@ -681,7 +681,7 @@ class Main extends CI_Controller {
 			$this->email->to($email);
 			$this->email->send();
 
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			break;
 			
 			/********************************
@@ -727,7 +727,7 @@ class Main extends CI_Controller {
 			$response = $this->validation->assess_email($email);
 			if ( (bool) $response['done'] == FALSE )
 			{
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			$account_id = $this->access->get_account_by_email($email);
@@ -737,7 +737,7 @@ class Main extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_email_not_found')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			$reset_hash = random_string('unique');
@@ -756,7 +756,7 @@ class Main extends CI_Controller {
 				'done' => TRUE,
 				'message' => $this->lang->line('elementar_xhr_reset_email_sent')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			break;
 			
 			/***********************
@@ -806,7 +806,7 @@ class Main extends CI_Controller {
 				$response = $this->validation->assess_password($password);
 				if ( (bool) $response['done'] == FALSE )
 				{
-					$this->common->ajax_response($response);
+					$this->output->set_output_json($response);
 					return;
 				}
 				else
@@ -820,7 +820,7 @@ class Main extends CI_Controller {
 						'done' => TRUE,
 						'message' => $this->lang->line('elementar_xhr_password_changed')
 					);
-					$this->common->ajax_response($response);
+					$this->output->set_output_json($response);
 					return;
 				}
 			}
@@ -828,7 +828,7 @@ class Main extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_xhr_not_allowed')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			break;
 			
 			default:

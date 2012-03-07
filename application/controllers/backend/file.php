@@ -77,15 +77,6 @@ class File extends CI_Controller {
 			}
 		}
 		
-		/*
-		 * CMS Common Library
-		 */
-		$this->load->library('common', array(
-			'lang' => $this->LANG, 
-			'lang_avail' => $this->LANG_AVAIL, 
-			'uri_prefix' => ''
-		));
-
 		$this->ROOT = '/files';
 
 		/*
@@ -173,7 +164,7 @@ class File extends CI_Controller {
 			'done' => TRUE,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 	
@@ -223,7 +214,7 @@ class File extends CI_Controller {
 			'done' => TRUE,
 			'html' => $tree
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 	
@@ -267,7 +258,7 @@ class File extends CI_Controller {
 			'done' => TRUE,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 	
@@ -678,7 +669,7 @@ class File extends CI_Controller {
 			'html' => $html,
 			'upload_session_id' => $upload_session_id
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 
@@ -770,7 +761,7 @@ class File extends CI_Controller {
 			);
 		}
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 	
 	function cancel_upload()
@@ -839,7 +830,7 @@ class File extends CI_Controller {
 			}
 		}
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -867,7 +858,7 @@ class File extends CI_Controller {
 			);
 		}
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -902,7 +893,7 @@ class File extends CI_Controller {
 			);
 		}
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 

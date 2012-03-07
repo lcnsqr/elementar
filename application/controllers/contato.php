@@ -169,7 +169,7 @@ class Contato extends CI_Controller {
 				'msg' => $msg
 			);
 	
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			
 		}
 		else
@@ -184,7 +184,7 @@ class Contato extends CI_Controller {
 				'body' => $body
 			);
 		
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 	}
 

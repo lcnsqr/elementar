@@ -273,7 +273,7 @@ class Editor extends CI_Controller {
 				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -363,7 +363,7 @@ class Editor extends CI_Controller {
 			'html' => $form
 		);
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -436,7 +436,7 @@ class Editor extends CI_Controller {
 			'html' => $form
 		);
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -458,7 +458,7 @@ class Editor extends CI_Controller {
 			'done' => TRUE,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/*
@@ -506,7 +506,7 @@ class Editor extends CI_Controller {
 			'done' => TRUE,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/*
@@ -557,7 +557,7 @@ class Editor extends CI_Controller {
 			'done' => TRUE,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/*
@@ -598,7 +598,7 @@ class Editor extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_bad_request')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return NULL;
 			}
 
@@ -639,7 +639,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return NULL;
 		}
 
@@ -750,7 +750,7 @@ class Editor extends CI_Controller {
 			'html' => $html
 		);
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -995,7 +995,7 @@ class Editor extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_bad_request')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return NULL;
 			}
 
@@ -1285,7 +1285,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return NULL;
 		}
 		$attributes = array(
@@ -1368,7 +1368,7 @@ class Editor extends CI_Controller {
 			'html' => $html
 		);
 
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 	
@@ -1449,7 +1449,7 @@ class Editor extends CI_Controller {
 				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/**
@@ -1500,7 +1500,7 @@ class Editor extends CI_Controller {
 				'message' => $this->lang->line('elementar_bad_request')
 			);
 		}
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/*
@@ -1525,7 +1525,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_return_name_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return NULL;
 		}
 
@@ -1583,7 +1583,7 @@ class Editor extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_write_content_error')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return NULL;
 			}
 		}
@@ -1636,7 +1636,7 @@ class Editor extends CI_Controller {
 			'content_id' => $this->content->get_id(),
 			'message' => $this->lang->line('elementar_xhr_write_content')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -1669,7 +1669,7 @@ class Editor extends CI_Controller {
 			'message' => $this->lang->line('elementar_xhr_erase_content')
 		);
 		
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -1702,7 +1702,7 @@ class Editor extends CI_Controller {
 			'message' => $this->lang->line('elementar_xhr_erase_element')
 		);
 		
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -1740,7 +1740,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_xhr_write_element_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -1751,7 +1751,7 @@ class Editor extends CI_Controller {
 			$response = array(
 				'done' => TRUE
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 		else
 		{
@@ -1759,7 +1759,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 
 	}
@@ -1798,7 +1798,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_xhr_write_content_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -1814,7 +1814,7 @@ class Editor extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_not_allowed')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return;
 			}
 			$above_id = $this->storage->get_content_parent_id($above_id);
@@ -1827,7 +1827,7 @@ class Editor extends CI_Controller {
 			$response = array(
 				'done' => TRUE
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 		else
 		{
@@ -1835,7 +1835,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_bad_request')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 		}
 
 	}
@@ -1862,7 +1862,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_return_name_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return NULL;
 		}
 
@@ -1917,7 +1917,7 @@ class Editor extends CI_Controller {
 					'done' => FALSE,
 					'message' => $this->lang->line('elementar_xhr_write_element_error')
 				);
-				$this->common->ajax_response($response);
+				$this->output->set_output_json($response);
 				return NULL;
 			}
 		}
@@ -1965,7 +1965,7 @@ class Editor extends CI_Controller {
 			'element_id' => $this->element->get_id(),
 			'message' => $this->lang->line('elementar_xhr_write_element')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 
 	}
 
@@ -1993,7 +1993,7 @@ class Editor extends CI_Controller {
 			'id' => $id,
 			'html' => $html
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 		
 	}
 	
@@ -2049,7 +2049,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_xhr_write_content_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -2097,7 +2097,7 @@ class Editor extends CI_Controller {
 			'done' => TRUE,
 			'message' => $this->lang->line('elementar_xhr_write_meta')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/**
@@ -2118,7 +2118,7 @@ class Editor extends CI_Controller {
 				'done' => FALSE,
 				'message' => $this->lang->line('elementar_xhr_write_content_error')
 			);
-			$this->common->ajax_response($response);
+			$this->output->set_output_json($response);
 			return;
 		}
 
@@ -2207,7 +2207,7 @@ class Editor extends CI_Controller {
 			'head' => $template['head'],
 			'message' => $this->lang->line('elementar_xhr_write_template')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 
 	/*
@@ -2260,7 +2260,7 @@ class Editor extends CI_Controller {
 			'element_type' => $element_type,
 			'message' => $this->lang->line('elementar_xhr_write_template_filter')
 		);
-		$this->common->ajax_response($response);
+		$this->output->set_output_json($response);
 	}
 	
 }

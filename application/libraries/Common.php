@@ -39,22 +39,6 @@ class Common {
 		$this->CI->load->helper('html');
 	}
 	
-	function ajax_response($response)
-	{
-		// execution time
-		$elapsed = array('elapsed_time' => $this->CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end'));
-		$response = array_merge($response, $elapsed);
-		
-		$this->CI->output->set_header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		$this->CI->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-		$this->CI->output->set_header("Cache-Control: post-check=0, pre-check=0");
-		$this->CI->output->set_header("Pragma: no-cache");
-		$this->CI->output->set_header("Content-type: application/json");
-		
-		$data = json_encode($response);
-		$this->CI->output->set_output($data);
-	}
-
 	/**
 	 * Removed a Cached URI File
 	 *
