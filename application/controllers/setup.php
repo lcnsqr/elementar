@@ -41,6 +41,11 @@ class Setup extends CI_Controller {
 		$this->db =& $this->elementar;
 
 		/*
+		 * Create, read, update and delete Model
+		 */
+		$this->load->model('Storage', 'storage');
+
+		/*
 		 * Access model
 		 */
 		$this->load->model('Access', 'access');
@@ -224,6 +229,10 @@ class Setup extends CI_Controller {
 		$this->access->put_account_email(1, $email);
 		$this->access->put_account_password(1, $password);
 		
+		/*
+		 * Load encryption key before session library
+		 */
+		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
 		/*
 		 * Log admin in
 		 */

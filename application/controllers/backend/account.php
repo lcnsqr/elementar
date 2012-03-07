@@ -40,11 +40,6 @@ class Account extends CI_Controller {
 		$this->load->helper(array('string', 'security', 'cookie', 'form', 'html', 'text', 'url'));
 
 		/*
-		 * CI libraries
-		 */
-		$this->load->library('session');
-		
-		/*
 		 * Elementar database
 		 */
 		$this->elementar = $this->load->database('elementar', TRUE);
@@ -60,6 +55,15 @@ class Account extends CI_Controller {
 		$this->load->model('Storage', 'storage');
 		$this->storage->STATUS = 'all';
 
+		/*
+		 * Load encryption key before session library
+		 */
+		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
+		/*
+		 * CI libraries
+		 */
+		$this->load->library('session');
+		
 		/*
 		 * Load site i18n config
 		 */

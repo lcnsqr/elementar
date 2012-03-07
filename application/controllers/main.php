@@ -46,11 +46,6 @@ class Main extends CI_Controller {
 	{
 		parent::__construct();
 		
-		/*
-		 * CI libraries
-		 */
-		$this->load->library('session');
-		
 		//$this->output->enable_profiler(TRUE);
 		
 		// DB
@@ -71,6 +66,15 @@ class Main extends CI_Controller {
 	 */
 	public function _remap($method)
 	{
+		/*
+		 * Load encryption key before session library
+		 */
+		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
+		/*
+		 * Session library
+		 */
+		$this->load->library('session');
+		
 		/*
 		 * Load site i18n config
 		 */

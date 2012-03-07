@@ -42,11 +42,6 @@ class File extends CI_Controller {
 		$this->elementar = $this->load->database('elementar', TRUE);
 
 		/*
-		 * CI libraries
-		 */
-		$this->load->library('session');
-
-		/*
 		 * URI helper
 		 */
 		$this->load->helper('url');
@@ -56,6 +51,15 @@ class File extends CI_Controller {
 		 */
 		$this->load->model('Storage', 'storage');
 		$this->storage->STATUS = 'all';
+
+		/*
+		 * Load encryption key before session library
+		 */
+		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
+		/*
+		 * Session library
+		 */
+		$this->load->library('session');
 		
 		/*
 		 * Load site i18n config

@@ -12,6 +12,12 @@ class Migration_Basic_schema extends CI_Migration {
 		$this->dbforge->add_field("`value` text COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_key('id', TRUE);
 		$this->dbforge->create_table('config');
+		
+		/*
+		 * String helper to generate encryption key
+		 */
+		$this->load->helper('string');
+
 		$data = array(
 			array(
 				'name' => 'name',
@@ -20,6 +26,10 @@ class Migration_Basic_schema extends CI_Migration {
 			array(
 				'name' => 'i18n',
 				'value' => '[{"name":"Portugu\\u00eas","code":"pt","default":true},{"name":"English","code":"en","default":false}]'
+			),
+			array(
+				'name' => 'encryption_key',
+				'value' => random_string('unique')
 			)
 		);
 		$this->db->insert_batch('config', $data);
