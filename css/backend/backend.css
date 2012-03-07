@@ -13,7 +13,7 @@ body {
 */
 }
 
-#authenticate
+#authenticate, #setup
 {
 	text-align: center;
 }
@@ -72,7 +72,7 @@ a:visited {
 /*
  * Login form
  */
-.login_field {
+.login_field, .setup_field {
 	margin-bottom: 8px;
 }
 

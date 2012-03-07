@@ -74,6 +74,7 @@ class Validation {
 				'done' => FALSE,
 				'message' => $this->CI->lang->line('elementar_xhr_email_field_missing')
 			);
+			return $response;
 		}	
 		if ( ! preg_match("/^[a-z0-9]+([_\.%!][_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$/i", $value)) 
 		{
@@ -81,6 +82,7 @@ class Validation {
 				'done' => FALSE,
 				'message' => $this->CI->lang->line('elementar_xhr_email_field_invalid')
 			);
+			return $response;
 		}
 		list($login, $host) = explode("@", $value);
 		if ( ! checkdnsrr($host, "MX") ) 
