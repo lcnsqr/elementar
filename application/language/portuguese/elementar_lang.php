@@ -84,7 +84,7 @@ $lang['elementar_site_name'] = 'Nome do Site';
 $lang['elementar_smtp_host'] = 'Host SMTP';
 $lang['elementar_smtp_port'] = 'Porta SMTP';
 $lang['elementar_smtp_user'] = 'Usuário SMTP';
-$lang['elementar_smtp_password'] = 'Senha SMTP';
+$lang['elementar_smtp_pass'] = 'Senha SMTP';
 
 $lang['elementar_language_codes'] = 'Idiomas (ISO-639-1)';
 $lang['elementar_language_default'] = 'Idioma padrão';
