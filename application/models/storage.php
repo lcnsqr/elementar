@@ -1665,7 +1665,7 @@ class Storage extends CI_Model {
 	function get_content_type_fields($type_id)
 	{
 		$fields = array();
-		$this->elementar->select('content_type_field.id, content_type_field.name, content_type_field.sname, content_type_field.field_type_id, field_type.sname as field_type_sname, field_type.description as field_type_description, field_type.i18n as field_type_i18n');
+		$this->elementar->select('content_type_field.id, content_type_field.sname, content_type_field.name, content_type_field.field_type_id, field_type.sname as field_type_sname, field_type.i18n as field_type_i18n');
 		$this->elementar->from('content_type_field');
 		$this->elementar->join('field_type', 'field_type.id = content_type_field.field_type_id', 'inner');
 		$this->elementar->where('content_type_field.content_type_id', $type_id);
@@ -1678,7 +1678,6 @@ class Storage extends CI_Model {
 				'name' => $row->name,
 				'sname' => $row->sname,
 				'type' => $row->field_type_sname,
-				'description' => $row->field_type_description,
 				'i18n' => $row->field_type_i18n == DB_TRUE
 			);
 		}
@@ -1691,7 +1690,7 @@ class Storage extends CI_Model {
 	function get_element_type_fields($type_id)
 	{
 		$fields = array();
-		$this->elementar->select('element_type_field.id, element_type_field.name, element_type_field.sname, element_type_field.field_type_id, field_type.sname as field_type_sname, field_type.description as field_type_description, field_type.i18n as field_type_i18n');
+		$this->elementar->select('element_type_field.id, element_type_field.sname, element_type_field.name, element_type_field.field_type_id, field_type.sname as field_type_sname, field_type.i18n as field_type_i18n');
 		$this->elementar->from('element_type_field');
 		$this->elementar->join('field_type', 'field_type.id = element_type_field.field_type_id', 'inner');
 		$this->elementar->where('element_type_field.element_type_id', $type_id);
@@ -1701,10 +1700,9 @@ class Storage extends CI_Model {
 		{
 			$fields[] = array(
 				'id' => $row->id,
-				'name' => $row->name,
 				'sname' => $row->sname,
+				'name' => $row->name,
 				'type' => $row->field_type_sname,
-				'description' => $row->field_type_description,
 				'i18n' => $row->field_type_i18n == DB_TRUE
 			);
 		}
@@ -1717,7 +1715,7 @@ class Storage extends CI_Model {
 	function get_field_types($except = NULL)
 	{
 		$fields = array();
-		$this->elementar->select('id, name, sname, description');
+		$this->elementar->select('id, sname');
 		$this->elementar->from('field_type');
 		if ( $except !== NULL )
 			$this->elementar->where('sname !=', $except);
@@ -1726,9 +1724,7 @@ class Storage extends CI_Model {
 		{
 			$fields[] = array(
 				'id' => $row->id,
-				'name' => $row->name,
-				'sname' => $row->sname,
-				'description' => $row->description
+				'sname' => $row->sname
 			);
 		}
 		return $fields;
@@ -1748,24 +1744,6 @@ class Storage extends CI_Model {
 		{
 			$row = $query->row();
 			$sname = $row->sname;
-		}
-		return $sname;
-	}
-
-	/*
-	 * get field type description
-	 */
-	function get_field_type_description($field_type_id)
-	{
-		$fields = array();
-		$this->elementar->select('description');
-		$this->elementar->from('field_type');
-		$this->elementar->where('id', $field_type_id);
-		$query = $this->elementar->get();
-		if ( $query->num_rows() > 0 )
-		{
-			$row = $query->row();
-			$sname = $row->description;
 		}
 		return $sname;
 	}

@@ -25,7 +25,7 @@ class Migration_Basic_schema extends CI_Migration {
 			),
 			array(
 				'name' => 'i18n',
-				'value' => '[{"name":"Portugu\\u00eas","code":"pt","default":true},{"name":"English","code":"en","default":false}]'
+				'value' => '[{"name":"Portugu\\u00eas","code":"pt","default":false},{"name":"English","code":"en","default":true}]'
 			),
 			array(
 				'name' => 'encryption_key',
@@ -59,7 +59,7 @@ class Migration_Basic_schema extends CI_Migration {
 		$this->dbforge->add_key('id', TRUE);
 		$this->dbforge->create_table('account');
 		$data = array(
-			'username' => 'admin',
+			'username' => '',
 			'email' => '',
 			'password' => '',
 			'register_hash' => '',
@@ -77,16 +77,16 @@ class Migration_Basic_schema extends CI_Migration {
 		$this->dbforge->create_table('group');
 		$data = array(
 			array(
-				'name' => 'admin',
-				'description' => 'Administrators group'
+				'name' => 'Administration',
+				'description' => 'Site administrators'
 			),
 			array(
-				'name' => 'pending',
-				'description' => 'Accounts not confirmed'
+				'name' => 'Pending',
+				'description' => 'Unconfirmed accounts'
 			),
 			array(
-				'name' => 'default',
-				'description' => 'Default group'
+				'name' => 'Users',
+				'description' => 'Confirmed accounts'
 			)
 		);
 		$this->db->insert_batch('group', $data);
@@ -125,8 +125,8 @@ class Migration_Basic_schema extends CI_Migration {
 		$this->dbforge->create_table('template');
 		$this->db->insert('template', array(
 			'html' => '<h1>{name}</h1>
-{if corpo != \'\'}
-{corpo}
+{if body != \'\'}
+{body}
 {/if}',
 			'css' => 'body {
 font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
@@ -138,79 +138,57 @@ color: #2d2d2d;
 		));
 		$this->db->insert('template', array(
 			'html' => '<h1>{name}</h1>
-{if corpo != \'\'}
-{corpo}
+{if body != \'\'}
+{body}
 {/if}',
 			'css' => '',
 			'created' => date("Y-m-d H:i:s")
 		));
 
 		$this->dbforge->add_field("`id` int(10) unsigned NOT NULL AUTO_INCREMENT");
-		$this->dbforge->add_field("`name` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`sname` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
-		$this->dbforge->add_field("`description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`i18n` tinyint(1) NOT NULL DEFAULT '1'");
 		$this->dbforge->add_key('id', TRUE);
 		$this->dbforge->create_table('field_type');
 		$data = array(
 			array(
-				'name' => 'Parágrafo',
 				'sname' => 'p',
-				'description' => 'Parágrafo de hipertexto (texto, ligações)',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'File',
 				'sname' => 'file',
-				'description' => 'Arquivo',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Hipertexto',
 				'sname' => 'hypertext',
-				'description' => 'Conteúdo de hipertexto (texto, imagens, ligações, etc)',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Linha',
 				'sname' => 'line',
-				'description' => 'Parágrafo curto sem formatação',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Destino',
 				'sname' => 'target',
-				'description' => 'URI de destino no site',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Textarea',
 				'sname' => 'textarea',
-				'description' => 'Text/code snippet',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Menu',
 				'sname' => 'menu',
-				'description' => 'Lista de itens de menu',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'File Gallery',
 				'sname' => 'file_gallery',
-				'description' => 'Galeria de arquivos',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Galeria de vídeos',
 				'sname' => 'youtube_gallery',
-				'description' => 'Galeria de vídeos YouTube',
 				'i18n' => 1
 			),
 			array(
-				'name' => 'Index',
 				'sname' => 'index',
-				'description' => 'Índice de conteúdos',
 				'i18n' => 0
 			)
 		);
@@ -272,7 +250,7 @@ color: #2d2d2d;
 				'template_id' => 1
 			),
 			array(
-				'name' => 'Padrão', 
+				'name' => 'Default', 
 				'template_id' => 2
 			)
 		);
@@ -288,14 +266,14 @@ color: #2d2d2d;
 		$data = array(
 			array(
 				'content_type_id' =>  1, 
-				'name' =>  'Corpo', 
-				'sname' =>  'corpo', 
+				'name' =>  'Body', 
+				'sname' =>  'body', 
 				'field_type_id' => 3
 			),
 			array(
 				'content_type_id' => 2, 
-				'name' => 'Corpo', 
-				'sname' => 'corpo', 
+				'name' => 'Body', 
+				'sname' => 'body', 
 				'field_type_id' => 3
 			)
 		);

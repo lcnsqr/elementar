@@ -300,8 +300,8 @@ class Account extends CI_Controller {
 			$display_accounts = ( $group['id'] == $group_id && count($accounts) > 0 ) ? TRUE : FALSE;
 			$groups[] = array(
 				'id' => $group['id'],
-				'name' => $group['name'],
-				'description' => $group['description'],
+				'name' => ( $this->lang->line('elementar_group_' . $group['id']) != '' ) ? $this->lang->line('elementar_group_' . $group['id']) : $group['name'],
+				'description' => ( $this->lang->line('elementar_group_' . $group['id'] . '_description') != '' ) ? $this->lang->line('elementar_group_' . $group['id'] . '_description') : $group['description'],
 				'children' => $group['children'],
 				'display_accounts' => $display_accounts,
 				'accounts' => $accounts

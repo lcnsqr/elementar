@@ -1,6 +1,40 @@
 <?php
 
 /*
+ * Account groups descriptions
+ */
+$lang['elementar_group_1'] = 'Administration';
+$lang['elementar_group_1_description'] = 'Site administrators';
+$lang['elementar_group_2'] = 'Pending';
+$lang['elementar_group_2_description'] = 'Unconfirmed accounts';
+$lang['elementar_group_3'] = 'Users';
+$lang['elementar_group_3_description'] = 'Confirmed accounts';
+
+/*
+ * field types descriptions
+ */
+$lang['elementar_field_type_p'] = 'Paragraph';
+$lang['elementar_field_type_p_description'] = 'HTML paragraph';
+$lang['elementar_field_type_file'] = 'File';
+$lang['elementar_field_type_file_description'] = 'File path';
+$lang['elementar_field_type_hypertext'] = 'HTML';
+$lang['elementar_field_type_hypertext_description'] = 'HTML text';
+$lang['elementar_field_type_line'] = 'Line';
+$lang['elementar_field_type_line_description'] = 'Plain line';
+$lang['elementar_field_type_target'] = 'Target';
+$lang['elementar_field_type_target_description'] = 'Target URL';
+$lang['elementar_field_type_textarea'] = 'Plain text';
+$lang['elementar_field_type_textarea_description'] = 'Unformated text';
+$lang['elementar_field_type_menu'] = 'Custom menu';
+$lang['elementar_field_type_menu_description'] = 'Fixed items menu';
+$lang['elementar_field_type_file_gallery'] = 'File collection';
+$lang['elementar_field_type_file_gallery_description'] = 'Suitable for images gallery';
+$lang['elementar_field_type_youtube_gallery'] = 'Video collection';
+$lang['elementar_field_type_youtube_gallery_description'] = 'Youtube.com videos selection';
+$lang['elementar_field_type_index'] = 'Automatic menu';
+$lang['elementar_field_type_index_description'] = 'Auto generated menu';
+
+/*
  * Setup
  */
 $lang['elementar_setup_pending'] = 'Pending actions';
