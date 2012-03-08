@@ -11,8 +11,13 @@ class Sample {
 	/*
 	 * i18n settings
 	 */
-	private $LANG = 'por';
+	private $LANG = 'en';
 	private $URI_PREFIX = '';
+	
+	/*
+	 * Enabling
+	 */
+	public static $ENABLED = FALSE; 
 	
 	function __construct($params)
 	{
@@ -26,14 +31,14 @@ class Sample {
 		
 	}
 	
-	function main()
+	function index()
 	{
-		echo 'Esse é o main';
+		echo 'Sample addon main output';
 	}
 
 	function testing()
 	{
-		echo 'Esse é o testing';
+		echo 'Sample addon testing method output';
 	}
 	
 }

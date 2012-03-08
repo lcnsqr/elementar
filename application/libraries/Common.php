@@ -11,7 +11,7 @@ class Common {
 	 * i18n settings
 	 */
 	private $DEFAULT_LANG;
-	private $LANG = 'por';
+	private $LANG = 'en';
 	private $LANG_AVAIL = array();
 	private $URI_PREFIX = '';
 
@@ -810,15 +810,22 @@ class Common {
 			if ( substr($addon['name'], -4) == '.php' )
 			{
 				list($class, $ext) = explode('.', ucfirst($addon['name']));
-				if ( in_array($class, $ignore) ) continue;
 
-				if ( ! class_exists($class) ) 
-				{ 
+				if ( in_array($class, $ignore) ) continue;
+				
+				if ( ! class_exists($class) )
+				{
 					/*
-					 * Load addon
+					 * Load addon class
 					 */
 					include($addon['relative_path'] . $addon['name']);
 				}
+
+				/*
+				 * Check for enabled property
+				 */
+				if ( ! (bool) $class::$ENABLED ) continue;
+
 				$addons[] = array(
 					'uri' => '/' . strtolower($class),
 					'name'=> $class,

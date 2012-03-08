@@ -166,7 +166,7 @@ class Main extends CI_Controller {
 			}
 			
 			/*
-			 * Load plugins
+			 * Load addons
 			 */
 			$addons = $this->common->load_addons();
 			foreach ( $addons as $addon )
@@ -185,12 +185,12 @@ class Main extends CI_Controller {
 					 */
 					$method = $this->uri->segment($this->SEGMENT_STEP + 2);
 
-					if ( $method == '' && method_exists($$addon['name'], 'main') )
+					if ( $method == '' && method_exists($$addon['name'], 'index') )
 					{
 						/*
 						 * No specific method, load main method
 						 */
-						$$addon['name']->main();
+						$$addon['name']->index();
 					}
 					elseif ( method_exists($$addon['name'], $method) )
 					{
