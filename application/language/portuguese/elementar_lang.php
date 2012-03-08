@@ -193,6 +193,10 @@ $lang['elementar_xhr_password_field_small']		= 'A senha requer cinco d&iacute;gi
 $lang['elementar_xhr_password_field_big']		= 'A senha excedeu vinte dígitos';
 $lang['elementar_xhr_password_changed']		= 'Senha alterada';
 
+$lang['elementar_xhr_form_submit']		= 'Enviar';
+$lang['elementar_xhr_signup_subject']		= 'Confirmação de cadastro';
+$lang['elementar_xhr_password_subject']		= 'Redefinir senha';
+$lang['elementar_xhr_registration_message']		= 'Link de confirmação enviado';
 $lang['elementar_xhr_login_incorret']		= 'Usuário ou senha incorreta';
 $lang['elementar_xhr_email_not_found']		= 'Email n&atilde;o localizado';
 $lang['elementar_xhr_reset_email_sent']		= 'O endereço de redefinição da senha foi enviado para o email cadastrado';

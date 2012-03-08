@@ -193,6 +193,10 @@ $lang['elementar_xhr_password_field_small']		= 'The password requires six or mor
 $lang['elementar_xhr_password_field_big']		= 'The password cannot have more than twenty characters';
 $lang['elementar_xhr_password_changed']		= 'Password changed';
 
+$lang['elementar_xhr_form_submit']		= 'Submit';
+$lang['elementar_xhr_signup_subject']		= 'Signup confirmation';
+$lang['elementar_xhr_password_subject']		= 'Reset password';
+$lang['elementar_xhr_registration_message']		= 'Confirmation link sent';
 $lang['elementar_xhr_login_incorret']		= 'Login or password incorrect';
 $lang['elementar_xhr_email_not_found']		= 'Email not found';
 $lang['elementar_xhr_reset_email_sent']		= 'Password reset link sent to the resgistered email';

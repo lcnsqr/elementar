@@ -2,7 +2,7 @@
 /*
  *      main.php
  *      
- *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -22,71 +22,72 @@
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
+/** 
+ * Main Class 
+ * 
+ * Handles all frontend requests
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 class Main extends CI_Controller {
 	
-	/*
-	 * i18n settings
-	 */
+	// i18n settings
 	var $LANG;
 	var $LANG_AVAIL = array();
 	var $URI_PREFIX;
 	
-	/*
-	 * Starting URI segment
-	 */
+	// Starting URI segment
 	var $SEGMENT_STEP = 0;
 	
-	/*
-	 * 24 hours caching
-	 */
+	// 24 hours caching
 	var $cache_expire = 1440;
 		
 	function __construct()
 	{
 		parent::__construct();
 		
+		// Performance tests
 		//$this->output->enable_profiler(TRUE);
 		
-		// DB
+		// Elementar DB
 		$this->elementar = $this->load->database('elementar', TRUE);
 
 		// Storage model 
 		$this->load->model('Storage', 'storage');
 		
-		// Parser
+		// Template parser
 		$this->load->library('parser');
 		
-		// Helper
+		// CI URL helper
 		$this->load->helper('url');
 	}
 
-	/*
-	 * Load configuration and remap to requested method
+	/**
+	 * Load configuration and redirect to requested method
+	 * 
+	 * @access public
+	 * @param  string
+	 * @return void
 	 */
 	public function _remap($method)
 	{
-		/*
-		 * Load encryption key before session library
-		 */
+		// Load encryption key before session library
 		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
-		/*
-		 * Session library
-		 */
+
+		// Session library
 		$this->load->library('session');
 		
-		/*
-		 * Load site i18n config
-		 */
+		// Load site i18n config
 		$i18n_settings = json_decode($this->storage->get_config('i18n'), TRUE);
 		foreach($i18n_settings as $i18n_setting)
 		{
 			if ( (bool) $i18n_setting['default'] )
 			{
 				$this->LANG = $i18n_setting['code'];
-				/*
-				 * Default language is the first in array
-				 */
+			
+				// Default language is the first in array
 				$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
 			}
 			else
@@ -95,16 +96,13 @@ class Main extends CI_Controller {
 			}
 		}
 		
-		/*
-		 * Check language choice
-		 */
+		// Check language choice
 		if ( $this->uri->total_segments() > 0 )
 		{
-			/*
-			 * URI first segment must be the 
-			 * language code or the default language
-			 * will be used
-			 */
+			// URI first segment must be the 
+			// language code or the default 
+			// language will be used
+			
 			if ( array_key_exists($this->uri->segment(1), $this->LANG_AVAIL) )
 			{
 				$this->LANG = $this->uri->segment(1);
@@ -112,10 +110,9 @@ class Main extends CI_Controller {
 			}
 		}
 		
-		/*
-		 * If selected lang is the default language,
-		 * don't prepend lang code to URI
-		 */
+		// If selected lang is the default language,
+		// don't prepend lang code to URI
+		
 		if ( $this->LANG == key($this->LANG_AVAIL) )
 		{
 			$this->URI_PREFIX = '';
@@ -125,37 +122,28 @@ class Main extends CI_Controller {
 			$this->URI_PREFIX = '/' . $this->LANG;
 		}
 		
-		/*
-		 * Language related Settings
-		 */
+		// Language related Settings
 		$site_names = json_decode($this->storage->get_config('name'), TRUE);
 		$this->config->set_item('site_name', (array_key_exists($this->LANG, $site_names)) ? $site_names[$this->LANG] : '');
 
-		/*
-		 * Email settings
-		 */
+		// Email settings
 		$email_settings = json_decode($this->storage->get_config('email') ,TRUE);
 		$this->load->library('email', $email_settings);
 		$this->email->set_newline("\r\n");
 
-		/*
-		 * CMS Common Library called here instead of
-		 * in construct to pass the LANG parameter
-		 */
+		// CMS Common Library called here instead of
+		// in construct to pass the LANG parameter
+		
 		$this->load->library('common', array(
 			'lang' => $this->LANG, 
 			'lang_avail' => $this->LANG_AVAIL, 
 			'uri_prefix' => $this->URI_PREFIX
 		));
 
-		/*
-		 * Redirect to existing function or parser
-		 */
+		// Redirect to existing function or parser
 		if ( $this->uri->total_segments() > $this->SEGMENT_STEP )
 		{
-			/*
-			 * Step forward on segments if method is the controller myself
-			 */
+			// Step forward on segments if method is the controller myself
 			if ( $this->uri->segment($this->SEGMENT_STEP + 1) == 'main' )
 			{
 				$request = $this->uri->segment($this->SEGMENT_STEP + 2);
@@ -165,136 +153,115 @@ class Main extends CI_Controller {
 				$request = $this->uri->segment($this->SEGMENT_STEP + 1);
 			}
 			
-			/*
-			 * Load addons
-			 */
+			// Load addons
 			$addons = $this->common->load_addons();
 			foreach ( $addons as $addon )
 			{
 				if ( strtolower($request) == strtolower($addon['name']) )
 				{
-					/*
-					 * Plugin requested
-					 */
+					// Addon requested
 					$$addon['name'] = new $addon['name'](array(
 						'lang' => $this->LANG, 
 						'uri_prefix' => $this->URI_PREFIX
 					));
-					/*
-					 * Check method
-					 */
+					
+					// Check method
 					$method = $this->uri->segment($this->SEGMENT_STEP + 2);
 
 					if ( $method == '' && method_exists($$addon['name'], 'index') )
 					{
-						/*
-						 * No specific method, load main method
-						 */
+						// No specific method, load main method
 						$$addon['name']->index();
 					}
 					elseif ( method_exists($$addon['name'], $method) )
 					{
 						$$addon['name']->$method();
 					}
+					// End local actions
 					exit(0);
 				}
 			}
 			
-			/*
-			 * Local action
-			 */
+			// Local action
 			if ( method_exists($this, $request) )
 			{
-				/*
-				 * Redirect to existing method
-				 */
+				 // Redirect to existing method
 				 $this->$request();
 			}
 			elseif ( method_exists($this, $method) )
 			{
-				/*
-				 * Method called directly, without lang code
-				 */
+				// Method called directly, without lang code
 				$this->$method();
 			}
 			else
 			{
-				/*
-				 * Redirect to parser
-				 */
+				// Redirect to parser
 				$this->index();
 			}
 		}
 		else
 		{
+			// Redirect to parser
 			$this->index();
 		}
 	}
 
+	/**
+	 * Parse non class method requests
+	 * to database contents
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function index()
 	{
-		/*
-		 * Enable caching only in anonymous session
-		 */
+		// Enable caching only in anonymous session
 		if ( ! (bool) $this->session->userdata('account_id') )
 		{
 			// 24 hours caching
 			$this->output->cache($this->cache_expire);
 		}
 
-		/*
-		 * Default content values
-		 */
+		// Default content values
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
 
-		/*
-		 * Array to carry content fields, elements,
-		 * and other useful variables & rendered data
-		 */
+		// Array to carry content fields, elements,
+		// and other useful variables & rendered data
+		
 		$content = array(
 			'year' => date("Y"),
 			'uri_prefix' => $this->URI_PREFIX
 		);
 
-		/*
-		 * Language links
-		 */
+		// Language links
 		reset($this->LANG_AVAIL);
 		$default_lang = key($this->LANG_AVAIL);
 		$content['lang'] = array();
 		foreach($this->LANG_AVAIL as $code => $name)
 		{
-			/*
-			 * Build current uri for each language
-			 */
+			// Build current uri detection for each language
 			if ( $this->SEGMENT_STEP == 1 )
 			{
-				/*
-				 * Slash on home uri
-				 */
+				// Slash on home uri
 				if ( $this->uri->total_segments() == $this->SEGMENT_STEP )
 				{
 					$uri = ($default_lang == $code) ? '/' : '/' . $code . '/';
 				}
 				else
 				{
-					/*
-					 * Split out language prefix and 
-					 * rebuild uri based on current page
-					 */
+					// Split out language prefix and 
+					// rebuild uri based on current page
+					
 					$uri = substr($this->uri->uri_string(), strlen($this->LANG));
-					/*
-					 * Add language prefix to non default languages
-					 */
+					
+					// Add language prefix to non default languages
 					$uri = ($default_lang == $code) ? $uri : '/' . $code . $uri;
 				}
 			}
 			else
 			{
-				/*
-				 * Add language prefix to non default languages
-				 */
+				// Add language prefix to non default languages
 				$uri = ($default_lang == $code) ? '/' . $this->uri->uri_string() : '/' . $code . '/' . $this->uri->uri_string();
 			}
 			$content['lang'][] = array(
@@ -305,57 +272,46 @@ class Main extends CI_Controller {
 			);
 		}
 		
-		/*
-		 * Parse URI
-		 */
+		// Parse requested URI
 		if ( $this->uri->total_segments() == $this->SEGMENT_STEP )
 		{
-			/*
-			 * No URI (besides eventual lang code), 
-			 * show home page (content_id = 1)
-			 */
+			// No URI (besides eventual lang code), 
+			// show home page (content_id = 1)
+			
 			$content_id = 1;
 			
-			/*
-			 * Standard values informed to raw template
-			 */
+			// Standard values informed to raw template
 			$data['content_id'] = $content_id;
 			
-			/*
-			 * localized title
-			 */
+			// Localized title
 			$titles = json_decode($this->storage->get_content_name($content_id), TRUE);
 			$data['title'] = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
-			/*
-			 * Metafields
-			 */
+			
+			// Metafields
 			$data['metafields'] = (array) $this->storage->get_meta_fields($content_id);
 			
-			/*
-			 * Content fields & relative contents
-			 */
+			// Content fields & associated contents
 			$content['name'] = $data['site'];
 			$content['title'] = $data['title'];
 			$content = array_merge($content, $this->common->render_content($content_id));
 
-			/*
-			 * Template
-			 */
+			// Content template
 			$template = $this->storage->get_template($content_id);
 
-			/*
-			 * Render elements, parse them by filter
-			 * and allow them to be hard coded in template
-			 */
+			// Render elements, parse them by filter
+			// and allow them to be hard coded in template
+
 			$data['elements'] = $this->common->render_elements($content_id, $template['filter']);
 			$content = array_merge($content, $data['elements']);
 		}
 		else
 		{
-			/*
-			 * Identify content ID from URI
-			 */
-			$content_id = 1; // The primeval parent
+			// Identify content ID from URI
+			
+			// The primeval parent
+			$content_id = 1;
+			
+			// Parse each segment until the last one
 			$starting_segment = $this->SEGMENT_STEP + 1;
 			for ( $c = $starting_segment; $c <= $this->uri->total_segments(); $c++ )
 			{
@@ -364,97 +320,81 @@ class Main extends CI_Controller {
 				if ( count($segment) > 0 )
 				{
 					$content_id = $segment['id'];
-					/*
-					 * localized name
-					 */
+					
+					// localized name
 					$names = json_decode($segment['name'], TRUE);
 					$content_name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 				}
 				else
 				{
-					/*
-					 * Invalid request (404)
-					 */
+					// Invalid request (404)
 					$content_id = NULL;
 					continue;
 				}
 			}
 			if ( (bool) $content_id )
 			{
-				/*
-				 * Standard values informed to raw template
-				 */
+				// Standard values passed to raw template
 				$data['content_id'] = $content_id;
 			
-				/*
-				 * Metafields
-				 */
+				// Metafields
 				$data['title'] = $content_name;
 				$data['metafields'] = (array) $this->storage->get_meta_fields($content_id);
-				/*
-				 * Common meta fields
-				 */
+				
+				// Common meta fields
 				$data['metafields'][] = array(
 					'name' => 'google-site-verification',
 					'value' => $this->storage->get_meta_field(1, 'google-site-verification')
 				);
 
-				/*
-				 * Template
-				 */
+				// Template
 				$template = $this->storage->get_template($content_id);
 
-				/*
-				 * Content fields & relative contents
-				 */
+				// Content fields & associated contents
 				$content['name'] = $content_name;
 				$content['title'] = $data['title'];
 				$content = array_merge($content, $this->common->render_content($content_id));
 
-				/*
-				 * Render elements, parse them by filter
-				 * and allow them to be hard coded in template
-				 */
+				// Render elements, parse them by filter
+				// and allow them to be hard coded in template
+				
 				$data['elements'] = $this->common->render_elements($content_id, $template['filter']);
 				$content = array_merge($content, $data['elements']);
 			}
 			else
 			{
-				/*
-				 * 404
-				 */
+				// 404
 				$template = array(
 					'html' => '<p>404: Página não encontrada</p>',
 					'css' => '',
 					'javascript' => '',
 					'head' => ''
 				);
-				$data['content_id'] = 1; // Defaults to home content_id
+
+				// Defaults to home content_id
+				$data['content_id'] = 1;
 				$data['title'] = 'Página não encontrada';
 				$data['metafields'] = array();
 			}
 		}
 
-		/*
-		 * Parse the template
-		 */
+		// Parse the template
 		$data['extra_head'] = $template['head'];
 		$data['content'] = $this->parser->parse_string($template['html'], $content, TRUE);
 
-		/*
-		 * Build final view and display the results
-		 */
+		// Build final view and display the results
 		$this->load->view('content', $data);
 	}
 
-	/*
-	 * Generate sitemap.xml
+	/**
+	 * Generate /sitemap.xml
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function sitemap()
 	{
-		/*
-		 * Enable caching only in anonymous session
-		 */
+		// Enable caching only in anonymous session
 		if ( ! (bool) $this->session->userdata('account_id') )
 		{
 			// 24 hours caching
@@ -463,14 +403,15 @@ class Main extends CI_Controller {
 		$this->common->sitemap();
 	}
 	
-	/*
+	/**
 	 * Load CSS from database
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function css()
 	{
-		/*
-		 * Enable caching only in anonymous session
-		 */
+		// Enable caching only in anonymous session
 		if ( ! (bool) $this->session->userdata('account_id') )
 		{
 			// 24 hours caching
@@ -481,27 +422,24 @@ class Main extends CI_Controller {
 		$css = '';
 		if ( $content_id != 1 )
 		{
-			/*
-			 * Load main CSS too
-			 */
+			// Load main CSS too
 			$css = $this->storage->get_template_css(1);
 		}
-		/*
-		 * Load individual CSS
-		 */
+		// Load individual CSS
 		$css .= $this->storage->get_template_css($content_id);
 		$this->output->set_header("Content-type: text/css");
 		$this->output->set_output($css);
 	}
 
-	/*
+	/**
 	 * Load Javascript from database
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function javascript()
 	{
-		/*
-		 * Enable caching only in anonymous session
-		 */
+		// Enable caching only in anonymous session
 		if ( ! (bool) $this->session->userdata('account_id') )
 		{
 			// 24 hours caching
@@ -512,44 +450,37 @@ class Main extends CI_Controller {
 		$javascript = '';
 		if ( $content_id != 1 )
 		{
-			/*
-			 * Load main Javascript too
-			 */
+			// Load main Javascript too
 			$javascript = $this->storage->get_template_javascript(1);
 		}
-		/*
-		 * Load individual Javascript
-		 */
+		// Load individual Javascript
 		$javascript .= $this->storage->get_template_javascript($content_id);
 		$this->output->set_header("Content-type: text/javascript");
 		$this->output->set_output($javascript);
 	}
 	
+	/**
+	 * Account related requests from frontend
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function account()
 	{
-		/*
-		 * Security helper
-		 */
+		// Required CI helpers
 		$this->load->helper(array('security', 'string', 'form'));
 		
 		// Access model 
 		$this->load->model('Access', 'access');
 
-		/*
-		 * Backend language file
-		 */
+		// Localized messages
 		$this->lang->load('elementar', $this->config->item('language'));
 
-		/*
-		 * Fields validation library
-		 */
+		// Fields validation library
 		$this->load->library('validation');
 
-		/*
-		 * Determine action by second URI segment
-		 */
+		// Determine action from the second URI segment
 		$action = $this->uri->segment($this->SEGMENT_STEP + 2);
-		
 		switch ( $action )
 		{
 			/*********
@@ -564,9 +495,7 @@ class Main extends CI_Controller {
 
 			$account_id = $this->access->get_account_by_username($username);
 			
-			/*
-			 * Avoid pending group
-			 */
+			// Avoid pending group
 			$group_id = $this->access->get_account_group($account_id);
 			
 			if ( (bool) $account_id && do_hash($password) == $this->access->get_account_password($account_id) && (int) $group_id != 2 )
@@ -610,16 +539,12 @@ class Main extends CI_Controller {
 			if ( ! $this->input->is_ajax_request() )
 				exit($this->lang->line('elementar_no_direct_script_access'));
 			
-			/*
-			 * Other account fields
-			 */
+			// Other account fields
 			$username = $this->input->post('username', TRUE);
 			$email = $this->input->post('email', TRUE);
 			$password = $this->input->post('password', TRUE);
 
-			/*
-			 * Assess account username
-			 */
+			// Assess account username
 			$response = $this->validation->assess_username($username);
 			if ( (bool) $response['done'] == FALSE )
 			{
@@ -637,9 +562,7 @@ class Main extends CI_Controller {
 				return;
 			}
 
-			/*
-			 * Assess email
-			 */
+			// Assess email
 			$response = $this->validation->assess_email($email);
 			if ( (bool) $response['done'] == FALSE )
 			{
@@ -656,9 +579,7 @@ class Main extends CI_Controller {
 				return;
 			}
 
-			/*
-			 * Assess password
-			 */
+			// Assess password
 			$response = $this->validation->assess_password($password);
 			if ( (bool) $response['done'] == FALSE )
 			{
@@ -666,22 +587,17 @@ class Main extends CI_Controller {
 				return;
 			}
 			
-			/*
-			 * Create account
-			 */
+			// Create account
 			$register_hash = random_string('unique');
 			$account_id = $this->access->put_account($username, $email, $password, $register_hash);
-			/*
-			 * Add acount to pending group
-			 */
+			
+			// Add acount to pending group
 			$this->access->put_account_group($account_id, 2);
 
-			/*
-			 * Mail confirmation
-			 */
-			$this->email->subject("Confirmação de cadastro");
+			// Mail confirmation
+			$this->email->subject($this->lang->line('elementar_xhr_signup_subject'));
 			$this->email->message(site_url('account/confirm') . '/' . $register_hash);
-			$this->email->from('support@elementar.com', 'Elementar');
+			$this->email->from($this->access->get_account_email(1), $this->config->item('site_name'));
 			$this->email->to($email);
 			$this->email->send();
 
@@ -692,22 +608,17 @@ class Main extends CI_Controller {
 			 * Confirm registration by hash *
 			 ********************************/
 			case 'confirm' :
-			/*
-			 * Search register hash
-			 */
+			// Search register hash
 			$register_hash = $this->uri->segment($this->SEGMENT_STEP + 3);
 			if ( (bool) $register_hash )
 			{
-				/*
-				 * Check existence and pending account
-				 */
+				// Check existence and pending account
 				$account_id = $this->access->get_account_by_register_hash($register_hash);
 				if ( (bool) $account_id && (int) $this->access->get_account_group($account_id) == 2 )
 				{
-					/*
-					 * Detach account from pending group
-					 * attach account to default group
-					 */
+					// Detach account from pending group
+					// attach account to default group
+
 					$this->access->put_account_group($account_id, 3);
 					echo 'Confirmed';
 					return;
@@ -725,9 +636,7 @@ class Main extends CI_Controller {
 
 			$email = $this->input->post('email', TRUE);
 			
-			/*
-			 * Assess email
-			 */
+			// Assess email
 			$response = $this->validation->assess_email($email);
 			if ( (bool) $response['done'] == FALSE )
 			{
@@ -747,12 +656,10 @@ class Main extends CI_Controller {
 			$reset_hash = random_string('unique');
 			$this->access->put_account_reset_hash($account_id, $reset_hash);
 
-			/*
-			 * Mail confirmation
-			 */
-			$this->email->subject("Redefinir senha");
+			// Mail confirmation
+			$this->email->subject($this->lang->line('elementar_xhr_password_subject'));
 			$this->email->message(site_url('account/reset') . '/' . $reset_hash);
-			$this->email->from('support@elementar.com', 'Elementar');
+			$this->email->from($this->access->get-account_email(1), $this->config->item('site_name'));
 			$this->email->to($email);
 			$this->email->send();
 			
@@ -770,21 +677,17 @@ class Main extends CI_Controller {
 			$reset_hash = $this->uri->segment($this->SEGMENT_STEP + 3);
 			if ( (bool) $reset_hash )
 			{
-				/*
-				 * Check existence and not pending account
-				 */
+				// Check existence and not pending account
 				$account_id = $this->access->get_account_by_reset_hash($reset_hash);
 				if ( (bool) $account_id && (int) $this->access->get_account_group($account_id) != 2 )
 				{
-					/*
-					 * Show new password form
-					 */
+					// Show new password form
 					$attributes = array('name' => 'reset_password', 'id' => 'reset_password');
 					$hidden = array('reset_hash' => $reset_hash);
 					$form = form_open('account/password', $attributes, $hidden);
 					$attributes = array('name' => 'password', 'id' => 'password');
 					$form .= form_password($attributes);
-					$form .= form_submit('send', 'Enviar');
+					$form .= form_submit('send', $this->lang->line('elementar_xhr_form_submit'));
 					$form .= form_close();
 					$data = array('form' => $form);
 					$this->load->view('account_password', $data);
@@ -804,9 +707,7 @@ class Main extends CI_Controller {
 			$account_id = $this->access->get_account_by_reset_hash($reset_hash);
 			if ( (bool) $reset_hash && (bool) $account_id )
 			{
-				/*
-				 * Assess password
-				 */
+				// Assess password
 				$response = $this->validation->assess_password($password);
 				if ( (bool) $response['done'] == FALSE )
 				{
@@ -815,9 +716,7 @@ class Main extends CI_Controller {
 				}
 				else
 				{
-					/*
-					 * Change password and erase reset hash
-					 */
+					// Change password and erase reset hash
 					$this->access->put_account_password($account_id, $password);
 					$this->access->put_account_reset_hash($account_id, NULL);
 					$response = array(
@@ -836,9 +735,7 @@ class Main extends CI_Controller {
 			break;
 			
 			default:
-			/*
-			 * Formulário de login
-			 */
+			// Formulário de login
 			$account_id = $this->session->userdata('account_id');
 			$data = array();
 			if ( (bool) $account_id !== FALSE )

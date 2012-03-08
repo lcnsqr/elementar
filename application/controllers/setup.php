@@ -2,7 +2,7 @@
 /*
  *      setup.php
  *      
- *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -22,48 +22,54 @@
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
+/** 
+ * Setup Class 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 class Setup extends CI_Controller {
 
+	/**
+	 * Constructor - Load required libraries and database
+	 *
+	 * /application/config/database.php must 
+	 * be configured before loading this
+	 */
 	function __construct()
 	{
 		parent::__construct();		
 
-		/*
-		 * Backend language file
-		 */
+		// Backend language file
 		$this->lang->load('elementar', $this->config->item('language'));
 
-		/*
-		 * database
-		 */
+		// Database
 		$this->elementar = $this->load->database('elementar', TRUE);
 		$this->db =& $this->elementar;
 
-		/*
-		 * Create, read, update and delete Model
-		 */
+		// Create, read, update and delete Model
 		$this->load->model('Storage', 'storage');
 
-		/*
-		 * Access model
-		 */
+		// Access model
 		$this->load->model('Access', 'access');
 
-		/*
-		 * Fields validation library
-		 */
+		// Fields validation library
 		$this->load->library('validation');
 		
-		/*
-		 * Required helpers
-		 */
+		// Required helpers
 		$this->load->helper(array('url', 'security'));
 
 	}
 
+	/**
+	 * Show setup page
+	 *
+	 * @access	public
+	 * @return	void
+	 */
 	function index()
 	{
+		// View variables
 		$data = array(
 			'title' => 'Elementar Setup', 
 			'js' => array(
@@ -75,6 +81,7 @@ class Setup extends CI_Controller {
 			'is_logged' => FALSE
 		);
 
+		// Actions needed before running setup
 		$pending_message = $this->_check_pending_actions();
 
 		$this->load->helper('html');
@@ -89,9 +96,7 @@ class Setup extends CI_Controller {
 			$data['pending_message'] = '';
 		}
 
-		/*
-		 * Localized texts
-		 */
+		// Localized texts
 		$data['elementar_setup_pending'] = $this->lang->line('elementar_setup_pending');
 		$data['elementar_setup_username'] = $this->lang->line('elementar_setup_username');
 		$data['elementar_setup_email'] = $this->lang->line('elementar_setup_email');
@@ -103,14 +108,17 @@ class Setup extends CI_Controller {
 		 
 		$this->load->view('backend/backend_setup', $data);
 	}
-	
-	function _check_pending_actions()
+
+	/**	
+	 * Check actions needed before running setup
+	 * 
+	 * @return	array
+	 */
+	private function _check_pending_actions()
 	{
 		$pending_message = array();
 		
-		/*
-		 * Check for database
-		 */
+		// Check for database
 		$this->load->dbutil();
 		if (! $this->dbutil->database_exists($this->db->database))
 		{
@@ -118,9 +126,7 @@ class Setup extends CI_Controller {
 		}
 		else
 		{
-			/*
-			 * Load current DB schema
-			 */
+			// Load current DB schema
 			$this->load->library('migration');
 			if ( ! $this->migration->current())
 			{
@@ -128,27 +134,21 @@ class Setup extends CI_Controller {
 			}
 		}
 		
-		/*
-		 * Check for cache directory permissions
-		 */
+		// Check for cache directory permissions
 		$cache_path = ( $this->config->item('cache_path') == '' ) ? FCPATH . APPPATH . 'cache/' : $this->config->item('cache_path');
 		if (! is_really_writable($cache_path) )
 		{
 			$pending_message[] = $this->lang->line('elementar_setup_no_write_perms_in') . $cache_path;
 		}
 
-		/*
-		 * Check for upload directory permissions
-		 */
+		// Check for upload directory permissions
 		$files_path = FCPATH . 'files/';
 		if (! is_really_writable($files_path) )
 		{
 			$pending_message[] = $this->lang->line('elementar_setup_no_write_perms_in') . $files_path;
 		}
 
-		/*
-		 * Check for migrations directory permissions
-		 */
+		// Check for migrations directory permissions
 		/*
 		$migrations_path = FCPATH . APPPATH . 'migrations/';
 		if (! is_really_writable($migrations_path) )
@@ -157,9 +157,7 @@ class Setup extends CI_Controller {
 		}
 		*/
 		
-		/*
-		 * Admin password
-		 */
+		// Abort setup if admin password is already set
 		if ($this->db->table_exists('account'))
 		{
 			if ( (bool) $this->access->get_account_password(1) )
@@ -170,14 +168,17 @@ class Setup extends CI_Controller {
 		return $pending_message;
 	}
 
+	/**	
+	 * XHR request: Write main admin account
+	 * 
+	 * @return	void
+	 */
 	function xhr_write_admin()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 		
-		/*
-		 * Refuse if password already set
-		 */
+		// Abort if password already set
 		if ( (bool) $this->access->get_account_password(1) )
 		{
 			$response = array(
@@ -192,9 +193,7 @@ class Setup extends CI_Controller {
 		$email = $this->input->post('email', TRUE);
 		$password = $this->input->post('password', TRUE);
 
-		/*
-		 * Assess account username
-		 */
+		// Assess account username
 		$response = $this->validation->assess_username($username);
 		if ( (bool) $response['done'] == FALSE )
 		{
@@ -202,9 +201,7 @@ class Setup extends CI_Controller {
 			return;
 		}
 
-		/*
-		 * Assess email
-		 */
+		// Assess email
 		$response = $this->validation->assess_email($email);
 		if ( (bool) $response['done'] == FALSE )
 		{
@@ -212,9 +209,7 @@ class Setup extends CI_Controller {
 			return;
 		}
 
-		/*
-		 * Assess password
-		 */
+		// Assess password
 		$response = $this->validation->assess_password($password);
 		if ( (bool) $response['done'] == FALSE )
 		{
@@ -222,23 +217,19 @@ class Setup extends CI_Controller {
 			return;
 		}
 
-		/*
-		 * Update admin account
-		 */
+		// Update admin account
 		$this->access->put_account_username(1, $username);
 		$this->access->put_account_email(1, $email);
 		$this->access->put_account_password(1, $password);
 		
-		/*
-		 * Load encryption key before session library
-		 */
+		// Load encryption key before session library
 		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
-		/*
-		 * Log admin in
-		 */
+		
+		// Log admin in
 		$this->load->library('session');
 		$this->session->set_userdata('account_id', 1);
 		
+		// Send XHR response
 		$response = array(
 			'done' => TRUE,
 			'location' => site_url("backend"),
