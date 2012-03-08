@@ -706,7 +706,7 @@ class Editor extends CI_Controller {
 			 * Field value
 			 */
 			$value = $this->element->get_field($field['id']);
-			$form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
+			$form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $this->lang->line('elementar_field_type_' . $field['sname']) . '_description', $value, $field['i18n']);
 		}
 
 		/*
@@ -1331,7 +1331,7 @@ class Editor extends CI_Controller {
 			 * Field value
 			 */
 			$value = $this->content->get_field($field['id']);
-			$content_form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $field['description'], $value, $field['i18n']);
+			$content_form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $this->lang->line('elementar_field_type_' . $field['sname'] . '_description'), $value, $field['i18n']);
 		}
 
 		/*
@@ -1401,7 +1401,7 @@ class Editor extends CI_Controller {
 		$options = array();
 		foreach ( $this->storage->get_field_types() as $option )
 		{
-			$options[$option['id']] = $option['name'];
+			$options[$option['id']] = $this->lang->line('elementar_field_type_' . $option['sname']);
 		}
 		$attributes = "id=\"field_type_0\"";
 		return form_dropdown('field_type_0', $options, $selected, $attributes);
