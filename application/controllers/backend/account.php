@@ -85,18 +85,20 @@ class Account extends CI_Controller {
 		$this->load->library('validation');
 	}
 	
+	/**
+	 * Backend Account manager main method
+	 * 
+	 * @access method
+	 * @return void
+	 */
 	function index()
 	{
-		/*
-		 * User info
-		 */
+		// Admin info
 		$account_id = $this->session->userdata('account_id');
 		$is_logged = TRUE;
 		$username = $this->access->get_account_username($account_id);
 
-		/*
-		 * client controller (javascript)
-		 */
+		// Client controller (javascript files)
 		$js = array(
 			'/js/backend/jquery-1.7.1.min.js',
 			'/js/backend/jquery.easing.1.3.js',
@@ -110,9 +112,7 @@ class Account extends CI_Controller {
 			'/js/backend/backend_anchor.js'
 		);
 		
-		/*
-		 * Resource menu
-		 */
+		// Top menu
 		$resource_menu = array(
 			anchor($this->lang->line('elementar_settings'), array('href' => '/backend', 'title' => $this->lang->line('elementar_settings'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
@@ -121,6 +121,7 @@ class Account extends CI_Controller {
 			anchor($this->lang->line('elementar_editor'), array('href' => '/backend/editor', 'title' => $this->lang->line('elementar_contents')))
 		);
 
+		// Backend common view variables
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
@@ -129,11 +130,11 @@ class Account extends CI_Controller {
 			'resource_menu' => ul($resource_menu)
 		);
 
-		$data['parent'] = $this->lang->line('elementar_accounts');
-
 		// load tree
+		$data['parent'] = $this->lang->line('elementar_accounts');
 		$data['backend_account_tree'] = $this->_render_tree_listing();
 		
+		// Localized view messages
 		$data['elementar_exit'] = $this->lang->line('elementar_exit');
 		$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
 		$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
@@ -143,8 +144,12 @@ class Account extends CI_Controller {
 
 	}
 
-	/*
-	 * Render tree accounts by group
+	/**
+	 * Render accounts in tree by group
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_render_group_listing()
 	{
@@ -168,9 +173,7 @@ class Account extends CI_Controller {
 
 		$data = array('group' => $group);
 
-		/*
-		 * Localized texts
-		 */
+		// Localized texts
 		$data['elementar_delete'] = $this->lang->line('elementar_delete');
 		$data['elementar_edit'] = $this->lang->line('elementar_edit');
 		$data['elementar_edit_group'] = $this->lang->line('elementar_edit_group');
@@ -189,8 +192,12 @@ class Account extends CI_Controller {
 		
 	}
 
-	/*
-	 * List accounts
+	/**
+	 * List groups in tree with a selected one
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_render_tree_listing()
 	{
@@ -220,7 +227,14 @@ class Account extends CI_Controller {
 		
 	}
 
-	function _render_tree_listing($group_id = NULL)
+	/**
+	 * Render HTML tree listings
+	 * 
+	 * @access private
+	 * @param integer
+	 * @return string
+	 */
+	private function _render_tree_listing($group_id = NULL)
 	{
 		$groups = array();
 		
@@ -240,9 +254,7 @@ class Account extends CI_Controller {
 		
 		$data['groups'] = $groups;
 
-		/*
-		 * Localized texts
-		 */
+		// Localized texts
 		$data['elementar_delete'] = $this->lang->line('elementar_delete');
 		$data['elementar_edit'] = $this->lang->line('elementar_edit');
 		$data['elementar_edit_group'] = $this->lang->line('elementar_edit_group');
@@ -251,9 +263,7 @@ class Account extends CI_Controller {
 		$data['elementar_new_account'] = $this->lang->line('elementar_new_account');
 
 		
-		/*
-		 * Set default language for view
-		 */
+		// Set default language for view
 		$data['lang'] = $this->LANG;
 		
 		$html = $this->load->view('backend/backend_account_tree', $data, true);
@@ -261,22 +271,22 @@ class Account extends CI_Controller {
 		return $html;
 	}
 	
-	/*
-	 * Create/edit group
+	/**
+	 * Create/edit group form
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_render_group_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		/*
-		 * Create or update? Check for incoming group ID
-		 */
+		// Create or update? Check for incoming group ID
 		$group_id = $this->input->post('group_id', TRUE);
 
-		/*
-		 * Group ID (if any, hidden)
-		 */
+		// Group ID (if any, hidden)
 		$attributes = array(
 			'class' => 'noform',
 			'name' => 'group_id',
@@ -285,21 +295,15 @@ class Account extends CI_Controller {
 		);
 		$form = form_input($attributes);
 
-		/*
-		 * Group name
-		 */
+		// Group name
 		$value = $this->access->get_group_name($group_id);
 		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
-		/*
-		 * Group description
-		 */
+		// Group description
 		$value = $this->access->get_group_description($group_id);
 		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_group_description'), 'description', NULL, $value, FALSE);
 
-		/*
-		 *  Botão envio
-		 */
+		// Save button
 		$form .= div_open(array('class' => 'form_control_buttons'));
 		$attributes = array(
 		    'name' => 'button_group_save',
@@ -333,28 +337,26 @@ class Account extends CI_Controller {
 
 	}
 
-	/*
+	/**
 	 * Save group
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_write_group()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		/*
-		 * Create or update? Check for incoming group ID
-		 */
+		// Create or update? Check for incoming group ID
 		$group_id = $this->input->post('group_id', TRUE);
 
-		/*
-		 * Other group fields
-		 */
+		// Other group fields
 		$name = $this->input->post('name', TRUE);
 		$description = $this->input->post('description', TRUE);
 		
-		/*
-		 * Value verification
-		 */
+		// Value verification
 		if ( $name == '' )
 		{
 			$response = array(
@@ -367,17 +369,13 @@ class Account extends CI_Controller {
 		
 		if ( (bool) $group_id )
 		{
-			/*
-			 * Update group
-			 */
+			// Update group
 			$this->access->put_group_name($group_id, $name);
 			$this->access->put_group_description($group_id, $description);
 		}
 		else
 		{
-			/*
-			 * Create group
-			 */
+			// Create group
 			$group_id = $this->access->put_group($name, $description);
 		}
 		
@@ -390,8 +388,12 @@ class Account extends CI_Controller {
 
 	}
 
-	/*
-	 * Save group
+	/**
+	 * Remove group
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_erase_group()
 	{
@@ -417,27 +419,26 @@ class Account extends CI_Controller {
 			);
 		}
 		
-		// Enviar resposta
+		// Send response
 		$this->output->set_output_json($response);
-
 	}
 
-	/*
-	 * Create/edit account
+	/**
+	 * Create/edit account form
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_render_account_form()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		/*
-		 * Create or update? Check for incoming account ID
-		 */
+		// Create or update? Check for incoming account ID
 		$account_id = $this->input->post('account_id', TRUE);
 
-		/*
-		 * Account ID (if any, hidden)
-		 */
+		// Account ID (if any, hidden)
 		$attributes = array(
 			'class' => 'noform',
 			'name' => 'account_id',
@@ -446,9 +447,7 @@ class Account extends CI_Controller {
 		);
 		$form = form_input($attributes);
 
-		/*
-		 * Group ID (hidden)
-		 */
+		// Group ID (hidden field)
 		if ( (bool) $account_id )
 		{
 			$group_id = $this->access->get_account_group($account_id);
@@ -465,27 +464,19 @@ class Account extends CI_Controller {
 		);
 		$form .= form_input($attributes);
 
-		/*
-		 * Account name
-		 */
+		// Account name
 		$value = $this->access->get_account_username($account_id);
 		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_account_username'), 'username', NULL, $value, FALSE);
 
-		/*
-		 * Account email
-		 */
+		// Account email
 		$value = $this->access->get_account_email($account_id);
 		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_account_email'), 'email', NULL, $value, FALSE);
 
-		/*
-		 * Account password
-		 */
+		// Account password
 		$value = '';
 		$form .= $this->common->render_form_field('password', $this->lang->line('elementar_account_password'), 'password', NULL, $value, FALSE);
 
-		/*
-		 *  Botão envio
-		 */
+		// Save button
 		$form .= div_open(array('class' => 'form_control_buttons'));
 		$attributes = array(
 		    'name' => 'button_account_save',
@@ -519,29 +510,27 @@ class Account extends CI_Controller {
 
 	}
 
-	/*
-	 * Save account
+	/**
+	 * Save an account
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_write_account()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		/*
-		 * Create or update? Check for incoming group ID
-		 */
+		// Create or update? Check for incoming group ID
 		$account_id = $this->input->post('account_id', TRUE);
 
-		/*
-		 * Other account fields
-		 */
+		// Other account fields
 		$username = $this->input->post('username', TRUE);
 		$email = $this->input->post('email', TRUE);
 		$password = $this->input->post('password', TRUE);
 
-		/*
-		 * Assess account username
-		 */
+		// Assess account username
 		$response = $this->validation->assess_username($username);
 		if ( (bool) $response['done'] == FALSE )
 		{
@@ -574,9 +563,7 @@ class Account extends CI_Controller {
 			}
 		}
 
-		/*
-		 * Assess email
-		 */
+		// Assess email
 		$response = $this->validation->assess_email($email);
 		if ( (bool) $response['done'] == FALSE )
 		{
@@ -608,9 +595,7 @@ class Account extends CI_Controller {
 			}
 		}
 
-		/*
-		 * Assess password
-		 */
+		// Assess password
 		$response = $this->validation->assess_password($password);
 		if ( (bool) $password )
 		{
@@ -623,29 +608,22 @@ class Account extends CI_Controller {
 
 		if ( (bool) $account_id )
 		{
-			/*
-			 * Update account
-			 */
+			// Update account
 			$this->access->put_account_username($account_id, $username);
 			$this->access->put_account_email($account_id, $email);
 			if ( (bool) $password )
 			{
-				/*
-				 * Avoi writing empty password on update
-				 */
+				// Avoid writing empty password on update
 				$this->access->put_account_password($account_id, $password);
 			}
 			$group_id = $this->input->post('group_id', TRUE);
 		}
 		else
 		{
-			/*
-			 * Create account
-			 */
+			// Create account
 			$account_id = $this->access->put_account($username, $email, $password);
-			/*
-			 * Add acount to group
-			 */
+			
+			// Add account to group
 			$group_id = $this->input->post('group_id', TRUE);
 			$this->access->put_account_group($account_id, $group_id);
 		}
@@ -660,8 +638,12 @@ class Account extends CI_Controller {
 
 	}
 
-	/*
-	 * Remove account
+	/**
+	 * Remove an account
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_erase_account()
 	{
@@ -687,27 +669,27 @@ class Account extends CI_Controller {
 			);
 		}
 		
-		// Enviar resposta
+		// Send response
 		$this->output->set_output_json($response);
 
 	}
 
-	/*
-	 * Write account group
+	/**
+	 * Associate account to group
+	 * XHR request
+	 * 
+	 * @access public
+	 * @return void
 	 */
 	function xhr_write_account_group()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		/*
-		 * Group id
-		 */
+		// Group id
 		$group_id = $this->input->post('group_id', TRUE);
 
-		/*
-		 * Account id
-		 */
+		// Account id
 		$account_id = $this->input->post('account_id', TRUE);
 
 		if ( (bool) $group_id && (bool) $account_id && ( $group_id != $account_id ) && ( 1 != (int) $account_id ) )
@@ -727,7 +709,5 @@ class Account extends CI_Controller {
 			);
 			$this->output->set_output_json($response);
 		}
-
 	}
-
 }
