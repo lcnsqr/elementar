@@ -256,6 +256,11 @@ $lang['elementar_youtube_delete']		= 'Remover';
 $lang['elementar_youtube_new_above']		= 'Novo vídeo acima';
 $lang['elementar_youtube_new_below']		= 'Novo vídeo abaixo';
 
+/*
+ * File manager
+ */
+$lang['elementar_file_mkdir_error']		= 'Não foi possível criar a pasta ';
+$lang['elementar_file_rename_error']		= 'Não foi possível renomear ';
 
 /* End of file elementar_lang.php */
 /* Location: ./application/language/portuguese/elementar_lang.php */

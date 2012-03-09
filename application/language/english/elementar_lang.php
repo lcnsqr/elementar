@@ -256,7 +256,11 @@ $lang['elementar_youtube_delete']		= 'Delete';
 $lang['elementar_youtube_new_above']		= 'Add video above';
 $lang['elementar_youtube_new_below']		= 'Add video below';
 
-
+/*
+ * File manager
+ */
+$lang['elementar_file_mkdir_error']		= 'Could not create folder ';
+$lang['elementar_file_rename_error']		= 'Could not rename ';
 
 /* End of file elementar_lang.php */
 /* Location: ./application/language/english/elementar_lang.php */

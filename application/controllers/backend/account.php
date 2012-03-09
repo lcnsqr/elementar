@@ -711,3 +711,6 @@ class Account extends CI_Controller {
 		}
 	}
 }
+
+/* End of file account.php */
+/* Location: ./application/controllers/backend/account.php */

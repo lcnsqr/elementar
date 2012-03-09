@@ -79,6 +79,7 @@ class Main extends CI_Controller {
 	
 	/**
 	 * Config main method
+	 * 
 	 * @access public
 	 * @return void
 	 */
@@ -451,3 +452,6 @@ class Main extends CI_Controller {
 	}
 
 }
+
+/* End of file main.php */
+/* Location: ./application/controllers/backend/main.php */

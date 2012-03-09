@@ -2,7 +2,7 @@
 /*
  *      file.php
  *      
- *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -22,13 +22,20 @@
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/** 
+ * Backend File Class 
+ * 
+ * Remote file manager
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 class File extends CI_Controller {
 	
 	var $ROOT;
 
-	/*
-	 * i18n settings
-	 */
+	// i18n settings
 	var $LANG;
 	var $LANG_AVAIL = array();
 
@@ -36,29 +43,20 @@ class File extends CI_Controller {
 	{
 		parent::__construct();
 
-		/*
-		 * Content database
-		 */
+		// Elementar database
 		$this->elementar = $this->load->database('elementar', TRUE);
 
-		/*
-		 * URI helper
-		 */
+		// URI helper
 		$this->load->helper('url');
 
-		/*
-		 * Create, read, update and delete Model
-		 */
+		// Create, read, update and delete Model
 		$this->load->model('Storage', 'storage');
 		$this->storage->STATUS = 'all';
 
-		/*
-		 * Load encryption key before session library
-		 */
+		// Load encryption key before session library
 		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
-		/*
-		 * Session library
-		 */
+		
+		// Session library
 		$this->load->library('session');
 		
 		// Elementar Common Library
@@ -74,18 +72,28 @@ class File extends CI_Controller {
 
 	}
 
+	/**
+	 * File main method
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function index()
 	{
 		$this->manager();
 	}
 
+	/**
+	 * Redirected from index method
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function manager()
 	{
 		$data = array();
 
-		/*
-		 * client controller (javascript)
-		 */
+		// Client controller (javascript files)
 		$js = array(
 			'/js/backend/jquery-1.7.1.min.js',
 			'/js/backend/jquery.easing.1.3.js',
@@ -94,9 +102,7 @@ class File extends CI_Controller {
 			'/js/backend/backend_file.js'
 		);
 
-		/*
-		 * Add tinymce support scripts if requested by file manager plugin
-		 */
+		// Add tinymce support scripts if requested by file manager plugin
 		if ( $this->input->get('parent', TRUE) == 'tinymce' )
 		{
 			$js[] = '/js/backend/tiny_mce/tiny_mce_popup.js';
@@ -114,6 +120,12 @@ class File extends CI_Controller {
 		$this->load->view('backend/backend_file', $data);
 	}
 
+	/**
+	 * List public files dir
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function xhr_render_tree()
 	{
 		if ( ! $this->input->is_ajax_request() )
@@ -137,7 +149,13 @@ class File extends CI_Controller {
 		$this->output->set_output_json($response);
 		
 	}
-	
+
+	/**
+	 * List files tree up to the requested item
+	 *
+	 * @access public
+	 * @return void
+	 */	
 	function xhr_render_tree_unfold()
 	{
 		if ( ! $this->input->is_ajax_request() )
@@ -188,6 +206,12 @@ class File extends CI_Controller {
 		
 	}
 	
+	/**
+	 * Render items in content div
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function xhr_render_contents()
 	{
 		if ( ! $this->input->is_ajax_request() )
@@ -202,9 +226,7 @@ class File extends CI_Controller {
 			$path = $this->ROOT;
 		}
 		
-		/*
-		 * Caller field type
-		 */
+		// Caller field type
 		$parent = $this->input->post('parent');
 
 		$html = $this->_render_listing($path, $parent);
@@ -229,10 +251,19 @@ class File extends CI_Controller {
 			'html' => $html
 		);
 		$this->output->set_output_json($response);
-		
 	}
 	
-	function _render_tree_folder($path, $current = NULL, $tree = NULL, $tree_dir = NULL)
+	/**
+	 * Recursively load tree listings
+	 *
+	 * @access private
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @return string
+	 */
+	private function _render_tree_folder($path, $current = NULL, $tree = NULL, $tree_dir = NULL)
 	{
 		$this->load->helper('string');
 		$folders = array();
@@ -256,15 +287,20 @@ class File extends CI_Controller {
 		return $html;
 	}
 	
-	function _subfolders($path)
+	/**
+	 * List subfolders in the requested folder
+	 *
+	 * @access private
+	 * @param string
+	 * @return string
+	 */
+	private function _subfolders($path)
 	{
 		$this->load->helper('directory');
 		
 		$relative_path = '.' . $path;
 		
-		/*
-		 * List top level directories
-		 */
+		// List top level directories
 		$map = directory_map($relative_path, 1);
 		$folders = array();
 		foreach ( $map as $content )
@@ -278,10 +314,14 @@ class File extends CI_Controller {
 		return $folders;
 	}
 
-	/*
-	 * Detect file  mime content type
+	/**
+	 * Detect file mime content type from suffix
+	 *
+	 * @access private
+	 * @param string
+	 * @return string
 	 */
-	function _mime_type($filename) 
+	private function _mime_type($filename) 
 	{
 		$mime_types = array(
 		
@@ -357,13 +397,19 @@ class File extends CI_Controller {
 		}
 	}
 
+	/**
+	 * Method to sort and list folder contents
+	 *
+	 * @access private
+	 * @param string
+	 * @param string
+	 * @return string
+	 */
 	function _render_listing($path, $parent = 'direct')
 	{
 		$this->load->helper(array('directory', 'file', 'html'));
 		
-		/*
-		 * Given path defines item selection
-		 */
+		// Given path defines item selection
 		$selected_path = $path; 
 		
 		/*
@@ -377,13 +423,10 @@ class File extends CI_Controller {
 			$path = substr($relative_path, 1);
 		}
 
-		/*
-		 * List top level directories & files
-		 */
+		// List top level directories & files
 		$map = directory_map($relative_path, 1);
-		/*
-		 * Directories first
-		 */
+
+		// Directories first
 		$folders = array();
 		foreach ( $map as $content )
 		{
@@ -400,9 +443,8 @@ class File extends CI_Controller {
 			}
 		}
 		sort($folders);
-		/*
-		 * Files
-		 */
+		
+		// Files
 		$files = array();
 		foreach ( $map as $content )
 		{
@@ -422,9 +464,8 @@ class File extends CI_Controller {
 					'size' => $this->_byte_convert($size),
 					'class' => ( $path . '/' . $content == $selected_path ) ? 'file current' : 'file'
 				);
-				/*
-				 * Image info
-				 */
+				
+				// Image info
 				switch ( $mime_content_type )
 				{
 					case 'image/png' :
@@ -433,9 +474,8 @@ class File extends CI_Controller {
 					list($width, $height) = getimagesize($relative_path . '/' . $content);
 					$attrs['width'] = $width;
 					$attrs['height'] = $height;
-					/*
-					 * img filled tag
-					 */
+					
+					// img filled tag
 					$properties = array(
 						'src' => $path . '/' . $content,
 						'alt' => $content,
@@ -444,9 +484,8 @@ class File extends CI_Controller {
 						'title' => $content
 					);
 					$attrs['img'] = img($properties, TRUE);
-					/*
-					 * Thumbnail
-					 */
+					
+					// Thumbnail
 					if ( ! file_exists( $relative_path . '/.thumbnails' ) )
 					{
 						mkdir($relative_path . '/.thumbnails');
@@ -467,22 +506,28 @@ class File extends CI_Controller {
 		}
 		sort($files);
 
-		/*
-		 * File listing
-		 */
+		// File listing
 		$data = array(
 			'listing' => array_merge($folders, $files)
 		);
 
-		/*
-		 * Store parent window caller element type
-		 */
+		// Store parent window caller element type
 		$data['parent'] = $parent;
 
 		$html = $this->load->view('backend/backend_file_listing', $data, true);
 		return $html;
 	}
 	
+	/**
+	 * Resample images
+	 *
+	 * @access private
+	 * @param string
+	 * @param string
+	 * @param integer
+	 * @param integer
+	 * @return void
+	 */
 	function _resize_image ($from, $to, $width, $height)
 	{
 		// Get new dimensions
@@ -539,12 +584,17 @@ class File extends CI_Controller {
 	}
 
 	/**
+	 * Human readable file size
+	 * 
+	 * @access private
 	 * @author Alejandro Fernandez Moraga, Luciano Siqueira
-	 * @param integer $bytes Bytes
-	 * @param integer $precision Número de casas de precisão
+	 * @param integer
+	 * @param integer
+	 * @param string
+	 * @param string
 	 * @return string
 	 */
-	function _byte_convert($bytes, $precision = 2, $dec_point = ',', $thousands_sep = '' )
+	private function _byte_convert($bytes, $precision = 2, $dec_point = ',', $thousands_sep = '' )
 	{
 		$units = array('', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
 		$unit = 0;
@@ -558,10 +608,10 @@ class File extends CI_Controller {
 	}
 
 	/**
-	 * File upload form
-	 * @param string $field_name Nome real (hidden input)
-	 * @param integer $image_id Id de imagem armazenado 
-	 * @return HTML content
+	 * Render file upload form
+	 * 
+	 * @access public
+	 * @return string
 	 */
 	function xhr_render_upload_form()
 	{
@@ -574,14 +624,10 @@ class File extends CI_Controller {
 		 */
 		$upload_session_id = $this->storage->put_upload_session();
 		
-		/*
-		 * Target folder
-		 */
+		// Target folder
 		$path = $this->input->post("path", TRUE);
 		
-		/*
-		 * Upload form properties
-		 */
+		// Upload form properties
 		$attributes = array(
 			'target' => "iframeUpload_" . $upload_session_id,
 			'name' => "upload_form_" . $upload_session_id,
@@ -598,23 +644,20 @@ class File extends CI_Controller {
 			'upload_session_id' => $upload_session_id,
 			'path' => $path
 		);
-		/*
-		 * The URI to handle the upload
-		 */
+		
+		// The URI to handle the upload
 		$this->load->helper('form');
 		$form = form_open_multipart("/backend/file/upload", $attributes, $hidden);
-		/*
-		 * Open file field
-		 */
+		
+		// Open file field
 		$attributes = array(
 			'class' => 'upload_file',
 			'size' => 5,
 			'name' => "upload_file",
 			'id' => "upload_file_" . $upload_session_id
 		);
-		/*
-		 * IE change event bug (to upload automatic after file selection)
-		 */
+		
+		// IE change event bug (to upload automatic after file selection)
 		$this->load->library('user_agent');
 		if( $this->agent->browser() == 'Internet Explorer' )
 		{
@@ -622,9 +665,8 @@ class File extends CI_Controller {
 		}
 
 		$form .= form_upload($attributes);
-		/*
-		 * Close upload form
-		 */
+		
+		// Close upload form
 		$form .= form_close();
 		
 		$data = array(
@@ -643,59 +685,52 @@ class File extends CI_Controller {
 		
 	}
 
+	/**
+	 * Receive file upload
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function upload()
 	{
-		/*
-		 * Receive the upload session ID and target path
-		 */
+		// Receive the upload session ID and target path
 		$upload_session_id = $this->input->post("upload_session_id", TRUE);
 		$path = $this->input->post("path", TRUE);
 		
-		/*
-		 * Check size ( < 10 MB ) before proceed
-		 */
-		if ($_FILES["upload_file"]["size"] < 10485760)
+		// Check size ( < 10 MB ) before proceed
+		if ($_FILES["upload_file"]["size"] >= 10485760)
 		{
-			if ($_FILES["upload_file"]["error"] > 0)
-			{
-				/*
-				 * Mark an error in upload session
-				 */
-				$this->storage->put_upload_session($upload_session_id, "error", TRUE);
-			}
-			else
-			{
-				/*
-				 * Receive file properties
-				 */
-				$tmp_name = $_FILES["upload_file"]["tmp_name"];
-				$name = $_FILES["upload_file"]["name"];
-
-				/*
-				 * Move file to upload dir
-				 */
-				move_uploaded_file($tmp_name, '.' . $path . '/' . $name);
-
-				/*
-				 * Write file properties to upload session
-				 */
-				$uri = $path . '/' . $name;
-				$this->storage->put_upload_session($upload_session_id, "name", $name);
-				$this->storage->put_upload_session($upload_session_id, "uri", $uri);
-				$this->storage->put_upload_session($upload_session_id, "done", TRUE);
-			}
-		}
-		else
-		{
-			/*
-			 * Mark an error in upload session
-			 */
+			// Mark an error in upload session
 			$this->storage->put_upload_session($upload_session_id, "error", TRUE);
+			return;
 		}
+		
+		if ($_FILES["upload_file"]["error"] > 0)
+		{
+			// Mark an error in upload session
+			$this->storage->put_upload_session($upload_session_id, "error", TRUE);
+			return;
+		}
+
+		// Receive file properties
+		$tmp_name = $_FILES["upload_file"]["tmp_name"];
+		$name = $_FILES["upload_file"]["name"];
+
+		// Move file to upload dir
+		move_uploaded_file($tmp_name, '.' . $path . '/' . $name);
+
+		// Write file properties to upload session
+		$uri = $path . '/' . $name;
+		$this->storage->put_upload_session($upload_session_id, "name", $name);
+		$this->storage->put_upload_session($upload_session_id, "uri", $uri);
+		$this->storage->put_upload_session($upload_session_id, "done", TRUE);
 	}
 
 	/**
 	 * Uploading status
+	 *
+	 * @access public
+	 * @return void
 	 */
 	function xhr_read_upload_status()
 	{
@@ -734,11 +769,23 @@ class File extends CI_Controller {
 		$this->output->set_output_json($response);
 	}
 	
+	/**
+	 * Cancel upload process
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function cancel_upload()
 	{
 		echo NULL;
 	}
 
+	/**
+	 * Remove a file or directory
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function xhr_rm()
 	{
 		if ( ! $this->input->is_ajax_request() )
@@ -749,9 +796,7 @@ class File extends CI_Controller {
 		
 		$parent_dir = dirname($relative_path);
 		
-		/*
-		 * File or directory
-		 */
+		// File or directory
 		if ( is_file($relative_path) )
 		{
 			if ( unlink($relative_path) )
@@ -772,13 +817,11 @@ class File extends CI_Controller {
 		else
 		{
 			$this->load->helper('file');
-			/*
-			 * Delete contents recursively
-			 */
+			
+			// Delete contents recursively
 			delete_files($relative_path, TRUE);
-			/*
-			 * Check for hidden thumbnaisl dir
-			 */
+			
+			// Check for hidden thumbnaisl dir
 			if ( file_exists($relative_path . '/' . '.thumbnails') )
 			{
 				delete_files($relative_path . '/' . '.thumbnails', TRUE);
@@ -801,9 +844,14 @@ class File extends CI_Controller {
 		}
 
 		$this->output->set_output_json($response);
-
 	}
 
+	/**
+	 * Create a directory
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function xhr_mkdir()
 	{
 		if ( ! $this->input->is_ajax_request() )
@@ -824,14 +872,19 @@ class File extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'msg' => 'Não foi possível criar a pasta ' . $newdir
+				'msg' => $this->lang->line('elementar_file_mkdir_error') . $newdir
 			);
 		}
 
 		$this->output->set_output_json($response);
-
 	}
 
+	/**
+	 * Rename file or directory
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function xhr_rename()
 	{
 		if ( ! $this->input->is_ajax_request() )
@@ -842,9 +895,7 @@ class File extends CI_Controller {
 		$path = $this->input->post('path', TRUE);
 		$relative_path = '.' . $path;			
 
-		/*
-		 * Ignore empty name
-		 */
+		// Ignore empty name
 		$name = ( trim($name) == '' ) ? basename($relative_path) : $name;
 
 		if ( rename($relative_path, dirname($relative_path) . '/' . $name) )
@@ -859,12 +910,13 @@ class File extends CI_Controller {
 		{
 			$response = array(
 				'done' => FALSE,
-				'msg' => 'Não foi possível renomear ' . $name
+				'msg' => $this->lang->line('elementar_file_rename_error') . $name
 			);
 		}
 
 		$this->output->set_output_json($response);
-
 	}
-
 }
+
+/* End of file file.php */
+/* Location: ./application/controllers/backend/file.php */
