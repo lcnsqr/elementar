@@ -62,10 +62,22 @@ class Main extends CI_Controller {
 		
 		// CI URL helper
 		$this->load->helper('url');
+
+		// Load encryption key before session library
+		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
+
+		// Session library
+		$this->load->library('session');
+		
+		// Elementar Common Library
+		$this->load->library('common');
+
+		// Load site i18n settings
+		list($this->LANG, $this->LANG_AVAIL) = $this->common->load_i18n_settings();
 	}
 
 	/**
-	 * Load configuration and redirect to requested method
+	 * Parse request and render proper response
 	 * 
 	 * @access public
 	 * @param  string
@@ -73,29 +85,6 @@ class Main extends CI_Controller {
 	 */
 	public function _remap($method)
 	{
-		// Load encryption key before session library
-		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
-
-		// Session library
-		$this->load->library('session');
-		
-		// Load site i18n config
-		$i18n_settings = json_decode($this->storage->get_config('i18n'), TRUE);
-		foreach($i18n_settings as $i18n_setting)
-		{
-			if ( (bool) $i18n_setting['default'] )
-			{
-				$this->LANG = $i18n_setting['code'];
-			
-				// Default language is the first in array
-				$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
-			}
-			else
-			{
-				$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
-			}
-		}
-		
 		// Check language choice
 		if ( $this->uri->total_segments() > 0 )
 		{
@@ -122,6 +111,12 @@ class Main extends CI_Controller {
 			$this->URI_PREFIX = '/' . $this->LANG;
 		}
 		
+		// Set choosen language and URI 
+		// language prefix in Common Library 
+
+		$this->common->set_lang($this->LANG);
+		$this->common->set_uri_prefix($this->URI_PREFIX);
+
 		// Language related Settings
 		$site_names = json_decode($this->storage->get_config('name'), TRUE);
 		$this->config->set_item('site_name', (array_key_exists($this->LANG, $site_names)) ? $site_names[$this->LANG] : '');
@@ -130,15 +125,6 @@ class Main extends CI_Controller {
 		$email_settings = json_decode($this->storage->get_config('email') ,TRUE);
 		$this->load->library('email', $email_settings);
 		$this->email->set_newline("\r\n");
-
-		// CMS Common Library called here instead of
-		// in construct to pass the LANG parameter
-		
-		$this->load->library('common', array(
-			'lang' => $this->LANG, 
-			'lang_avail' => $this->LANG_AVAIL, 
-			'uri_prefix' => $this->URI_PREFIX
-		));
 
 		// Redirect to existing function or parser
 		if ( $this->uri->total_segments() > $this->SEGMENT_STEP )

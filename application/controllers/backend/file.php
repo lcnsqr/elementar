@@ -61,50 +61,16 @@ class File extends CI_Controller {
 		 */
 		$this->load->library('session');
 		
-		/*
-		 * Load site i18n config
-		 */
-		$i18n_settings = json_decode($this->storage->get_config('i18n'), TRUE);
-		foreach($i18n_settings as $i18n_setting)
-		{
-			if ( (bool) $i18n_setting['default'] )
-			{
-				$this->LANG = $i18n_setting['code'];
-				/*
-				 * Default language is the first in array
-				 */
-				$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
-			}
-			else
-			{
-				$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
-			}
-		}
-		
-		$this->ROOT = '/files';
+		// Elementar Common Library
+		$this->load->library('common');
 
-		/*
-		 * Verificar sessão autenticada
-		 * de usuário autorizado no admin
-		 */
-		$account_id = $this->session->userdata('account_id');
-		if ( (int) $account_id != 1 )
-		{
-			$data = array(
-				'is_logged' => FALSE,
-				'title' => $this->config->item('site_name'),
-				'js' => array(
-					'/js/backend/jquery-1.7.1.min.js', 
-					'/js/backend/backend_account.js', 
-					'/js/backend/jquery.timers-1.2.js', 
-					'/js/backend/backend_client_warning.js'
-				),
-				'action' => '/' . uri_string(),
-				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
-			);
-			$login = $this->load->view('backend/backend_login', $data, TRUE);
-			exit($login);
-		}
+		// Exit if not authenticated admin session
+		$this->common->backend_auth_check();
+
+		// Load site i18n settings
+		list($this->LANG, $this->LANG_AVAIL) = $this->common->load_i18n_settings();
+
+		$this->ROOT = '/files';
 
 	}
 

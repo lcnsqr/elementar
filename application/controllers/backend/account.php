@@ -2,7 +2,7 @@
 /*
  *      account.php
  *      
- *      Copyright 2011 Luciano Siqueira <lcnsqr@gmail.com>
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -22,11 +22,18 @@
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/** 
+ * Backend Account Class 
+ * 
+ * Users and groups management
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 class Account extends CI_Controller {
 
-	/*
-	 * i18n settings
-	 */
+	// i18n settings
 	var $LANG;
 	var $LANG_AVAIL = array();
 
@@ -34,125 +41,48 @@ class Account extends CI_Controller {
 	{
 		parent::__construct();
 
-		/*
-		 *  CI helpers
-		 */
+		//  CI helpers
 		$this->load->helper(array('string', 'security', 'cookie', 'form', 'html', 'text', 'url'));
 
-		/*
-		 * Elementar database
-		 */
+		// Elementar database
 		$this->elementar = $this->load->database('elementar', TRUE);
 
-		/*
-		 * Access model
-		 */
+		// Access model
 		$this->load->model('Access', 'access');
 		
-		/*
-		 * Create, read, update and delete Model
-		 */
+		// Create, read, update and delete Model
 		$this->load->model('Storage', 'storage');
 		$this->storage->STATUS = 'all';
 
-		/*
-		 * Load encryption key before session library
-		 */
+		// Load encryption key before session library
 		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
-		/*
-		 * CI libraries
-		 */
+		
+		// CI session class
 		$this->load->library('session');
 		
-		/*
-		 * Load site i18n config
-		 */
-		$i18n_settings = json_decode($this->storage->get_config('i18n'), TRUE);
-		foreach($i18n_settings as $i18n_setting)
-		{
-			if ( (bool) $i18n_setting['default'] )
-			{
-				$this->LANG = $i18n_setting['code'];
-				/*
-				 * Default language is the first in array
-				 */
-				$this->LANG_AVAIL = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $this->LANG_AVAIL);
-			}
-			else
-			{
-				$this->LANG_AVAIL[$i18n_setting['code']] = $i18n_setting['name'];
-			}
-		}
-		
-		/*
-		 * Language related Settings
-		 */
+		// Elementar Common Library
+		$this->load->library('common');
+
+		// Exit if not authenticated admin session
+		$this->common->backend_auth_check();
+
+		// Load site i18n settings
+		list($this->LANG, $this->LANG_AVAIL) = $this->common->load_i18n_settings();
+
+		// Language related Settings
 		$site_names = json_decode($this->storage->get_config('name'), TRUE);
 		$this->config->set_item('site_name', (array_key_exists($this->LANG, $site_names)) ? $site_names[$this->LANG] : '');
 
-		/*
-		 * Email settings
-		 */
+		// Email settings
 		$email_settings = json_decode($this->storage->get_config('email') ,TRUE);
 		$this->load->library('email', $email_settings);
 		$this->email->set_newline("\r\n");
 
-		/*
-		 * CMS Common Library
-		 */
-		$this->load->library('common', array(
-			'lang' => $this->LANG, 
-			'lang_avail' => $this->LANG_AVAIL, 
-			'uri_prefix' => ''
-		));
-		
-		/*
-		 * Backend language file
-		 */
+		// Backend language file
 		$this->lang->load('elementar', $this->config->item('language'));
 		
-		/*
-		 * Fields validation library
-		 */
+		// Fields validation library
 		$this->load->library('validation');
-
-		/*
-		 * Verificar sessão autenticada
-		 * de usuário autorizado no admin
-		 */
-		$account_id = $this->session->userdata('account_id');
-		if ( (int) $account_id != 1 )
-		{
-			$data = array(
-				'is_logged' => FALSE,
-				'title' => $this->config->item('site_name'),
-				'js' => array(
-					'/js/backend/jquery-1.7.1.min.js', 
-					'/js/backend/backend_account.js', 
-					'/js/backend/jquery.timers-1.2.js', 
-					'/js/backend/backend_client_warning.js'
-				),
-				'action' => '/' . uri_string(),
-				'elapsed_time' => $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
-			);
-
-			/*
-			 * Localized texts
-			 */
-			$data['elementar_authentication_title'] = $this->lang->line('elementar_authentication_title');
-			$data['elementar_authentication_account'] = $this->lang->line('elementar_authentication_account');
-			$data['elementar_authentication_password'] = $this->lang->line('elementar_authentication_password');
-			$data['elementar_authentication_login'] = $this->lang->line('elementar_authentication_login');
-
-			$data['elementar_exit'] = $this->lang->line('elementar_exit');
-			$data['elementar_finished_in'] = $this->lang->line('elementar_finished_in');
-			$data['elementar_finished_elapsed'] = $this->lang->line('elementar_finished_elapsed');
-			$data['elementar_copyright'] = $this->lang->line('elementar_copyright');
-
-			$login = $this->load->view('backend/backend_login', $data, TRUE);
-			exit($login);
-		}
-
 	}
 	
 	function index()

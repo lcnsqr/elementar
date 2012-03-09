@@ -2,32 +2,29 @@
 
 class Common {
 
-	/*
-	 * CodeIgniter Instance
-	 */
+	// CodeIgniter Instance
 	private $CI;
 	
-	/*
-	 * i18n settings
-	 */
+	// Default content language
 	private $DEFAULT_LANG;
-	private $LANG = 'en';
-	private $LANG_AVAIL = array();
-	private $URI_PREFIX = '';
 
-	function __construct($params)
+	// Available content languages
+	private $LANG_AVAIL = array();
+
+	// Frontend choosen language
+	private $LANG;
+
+	// Frontend URI language prefix
+	private $URI_PREFIX;
+
+	function __construct()
 	{
 		$this->CI =& get_instance();
 		
-		/*
-		 * i18n: Default language
-		 */
-		$this->LANG = $params['lang'];
-		$this->LANG_AVAIL = $params['lang_avail'];
-		$this->URI_PREFIX = $params['uri_prefix'];
-
-		reset($this->LANG_AVAIL);
-		$this->DEFAULT_LANG = key($this->LANG_AVAIL);
+		// Load i18n settings
+		list($this->DEFAULT_LANG, $this->LANG_AVAIL) = $this->load_i18n_settings();
+		// Set LANG = DEFAULT_LANG on load
+		$this->LANG = $this->DEFAULT_LANG;
 
 		/*
 		 * BUG: By default
@@ -37,6 +34,106 @@ class Common {
 		 * so we need to load it again
 		 */
 		$this->CI->load->helper('html');
+	}
+	
+	/**
+	 * Set frontend choosen language
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function set_lang($lang)
+	{
+		$this->LANG = $lang;
+	}
+
+	/**
+	 * Set frontend URI language prefix
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function set_uri_prefix($prefix)
+	{
+		$this->URI_PREFIX = $prefix;
+	}
+
+	/**
+	 * Load i18n settings from database
+	 *
+	 * @access public
+	 * @return array
+	 */
+	function load_i18n_settings()
+	{
+		// Return values if already set
+		if ( (bool) $this->DEFAULT_LANG && count($this->LANG_AVAIL) > 0 )
+		{
+			return array($this->DEFAULT_LANG, $this->LANG_AVAIL);
+		}
+
+		// Default content language (ISO-639-1 code)
+		$lang = '';
+
+		// List of available content languages (ISO-639-1 codes)
+		$lang_avail = array();
+
+		$i18n_settings = json_decode($this->CI->storage->get_config('i18n'), true);
+		foreach($i18n_settings as $i18n_setting)
+		{
+			if ( (bool) $i18n_setting['default'] )
+			{
+				$lang = $i18n_setting['code'];
+				
+				// Default language is the first in array
+				$lang_avail = array_merge(array($i18n_setting['code'] => $i18n_setting['name']), $lang_avail);
+			}
+			else
+			{
+				$lang_avail[$i18n_setting['code']] = $i18n_setting['name'];
+			}
+		}
+		return array($lang, $lang_avail);
+	}
+
+	/**
+	 * Exit if is not a backend authorized session
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function backend_auth_check()
+	{
+		$account_id = $this->CI->session->userdata('account_id');
+		if ( (int) $account_id != 1 )
+		{
+			$data = array(
+				'is_logged' => FALSE,
+				'title' => $this->CI->config->item('site_name'),
+				'js' => array(
+					'/js/backend/jquery-1.7.1.min.js', 
+					'/js/backend/backend_account.js', 
+					'/js/backend/jquery.timers-1.2.js', 
+					'/js/backend/backend_client_warning.js'
+				),
+				'action' => '/' . uri_string(),
+				'elapsed_time' => $this->CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
+			);
+
+			// Localized texts
+			$data['elementar_authentication_title'] = $this->CI->lang->line('elementar_authentication_title');
+			$data['elementar_authentication_account'] = $this->CI->lang->line('elementar_authentication_account');
+			$data['elementar_authentication_password'] = $this->CI->lang->line('elementar_authentication_password');
+			$data['elementar_authentication_login'] = $this->CI->lang->line('elementar_authentication_login');
+
+			$data['elementar_exit'] = $this->CI->lang->line('elementar_exit');
+			$data['elementar_finished_in'] = $this->CI->lang->line('elementar_finished_in');
+			$data['elementar_finished_elapsed'] = $this->CI->lang->line('elementar_finished_elapsed');
+			$data['elementar_copyright'] = $this->CI->lang->line('elementar_copyright');
+
+			$login = $this->CI->load->view('backend/backend_login', $data, TRUE);
+			exit($login);
+		}
 	}
 	
 	/**
