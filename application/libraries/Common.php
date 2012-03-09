@@ -921,7 +921,8 @@ class Common {
 				/*
 				 * Check for enabled property
 				 */
-				if ( ! (bool) $class::$ENABLED ) continue;
+				eval("\$enabled = $class::\$ENABLED;");
+				if ( ! (bool) $enabled ) continue;
 
 				$addons[] = array(
 					'uri' => '/' . strtolower($class),
