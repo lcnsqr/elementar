@@ -1,4 +1,31 @@
-//<![CDATA[
+/**
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+
+/** 
+ * Backend Composite Fields Javascript
+ * 
+ * Client side code to manipulate the composite fields in backend
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 
 $(function() {
 
@@ -487,7 +514,7 @@ $(function() {
 	});
 
 	/*
-	 * Subir item de menu
+	 * Move item menu up
 	 */
 	$("a.menu_up").live("click", function(event) {
 		event.preventDefault();
@@ -500,7 +527,7 @@ $(function() {
 	});
 
 	/*
-	 * Descer item de menu
+	 * Move item menu down
 	 */
 	$("a.menu_down").live("click", function(event) {
 		event.preventDefault();
@@ -540,7 +567,7 @@ $(function() {
 	 * Youtube video gallery *
 	 *************************/
 	/*
-	 * Novo vídeo
+	 * New video
 	 */
 	$("a.youtube_add").live('click', function(event) {
 		event.preventDefault();
@@ -555,35 +582,35 @@ $(function() {
 	});
 
 	/*
-	 * Novo vídeo acima
+	 * New video up
 	 */
 	$("a.youtube_add_up").live('click', function(event) {
 		event.preventDefault();
 		var NewVideo = $(".youtube_item_template").first().clone();
-		// Redefinir
+		// empty field
 		$(NewVideo).removeClass("youtube_item_template");
 		$(NewVideo).css("display", "none");
-		// Inserir
+		// insert
 		$(this).parents('div.youtube_item').first().before(NewVideo);
 		$(NewVideo).show("fast", "easeInSine");
 	});
 
 	/*
-	 * Novo vídeo abaixo
+	 * New video below
 	 */
 	$("a.youtube_add_down").live('click', function(event) {
 		event.preventDefault();
 		var NewVideo = $(".youtube_item_template").first().clone();
-		// Redefinir
+		// Empty field
 		$(NewVideo).removeClass("youtube_item_template");
 		$(NewVideo).css("display", "none");
-		// Inserir
+		// Insert
 		$(this).parents('div.youtube_item').first().after(NewVideo);
 		$(NewVideo).show("fast", "easeInSine");
 	});
 
 	/*
-	 * Remove vídeo
+	 * Remove video
 	 */
 	$("a.youtube_delete").live('click', function(event) {
 		event.preventDefault();
@@ -605,7 +632,7 @@ $(function() {
 	});
 
 	/*
-	 * Subir vídeo
+	 * Move video up
 	 */
 	$("a.youtube_up").live("click", function(event) {
 		event.preventDefault();
@@ -618,7 +645,7 @@ $(function() {
 	});
 
 	/*
-	 * Descer vídeo
+	 * Move video down
 	 */
 	$("a.youtube_down").live("click", function(event) {
 		event.preventDefault();
@@ -650,5 +677,3 @@ $(function() {
 	});
 
 });
-
-//]]>

@@ -1,5 +1,35 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php 
+/*
+ *      Common.php
+ *      
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
 
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+/** 
+ * Class used by both backend 
+ * and frontend controllers 
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 class Common {
 
 	// CodeIgniter Instance
@@ -173,8 +203,16 @@ class Common {
 		}
 	}
 
-	/*
+	/**
 	 * Render backend html columns with label and input(s)
+	 * 
+	 * @access public
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @return string
 	 */
 	function render_form_field($type, $name, $sname, $description = NULL, $value = NULL, $i18n)
 	{
@@ -186,19 +224,13 @@ class Common {
 		$field .= div_close('<!-- form_window_column_label -->');
 		$field .= div_open(array('class' => 'form_window_column_input'));
 		
-		/*
-		 * Check multilanguage
-		 */
+		// Check multilanguage
 		if ( (bool) $i18n )
 		{
-			/*
-			 * Value array index is language code
-			 */
+			// Value array index is language code
 			$value = json_decode($value, TRUE);
 
-			/*
-			 * One tab link for each language
-			 */
+			// One tab link for each language
 			$input_lang_tab_links = array();
 			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
@@ -209,14 +241,11 @@ class Common {
 			$field .= ul($input_lang_tab_links);
 			//field .= hr(array('class' => 'clear'));
 			$field .= div_close('<!-- input_lang_menu -->');
-			/*
-			 * The input fields for each language
-			 */
+			
+			// The input fields for each language
 			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
-				/*
-				 * If language index does not exist, set empty
-				 */
+				// If language index does not exist, set empty
 				$value = ( $value == NULL ) ? array() : $value;
 				$lang_value = ( array_key_exists($lang_code, $value) ) ? $value[$lang_code] : '';
 	
@@ -232,9 +261,7 @@ class Common {
 		}
 		else
 		{
-			/*
-			 * No multilanguage, no language tabs
-			 */
+			// No multilanguage, no language tabs
 			$attributes = array('class' => 'input_lang_field');
 			$attributes['style'] = 'display: block;';
 			$field .= div_open($attributes);
@@ -248,11 +275,19 @@ class Common {
 		return $field;
 	}
 
-	function _render_form_custom_field($type, $name, $sname, $description, $value)
+	/**
+	 * Render correct HTML for each field type 
+	 * 
+	 * @access private
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @return string
+	 */
+	private function _render_form_custom_field($type, $name, $sname, $description, $value)
 	{
-		/*
-		 * Adequate input to field type
-		 */
+		// Adequate input to field type
 		switch ( $type )
 		{
 			case "name" :
@@ -312,9 +347,8 @@ class Common {
 			$html = div_open(array('class' => 'menu_parent'));
 			$html .= $this->_render_menu_field($menu);
 			$html .= div_close();
-			/*
-			 * The actual field
-			 */
+			
+			// The actual field
 			$attributes = array(
 				'class' => 'noform menu_actual_field',
 				'type' => 'hidden',
@@ -326,9 +360,8 @@ class Common {
 			$data = array(
 				'html' => $html
 			);
-			/*
-			 * Localized texts
-			 */
+
+			// Localized texts
 			$data['elementar_menu_name'] = $this->CI->lang->line('elementar_menu_name');
 			$data['elementar_menu_target'] = $this->CI->lang->line('elementar_menu_target');
 			$data['elementar_menu_add'] = $this->CI->lang->line('elementar_menu_add');
@@ -353,9 +386,8 @@ class Common {
 				'value' => $value
 			);
 			$field .= form_input($attributes);
-			/*
-			 * File field View variables
-			 */
+			
+			// File field View variables
 			$data = array();
 			$data['input_name'] = $sname;
 			if ( $value != '' )
@@ -376,9 +408,7 @@ class Common {
 				$data['size'] = '';
 			}
 
-			/*
-			 * Localized texts
-			 */
+			// Localized texts
 			$data['elementar_file_description'] = $this->CI->lang->line('elementar_file_description');
 			$data['elementar_file_uri'] = $this->CI->lang->line('elementar_file_uri');
 			$data['elementar_file_type'] = $this->CI->lang->line('elementar_file_type');
@@ -404,16 +434,13 @@ class Common {
 				'value' => $value
 			);
 			$field .= form_input($attributes);
-			/*
-			 * Render gallery field
-			 */
+			
+			// Render gallery field
 			$data = array(
 				'gallery' => ($value != '') ? json_decode($value, TRUE) : array()
 			);
 
-			/*
-			 * Localized texts
-			 */
+			// Localized texts
 			$data['elementar_file_description'] = $this->CI->lang->line('elementar_file_description');
 			$data['elementar_file_uri'] = $this->CI->lang->line('elementar_file_uri');
 			$data['elementar_file_type'] = $this->CI->lang->line('elementar_file_type');
@@ -433,16 +460,13 @@ class Common {
 
 			case "youtube_gallery" :
 			$field = div_open(array('class' => 'youtube_gallery_field'));
-			/*
-			 * Render youtube_gallery field
-			 */
+			
+			// Render youtube_gallery field
 			$data = array(
 				'videos' => json_decode($value, TRUE) // decode as associative array
 			);
 
-			/*
-			 * Localized texts
-			 */
+			// Localized texts
 			$data['elementar_youtube_description'] = $this->CI->lang->line('elementar_youtube_description');
 			$data['elementar_youtube_url'] = $this->CI->lang->line('elementar_youtube_url');
 			$data['elementar_youtube_add'] = $this->CI->lang->line('elementar_youtube_add');
@@ -453,9 +477,8 @@ class Common {
 			$data['elementar_youtube_new_below'] = $this->CI->lang->line('elementar_youtube_new_below');
 
 			$field .= $this->CI->load->view('backend/backend_content_youtube_gallery_field', $data, true);
-			/*
-			 * The actual field
-			 */
+			
+			// The actual field
 			$attributes = array(
 				'class' => 'noform youtube_gallery_actual_field',
 				'type' => 'hidden',
@@ -478,9 +501,7 @@ class Common {
 			break;
 
 			case "index" :
-			/*
-			 * index content root and filters form
-			 */
+			// index content root and filters form
 			$filter = ( $value != '' ) ? json_decode($value, TRUE) : array();
 			if ( (bool) count($filter) )
 			{
@@ -507,9 +528,7 @@ class Common {
 			$field .= $form;
 			$field .= div_close();
 
-			/*
-			 * The actual field
-			 */
+			// The actual field
 			$attributes = array(
 				'class' => 'noform index_actual_field',
 				'type' => 'hidden',
@@ -525,24 +544,27 @@ class Common {
 		return $field;
 	}
 	
-	function _render_menu_field($menus)
+	/**
+	 * Render HTML form for menu creation
+	 * 
+	 * @access private
+	 * @param array
+	 * @return string
+	 */
+	private function _render_menu_field($menus)
 	{
 		$html = '';
 		$targets = $this->_render_target_listing();
 		foreach ( $menus as $menu )
 		{
-			/*
-			 * Render menu field
-			 */
+			// Render menu field
 			$data = array(
 				'name' => $menu['name'], 
 				'target' => $menu['target'], 
 				'targets' => $targets
 			);
 			
-			/*
-			 * Localized texts
-			 */
+			// Localized texts
 			$data['elementar_menu_name'] = $this->CI->lang->line('elementar_menu_name');
 			$data['elementar_menu_target'] = $this->CI->lang->line('elementar_menu_target');
 			$data['elementar_menu_add'] = $this->CI->lang->line('elementar_menu_add');
@@ -568,13 +590,23 @@ class Common {
 		return $html;
 	}
 
-	function _render_index_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $depth = 1)
+	/**
+	 * Index field HTML elements
+	 * 
+	 * @access private
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param integer
+	 * @param integer
+	 * @return string
+	 */
+	private function _render_index_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $depth = 1)
 	{
 		if ( ! (bool) $content_id )
 		{
-			/*
-			 * No content_id, dont render form
-			 */
+			// No content_id, dont render form
 			return NULL;
 		}
 
@@ -603,23 +635,23 @@ class Common {
 		return $this->CI->load->view('backend/backend_content_index_field', $data, true);
 	}
 	
-	function _render_target_listing()
+	/**
+	 * List of links to all contents
+	 *
+	 * @access private
+	 * @return string
+	 */
+	private function _render_target_listing()
 	{
-		/*
-		 * dropdown target listing
-		 */
+		// dropdown target listing
 		$listing = array();
 		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_inside_targets') . '</strong>');
-		/*
-		 * Conteúdos
-		 */
+		// Contents
 		foreach ( $this->CI->storage->get_contents() as $content )
 		{
 			$listing[] = $this->breadcrumb_content($content['id']);
 		}
-		/*
-		 * Addons
-		 */
+		// Addons
 		foreach ( $this->load_addons() as $addon ) 
 		{
 			$listing[] = $this->breadcrumb_path($addon['uri']);
@@ -634,7 +666,7 @@ class Common {
 	            // skip default method
 	            if ( $method == 'index' || $method == 'main' ) continue;
 	            
-					// skip XHR (ajax) methods
+				// skip XHR (ajax) methods
 	            if ( substr($method, 0, 4) == 'xhr_' ) continue;
 	
 	            // skip old-style constructor
@@ -655,16 +687,18 @@ class Common {
 		return $targets;
 	}
 
-	function _render_contents_listing()
+	/**
+	 * List of contents
+	 * 
+	 * @access private
+	 * @return string
+	 */
+	private function _render_contents_listing()
 	{
-		/*
-		 * dropdown target listing
-		 */
+		// dropdown target listing
 		$listing = array();
 		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_contents') . '</strong>');
-		/*
-		 * Conteúdos
-		 */
+		// Contents
 		foreach ( $this->CI->storage->get_contents_by_parent() as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
@@ -682,33 +716,31 @@ class Common {
 	}
 
 	/*
-	 * Is an URI the current location ?
+	 * Is an URI the current location?
+	 * 
+	 * @access private
+	 * @param string
+	 * @return boolean
 	 */
-	function _uri_is_current($uri)
+	private function _uri_is_current($uri)
 	{
 		if ( $this->CI->uri->total_segments() == 0 )
 		{
-			/*
-			 * No URI segments, it's the home page
-			 */
+			// No URI segments, it's the home page
 			if ( '/' == $uri ) 
 			{
 				return TRUE;
 			}
 		}
 		
-		/*
-		 * trim out trailing slash
-		 */
+		// trim out trailing slash
 		$current_uri = '/' . $this->CI->uri->uri_string();
 		if ( substr($current_uri, -1) == '/' )
 		{
 			$current_uri = substr($current_uri, 0, -1);
 		}
 
-		/*
-		 * Check for localized home
-		 */
+		// Check for localized home
 		if ( $this->CI->uri->total_segments() == 1 )
 		{
 			if ( $this->URI_PREFIX == $current_uri && $current_uri . '/' == $uri )
@@ -717,9 +749,7 @@ class Common {
 			}
 		} 
 		
-		/*
-		 * Non root URI
-		 */
+		// Non root URI
 		if ( $uri != '/' )
 		{
 			if ( $current_uri == $uri )
@@ -728,34 +758,30 @@ class Common {
 			}
 		}
 
-		/*
-		 * Defaults to false
-		 */
+		// Defaults to false
 		return FALSE;
 	}
 
-	/*
-	 * Render menu
+	/**
+	 * Render HTML menu
+	 * 
+	 * @access private
+	 * @param array
+	 * @return string
 	 */
-	function _make_menu($menu)
+	private function _make_menu($menu)
 	{
 		if ( ! is_array($menu) )
 		{
 			return NULL;
 		}
-		/*
-		 * Build menu items links
-		 */
+		// Build menu items links
 		$menu_links = array();
 		while ( $menu_item = current($menu) )
 		{
-			/*
-			 * Mark current menu
-			 */
+			// Mark current menu
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $menu_item['target']) ) ? 'menu_item current' : 'menu_item';
-			/*
-			 * Set first and last menu for styling
-			 */
+			// Set first and last class selectors in menu for styling
 			$class .= ( key($menu) == 0 ) ? ' first' : '';
 			$class .= ( key($menu) == ( count($menu) - 1 ) ) ? ' last' : '';
 			$attributes = array(
@@ -768,9 +794,7 @@ class Common {
 			$submenu = $menu_item['menu'];
 			if ( ! (bool) $submenu )
 			{
-				/*
-				 * No submenu
-				 */
+				// No submenu
 				$menu_links[] = array(
 					'link' => $link,
 					'submenu' => NULL
@@ -778,10 +802,7 @@ class Common {
 			}
 			else
 			{
-				/*
-				 * Recursive 
-				 * through submenu
-				 */
+				// Recursive through submenu
 				$menu_links[] = array(
 					'link' => $link,
 					'submenu' => $this->_make_menu($submenu)
@@ -794,14 +815,18 @@ class Common {
 
 	/**
 	 * Clickable path (breadcrumb) for content
+	 * 
+	 * @access public
+	 * @param integer
+	 * @param string
+	 * @param string
+	 * @return string
 	 */
 	function breadcrumb_content($content_id, $sep = "&raquo;", $previous = "")
 	{
 		$breadcrumb = "";
 		
-		/*
-		 * With content_id = 1, just return home link
-		 */
+		// With content_id = 1, just return home link
 		if ( (int)$content_id === 1 )
 		{
 			$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" ;
@@ -812,9 +837,7 @@ class Common {
 		
 		if ( count( $content ) > 0 )
 		{
-			/*
-			 * Localized name
-			 */
+			// Localized name
 			$names = json_decode($content['name'], TRUE);
 			$name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 			$content_uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($content_id);
@@ -832,6 +855,11 @@ class Common {
 
 	/**
 	 * Clickable path (breadcrumb) for element
+	 * 
+	 * @access public
+	 * @param integer
+	 * @param string
+	 * @return string
 	 */
 	function breadcrumb_element($element_id, $sep = "&raquo;")
 	{
@@ -841,9 +869,7 @@ class Common {
 		
 		if ( count($element) > 0 )
 		{
-			/*
-			 * Localized name
-			 */
+			// Localized name
 			$name = $element['name'];
 			$element_uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($element['parent_id']) . "#" . $element['sname'];
 			if ( (bool) $element['parent_id'] )
@@ -858,17 +884,20 @@ class Common {
 		return $breadcrumb;
 	}
 	
-	/*
+	/**
 	 * Generate breadcrumb from some path
+	 * 
+	 * @access public
+	 * @param string
+	 * @param string
+	 * @return string
 	 */
 	function breadcrumb_path($path, $sep = "&raquo;")
 	{
 		$breadcrumb = "<a href=\"/\" >" . $this->CI->config->item('site_name') . "</a>" ;
 		$uri = "";
 		
-		/*
-		 * With no path, just return home link
-		 */
+		// With no path, just return home link
 		if ( (bool) $path == FALSE )
 		{
 			return $breadcrumb;
@@ -893,6 +922,13 @@ class Common {
 		return $breadcrumb;
 	}
 
+	/**
+	 * Load addon classes
+	 * 
+	 * @access public
+	 * @param array
+	 * @return array
+	 */
 	function load_addons($ignore = NULL)
 	{
 		$ignore = ( NULL == $ignore ) ? array() : $ignore;
@@ -901,9 +937,7 @@ class Common {
 		$addons_path = APPPATH.'addons/';
 		foreach(get_dir_file_info($addons_path, TRUE) as $addon) 
 		{
-			/*
-			 * Skip anything other than PHP files
-			 */
+			// Skip anything other than PHP files
 			if ( substr($addon['name'], -4) == '.php' )
 			{
 				list($class, $ext) = explode('.', ucfirst($addon['name']));
@@ -912,15 +946,11 @@ class Common {
 				
 				if ( ! class_exists($class) )
 				{
-					/*
-					 * Load addon class
-					 */
+					// Load addon class
 					include($addon['relative_path'] . $addon['name']);
 				}
 
-				/*
-				 * Check for enabled property
-				 */
+				// Check for enabled property
 				eval("\$enabled = $class::\$ENABLED;");
 				if ( ! (bool) $enabled ) continue;
 
@@ -936,12 +966,16 @@ class Common {
 		return $addons;
 	}
 
+	/**
+	 * sitemap.xml generation
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function sitemap()
 	{
 		$urls = array();
-		/*
-		 * Database contents
-		 */
+		// Database contents
 		foreach ( $this->CI->storage->get_contents() as $content )
 		{
 			$priority = $this->CI->storage->get_meta_field($content['id'], 'priority');
@@ -949,9 +983,7 @@ class Common {
 			$url = $this->CI->storage->get_meta_field($content['id'], 'url');
 			if ( $url == '' )
 			{
-				/*
-				 * Using default content's URL
-				 */
+				// Using default content's URL
 				$url = site_url($uri);
 			}
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
@@ -962,9 +994,7 @@ class Common {
 				'priority' => $priority
 			);
 		}
-		/*
-		 * Plugins
-		 */
+		// Addons
 		foreach ( $this->load_addons() as $addon ) 
 		{
 			$urls[] = array(
@@ -984,7 +1014,7 @@ class Common {
 	            // skip default method
 	            if ( $method == 'index' || $method == 'main' ) continue;
 	            
-					// skip XHR (ajax) methods
+				// skip XHR (ajax) methods
 	            if ( substr($method, 0, 4) == 'xhr_' ) continue;
 	
 	            // skip old-style constructor
@@ -1006,6 +1036,8 @@ class Common {
 
 	/**
 	 * Convert non-ascii and other characters to ascii and underscores
+	 * 
+	 * @access public
 	 * @param string $string Input string
 	 * @return string Converted string
 	 */
@@ -1042,16 +1074,20 @@ class Common {
 		return $string;
 	}
 	
+	/**
+	 * Render field contents
+	 * 
+	 * @access public
+	 * @param array
+	 * @param array
+	 * @return string/array
+	 */
 	function render_field($field_attr, $field_value)
 	{
-		/*
-		 * Check for multilanguage field
-		 */
+		// Check for multilanguage field
 		if ( (bool) $field_attr['i18n'] )
 		{
-			/*
-			 * Choose language
-			 */
+			// Choose language
 			$field_values = json_decode($field_value, TRUE);
 			$field_value = (array_key_exists($this->LANG, $field_values)) ? $field_values[$this->LANG] : '';
 		}
@@ -1129,9 +1165,7 @@ class Common {
 			{
 				if ( count( $video ) > 0 )
 				{
-					/*
-					 * YouTube video id
-					 */
+					// YouTube video id
 					$video_url_segments = parse_url($video['url']);
 					parse_str($video_url_segments['query'], $variables);
 					$video_id = $variables['v'];
@@ -1157,9 +1191,7 @@ class Common {
 			{
 				$field_value = $field_values[$this->DEFAULT_LANG];
 			}
-			/*
-			 * Generate links with semantic classes
-			 */
+			// Generate links with semantic classes
 			return $this->_make_menu(json_decode($field_value, TRUE));
 			break;
 			
@@ -1172,22 +1204,16 @@ class Common {
 			{
 				$field_value = $field_values[$this->DEFAULT_LANG];
 			}
-			/*
-			 * Index filter values
-			 */
+			// Index filter values
 			$filter = json_decode($field_value, TRUE);
 			$content_id = $filter['content_id'];
 			$order_by = $filter['order_by'];
 			$direction = $filter['direction'];
 			$limit = (int) $filter['limit'];
 			$depth = (int) $filter['depth'];
-			/*
-			 * Index listing
-			 */
+			// Index listing
 			$index = array();
-			/*
-			 * localized parent title
-			 */
+			// localized parent title
 			$titles = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
 			$content_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			$content_uri = $this->CI->storage->get_content_uri($content_id);
@@ -1225,13 +1251,25 @@ class Common {
 		}
 	}
 	
-	function _index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count = 1)
+	/**
+	 * Generate HTML for index field content
+	 * 
+	 * @access private
+	 * @param integer
+	 * @param string
+	 * @param string
+	 * @param integer
+	 * @param integer
+	 * @param integer
+	 * @return string
+	 */
+	private function _index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count = 1)
 	{
 		$children = $this->CI->storage->get_content_children($content_id);
 		$children = ( is_array($children) ) ? $children : array();
 		/*
-		 * Perform filtering first by the specified
-		 * ordering field
+		 * Perform filtering first by the 
+		 * specified ordering field
 		 */
 		$filter = new Filter($order_by, $direction);
 		if ( $order_by == 'created' || $order_by == 'modified' )
@@ -1241,9 +1279,7 @@ class Common {
 		$filter->set_lang($this->LANG);
 		usort($children, array($filter, 'sortElement'));
 
-		/*
-		 * Limit number of elements (if specified)
-		 */
+		// Limit number of elements (if specified)
 		if ( (bool) $limit )
 		{
 			$children = array_slice($children, 0, $limit);
@@ -1254,9 +1290,7 @@ class Common {
 		foreach($children as $child)
 		{
 			$content_id = $child['id'];
-			/*
-			 * localized title
-			 */
+			// localized title
 			$titles = json_decode($child['name'], TRUE);
 			$content_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			$content_uri = $this->CI->storage->get_content_uri($content_id);
@@ -1281,6 +1315,13 @@ class Common {
 		return $index;
 	}
 
+	/**
+	 * Render all content's fields values
+	 * 
+	 * @access public
+	 * @param integer
+	 * @return array
+	 */
 	function render_content($content_id = 1)
 	{
 		$content = array();
@@ -1295,21 +1336,15 @@ class Common {
 			$content[$field['sname']] = $this->render_field($field, $field['value']);			
 		}
 		
-		/*
-		 * Children contents listing
-		 */
+		// Children contents listing
 		$children = $this->CI->storage->get_contents_by_parent($content_id);
 		if ( (bool) $children )
 		{
-			/*
-			 * Rename keys to avoid conflict with parent variable names in template
-			 */
+			// Rename keys to avoid conflict with parent variable names in template
 			$children_variables = array();
 			foreach ( $children as $child )
 			{
-				/*
-				 * Localized name
-				 */
+				// Localized name
 				$names = json_decode($child['name'], TRUE);
 				$children_variables[] = array(
 					'id' => $child['id'],
@@ -1322,24 +1357,18 @@ class Common {
 			$content['children'] = $children_variables;
 		}
 
-		/*
-		 * Parent children contents → brothers :)
-		 */
+		// Parent children contents → brothers :)
 		if ( $content_id != 1 )
 		{
 			$parent_id = $this->CI->storage->get_content_parent_id($content_id);
 			$brothers = $this->CI->storage->get_contents_by_parent($parent_id);
 			if ( (bool) $brothers )
 			{
-				/*
-				 * Rename keys to avoid conflict with parent variable names in template
-				 */
+				// Rename keys to avoid conflict with parent variable names in template
 				$brothers_variables = array();
 				foreach ( $brothers as $brother )
 				{
-					/*
-					 * Localized name
-					 */
+					// Localized name
 					$names = json_decode($brother['name'], TRUE);
 					$brothers_variables[] = array(
 						'id' => $brother['id'],
@@ -1355,6 +1384,14 @@ class Common {
 		return $content;
 	}
 
+	/**
+	 * Render all element's fields values
+	 * 
+	 * @access public
+	 * @param integer
+	 * @param string
+	 * @return array
+	 */
 	function render_elements($content_id = 1, $filter) 
 	{
 		$elements = $this->CI->storage->get_elements_by_parent_spreaded($content_id);
@@ -1369,9 +1406,7 @@ class Common {
 			$element_type_id = $element['type_id'];
 			$element_type = $element['type'];
 			
-			/*
-			 * Position in array
-			 */
+			// Position in array
 			if ( 0 == $key )
 			{
 				$lineup = 'first';
@@ -1385,22 +1420,16 @@ class Common {
 				$lineup = 'middle';
 			}
 			
-			/*
-			 * Initialize element type inner array
-			 */
+			// Initialize element type inner array
 			if ( ! array_key_exists($element['type'], $data) )
 			{
 				$data[$element['type']] = array();
 			}
 
-			/*
-			 * Render loop entries by element type sname
-			 */
+			// Render loop entries by element type sname
 			$fields = $this->CI->storage->get_element_fields($element['id']);
 
-			/*
-			 * To be added in the element type array
-			 */
+			// To be added in the element type array
 			$entry = array(
 				'id' => $element['id'],
 				'name' => $element['name'],
@@ -1410,20 +1439,14 @@ class Common {
 				'lineup' => $lineup
 			);
 			
-			/*
-			 * Custom fields
-			 */
+			// Custom fields
 			$data[$element['sname'] . '.id'] = $element['id'];
 			foreach ($fields as $field)
 			{
-				/*
-				 * Format field value depending on field type
-				 */
+				// Format field value depending on field type
 				$rendered_value = $this->render_field($field, $field['value']);
 
-				/*
-				 * element type array item
-				 */
+				// element type array item
 				$entry[$field['sname']] = $rendered_value;
 				
 				// Add element direct access (without a template loop)
@@ -1435,9 +1458,7 @@ class Common {
 				$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;
 			}
 			
-			/*
-			 * Add element entry as a pseudo variable pair (loop)
-			 */
+			// Add element entry as a pseudo variable pair (loop)
 			$data[$element['type']][] = $entry;
 		}
 
@@ -1478,6 +1499,13 @@ class Common {
 		return $data;
 	}
 
+	/**
+	 * Name associated to a language code
+	 * 
+	 * @access public
+	 * @param string
+	 * @return string
+	 */
 	function which_language($code)
 	{
 		$languages = array(
@@ -1678,7 +1706,7 @@ class Common {
 }
 
 /*
- * Element filtering callback
+ * Element filtering callback class
  * Sorting criteria (like in SQL, ASC or DESC)
  */
 class Filter {
@@ -1718,9 +1746,7 @@ class Filter {
 		$previous = $a[$this->order_by];
 		$next = $b[$this->order_by];
 
-		/*
-		 * Use apropriate language
-		 */
+		// Use apropriate language
 		if ( (bool) $this->LANG )
 		{
 			$localized = json_decode($a[$this->order_by], TRUE);
@@ -1729,9 +1755,7 @@ class Filter {
 			$next = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
 		}
 
-		/*
-		 * Convert to unix timestamp
-		 */
+		// Convert to unix timestamp
 		if ( (bool) $this->is_date )
 		{
 			$previous = strtotime($a[$this->order_by]);

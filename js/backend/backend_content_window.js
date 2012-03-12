@@ -1,4 +1,32 @@
-//<![CDATA[
+/**
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+
+/** 
+ * Backend Content Window Javascript
+ * 
+ * Client side code for handling Content/element 
+ * load/saving action in backend main window
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 
 $(function() {
 
@@ -21,11 +49,11 @@ $(function() {
 		}
 	});
 
-	// Salvar meta fields
+	// Save meta fields
 	$("#button_meta_save").live('click', function(event) {
 		event.preventDefault();
 		
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/editor/xhr_write_meta", $(".noform").serialize(), function(data){
@@ -36,12 +64,12 @@ $(function() {
 				showClientWarning(data.message);
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
-	// Seleção do tipo do elemento
+	// Element type selection
 	
 	$(".dropdown_items_listing_element_type_target").live('click', function(event) {
 		event.preventDefault();
@@ -55,11 +83,11 @@ $(function() {
 		}
 	});
 
-	// Criar formulário de novo elemento em conteúdo
+	// Create a new element under a content
 	$("a#choose_element_type_for_parent_id").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var parent_id = $(this).attr("href");
@@ -83,12 +111,12 @@ $(function() {
 			else {
 				showClientWarning(data.message);
 			}
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
-	// Descartar formulário novo elemento
+	// Discard new element form
 	$("#button_element_discard").live('click', function(event) {
 		event.preventDefault();
 		$("#element_editor_form").hide('slow', function() {
@@ -96,11 +124,11 @@ $(function() {
 		});
 	});
 
-	// Salvar novo elemento
+	// Save new element
 	$("#button_element_save").live('click', function(event) {
 		event.preventDefault();
 		
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		/*
@@ -128,21 +156,21 @@ $(function() {
 
 							showClientWarning(message);
 
-							// Bloqueio
+							// Blocking
 							$("#blocker").stop().fadeOut("fast");
 						});
 					}
 				}, "json");
 			}
 			else {
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 				showClientWarning(data.message);
 			}
 		}, "json");
 	});
 
-	// Seleção do tipo do conteúdo
+	// Content type selection
 	$(".dropdown_items_listing_content_type_target").live('click', function(event) {
 		event.preventDefault();
 		
@@ -155,11 +183,11 @@ $(function() {
 		}
 	});
 
-	// Criar conteúdo
+	// Content creation form
 	$("a#choose_content_type_for_parent_id").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var parent_id = $(this).attr("href");
@@ -183,12 +211,12 @@ $(function() {
 			else {
 				showClientWarning(data.message);
 			}
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
-	// Descartar formulário novo conteúdo
+	// Discard new content form
 	$("#button_content_discard").live('click', function(event) {
 		event.preventDefault();
 		$("#content_editor_form").hide('slow', function() {
@@ -231,11 +259,11 @@ $(function() {
 		$(file_details).find('span').html('');
 	});
 
-	// Salvar conteúdo
+	// Save content
 	$("#button_content_save").live('click', function(event) {
 		event.preventDefault();
 		
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		/*
@@ -262,14 +290,14 @@ $(function() {
 
 							showClientWarning(message);
 
-							// Bloqueio
+							// Blocking
 							$("#blocker").stop().fadeOut("fast");
 						});
 					}
 				}, "json");
 			}
 			else {
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 				showClientWarning(data.message);
 			}
@@ -352,7 +380,7 @@ $(function() {
 	$('.save_filter').live('click', function(event)
 	{
 		event.preventDefault();
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var filter_form = $(this).parents('.filter_forms').find('div.order_by');
@@ -371,7 +399,7 @@ $(function() {
 				
 				showClientWarning(data.message);
 			}
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 
@@ -472,12 +500,12 @@ $(function() {
 	});
 	
 	/* 
-	 * Carregar formulário new content_type
+	 * Load new content_type form
 	 */
 	$("a#content_type_create").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/editor/xhr_render_content_type_form", function(data){
@@ -487,18 +515,18 @@ $(function() {
 			else {
 				showClientWarning(data.message);
 			}
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
 	/* 
-	 * Carregar formulário new element_type
+	 * Load new element_type form
 	 */
 	$("a#element_type_create").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/editor/xhr_render_element_type_form", function(data){
@@ -508,12 +536,12 @@ $(function() {
 			else {
 				showClientWarning(data.message);
 			}
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
-	// Descartar formulário novo tipo de conteúdo
+	// Discard new content type form
 	$(".type_define_new_form").live('reset', function(event) {
 		event.preventDefault();
 		$("#type_define_new_container").hide('slow', function() {
@@ -522,11 +550,11 @@ $(function() {
 	});
 	
 	/*
-	 * Criar content_type
+	 * Create a content_type
 	 */
 	$("#content_type_define_new_form").live('submit', function(event) {
 		event.preventDefault();
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		$.post("/backend/editor/xhr_write_content_type", $(this).serialize(), function(data){
@@ -542,7 +570,7 @@ $(function() {
 							$("#content_window").html(data.html).show();
 						}
 			
-						// Bloqueio
+						// Blocking
 						$("#blocker").stop().fadeOut("fast");
 					}, "json");
 
@@ -550,18 +578,18 @@ $(function() {
 			}
 			else {
 				showClientWarning(data.message);
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 			}
 		}, "json");
 	});
 
 	/*
-	 * Criar element_type
+	 * Create a element type
 	 */
 	$("#element_type_define_new_form").live('submit', function(event) {
 		event.preventDefault();
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 		$.post("/backend/editor/xhr_write_element_type", $(this).serialize(), function(data){
 			if ( data.done == true ) {
@@ -577,21 +605,21 @@ $(function() {
 					if ( data.done == true ) {
 						$("#content_window").html(data.html).show();
 					}
-					// Bloqueio
+					// Blocking
 					$("#blocker").stop().fadeOut("fast");
 				}, "json");
 
 			}
 			else {
 				showClientWarning(data.message);
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 			}
 		}, "json");
 	});
 
 	/*
-	 * Clonar e Redefinir nomes dos campos clonados (new content type field)
+	 * Clone and redefine field type from template (new content type field)
 	 */
 	$("a#add_type_field").live('click', function(event) {
 		event.preventDefault();
@@ -601,7 +629,7 @@ $(function() {
 		var field_type_label = $(NewField).find("label[for='field_type_0']");
 		var field_type = $(NewField).find("#field_type_0");
 		
-		// Redefinir
+		// Redefine
 		var id = $("#type_define_new_container").find(".type_define_new_field").length;
 		$(NewField).attr("id", "type_define_new_field_"+id);
 		$(field_label).attr("for", "field_"+id);
@@ -613,11 +641,11 @@ $(function() {
 		$(field_type).attr("name", "field_type_"+id);
 		$(NewField).css("display", "none");
 		
-		// Inserir
+		// Insert
 		$(this).before(NewField);
 		$(NewField).show("slow");
 
-		// field count
+		// Field count (to tell the server controller)
 		var count = $("#type_define_new_container").find(".type_define_new_field").length;
 		$("#type_define_new_container").find("input[name='field_count']").val(count);
 		
@@ -656,7 +684,7 @@ $(function() {
 		}
 
 		if ( overwrite == true ) {
-			// Bloqueio
+			// Blocking
 			$("#blocker").fadeIn("fast");
 
 			/*
@@ -672,7 +700,7 @@ $(function() {
 				else {
 					showClientWarning(data.message);
 				}
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 			}, "json");
 		}
@@ -710,5 +738,3 @@ $(function() {
 	});
 	
 });
-
-//]]>

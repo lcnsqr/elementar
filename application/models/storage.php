@@ -192,7 +192,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar template_id do conteúdo
+	 * Write template_id of a content
 	 */
 	function put_content_template_id($content_id, $template_id)
 	{
@@ -204,7 +204,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Remover template
+	 * Remove template
 	 */
 	function delete_template($template_id)
 	{
@@ -212,7 +212,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar content type
+	 * Write content type
 	 */
 	function put_content_type($name, $template_id)
 	{
@@ -246,7 +246,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar content type field
+	 * Write content type field
 	 */
 	function put_content_type_field($type_id, $name, $sname, $field_type_id)
 	{
@@ -260,7 +260,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar element type
+	 * Write element type
 	 */
 	function put_element_type($name, $sname)
 	{
@@ -294,7 +294,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar element type field
+	 * Write element type field
 	 */
 	function put_element_type_field($type_id, $name, $sname, $field_type_id)
 	{
@@ -610,7 +610,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar conteúdo
+	 * Write content
 	 */
 	function put_content($name, $sname, $content_type_id)
 	{
@@ -632,7 +632,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Renomear conteúdo
+	 * Rename content
 	 */
 	function put_content_name($content_id, $name, $sname)
 	{
@@ -646,7 +646,7 @@ class Storage extends CI_Model {
 	}
 		
 	/*
-	 * Gravar elemento
+	 * Write element
 	 */
 	function put_element($name, $sname, $element_type_id)
 	{
@@ -668,7 +668,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Renomear elemento
+	 * Rename element
 	 */
 	function put_element_name($element_id, $name, $sname)
 	{
@@ -682,7 +682,7 @@ class Storage extends CI_Model {
 	}
 		
 	/*
-	 * Gravar status do conteúdo
+	 * Write content status
 	 */
 	function put_content_status($content_id, $status)
 	{
@@ -694,7 +694,7 @@ class Storage extends CI_Model {
 	}
 		
 	/*
-	 * Gravar data de modificaçào do conteúdo
+	 * Write content modification time
 	 */
 	function put_content_modified($content_id, $modified = NULL)
 	{
@@ -710,7 +710,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar campo de conteúdo
+	 * write content field
 	 */
 	function put_content_field($content_id, $content_type_field_id, $value)
 	{
@@ -766,7 +766,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar campo de elemento
+	 * Write element field
 	 */
 	function put_element_field($element_id, $element_type_field_id, $value)
 	{
@@ -821,7 +821,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar status do elemento
+	 * Write element status
 	 */
 	function put_element_status($element_id, $status)
 	{
@@ -833,7 +833,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar data de modificação do elemento
+	 * Write element modification time
 	 */
 	function put_element_modified($element_id, $modified = NULL)
 	{
@@ -849,7 +849,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar spread do elemento
+	 * Write element spread attribute
 	 */
 	function put_element_spread($element_id, $spread)
 	{
@@ -1217,7 +1217,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar todos campos de um conteúdo
+	 * Get all field of a content
 	 */
 	function get_content_fields($content_id)
 	{
@@ -1247,7 +1247,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar campo de conteúdo
+	 * Get a content field
 	 */
 	function get_content_field($content_id, $content_type_field_id)
 	{
@@ -1269,7 +1269,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar todos campos de um elementos
+	 * Get all fields of an element
 	 */
 	function get_element_fields($element_id)
 	{
@@ -1299,7 +1299,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar campo de elemento
+	 * Get an element field
 	 */
 	function get_element_field($element_id, $element_type_field_id)
 	{
@@ -1325,7 +1325,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar id do campo de conteúdo
+	 * Get anthe id of a content field
 	 */
 	function get_content_field_id($content_id, $content_type_field_id)
 	{
@@ -1346,8 +1346,8 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar detalhes do tipo do campo
-	 * a partir do próprio campo
+	 * Get the details about a field type
+	 * from the field itself
 	 */
 	function get_content_field_field_type($field_id)
 	{
@@ -1370,13 +1370,12 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar pai de conteúdo
+	 * Write content parent
 	 */
 	function put_content_parent($content_id, $parent_id)
 	{
 		/*
-		 * Verificar se conteúdo já está
-		 * associado ao pai em qestão
+		 * Check if it is already associated
 		 */
 		$this->elementar->select('id');
 		$this->elementar->from('content_parent');
@@ -1396,7 +1395,7 @@ class Storage extends CI_Model {
 		$this->elementar->delete('content_parent');
 
 		/*
-		 * Criar relacionamento
+		 * Write association
 		 */
 		$data = array(
 			'content_id' => intval($content_id),
@@ -1410,13 +1409,12 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Gravar pai de elemento
+	 * Write element parent
 	 */
 	function put_element_parent($element_id, $parent_id)
 	{
 		/*
-		 * Verificar se elemento já está
-		 * associado a pai em qestão
+		 * Check if is already associated
 		 */
 		$this->elementar->select('id');
 		$this->elementar->from('element_parent');
@@ -1436,7 +1434,7 @@ class Storage extends CI_Model {
 		$this->elementar->delete('element_parent');
 
 		/*
-		 * Criar relacionamento
+		 * Write association
 		 */
 		$data = array(
 			'element_id' => $element_id,
@@ -1845,7 +1843,7 @@ class Storage extends CI_Model {
 	function get_elements_by_parent_spreaded($content_id = 1, $elements = NULL)
 	{
 		/*
-		 * Elemento associado/herdado a conteúdo
+		 * Element associated/inherited to/from a content
 		 */
 		$this->elementar->select('element.id, element_type.id as type_id, element_type.sname as type, element_type.name as type_name, element.name, element.sname, element.created, element.modified, content_parent.parent_id');
 		$this->elementar->from('element');
@@ -2064,7 +2062,7 @@ class Storage extends CI_Model {
 			$uri = "/" . $row->sname;
 			
 			/*
-			 * Checar por pai 
+			 * Check for parent
 			 */
 			$this->elementar->select('parent_id');
 			$this->elementar->from('content_parent');
@@ -2082,7 +2080,7 @@ class Storage extends CI_Model {
 	}
 	
 	/*
-	 * Criar/Atualizar sessão de upload de imagem
+	 * Create/update file upload session
 	 */
 	function put_upload_session($upload_session_id = NULL, $field = NULL, $value = NULL)
 	{
@@ -2119,7 +2117,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Verificar término da sessão de upload de imagem
+	 * Check if file upload session is done
 	 */
 	function get_upload_session_done($upload_session_id)
 	{
@@ -2139,7 +2137,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar caminho para o arquivo enviado
+	 * Get path for the uploaded file
 	 */
 	function get_upload_session_uri($upload_session_id)
 	{
@@ -2159,7 +2157,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Pegar nome do arquivo enviado
+	 * Get uploaded file name
 	 */
 	function get_upload_session_name($upload_session_id)
 	{
@@ -2179,7 +2177,7 @@ class Storage extends CI_Model {
 	}
 
 	/*
-	 * Remover conteúdo
+	 * Remove content
 	 */
 	function delete_content($content_id)
 	{
@@ -2220,7 +2218,7 @@ class Storage extends CI_Model {
 	}
 	
 	/*
-	 * Remover elemento
+	 * Remove element
 	 */
 	function delete_element($element_id)
 	{

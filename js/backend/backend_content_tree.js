@@ -1,4 +1,31 @@
-//<![CDATA[
+/**
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+
+/** 
+ * Backend Content Tree Javascript
+ * 
+ * Client side code for handling Contents/elements in backend tree
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 
 $(function() {
 
@@ -126,12 +153,12 @@ $(function() {
 	
 
 	/*
-	 * Mostrar formulário de criação de conteúdo
+	 * Show content creating form
 	 */
 	$("a.new.content").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
@@ -141,18 +168,18 @@ $(function() {
 				$("#content_window").html(data.html).show();
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
 	/*
-	 * Mostrar formulário de criação de elemento
+	 * Show element creating form
 	 */
 	$("a.new.element").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
@@ -162,18 +189,18 @@ $(function() {
 				$("#content_window").html(data.html).show();
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 
 	/*
-	 * Mostrar formulário de edição de conteúdo
+	 * Show content editing form
 	 */
 	$("a.edit.content,a.edit.template,a.edit.meta").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
@@ -199,18 +226,18 @@ $(function() {
 				});
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
 	
 	/*
-	 * Mostrar formulário de edição de elemento
+	 * Show element editing form
 	 */
 	$("a.edit.element").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 
 		var id = $(this).attr('href');
@@ -223,7 +250,7 @@ $(function() {
 				});
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
@@ -248,7 +275,7 @@ $(function() {
 			var erase = $('#tree_listing_1').find('p.label.element > a[href="' + id + '"]').parents('.tree_parent').first();
 		}
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 		
 		var parent_listing = $(erase).parents(".tree_listing").first();
@@ -268,12 +295,12 @@ $(function() {
 					});
 				}
 	
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 			}, "json");
 		}
 		else {
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}
 	});
@@ -463,5 +490,3 @@ $(function() {
 var offsetY = 0;
 var offsetX = 0;
 var mouseButton = 0;
-
-//]]>

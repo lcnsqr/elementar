@@ -1,4 +1,31 @@
-//<![CDATA[
+/**
+ *      Copyright 2012 Luciano Siqueira <lcnsqr@gmail.com>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+
+/** 
+ * Backend Account Tree Javascript
+ * 
+ * Client side code for handling Groups/accounts in backend tree
+ * 
+ * @package Elementar 
+ * @author Luciano Siqueira <lcnsqr@gmail.com>
+ * @link https://github.com/lcnsqr/elementar 
+ */
 
 $(function() {
 
@@ -47,7 +74,7 @@ $(function() {
 		var marginLeft = 10;
 
 		/*
-		 * Menu indicator position
+		 * Menu indicator positioning
 		 */
 		var menu_indicator = $(visible_menu).children('.menu_indicator');
 		var menu_indicator_top = $(this).offset().top - 5;
@@ -118,7 +145,7 @@ $(function() {
 	$("a.new.group,a.edit.group").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 		
 		if ( $(this).hasClass('new') ) {
@@ -133,7 +160,7 @@ $(function() {
 				$("#account_window").html(data.html).show();
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
@@ -144,7 +171,7 @@ $(function() {
 	$("a.new.account,a.edit.account").live('click', function(event) {
 		event.preventDefault();
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 		
 		if ( $(this).hasClass('new') ) {
@@ -161,7 +188,7 @@ $(function() {
 				$("#account_window").html(data.html).show();
 			}
 
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}, "json");
 	});
@@ -182,7 +209,7 @@ $(function() {
 			var action = "/backend/account/xhr_erase_account";
 		}
 
-		// Bloqueio
+		// Blocking
 		$("#blocker").fadeIn("fast");
 		
 		var id = $(this).attr('href');
@@ -204,12 +231,12 @@ $(function() {
 				}
 				showClientWarning(data.message);
 	
-				// Bloqueio
+				// Blocking
 				$("#blocker").stop().fadeOut("fast");
 			}, "json");
 		}
 		else {
-			// Bloqueio
+			// Blocking
 			$("#blocker").stop().fadeOut("fast");
 		}
 	});
@@ -380,5 +407,3 @@ $(function() {
 var offsetY = 0;
 var offsetX = 0;
 var mouseButton = 0;
-
-//]]>
