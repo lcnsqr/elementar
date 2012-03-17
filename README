@@ -1,0 +1,37 @@
+Elementar CMS
+
+Elementar is a simple (yet efficient) Web CMS based on CodeIgniter 
+framework. It’s purpose is to offer the publisher/designer full control 
+on what is delivered to the browser. Therefore, Elementar lacks a theme 
+support as it requires a full layout built from scratch by the Web 
+Designer.
+
+In other hand, Elementar has a strong structured way of maintaining the 
+website data. Pages (called contents) and fragments (called elements) 
+are organized in a hierarchical way, as simple as files and folders in 
+your documents folder.
+
+Features for publishers/designers
+	- Full HTML/CSS/Javascript control
+	- Template system
+	- Auto generated sitemap.xml
+	- SEO URLs
+	- Content cache system
+	- I18N support
+
+Features for developers
+	- Open Source (GPL)
+	- Focused on code correctness
+	- MVC approach
+	- SCM by Git (at Github)
+	- Supports Mysql or Postgres databases
+	- Backend programming relies on both server side (PHP/CodeIgniter) 
+	  and client side (Javascript/jQuery)
+	- Support for custom made Controllers (addons)
+
+Feel free to fork and use it. Elementar is in continuous development 
+towards 1.0 release.
+
+Contact me: 
+Luciano Siqueira 
+email: lcnsqr@gmail.com
