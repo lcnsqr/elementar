@@ -105,7 +105,7 @@ $(function() {
 				$("#type_define_new_container:visible").fadeOut("slow");
 				$("#editors_container").replaceWith(data.html).show(function(){
 					// WYSIWYG textarea activation
-					$('#content_editor_form').find('textarea').wysiwyg();
+					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 				});
 			}
 			else {
@@ -152,7 +152,7 @@ $(function() {
 					if ( data.done == true ) {
 						$("#content_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							$('#content_editor_form').find('textarea').wysiwyg();
+							$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 
 							showClientWarning(message);
 
@@ -205,7 +205,7 @@ $(function() {
 				$("#type_define_new_container:visible").fadeOut("slow");
 				$("#editors_container").replaceWith(data.html).show(function(){
 					// WYSIWYG textarea activation
-					$('#content_editor_form').find('textarea').wysiwyg();
+					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 				});
 			}
 			else {
@@ -286,7 +286,7 @@ $(function() {
 					if ( data.done == true ) {
 						$("#content_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							$('#content_editor_form').find('textarea').wysiwyg();
+							$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 
 							showClientWarning(message);
 

@@ -58,7 +58,7 @@ $(function() {
 					if ( data.done == true ) {
 						$("#account_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							$('#editor_form').find('textarea').wysiwyg();
+							$('#editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 
 							showClientWarning(message);
 
@@ -104,7 +104,7 @@ $(function() {
 					if ( data.done == true ) {
 						$("#account_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							$('#editor_form').find('textarea').wysiwyg();
+							$('#editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 
 							showClientWarning(message);
 

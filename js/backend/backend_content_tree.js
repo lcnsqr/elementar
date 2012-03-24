@@ -222,7 +222,7 @@ $(function() {
 			if ( data.done == true ) {
 				$("#content_window").html(data.html).show(function() {
 					// WYSIWYG textarea activation
-					$('#content_editor_form').find('textarea').wysiwyg();
+					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 				});
 			}
 
@@ -246,7 +246,7 @@ $(function() {
 			if ( data.done == true ) {
 				$("#content_window").html(data.html).show(function() {
 					// WYSIWYG textarea activation
-					$('#content_editor_form').find('textarea').wysiwyg();
+					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 				});
 			}
 
