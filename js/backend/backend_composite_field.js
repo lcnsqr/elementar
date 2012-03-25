@@ -347,6 +347,9 @@ $(function() {
 		$(listing).fadeOut("fast");
 	});
 
+	/*
+	 * Choose parent content for the field
+	 */
 	$(".root_content").live('click', function(event) {
 		event.preventDefault();
 		var content_id = $(this).attr('href');

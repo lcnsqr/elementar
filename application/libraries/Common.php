@@ -593,7 +593,7 @@ class Common {
 	/**
 	 * Index field HTML elements
 	 * 
-	 * @access private
+	 * @access public
 	 * @param string
 	 * @param string
 	 * @param string
@@ -602,7 +602,7 @@ class Common {
 	 * @param integer
 	 * @return string
 	 */
-	private function _render_index_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $depth = 1)
+	function _render_index_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $depth = 1)
 	{
 		if ( ! (bool) $content_id )
 		{
