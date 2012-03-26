@@ -435,7 +435,20 @@ $(function() {
 	});
 	
 	/*
-	 * Add pseudo variable pair (loop) to template
+	 * Add relative pseudo variable pair (loop) to template
+	 */
+	$('.add_relative_variable_pair').live('click', function(event) {
+		event.preventDefault();
+
+		var insertion_form = $(this).parents('.filter_forms').find('div.insertion');
+
+		var variable = unescape($(this).data('variable'));
+
+		$('.template_textarea').insertAtCursor(variable);
+	});
+	
+	/*
+	 * Add filtered pseudo variable pair (loop) to template
 	 */
 	$('.add_variable_pair').live('click', function(event) {
 		event.preventDefault();

@@ -20,7 +20,7 @@
 	<p><strong><?php echo $relative_content_variables_title; ?></strong></p>
 	<ul>
 <?php foreach ( $relative_content_variables as $relative_content_variable_type => $relative_content_variables_type_list ) : ?>
-		<li><a class="add_variable_pair" href="<?php echo $relative_content_variables_type_list['pair']; ?>"><strong><?php echo $relative_content_variable_type; ?></strong></a>
+		<li><a class="add_relative_variable_pair" data-variable="<?php echo $relative_content_variables_type_list['pair']; ?>" href="<?php echo $relative_content_variable_type; ?>"><strong><?php echo $relative_content_variable_type; ?></strong></a>
 		</li>
 <?php endforeach; ?>
 	</ul>
