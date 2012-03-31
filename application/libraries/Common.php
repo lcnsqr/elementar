@@ -47,6 +47,12 @@ class Common {
 	// Frontend URI language prefix
 	private $URI_PREFIX;
 
+	// Request GET parameters
+	private $PARAMS = array();
+	
+	// Caller entity
+	private $CALLER_ENTITY;
+	
 	function __construct()
 	{
 		$this->CI =& get_instance();
@@ -56,6 +62,10 @@ class Common {
 		// Set LANG = DEFAULT_LANG on load
 		$this->LANG = $this->DEFAULT_LANG;
 
+		// Load get parameters 
+		$this->PARAMS = $this->CI->input->get(NULL, TRUE);
+		$this->PARAMS = ( is_array($this->PARAMS) ) ? $this->PARAMS : array();
+		
 		/*
 		 * BUG: By default
 		 * Code Igniter don't load
@@ -86,6 +96,28 @@ class Common {
 	public function set_uri_prefix($prefix)
 	{
 		$this->URI_PREFIX = $prefix;
+	}
+
+	/**
+	 * Set Caller entity, content or element
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function set_caller_entity($entity)
+	{
+		$this->CALLER_ENTITY = $entity;
+	}
+
+	/**
+	 * Get Caller entity, content or element
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_caller_entity()
+	{
+		return $this->CALLER_ENTITY;
 	}
 
 	/**
@@ -235,7 +267,7 @@ class Common {
 			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
 				$current = ( $this->LANG == $lang_code ) ? ' current' : '';
-				$input_lang_tab_links[] = anchor($lang_name, array('href' => $lang_code, 'class' => 'input_lang_tab_link' . $current));
+				$input_lang_tab_links[] = anchor($lang_code, $lang_name, array('class' => 'input_lang_tab_link' . $current));
 			}
 			$field .= div_open(array('class' => 'input_lang_menu'));
 			$field .= ul($input_lang_tab_links);
@@ -330,7 +362,6 @@ class Common {
 			break;
 
 			case "p" :
-			case "hypertext" :
 			$attributes = array(
 				'class' => 'noform ' . $type,
 				'name' => $sname,
@@ -342,6 +373,75 @@ class Common {
 			$field = form_textarea($attributes);
 			break;
 			
+			case "hypertext" :
+			// The actual field
+			$attributes = array(
+				'class' => 'noform hypertext_actual_field',
+				'type' => 'hidden',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$html = form_input($attributes);
+			$data = array('html' => $html);
+			// template page
+			$attributes = array(
+				'class' => 'page',
+				'name' => 'hypertext_page'
+			);
+			$data['html'] .= div_open(array('class' => 'hypertext_page_template'));
+			$data['html'] .= form_textarea($attributes);
+			$data['html'] .= paragraph(anchor('remove_hypertext_page', $this->CI->lang->line('elementar_hypertext_remove_page'), array('class' => 'remove_hypertext_page')), array('class' => 'hypertext_link_container'));
+			$data['html'] .= div_close();
+			
+			// Split field value in pages
+			$pages = array();
+			if ( $value != NULL )
+			{
+				$pages = json_decode($value, TRUE);
+			}
+			else
+			{
+				// Empty first page
+				$pages[] = '';
+			}
+			
+			foreach ( $pages as $key => $page )
+			{
+				$data['html'] .= div_open(array('class' => ( $this->get_caller_entity() == 'content' ) ? 'hypertext_page hypertext_page_many' : 'hypertext_page'));
+				$attributes = array(
+					'class' => 'page ' . $type,
+					'name' => 'hypertext_page',
+					'value' => $page
+				);
+				$data['html'] .= form_textarea($attributes);
+				if ( $key > 0 )
+				{
+					/*
+					 * Put remove link only for extra pages
+					 */
+					$data['html'] .= paragraph(anchor('remove_hypertext_page', $this->CI->lang->line('elementar_hypertext_remove_page'), array('class' => 'remove_hypertext_page')), array('class' => 'hypertext_link_container'));
+				}
+				$data['html'] .= div_close();
+			}
+			/*
+			 * Add page link
+			 */
+			if ( $this->get_caller_entity() == 'content' )
+			{
+				$data['hypertext_add_page'] = paragraph(anchor('add_hypertext_page', $this->CI->lang->line('elementar_hypertext_add_page'), array('class' => 'add_hypertext_page')), array('class' => 'hypertext_link_container'));
+			}
+			else
+			{
+				/*
+				 * Elements dont paginate
+				 */
+				$data['hypertext_add_page'] = '';
+			}
+			$field = $this->CI->load->view("backend/backend_content_hypertext_field", $data, TRUE);
+
+			break;
+
 			case "menu" :
 			$menu = ( $value != '' ) ? json_decode($value, TRUE) : array();
 			$html = div_open(array('class' => 'menu_parent'));
@@ -521,7 +621,7 @@ class Common {
 			}
 			$field = div_open(array('class' => 'index_field'));
 			$field .= div_open(array('class' => 'dropdown_items_listing_inline'));
-			$field .= anchor($content_name, array('href' => $sname));
+			$field .= anchor($sname, $content_name);
 			$field .= $this->_render_contents_listing();
 			$field .= div_close();
 			$field .= div_open(array('class' => 'filter_forms', 'id' => $sname . '_filter_forms'));
@@ -702,7 +802,7 @@ class Common {
 		foreach ( $this->CI->storage->get_contents_by_parent() as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
-			$listing[] = anchor((array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('href' => $content['id'], 'class' => 'root_content'));
+			$listing[] = anchor($content['id'], (array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('class' => 'root_content'));
 		}
 		$contents = div_open(array('class' => 'dropdown_items_listing_position'));
 		$contents .= div_open(array('class' => 'dropdown_items_listing'));
@@ -785,12 +885,11 @@ class Common {
 			$class .= ( key($menu) == 0 ) ? ' first' : '';
 			$class .= ( key($menu) == ( count($menu) - 1 ) ) ? ' last' : '';
 			$attributes = array(
-				'href' => $this->URI_PREFIX . $menu_item['target'],
 				'title' => htmlspecialchars( $menu_item['name'] ),
 				'class' => $class
 			);
-			$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
-			$link = '<a href="'.$this->URI_PREFIX . $menu_item['target'].'" title="'.htmlspecialchars( $menu_item['name'] ).'" class="'.$class.'">'.htmlspecialchars($menu_item['name']).'</a>';
+			$link = anchor($this->URI_PREFIX . $menu_item['target'], htmlspecialchars($menu_item['name']), $attributes);
+			//$link = '<a href="'.$this->URI_PREFIX . $menu_item['target'].'" title="'.htmlspecialchars( $menu_item['name'] ).'" class="'.$class.'">'.htmlspecialchars($menu_item['name']).'</a>';
 			$submenu = $menu_item['menu'];
 			if ( ! (bool) $submenu )
 			{
@@ -1075,25 +1174,72 @@ class Common {
 	}
 	
 	/**
-	 * Render field contents
+	 * Field localized value
 	 * 
-	 * @access public
-	 * @param array
-	 * @param array
-	 * @return string/array
+	 * @access private
+	 * @param string
+	 * @param boolean
+	 * @return string
 	 */
-	function render_field($field_attr, $field_value)
+	private function _field_localized_value($field_value, $i18n = TRUE)
 	{
-		// Check for multilanguage field
-		if ( (bool) $field_attr['i18n'] )
+		if ( (bool) $i18n )
 		{
 			// Choose language
 			$field_values = json_decode($field_value, TRUE);
 			$field_value = (array_key_exists($this->LANG, $field_values)) ? $field_values[$this->LANG] : '';
 		}
+		return $field_value;
+	}
+	
+	/**
+	 * Render field contents
+	 * 
+	 * @access public
+	 * @param array
+	 * @param string
+	 * @return string/array
+	 */
+	function render_field($field_attr, $field_value)
+	{
+		// Check for multilanguage field
+		$field_value = $this->_field_localized_value($field_value, $field_attr['i18n']);
 
 		switch ( $field_attr['type'] )
 		{
+			case 'hypertext' :
+			/*
+			 * Check for pagination
+			 */
+			$pages = json_decode($field_value, TRUE);
+			if ( array_key_exists($field_attr['sname'], $this->PARAMS) )
+			{
+				/*
+				 * Page parameter found for this field,
+				 * so load requested page
+				 */
+				$page_number = intval($this->PARAMS[$field_attr['sname']]);
+				/*
+				 * Ignore out of bound pages
+				 */
+				if ( $page_number > 0 && $page_number <= count($pages) )
+				{
+					return $pages[$page_number - 1];
+				}
+				else
+				{
+					return $pages[0];
+				}
+			}
+			else
+			{
+				/*
+				 * Load first page
+				 */
+				return $pages[0];
+			}
+			break;
+			
 			case 'file' :
 			/*
 			 * If value for specific language is not present,
@@ -1220,12 +1366,11 @@ class Common {
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
 			$attributes = array(
-				'href' => $this->URI_PREFIX . $content_uri,
 				'title' => htmlspecialchars( $content_name ),
 				'class' => $class
 			);
-			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
-			$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
+			$link = anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($menu_item['name']), $attributes);
+			//$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
 			if ( $this->CI->storage->get_content_has_children($content_id, FALSE) && $depth > 0 )
 			{
 				$index[$link] = $this->_index_field($content_id, $order_by, $direction, $limit, $depth);
@@ -1297,12 +1442,11 @@ class Common {
 			$class = ( $this->_uri_is_current($this->URI_PREFIX . $content_uri) ) ? 'index_item current' : 'index_item';
 	
 			$attributes = array(
-				'href' => $this->URI_PREFIX . $content_uri,
 				'title' => htmlspecialchars( $content_name ),
 				'class' => $class
 			);
-			//$link = anchor(htmlspecialchars($menu_item['name']), $attributes);
-			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
+			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> '. anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($menu_item['name']), $attributes);
+			//$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
 			if ( (bool) $child['children'] && $depth >= $depth_count )
 			{
 				$index[$link] = $this->_index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count);
@@ -1333,7 +1477,14 @@ class Common {
 		$fields = $this->CI->storage->get_content_fields($content_id);
 		foreach ($fields as $field)
 		{
-			$content[$field['sname']] = $this->render_field($field, $field['value']);			
+			$content[$field['sname']] = $this->render_field($field, $field['value']);
+			/*
+			 * Hypertext pagination
+			 */
+			if ( $field['type'] == 'hypertext' )
+			{
+				$content[$field['sname'] . '_pagination_links'] = $this->_render_pagination_links($field, $field['value']);
+			}
 		}
 		
 		// Children contents listing
@@ -1382,6 +1533,100 @@ class Common {
 			}
 		}
 		return $content;
+	}
+	
+	/**
+	 * Render pagination links for hypertext fields
+	 * 
+	 * @access private
+	 * @param array
+	 * @param string
+	 * @return string
+	 */
+	private function _render_pagination_links($field_attr, $field_value)
+	{
+		// Check for multilanguage field
+		$field_value = $this->_field_localized_value($field_value, $field_attr['i18n']);
+
+		/*
+		 * Check for pagination
+		 */
+		$pages = json_decode($field_value, TRUE);
+		if ( count($pages) == 1 )
+		{
+			// Only one page, return empty
+			return;
+		}
+		
+		/*
+		 * How many pages
+		 */
+		$total_pages = count($pages);
+		
+		if ( array_key_exists($field_attr['sname'], $this->PARAMS) )
+		{
+			/*
+			 * Page parameter found for this field,
+			 * so load requested page
+			 */
+			$page_number = intval($this->PARAMS[$field_attr['sname']]);
+		}
+		else
+		{
+			$page_number = 1;
+		}
+
+		/*
+		 * Accept only inner bound pages
+		 */
+		if ( $page_number <= 0 || $page_number > $total_pages )
+		{
+			/*
+			 * No valid page selected, defaults to first
+			 */
+			$page_number = 1;
+		}
+		
+		/*
+		 * Generate links
+		 */
+		$links = array();
+		
+		/*
+		 * Rewind links
+		 */
+		if ( $page_number > 1 )
+		{
+			$this->PARAMS[$field_attr['sname']] = 1;
+			$uri = $this->URI_PREFIX . '/' . $this->CI->uri->uri_string() . '?' . http_build_query($this->PARAMS);
+			$links[] = anchor($uri, "<<");
+			$this->PARAMS[$field_attr['sname']] = $page_number - 1;
+			$uri = $this->URI_PREFIX . '/' . $this->CI->uri->uri_string() . '?' . http_build_query($this->PARAMS);
+			$links[] = anchor($uri, "<");
+		}
+
+		for ( $p = 1; $p <= $total_pages; $p++ )
+		{
+			$this->PARAMS[$field_attr['sname']] = $p;
+			$uri = $this->URI_PREFIX . '/' . $this->CI->uri->uri_string() . '?' . http_build_query($this->PARAMS);
+			$attributes = ( $p == $page_number ) ? array('class' => 'current') : array();
+			$links[] = anchor($uri, $p, $attributes);
+		}
+
+		/*
+		 * Fast forward links
+		 */
+		if ( $page_number < $total_pages )
+		{
+			$this->PARAMS[$field_attr['sname']] = $page_number + 1;
+			$uri = $this->URI_PREFIX . '/' . $this->CI->uri->uri_string() . '?' . http_build_query($this->PARAMS);
+			$links[] = anchor($uri, ">");
+			$this->PARAMS[$field_attr['sname']] = $total_pages;
+			$uri = $this->URI_PREFIX . '/' . $this->CI->uri->uri_string() . '?' . http_build_query($this->PARAMS);
+			$links[] = anchor($uri, ">>");
+		}
+
+		return ul($links);
 	}
 
 	/**

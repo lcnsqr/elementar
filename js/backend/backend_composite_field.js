@@ -77,6 +77,12 @@ $(function() {
 				$(this).prepareIndexField();
 			});
 
+			/*
+			 * Update hypertext field
+			 */
+			$(".hypertext_field").each(function() {
+				$(this).prepareHypertextField();
+			});
 		}
 	});
 
@@ -166,7 +172,7 @@ $(function() {
 		 * Clone fiele item template
 		 */
 		var NewFile = $(".file_item_template").first().clone();
-		// Redefinir
+		// Reset
 		$(NewFile).removeClass("file_item_template");
 		$(NewFile).css("display", "none");
 		/*
@@ -185,7 +191,7 @@ $(function() {
 		$(NewFile).find('.file_details').attr('id', 'file_details_file_item_field_' + file_id);
 		$(NewFile).find('a.file_erase').attr('href', 'file_item_field_' + file_id);
 		$(NewFile).find('a.browse_file').attr('href', 'file_item_field_' + file_id);
-		// Inserir
+		// Insert
 		$(parent).prepend(NewFile);
 		$(NewFile).show("fast", "easeInSine");
 	});
@@ -201,7 +207,7 @@ $(function() {
 		 * Clone file item template
 		 */
 		var NewFile = $(".file_item_template").first().clone();
-		// Redefinir
+		// Reset
 		$(NewFile).removeClass("file_item_template");
 		$(NewFile).css("display", "none");
 		/*
@@ -237,7 +243,7 @@ $(function() {
 		 * Clone image template
 		 */
 		var NewFile = $(".file_item_template").first().clone();
-		// Redefinir
+		// Reset
 		$(NewFile).removeClass("file_item_template");
 		$(NewFile).css("display", "none");
 		/*
@@ -330,6 +336,60 @@ $(function() {
 		}
 	});
 
+	/*******************
+	 * Hypertext field *
+	 *******************/
+	/*
+	 * New hypertext page
+	 */
+	$("a.add_hypertext_page").live('click', function(event) {
+		event.preventDefault();
+		var hypertext = $(this).parents('.hypertext_field').first();
+		var NewPage = $(hypertext).find(".hypertext_page_template").first().clone();
+		// Reset
+		$(NewPage).removeClass("hypertext_page_template");
+		$(NewPage).addClass("hypertext_page");
+		$(NewPage).css("display", "none");
+		$(NewPage).find("textarea.page").addClass('hypertext');
+		// Insert
+		$(this).parents('.hypertext_link_container').first().before(NewPage);
+		$(NewPage).show("fast", "easeInSine");
+		// WYSIWYG textarea activation
+		$(NewPage).find('textarea').each(function(){ $(this).wysiwyg(); });
+	});
+
+	/*
+	 * Remove hypertext page
+	 */
+	$("a.remove_hypertext_page").live('click', function(event) {
+		event.preventDefault();
+
+		var page = $(this).parents("div.hypertext_page").first();
+		$(page).hide("fast", 'easeOutSine', function() {
+			$(this).remove();
+		});
+	});
+
+	/*
+	 * Hypertext pages assembling
+	 */
+	$.fn.extend({
+		prepareHypertextField: function(){
+			var pages = new Array();
+			$(this).find(".hypertext_page").each(function() {
+				/*
+				 * Push page into pages
+				 */
+				var page = $(this).find("textarea.page").val();
+				pages.push(page);
+			});
+			/*
+			 * Update hypertext field
+			 */
+			$(this).find('input.hypertext_actual_field').val($.toJSON(pages));
+		}
+	});
+
 	/***************
 	 * Index field *
 	 ***************/
@@ -388,17 +448,17 @@ $(function() {
 	 * Menu field *
 	 **************/
 	/*
-	 * Novo menu topo
+	 * New top menu
 	 */
 	$("a.menu_add").live('click', function(event) {
 		event.preventDefault();
 		var parent = $(this).parents(".menu_field").first().children(".menu_parent:visible");
 		if ( $(parent).length > 0 ) {
 			var NewMenu = $(".menu_item_template").first().clone();
-			// Redefinir
+			// Reset
 			$(NewMenu).removeClass("menu_item_template");
 			$(NewMenu).css("display", "none");
-			// Inserir
+			// Insert
 			$(parent).prepend(NewMenu);
 			$(NewMenu).show("fast", "easeInSine");
 		}
@@ -406,46 +466,46 @@ $(function() {
 		{
 			var NewParent = $(".menu_parent_template").first().clone();
 			var NewMenu = $(NewParent).find(".menu_item_template");
-			// Redefinir
+			// Reset
 			$(NewParent).removeClass("menu_parent_template");
 			$(NewParent).css("display", "none");
 			$(NewMenu).removeClass("menu_item_template");
-			// Inserir
+			// Insert
 			$(this).parent(".menu_parent_add").after(NewParent);
 			$(NewParent).show("fast", "easeInSine");
 		}
 	});
 
 	/*
-	 * Novo menu acima
+	 * New menu above
 	 */
 	$("a.menu_add_up").live('click', function(event) {
 		event.preventDefault();
 		var NewMenu = $(".menu_item_template").first().clone();
-		// Redefinir
+		// Reset
 		$(NewMenu).removeClass("menu_item_template");
 		$(NewMenu).css("display", "none");
-		// Inserir
+		// Insert
 		$(this).parents('div.menu_item').first().before(NewMenu);
 		$(NewMenu).show("fast", "easeInSine");
 	});
 
 	/*
-	 * Novo menu abaixo
+	 * New menu below
 	 */
 	$("a.menu_add_down").live('click', function(event) {
 		event.preventDefault();
 		var NewMenu = $(".menu_item_template").first().clone();
-		// Redefinir
+		// Reset
 		$(NewMenu).removeClass("menu_item_template");
 		$(NewMenu).css("display", "none");
-		// Inserir
+		// Insert
 		$(this).parents('div.menu_item').first().after(NewMenu);
 		$(NewMenu).show("fast", "easeInSine");
 	});
 
 	/*
-	 * Novo submenu
+	 * New submenu
 	 */
 	$("a.menu_add_submenu").live('click', function(event) {
 		event.preventDefault();
@@ -453,11 +513,11 @@ $(function() {
 		var NewParent = $(".menu_parent_template").first().clone();
 		var NewMenu = $(NewParent).find(".menu_item_template");
 		
-		// Redefinir
+		// Reset
 		$(NewParent).removeClass("menu_parent_template");
 		$(NewMenu).removeClass("menu_item_template");
 		
-		// Inserir
+		// Insert
 		var Menu = $(this).parents('div.menu_item').first();
 		if ( $(Menu).find(".menu_parent").length > 0 )
 		{
@@ -468,7 +528,7 @@ $(function() {
 		else
 		{
 			$(NewParent).css("display", "none");
-			// Inserir menu parent
+			// Insert menu parent
 			$(this).parents('div.menu_item').first().append(NewParent);
 			$(NewParent).show("fast", "easeInSine");
 		}
@@ -576,10 +636,10 @@ $(function() {
 		event.preventDefault();
 		var parent = $(this).parents(".youtube_gallery_field").first().children(".youtube_parent:visible");
 		var NewVideo = $(".youtube_item_template").first().clone();
-		// Redefinir
+		// Reset
 		$(NewVideo).removeClass("youtube_item_template");
 		$(NewVideo).css("display", "none");
-		// Inserir
+		// Insert
 		$(parent).prepend(NewVideo);
 		$(NewVideo).show("fast", "easeInSine");
 	});

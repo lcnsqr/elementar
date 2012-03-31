@@ -211,26 +211,26 @@ class Element {
 		{
 			if ( (bool) $this->type_id )
 			{
-				$dropdown .= anchor($this->CI->storage->get_element_type_name($this->type_id), array('href' => $this->type_id));
+				$dropdown .= anchor($this->type_id, $this->CI->storage->get_element_type_name($this->type_id));
 			}
 			else
 			{
-				$dropdown .= anchor(current($types), array('href' => key($types)));
+				$dropdown .= anchor(key($types), current($types));
 			}
 		}
 		else
 		{
-			$dropdown .= anchor($this->CI->lang->line('elementar_new') . '...', array('href' => '0'));
+			$dropdown .= anchor('0', $this->CI->lang->line('elementar_new') . '...');
 		}
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing_position'));
 		$dropdown .= div_open(array('class' => 'dropdown_items_listing'));
 		$dropdown_items = array();
 		foreach ( $types as $type_id => $type )
 		{
-			$dropdown_items[] = anchor($type, array('class' => 'dropdown_items_listing_element_type_target', 'href' => $type_id));
+			$dropdown_items[] = anchor($type_id, $type, array('class' => 'dropdown_items_listing_element_type_target'));
 		}
 		// "New" link
-		$dropdown_items[] = anchor($this->CI->lang->line('elementar_new') . '...', array('id' => 'element_type_create', 'class' => 'dropdown_items_listing_element_type_target', 'href' => '0'));
+		$dropdown_items[] = anchor('0', $this->CI->lang->line('elementar_new') . '...', array('id' => 'element_type_create', 'class' => 'dropdown_items_listing_element_type_target'));
 		$dropdown .= ul($dropdown_items, array('class' => 'dropdown_items_listing_targets'));
 		$dropdown .= div_close();
 		$dropdown .= div_close();

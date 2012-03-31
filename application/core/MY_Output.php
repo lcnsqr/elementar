@@ -52,6 +52,14 @@ class MY_Output extends CI_Output {
 		$uri =	$CI->config->item('base_url').
 				$CI->config->item('index_page').
 				$CI->uri->uri_string();
+		
+		/*
+		 * Sometimes Get params are used
+		 */
+		if ( ! empty($_GET) )
+		{
+			$uri .= '?' . http_build_query($_GET);
+		}
 
 		$cache_path .= md5($uri);
 
@@ -97,6 +105,14 @@ class MY_Output extends CI_Output {
 		$uri =	$CFG->item('base_url').
 				$CFG->item('index_page').
 				$URI->uri_string;
+
+		/*
+		 * Sometimes Get params are used
+		 */
+		if ( ! empty($_GET) )
+		{
+			$uri .= '?' . http_build_query($_GET);
+		}
 
 		$filepath = $cache_path.md5($uri);
 

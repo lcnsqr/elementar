@@ -112,9 +112,9 @@ class Editor extends CI_Controller {
 		
 		// Top menu
 		$resource_menu = array(
-			anchor($this->lang->line('elementar_settings'), array('href' => '/backend', 'title' => $this->lang->line('elementar_settings'))),
+			anchor('/backend', $this->lang->line('elementar_settings'), array('title' => $this->lang->line('elementar_settings'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
-			anchor($this->lang->line('elementar_accounts'), array('href' => '/backend/account', 'title' => $this->lang->line('elementar_accounts'))),
+			anchor('/backend/account', $this->lang->line('elementar_accounts'), array('title' => $this->lang->line('elementar_accounts'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
 			'<strong>' . $this->lang->line('elementar_editor') . '</strong>'
 		);
@@ -258,7 +258,7 @@ class Editor extends CI_Controller {
 		// Close field template
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_type_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor('add_type_field', '&rarr; ' . $this->lang->line('elementar_type_add_field'), array('id' => 'add_type_field')));
 		
 		// HTML template for content type
 		$form .= paragraph($this->lang->line('elementar_type_markup'), array('class' => 'page_subtitle'));
@@ -338,7 +338,7 @@ class Editor extends CI_Controller {
 		// Close field template
 		$form .= div_close("<!-- #type_define_new_field_0 -->");
 
-		$form .= paragraph(anchor('&rarr; ' . $this->lang->line('elementar_type_add_field'), array('href' => 'add_type_field', 'id' => 'add_type_field')));
+		$form .= paragraph(anchor('add_type_field', '&rarr; ' . $this->lang->line('elementar_type_add_field'), array('id' => 'add_type_field')));
 		
 		$form .= div_open(array('class' => 'form_control_buttons'));
 
@@ -517,7 +517,7 @@ class Editor extends CI_Controller {
 			// Create
 			$parent_id = $this->input->post('parent_id', TRUE);
 			$type_id = $this->input->post('type_id', TRUE);
-
+			
 			// Set initial values
 			$this->element->set_parent_id($parent_id);
 			$this->element->set_type_id($type_id);
@@ -577,6 +577,11 @@ class Editor extends CI_Controller {
 			$value = $this->element->get_default_name();
 		}
 
+		/*
+		 * Caller entity for common library
+		 */
+		$this->common->set_caller_entity('element');
+		
 		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
 
 		// Element type fields
@@ -584,7 +589,7 @@ class Editor extends CI_Controller {
 		{
 			// Field value
 			$value = $this->element->get_field($field['id']);
-			$form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $this->lang->line('elementar_field_type_' . $field['sname']) . '_description', $value, $field['i18n']);
+			$form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], NULL, $value, $field['i18n']);
 		}
 
 		// Spread
@@ -1125,6 +1130,11 @@ class Editor extends CI_Controller {
 		);
 		$content_form .= form_input($attributes);
 
+		/*
+		 * Caller entity for common library
+		 */
+		$this->common->set_caller_entity('content');
+		
 		// Content name
 		$content_form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $this->content->get_name(), TRUE);
 
@@ -1134,7 +1144,7 @@ class Editor extends CI_Controller {
 		{
 			// Field value
 			$value = $this->content->get_field($field['id']);
-			$content_form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], $this->lang->line('elementar_field_type_' . $field['sname'] . '_description'), $value, $field['i18n']);
+			$content_form .= $this->common->render_form_field($field['type'], $field['name'], $field['sname'], NULL, $value, $field['i18n']);
 		}
 
 		// status
@@ -1390,7 +1400,7 @@ class Editor extends CI_Controller {
 				$values = array();
 				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
-					$values[$lang_code] = $this->input->post($field['sname'] . '_' . $lang_code, TRUE);
+					$values[$lang_code] = $this->input->post($field['sname'] . '_' . $lang_code, FALSE);
 				}
 				$value = json_encode($values);
 			}

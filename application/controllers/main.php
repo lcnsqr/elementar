@@ -39,7 +39,7 @@ class Main extends CI_Controller {
 	var $URI_PREFIX;
 	
 	// Starting URI segment
-	var $SEGMENT_STEP = 0;
+	var $STARTING_SEGMENT = 0;
 	
 	// 24 hours caching
 	var $cache_expire = 1440;
@@ -95,9 +95,12 @@ class Main extends CI_Controller {
 			if ( array_key_exists($this->uri->segment(1), $this->LANG_AVAIL) )
 			{
 				$this->LANG = $this->uri->segment(1);
-				$this->SEGMENT_STEP = 1;
+				$this->STARTING_SEGMENT = 1;
 			}
 		}
+
+		// Load get parameters 
+		$this->PARAMS = $this->input->get(NULL, TRUE);
 		
 		// If selected lang is the default language,
 		// don't prepend lang code to URI
@@ -127,16 +130,16 @@ class Main extends CI_Controller {
 		$this->email->set_newline("\r\n");
 
 		// Redirect to existing function or parser
-		if ( $this->uri->total_segments() > $this->SEGMENT_STEP )
+		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT )
 		{
 			// Step forward on segments if method is the controller myself
-			if ( $this->uri->segment($this->SEGMENT_STEP + 1) == 'main' )
+			if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
 			{
-				$request = $this->uri->segment($this->SEGMENT_STEP + 2);
+				$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
 			}
 			else
 			{
-				$request = $this->uri->segment($this->SEGMENT_STEP + 1);
+				$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
 			}
 			
 			// Load addons
@@ -152,7 +155,7 @@ class Main extends CI_Controller {
 					));
 					
 					// Check method
-					$method = $this->uri->segment($this->SEGMENT_STEP + 2);
+					$method = $this->uri->segment($this->STARTING_SEGMENT + 2);
 
 					if ( $method == '' && method_exists($$addon['name'], 'index') )
 					{
@@ -227,10 +230,10 @@ class Main extends CI_Controller {
 		foreach($this->LANG_AVAIL as $code => $name)
 		{
 			// Build current uri detection for each language
-			if ( $this->SEGMENT_STEP == 1 )
+			if ( $this->STARTING_SEGMENT == 1 )
 			{
 				// Slash on home uri
-				if ( $this->uri->total_segments() == $this->SEGMENT_STEP )
+				if ( $this->uri->total_segments() == $this->STARTING_SEGMENT )
 				{
 					$uri = ($default_lang == $code) ? '/' : '/' . $code . '/';
 				}
@@ -259,7 +262,7 @@ class Main extends CI_Controller {
 		}
 		
 		// Parse requested URI
-		if ( $this->uri->total_segments() == $this->SEGMENT_STEP )
+		if ( $this->uri->total_segments() == $this->STARTING_SEGMENT )
 		{
 			// No URI (besides eventual lang code), 
 			// show home page (content_id = 1)
@@ -298,7 +301,7 @@ class Main extends CI_Controller {
 			$content_id = 1;
 			
 			// Parse each segment until the last one
-			$starting_segment = $this->SEGMENT_STEP + 1;
+			$starting_segment = $this->STARTING_SEGMENT + 1;
 			for ( $c = $starting_segment; $c <= $this->uri->total_segments(); $c++ )
 			{
 				$sname = $this->uri->segment($c);
@@ -466,7 +469,7 @@ class Main extends CI_Controller {
 		$this->load->library('validation');
 
 		// Determine action from the second URI segment
-		$action = $this->uri->segment($this->SEGMENT_STEP + 2);
+		$action = $this->uri->segment($this->STARTING_SEGMENT + 2);
 		switch ( $action )
 		{
 			/*********
@@ -595,7 +598,7 @@ class Main extends CI_Controller {
 			 ********************************/
 			case 'confirm' :
 			// Search register hash
-			$register_hash = $this->uri->segment($this->SEGMENT_STEP + 3);
+			$register_hash = $this->uri->segment($this->STARTING_SEGMENT + 3);
 			if ( (bool) $register_hash )
 			{
 				// Check existence and pending account
@@ -660,7 +663,7 @@ class Main extends CI_Controller {
 			 * Reset password form *
 			 ***********************/
 			case 'reset' :
-			$reset_hash = $this->uri->segment($this->SEGMENT_STEP + 3);
+			$reset_hash = $this->uri->segment($this->STARTING_SEGMENT + 3);
 			if ( (bool) $reset_hash )
 			{
 				// Check existence and not pending account

@@ -62,19 +62,6 @@ if ( ! function_exists('paragraph'))
 	}
 }
 
-if ( ! function_exists('anchor'))
-{
-	function anchor($text, $attributes = '')
-	{
-		$anchor = '<a';
-		$anchor .= _parse_tag_attributes($attributes);
-		$anchor .= '>';
-		$anchor .= $text;
-		$anchor .= '</a>';
-		return $anchor;
-	}
-}
-
 if ( ! function_exists('hr'))
 {
 	function hr($attributes = '')

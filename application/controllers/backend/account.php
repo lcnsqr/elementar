@@ -54,6 +54,9 @@ class Account extends CI_Controller {
 		$this->load->model('Storage', 'storage');
 		$this->storage->STATUS = 'all';
 
+		// Backend language file
+		$this->lang->load('elementar', $this->config->item('language'));
+		
 		// Load encryption key before session library
 		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
 		
@@ -78,9 +81,6 @@ class Account extends CI_Controller {
 		$this->load->library('email', $email_settings);
 		$this->email->set_newline("\r\n");
 
-		// Backend language file
-		$this->lang->load('elementar', $this->config->item('language'));
-		
 		// Fields validation library
 		$this->load->library('validation');
 	}
@@ -114,11 +114,11 @@ class Account extends CI_Controller {
 		
 		// Top menu
 		$resource_menu = array(
-			anchor($this->lang->line('elementar_settings'), array('href' => '/backend', 'title' => $this->lang->line('elementar_settings'))),
+			anchor('/backend', $this->lang->line('elementar_settings'), array('title' => $this->lang->line('elementar_settings'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
 			'<strong>' . $this->lang->line('elementar_accounts') . '</strong>',
 			span('&bull;', array('class' => 'top_menu_sep')),
-			anchor($this->lang->line('elementar_editor'), array('href' => '/backend/editor', 'title' => $this->lang->line('elementar_contents')))
+			anchor('/backend/editor', $this->lang->line('elementar_editor'), array('title' => $this->lang->line('elementar_contents')))
 		);
 
 		// Backend common view variables

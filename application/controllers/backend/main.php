@@ -110,9 +110,9 @@ class Main extends CI_Controller {
 		$resource_menu = array(
 			'<strong>' . $this->lang->line('elementar_settings') . '</strong>',
 			span('&bull;', array('class' => 'top_menu_sep')),
-			anchor($this->lang->line('elementar_accounts'), array('href' => '/backend/account', 'title' => $this->lang->line('elementar_accounts'))),
+			anchor('/backend/account', $this->lang->line('elementar_accounts'), array('title' => $this->lang->line('elementar_accounts'))),
 			span('&bull;', array('class' => 'top_menu_sep')),
-			anchor($this->lang->line('elementar_editor'), array('href' => '/backend/editor', 'title' => $this->lang->line('elementar_contents')))
+			anchor('/backend/editor', $this->lang->line('elementar_editor'), array('title' => $this->lang->line('elementar_contents')))
 		);
 
 		// View main variables

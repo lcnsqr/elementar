@@ -212,6 +212,12 @@ $lang['elementar_xhr_language_undefined'] = 'Idioma indefinido';
 $lang['elementar_xhr_write_template_filter']		= 'Filtro salvo';
 
 /*
+ * Hypertext field
+ */
+$lang['elementar_hypertext_remove_page'] = 'Remover página';
+$lang['elementar_hypertext_add_page'] = 'Incluir página';
+
+/*
  * File field
  */
 $lang['elementar_file_description']		= 'Descri&ccedil;&atilde;o do arquivo';
