@@ -224,7 +224,7 @@ color: #2d2d2d;
 		$data = array(
 			'content_id' => 1,
 			'content_type_field_id' => 1,
-			'value' => '{"pt":"<p>Bem-vindo &agrave; m&aacute;quina.<\\/p>","en":"<p>Welcome to the machine.<\\/p>"}'
+			'value' => '{"pt":"[\"<p>Bem-vindo &agrave; m&aacute;quina.<\\/p>\"]","en":"[\"<p>Welcome to the machine.<\\/p>\"]"}'
 		);
 		$this->db->insert('content_field', $data);
 
