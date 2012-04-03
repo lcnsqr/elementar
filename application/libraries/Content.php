@@ -253,6 +253,15 @@ class Content {
 		{
 			$this->id = $this->CI->storage->put_content($this->name, $this->sname, $this->type_id);
 		}
+		/*
+		 * Avoid duplicated sname by appending content id to it
+		 */
+		$id = $this->CI->storage->get_content_by_sname($this->sname);
+		if ( (bool) $id && (int) $id != $this->id )
+		{
+			$this->sname .= $this->id;
+			$this->rename();
+		}
 		$this->CI->storage->put_content_parent($this->id, $this->parent_id);
 		$this->CI->storage->put_content_status($this->id, $this->status);
 		return $this->id;

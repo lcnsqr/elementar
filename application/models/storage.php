@@ -524,6 +524,30 @@ class Storage extends CI_Model {
 	}
 	
 	/*
+	 * get content by sname (slug)
+	 */
+	function get_content_by_sname($sname)
+	{
+		$this->elementar->select('id');
+		$this->elementar->from('content');
+		$this->elementar->where('sname', $sname);
+		if ( $this->STATUS != 'all' )
+		{
+			$this->elementar->where('status', $this->STATUS);
+		}
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->id;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	
+	/*
 	 * get content status
 	 */
 	function get_content_status($content_id)
