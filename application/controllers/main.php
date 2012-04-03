@@ -259,6 +259,11 @@ class Main extends CI_Controller {
 				'title' => $name, 
 				'current' => ($this->LANG == $code) ? TRUE : FALSE 
 			);
+			
+			/*
+			 * HTML/XHTML lang tag in head
+			 */
+			$data['lang'] = $this->LANG;
 		}
 		
 		// Parse requested URI
