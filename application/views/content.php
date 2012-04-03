@@ -6,6 +6,8 @@
 <title><?php echo $title; ?> &laquo; <?php echo $site; ?></title>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 
+<link rel="shortcut icon" href="<?php echo $favicon; ?>" />
+
 <?php foreach ($metafields as $metafield) : ?>
 <?php if ( (bool) $metafield['value'] ): ?>
 <meta name="<?php echo $metafield['name']; ?>" content="<?php echo $metafield['value']; ?>" /> 

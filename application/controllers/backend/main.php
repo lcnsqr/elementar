@@ -234,6 +234,9 @@ class Main extends CI_Controller {
 		// HTML rendered form
 		$form = $this->common->render_form_field('name', $this->lang->line('elementar_site_name'), 'name', NULL, $this->storage->get_config('name'), TRUE);
 
+		// Favicon choice
+		$form .= $this->common->render_form_field('file', 'Favicon', 'favicon', NULL, $this->storage->get_config('favicon'), FALSE);
+
 		$form .= div_open(array('class' => 'form_control_buttons'));
 		
 		// Submit button
@@ -264,6 +267,9 @@ class Main extends CI_Controller {
 	 */
 	private function _write_main()
 	{
+		/*
+		 * Site name
+		 */
 		$values = array();
 		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 		{
@@ -272,6 +278,15 @@ class Main extends CI_Controller {
 		$name = json_encode($values);
 		
 		$this->storage->put_config('name', $name);
+		
+		/*
+		 * Favicon
+		 */
+		$favicon = json_decode($this->input->post('favicon', TRUE), TRUE);
+		if ( $favicon['uri'] != '' )
+		{
+			$this->storage->put_config('favicon', $this->input->post('favicon', TRUE));
+		}
 
 		$response = array(
 			'done' => TRUE,

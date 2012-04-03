@@ -214,6 +214,19 @@ class Main extends CI_Controller {
 		// Default content values
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
+		
+		/*
+		 * Load favicon
+		 */
+		$favicon = json_decode($this->storage->get_config('favicon'), TRUE);
+		if ( is_array($favicon) )
+		{
+			$data['favicon'] = ( $favicon['uri'] != '' ) ? $favicon['uri'] : '/favicon.ico';
+		}
+		else
+		{
+			$data['favicon'] = '/favicon.ico';
+		}
 
 		// Array to carry content fields, elements,
 		// and other useful variables & rendered data
