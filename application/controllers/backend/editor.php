@@ -97,7 +97,7 @@ class Editor extends CI_Controller {
 
 		// Client controller (javascript files)
 		$js = array(
-			'/js/backend/jquery-1.7.1.min.js',
+			'/js/backend/jquery-1.7.2.min.js',
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
 			'/js/backend/backend_account.js',
@@ -106,7 +106,7 @@ class Editor extends CI_Controller {
 			'/js/backend/backend_content_tree.js',
 			'/js/backend/backend_content_window.js',
 			'/js/backend/backend_composite_field.js',
-			'/js/backend/jquery.json-2.2.min.js',
+			'/js/backend/jquery.json-2.3.min.js',
 			'/js/backend/backend_anchor.js'
 		);
 		
