@@ -269,10 +269,26 @@ $(function() {
 		if ( $(this).hasClass("content") ) {
 			var action = "/backend/editor/xhr_erase_content";
 			var erase = $('#tree_listing_1').find('p.label.content > a[href="' + id + '"]').parents('.tree_parent').first();
+			if ( $('#content_window').find('input[name="content_id"]').first().val() == id )
+			{
+				var clear_editor = true;
+			}
+			else
+			{
+				var clear_editor = false;
+			}
 		}
 		else if ( $(this).hasClass("element") ) {
 			var action = "/backend/editor/xhr_erase_element";
 			var erase = $('#tree_listing_1').find('p.label.element > a[href="' + id + '"]').parents('.tree_parent').first();
+			if ( $('#content_window').find('input[name="id"]').first().val() == id )
+			{
+				var clear_editor = true;
+			}
+			else
+			{
+				var clear_editor = false;
+			}
 		}
 
 		// Blocking
@@ -285,6 +301,11 @@ $(function() {
 
 			$.post(action, { id : id }, function(data){
 				if ( data.done == true ) {
+					if ( clear_editor )
+					{
+						// clear this item editor
+						$('#content_window').html('');
+					}
 					showClientWarning(data.message);
 					$(erase).slideUp("fast", "easeOutSine", function() {
 						$(this).remove();
