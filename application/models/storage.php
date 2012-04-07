@@ -55,7 +55,7 @@ class Storage extends CI_Model {
 			break;
 		}
 	}
-
+	
 	/*
 	 * get site config
 	 */
@@ -612,6 +612,46 @@ class Storage extends CI_Model {
 	}
 
 	/*
+	 * get content author account
+	 */
+	function get_content_account_id($content_id)
+	{
+		$this->elementar->select('account_id');
+		$this->elementar->from('content');
+		$this->elementar->where('id', $content_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->account_id;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
+	 * get element author account
+	 */
+	function get_element_account_id($element_id)
+	{
+		$this->elementar->select('account_id');
+		$this->elementar->from('element');
+		$this->elementar->where('id', $element_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->account_id;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	/*
 	 * get last element_id for element type
 	 */
 	function get_element_last_id($type_id)
@@ -715,6 +755,30 @@ class Storage extends CI_Model {
 		);
 		$this->elementar->where('id', $content_id);
 		$this->elementar->update('content', $data); 
+	}
+		
+	/*
+	 * Write content author account id
+	 */
+	function put_content_account_id($content_id, $account_id)
+	{
+		$data = array(
+			'account_id' => $account_id
+		);
+		$this->elementar->where('id', $content_id);
+		$this->elementar->update('content', $data); 
+	}
+		
+	/*
+	 * Write element author account id
+	 */
+	function put_element_account_id($element_id, $account_id)
+	{
+		$data = array(
+			'account_id' => $account_id
+		);
+		$this->elementar->where('id', $element_id);
+		$this->elementar->update('element', $data); 
 	}
 		
 	/*

@@ -38,6 +38,11 @@ class Content {
 	private $name;
 	private $uri;
 
+	/*
+	 * Author account id
+	 */
+	private $account_id;
+	
 	private $template_id;
 	private $template = array();
 	private $template_html;
@@ -60,7 +65,8 @@ class Content {
 		$this->status = $this->CI->storage->get_content_status($this->id);
 		$this->sname = $this->CI->storage->get_content_sname($this->id);
 		$this->name = $this->CI->storage->get_content_name($this->id);
-		$this->uri = $this->CI->storage->get_content_uri($this->id);
+		$this->uri = $this->CI->storage->get_content_uri($this->id);		
+		$this->account_id = $this->CI->storage->get_content_account_id($this->id);
 
 		$this->template_id = $this->CI->storage->get_content_template_id($this->id);
 		$this->template = $this->CI->storage->get_template($this->id);
@@ -126,6 +132,16 @@ class Content {
 	function set_status($value)
 	{
 		$this->status = $value;
+	}
+	
+	function get_account_id()
+	{
+		return $this->account_id;
+	}
+
+	function set_account_id($value)
+	{
+		$this->account_id = $value;
 	}
 	
 	function get_sname()
@@ -264,6 +280,8 @@ class Content {
 		}
 		$this->CI->storage->put_content_parent($this->id, $this->parent_id);
 		$this->CI->storage->put_content_status($this->id, $this->status);
+		$this->account_id = $this->CI->session->userdata('account_id');
+		$this->CI->storage->put_content_account_id($this->id, $this->account_id);
 		return $this->id;
 	}
 

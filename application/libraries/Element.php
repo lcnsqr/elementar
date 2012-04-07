@@ -37,6 +37,7 @@ class Element {
 	private $sname;
 	private $name;
 	private $spread;
+	private $account_id;
 
 	function __construct()
 	{
@@ -54,6 +55,7 @@ class Element {
 		$this->sname = $this->CI->storage->get_element_sname($this->id);
 		$this->name = $this->CI->storage->get_element_name($this->id);
 		$this->spread = $this->CI->storage->get_element_spread($this->id);
+		$this->account_id = $this->CI->storage->get_element_account_id($this->id);
 	}
 	
 	/*
@@ -112,6 +114,16 @@ class Element {
 	function set_status($value)
 	{
 		$this->status = $value;
+	}
+	
+	function get_account_id()
+	{
+		return $this->account_id;
+	}
+
+	function set_account_id($value)
+	{
+		$this->account_id = $value;
 	}
 	
 	function get_default_name()
@@ -190,7 +202,9 @@ class Element {
 		}
 		$this->CI->storage->put_element_parent($this->id, $this->parent_id);
 		$this->CI->storage->put_element_spread($this->id, $this->spread);
+		$this->account_id = $this->CI->session->userdata('account_id');
 		$this->CI->storage->put_element_status($this->id, $this->status);
+		$this->CI->storage->put_element_account_id($this->id, $this->account_id);
 		return $this->id;
 	}
 

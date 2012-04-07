@@ -199,6 +199,7 @@ color: #2d2d2d;
 		$this->dbforge->add_field("`sname` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`content_type_id` int(10) unsigned NOT NULL");
 		$this->dbforge->add_field("`template_id` int(10) unsigned DEFAULT NULL");
+		$this->dbforge->add_field("`account_id` int(10) unsigned DEFAULT NULL");
 		$this->dbforge->add_field("`status` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`created` timestamp NULL DEFAULT NULL");
 		$this->dbforge->add_field("`modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
@@ -208,6 +209,7 @@ color: #2d2d2d;
 			'name' => '{"pt":"In&iacute;cio","en":"Home"}',
 			'sname' => 'home',
 			'template_id' => 1,
+			'account_id' => 1,
 			'content_type_id' => 1,
 			'status' => 'published',
 			'created' => date("Y-m-d H:i:s")
@@ -283,6 +285,7 @@ color: #2d2d2d;
 		$this->dbforge->add_field("`name` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`sname` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`element_type_id` int(10) unsigned NOT NULL");
+		$this->dbforge->add_field("`account_id` int(10) unsigned DEFAULT NULL");
 		$this->dbforge->add_field("`spread` tinyint(1) NOT NULL DEFAULT '1'");
 		$this->dbforge->add_field("`status` varchar(1024) COLLATE utf8_unicode_ci NOT NULL");
 		$this->dbforge->add_field("`created` timestamp NULL DEFAULT NULL");
