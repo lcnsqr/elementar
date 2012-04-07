@@ -73,7 +73,7 @@ class Setup extends CI_Controller {
 		$data = array(
 			'title' => 'Elementar Setup', 
 			'js' => array(
-				'/js/backend/jquery-1.7.1.min.js', 
+				'/js/backend/jquery-1.7.2.min.js', 
 				'/js/backend/backend_setup.js', 
 				'/js/backend/jquery.timers-1.2.js', 
 				'/js/backend/backend_client_warning.js'
