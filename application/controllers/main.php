@@ -508,6 +508,7 @@ class Main extends CI_Controller {
 			if ( (bool) $account_id && do_hash($password) == $this->access->get_account_password($account_id) && (int) $group_id != 2 )
 			{
 				$this->session->set_userdata('account_id', $account_id);
+				$this->session->set_userdata('group_id', $group_id);
 				$response = array(
 					'done' => TRUE
 				);
@@ -533,6 +534,7 @@ class Main extends CI_Controller {
 				exit($this->lang->line('elementar_no_direct_script_access'));
 
 			$this->session->unset_userdata('account_id');
+			$this->session->unset_userdata('group_id');
 			$response = array(
 				'done' => TRUE
 			);
@@ -742,7 +744,7 @@ class Main extends CI_Controller {
 			break;
 			
 			default:
-			// Formulário de login
+			// Login form
 			$account_id = $this->session->userdata('account_id');
 			$data = array();
 			if ( (bool) $account_id !== FALSE )

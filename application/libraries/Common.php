@@ -167,7 +167,8 @@ class Common {
 	function backend_auth_check()
 	{
 		$account_id = $this->CI->session->userdata('account_id');
-		if ( (int) $account_id != 1 )
+		$group_id = $this->CI->session->userdata('group_id');
+		if ( (int) $group_id != 1 )
 		{
 			$data = array(
 				'is_logged' => FALSE,
