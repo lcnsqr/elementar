@@ -149,7 +149,6 @@ class Editor extends CI_Controller {
 		$data['elementar_new_element'] = $this->lang->line('elementar_new_element');
 		
 		$this->load->view('backend/backend_content', $data);
-
 	}
 	
 	/**
@@ -1413,7 +1412,7 @@ class Editor extends CI_Controller {
 		}
 		
 		// Erase cached content
-		$this->common->erase_cache($this->content->get_id());
+		$this->content->erase_cache();
 		
 		// Return ajax response
 		$response = array(
@@ -1442,6 +1441,9 @@ class Editor extends CI_Controller {
 		$this->load->library('content');
 		$this->content->set_id($content_id);
 
+		// Erase cached content
+		$this->content->erase_cache();
+
 		// remove content
 		$this->content->delete();
 
@@ -1469,6 +1471,9 @@ class Editor extends CI_Controller {
 		// Element library
 		$this->load->library('element');
 		$this->element->set_id($element_id);
+
+		// Erase previous cached content
+		$this->element->erase_cache();
 
 		// remove element
 		$this->element->delete();
@@ -1517,8 +1522,15 @@ class Editor extends CI_Controller {
 
 		if ( (bool) $parent_id && (bool) $element_id && ( $parent_id != $element_id ) )
 		{
+			// Erase previous cached content
+			$this->element->erase_cache();
+		
 			$this->element->set_parent_id($parent_id);
 			$this->element->save();
+
+			// Erase new cached content
+			$this->element->erase_cache();
+
 			$response = array(
 				'done' => TRUE
 			);
@@ -1586,8 +1598,15 @@ class Editor extends CI_Controller {
 
 		if ( (bool) $parent_id && (bool) $content_id && ( $parent_id != $content_id ) )
 		{
+			// Erase old cached content
+			$this->content->erase_cache();
+
 			$this->content->set_parent_id($parent_id);
 			$this->content->save();
+
+			// Erase existing cached content
+			$this->content->erase_cache();
+
 			$response = array(
 				'done' => TRUE
 			);
@@ -1692,6 +1711,9 @@ class Editor extends CI_Controller {
 			}
 			$this->element->set_field($field['id'], $value);
 		}
+		
+		// Erase cached content
+		$this->element->erase_cache();
 		
 		// Ajax response
 		$response = array(

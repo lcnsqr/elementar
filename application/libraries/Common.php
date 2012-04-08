@@ -200,43 +200,6 @@ class Common {
 	}
 	
 	/**
-	 * Removed a Cached URI File
-	 *
-	 * @access	public
-	 * @param 	string
-	 * @return	void
-	 */
-	function erase_cache($content_id)
-	{
-		$path = $this->CI->config->item('cache_path');
-
-		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
-
-		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
-		{
-			log_message('error', "Unable to write cache file: ".$cache_path);
-			return;
-		}
-		
-		$cache_files = array(
-			$cache_path . md5(site_url($this->CI->storage->get_content_uri($content_id))),
-			$cache_path . md5(site_url('/main/css/' . $content_id)),
-			$cache_path . md5(site_url('/main/javascript/' . $content_id)),
-			$cache_path . md5(site_url('/sitemap.xml'))
-		);
-
-		foreach ( $cache_files as $cache_path )
-		{
-			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-			{
-				log_message('error', "Unable to write cache file: ".$cache_path);
-				return;
-			}
-			unlink($cache_path);
-		}
-	}
-
-	/**
 	 * Render backend html columns with label and input(s)
 	 * 
 	 * @access public

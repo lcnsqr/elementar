@@ -2122,6 +2122,23 @@ class Storage extends CI_Model {
 	}
 
 	/*
+	 * All descendants contents
+	 */
+	function get_content_descendants($content_id)
+	{
+		$contents = array();
+		if ( $this->get_content_has_children($content_id, FALSE) )
+		{
+			$contents = $this->get_content_children($content_id);
+			foreach ( $contents as $content )
+			{
+				$contents = array_merge($contents, $this->get_content_descendants($content['id']));
+			}
+		}
+		return $contents;
+	}
+
+	/*
 	 * URI constructor for content
 	 */
 	function get_content_uri($content_id)

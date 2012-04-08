@@ -213,6 +213,50 @@ class Element {
 		$this->CI->storage->delete_element($this->id);
 	}
 	
+	/**
+	 * Remove a related cached URI File
+	 *
+	 * @access	public
+	 * @param 	string
+	 * @return	void
+	 */
+	function erase_cache()
+	{
+		$path = $this->CI->config->item('cache_path');
+
+		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
+
+		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
+		{
+			log_message('error', "Unable to write cache file: ".$cache_path);
+			return;
+		}
+		
+		$cache_files = array();
+		$cache_files[] = $cache_path . md5(site_url($this->CI->storage->get_content_uri($this->parent_id)));
+
+		/*
+		 * Erase cache for descendants contents if spreaded element
+		 */
+		if ( $this->spread )
+		{
+			foreach ($this->CI->storage->get_content_descendants($this->parent_id) as $content )
+			{
+				$cache_files[] = $cache_path . md5(site_url($this->CI->storage->get_content_uri($content['id'])));
+			}
+		}
+
+		foreach ( $cache_files as $cache_path )
+		{
+			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+			{
+				log_message('error', "Unable to write cache file: ".$cache_path);
+				return;
+			}
+			unlink($cache_path);
+		}
+	}
+
 	/*
 	 * Element types HTML dropdown
 	 * @return HTML content (html dropdown widget)
