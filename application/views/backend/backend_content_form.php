@@ -12,6 +12,7 @@
 		<p><?php echo $breadcrumb; ?></p>
 	</div>
 
+<?php if ( $show_tabs ) : ?>
 	<div style="display: <?php echo ( $editor == 'meta' ) ? 'block' : 'none'; ?>;" id="meta_editor_form" class="editor_form">
 	<?php echo $meta_form; ?>
 	</div>
@@ -19,6 +20,7 @@
 	<div style="display: <?php echo ( $editor == 'template' ) ? 'block' : 'none'; ?>;" id="template_editor_form" class="editor_form">
 	<?php echo $template_form; ?>
 	</div>
+<?php endif; ?>
 	
 	<div style="display: <?php echo ( $editor == 'content' ) ? 'block' : 'none'; ?>;" id="content_editor_form" class="editor_form">
 	<?php echo $content_form; ?>
