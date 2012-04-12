@@ -205,11 +205,7 @@ class Main extends CI_Controller {
 	function index()
 	{
 		// Enable caching only in anonymous session
-		if ( ! (bool) $this->session->userdata('account_id') )
-		{
-			// 24 hours caching
-			$this->output->cache($this->cache_expire);
-		}
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? NULL : $this->cache_expire);
 
 		// Default content values
 		$data = array();
@@ -464,6 +460,69 @@ class Main extends CI_Controller {
 		$javascript .= $this->storage->get_template_javascript($content_id);
 		$this->output->set_header("Content-type: text/javascript");
 		$this->output->set_output($javascript);
+	}
+	
+	/**
+	 * Load partial content by ajax
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function partial() {
+		// Enable caching only in anonymous session
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
+		
+		// $variable can be brothers, children or index
+		$variable = $this->uri->segment($this->STARTING_SEGMENT + 3);
+		// $content_id holds the page loaded by client
+		$content_id = $this->uri->segment($this->STARTING_SEGMENT + 4);
+		// $requested_order is the variable pair position in template
+		$requested_order = $this->uri->segment($this->STARTING_SEGMENT + 5);
+
+		// Content template
+		$template = $this->storage->get_template($content_id);
+
+		// Match tag pair
+		$l_delim = '{';
+		$r_delim = '}';
+		$order = 0;
+
+		while ( preg_match("|" . preg_quote($l_delim) . $variable . preg_quote($r_delim) . "(.+?)". preg_quote($l_delim) . '/' . $variable . preg_quote($r_delim) . "|s", $template['html'], $match))
+		{
+			// Render only if corresponds to the requested order
+			if ( $order == $requested_order )
+			{
+				switch ( $variable )
+				{
+					case 'brothers' :
+					case 'children' :
+					$content = $this->common->render_content_partial($content_id, $variable);
+					$html = $this->parser->parse_string_partial($match['0'], $content, TRUE);
+					break;
+					
+					default :
+					$html = '<!-- unknown variable -->';
+					break;
+				}
+				// Leave loop 
+				break;
+			}
+			else
+			{
+				// Clear tag pair to next iteration
+				switch ( $variable )
+				{
+					case 'brothers' :
+					case 'children' :
+					$template = str_replace($match['0'], '', $template);
+					break;
+				}
+			}
+			$order++;
+		}
+
+		$this->output->set_header("Content-type: text/html");
+		$this->output->set_output($html);
 	}
 	
 	/**

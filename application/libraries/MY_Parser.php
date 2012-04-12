@@ -41,6 +41,33 @@ class MY_Parser extends CI_Parser {
 		return $this->_parse($template, $data, $return);
 	}
 
+	/**
+	 *  Parse a Partial String
+	 *
+	 * Parses pseudo-variables contained in the specified string,
+	 * replacing them with the data in the second param.
+	 * Partial template requested by ajax
+	 * 
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	array
+	 * @param	bool
+	 * @return	string
+	 */
+	function parse_string_partial($template, $data, $return = FALSE)
+	{
+		$template = $this->_parse_pair(key($data), current($data), $template);
+
+		if ($return == FALSE)
+		{
+			$CI =& get_instance();
+			$CI->output->append_output($template);
+		}
+
+		return $template;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -69,9 +96,21 @@ class MY_Parser extends CI_Parser {
 		 */
 		foreach ($data as $key => $val)
 		{
-			if (is_array($val))
+			// Partial pairs loaded by ajax are
+			// replaced by javascript code
+			switch ( $key )
 			{
-				$template = $this->_parse_pair($key, $val, $template);
+				case 'brothers' :
+				case 'children' :
+					$template = $this->_parse_partial($key, $val, $template);
+				break;
+
+				default :
+					if (is_array($val))
+					{
+						$template = $this->_parse_pair($key, $val, $template);
+					}
+				break;
 			}
 		}
 		/*
@@ -112,6 +151,40 @@ class MY_Parser extends CI_Parser {
 	}
 
 	// --------------------------------------------------------------------
+
+	/**
+	 *  Parse a partial tag pair
+	 *
+	 * Parses tag pairs:  {some_tag} string... {/some_tag}
+	 * and replaces by javascript code
+	 *
+	 * @access	private
+	 * @param	string
+	 * @param	string
+	 * @param	string
+	 * @return	string
+	 */
+	function _parse_partial($variable, $value, $string)
+	{
+		// Mark pair order if there is more than one
+		$order = 0;
+		while ($match = $this->_match_pair($string, $variable))
+		{
+			$uri_prefix = $value[0];
+			$content_id = $value[1];
+	
+			$partial_id = 'partial_' . random_string('unique');
+	
+			$str = <<<PART
+<script id="$partial_id">if(typeof XMLHttpRequest=="undefined"){XMLHttpRequest=function(){try{return new ActiveXObject("Msxml2.XMLHTTP.6.0")}catch(a){}try{return new ActiveXObject("Msxml2.XMLHTTP.3.0")}catch(a){}try{return new ActiveXObject("Microsoft.XMLHTTP")}catch(a){}throw new Error("This browser does not support XMLHttpRequest.")}}var $partial_id=new XMLHttpRequest;{$partial_id}.onreadystatechange=function(){if({$partial_id}.readyState==4&&{$partial_id}.status==200){var a=document.getElementById("$partial_id");a.insertAdjacentHTML("afterend",{$partial_id}.responseText);a.parentNode.removeChild(a)}};{$partial_id}.open("GET","$uri_prefix/main/partial/$variable/$content_id/$order",true);{$partial_id}.send()</script>
+PART;
+	
+			$string = str_replace($match['0'], $str, $string);
+			
+			$order++;
+		}
+		return $string;
+	}
 
 	/**
 	 *  Parse a tag pair
@@ -161,7 +234,7 @@ class MY_Parser extends CI_Parser {
 
 			$str .= $temp;
 		}
-
+		
 		$string = str_replace($match['0'], $str, $string);
 
 		/*

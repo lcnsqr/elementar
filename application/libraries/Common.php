@@ -1451,54 +1451,87 @@ class Common {
 			}
 		}
 		
-		// Children contents listing
-		$children = $this->CI->storage->get_contents_by_parent($content_id);
-		if ( (bool) $children )
-		{
-			// Rename keys to avoid conflict with parent variable names in template
-			$children_variables = array();
-			foreach ( $children as $child )
-			{
-				// Localized name
-				$names = json_decode($child['name'], TRUE);
-				$children_variables[] = array(
-					'id' => $child['id'],
-					'sname' => $child['sname'],
-					'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
-					'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($child['id']),
-					'children' => $child['children']
-				);
-			}
-			$content['children'] = $children_variables;
-		}
+		// Identify and replace brothers and children variables 
+		// by script to call and render these partials by ajax
 
+		// Children contents listing
+		$content['children'] = array($this->URI_PREFIX, $content_id);
 		// Parent children contents → brothers :)
 		if ( $content_id != 1 )
 		{
-			$parent_id = $this->CI->storage->get_content_parent_id($content_id);
-			$brothers = $this->CI->storage->get_contents_by_parent($parent_id);
-			if ( (bool) $brothers )
-			{
-				// Rename keys to avoid conflict with parent variable names in template
-				$brothers_variables = array();
-				foreach ( $brothers as $brother )
-				{
-					// Localized name
-					$names = json_decode($brother['name'], TRUE);
-					$brothers_variables[] = array(
-						'id' => $brother['id'],
-						'sname' => $brother['sname'],
-						'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
-						'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($brother['id']),
-						'children' => $brother['children']
-					);
-				}
-				$content['brothers'] = $brothers_variables;
-			}
+			$content['brothers'] = array($this->URI_PREFIX, $content_id);
 		}
 		return $content;
 	}
 	
+	/**
+	 * Render values for a partial content's brothers or children
+	 * 
+	 * @access public
+	 * @param integer
+	 * @return array
+	 */
+	function render_content_partial($content_id, $variable)
+	{
+		$content = array();
+		
+		switch ( $variable )
+		{ 
+			case 'brothers' :
+			// Parent children contents → brothers :)
+			if ( $content_id != 1 )
+			{
+				$parent_id = $this->CI->storage->get_content_parent_id($content_id);
+				$brothers = $this->CI->storage->get_contents_by_parent($parent_id);
+				if ( (bool) $brothers )
+				{
+					$brothers_variables = array();
+					foreach ( $brothers as $brother )
+					{
+						if ( $content_id == $brother['id'] )
+						{
+							// Ignore current content in brothers listing
+							continue;
+						}
+						// Localized name
+						$names = json_decode($brother['name'], TRUE);
+						$brothers_variables[] = array(
+							'id' => $brother['id'],
+							'sname' => $brother['sname'],
+							'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
+							'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($brother['id']),
+							'children' => $brother['children']
+						);
+					}
+					$content['brothers'] = $brothers_variables;
+				}
+			}
+			break;
+			
+			case 'children' :
+			$children = $this->CI->storage->get_contents_by_parent($content_id);
+			if ( (bool) $children )
+			{
+				$children_variables = array();
+				foreach ( $children as $child )
+				{
+					// Localized name
+					$names = json_decode($child['name'], TRUE);
+					$children_variables[] = array(
+						'id' => $child['id'],
+						'sname' => $child['sname'],
+						'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
+						'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($child['id']),
+						'children' => $child['children']
+					);
+				}
+				$content['children'] = $children_variables;
+			}
+			break;
+		}
+		return $content;
+	}
+
 	/**
 	 * Render pagination links for hypertext fields
 	 * 
