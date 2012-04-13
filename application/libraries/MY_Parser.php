@@ -259,7 +259,7 @@ PART;
 		if ( preg_match("|" . preg_quote($this->l_delim) . 'if ' . $key . "(.+?)" . preg_quote($this->r_delim) . "(.+?)" . preg_quote($this->l_delim) . '/if' . preg_quote($this->r_delim) . "|s", $string, $match))
 		{
 			$test = $match[1];
-			if ( eval("if ( '$val' $test ) return TRUE ;") )
+			if ( eval('if ( "' . addslashes($val) . '" ' . $test . ' ) return TRUE ;') )
 			{
 				// good. Remove if statement
 				$string = str_replace($match[0], $match[2], $string);
