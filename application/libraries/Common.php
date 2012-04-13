@@ -1483,50 +1483,46 @@ class Common {
 			{
 				$parent_id = $this->CI->storage->get_content_parent_id($content_id);
 				$brothers = $this->CI->storage->get_contents_by_parent($parent_id);
-				if ( (bool) $brothers )
+				$brothers = ( (bool) $brothers ) ? $brothers : array();
+				$brothers_variables = array();
+				foreach ( $brothers as $brother )
 				{
-					$brothers_variables = array();
-					foreach ( $brothers as $brother )
+					if ( $content_id == $brother['id'] )
 					{
-						if ( $content_id == $brother['id'] )
-						{
-							// Ignore current content in brothers listing
-							continue;
-						}
-						// Localized name
-						$names = json_decode($brother['name'], TRUE);
-						$brothers_variables[] = array(
-							'id' => $brother['id'],
-							'sname' => $brother['sname'],
-							'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
-							'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($brother['id']),
-							'children' => $brother['children']
-						);
+						// Ignore current content in brothers listing
+						continue;
 					}
-					$content['brothers'] = $brothers_variables;
+					// Localized name
+					$names = json_decode($brother['name'], TRUE);
+					$brothers_variables[] = array(
+						'id' => $brother['id'],
+						'sname' => $brother['sname'],
+						'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
+						'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($brother['id']),
+						'children' => $brother['children']
+					);
 				}
+				$content['brothers'] = $brothers_variables;
 			}
 			break;
 			
 			case 'children' :
 			$children = $this->CI->storage->get_contents_by_parent($content_id);
-			if ( (bool) $children )
+			$children = ( (bool) $children ) ? $children : array();
+			$children_variables = array();
+			foreach ( $children as $child )
 			{
-				$children_variables = array();
-				foreach ( $children as $child )
-				{
-					// Localized name
-					$names = json_decode($child['name'], TRUE);
-					$children_variables[] = array(
-						'id' => $child['id'],
-						'sname' => $child['sname'],
-						'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
-						'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($child['id']),
-						'children' => $child['children']
-					);
-				}
-				$content['children'] = $children_variables;
+				// Localized name
+				$names = json_decode($child['name'], TRUE);
+				$children_variables[] = array(
+					'id' => $child['id'],
+					'sname' => $child['sname'],
+					'name' => (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '',
+					'uri' => $this->URI_PREFIX . $this->CI->storage->get_content_uri($child['id']),
+					'children' => $child['children']
+				);
 			}
+			$content['children'] = $children_variables;
 			break;
 		}
 		return $content;
