@@ -502,7 +502,8 @@ class Main extends CI_Controller {
 				{
 					case 'brothers' :
 					case 'children' :
-					$template = str_replace($match['0'], '', $template);
+					$pos = strpos($template['html'], $match['0']);
+					$template['html'] = substr_replace($template['html'], '', $pos, strlen($match['0']));
 					break;
 				}
 			}

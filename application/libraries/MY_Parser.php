@@ -175,11 +175,11 @@ class MY_Parser extends CI_Parser {
 	
 			$partial_id = 'partial_' . random_string('unique');
 	
-			$str = <<<PART
+			$script = <<<PART
 <script id="$partial_id">if(typeof XMLHttpRequest=="undefined"){XMLHttpRequest=function(){try{return new ActiveXObject("Msxml2.XMLHTTP.6.0")}catch(a){}try{return new ActiveXObject("Msxml2.XMLHTTP.3.0")}catch(a){}try{return new ActiveXObject("Microsoft.XMLHTTP")}catch(a){}throw new Error("This browser does not support XMLHttpRequest.")}}var $partial_id=new XMLHttpRequest;{$partial_id}.onreadystatechange=function(){if({$partial_id}.readyState==4&&{$partial_id}.status==200){var a=document.getElementById("$partial_id");a.insertAdjacentHTML("afterend",{$partial_id}.responseText);a.parentNode.removeChild(a)}};{$partial_id}.open("GET","$uri_prefix/main/partial/$variable/$content_id/$order",true);{$partial_id}.send()</script>
 PART;
-	
-			$string = str_replace($match['0'], $str, $string);
+			$pos = strpos($string, $match['0']);
+			$string = substr_replace($string, $script, $pos, strlen($match['0']));
 			
 			$order++;
 		}
