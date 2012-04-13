@@ -205,7 +205,7 @@ class Main extends CI_Controller {
 	function index()
 	{
 		// Enable caching only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? NULL : $this->cache_expire);
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
 
 		// Default content values
 		$data = array();
@@ -398,11 +398,7 @@ class Main extends CI_Controller {
 	function sitemap()
 	{
 		// Enable caching only in anonymous session
-		if ( ! (bool) $this->session->userdata('account_id') )
-		{
-			// 24 hours caching
-			$this->output->cache($this->cache_expire);
-		}
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
 		$this->common->sitemap();
 	}
 	
@@ -415,11 +411,7 @@ class Main extends CI_Controller {
 	function css()
 	{
 		// Enable caching only in anonymous session
-		if ( ! (bool) $this->session->userdata('account_id') )
-		{
-			// 24 hours caching
-			$this->output->cache($this->cache_expire);
-		}
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
 
  		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$css = '';
@@ -443,11 +435,7 @@ class Main extends CI_Controller {
 	function javascript()
 	{
 		// Enable caching only in anonymous session
-		if ( ! (bool) $this->session->userdata('account_id') )
-		{
-			// 24 hours caching
-			$this->output->cache($this->cache_expire);
-		}
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
 
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$javascript = '';
@@ -568,6 +556,7 @@ class Main extends CI_Controller {
 			{
 				$this->session->set_userdata('account_id', $account_id);
 				$this->session->set_userdata('group_id', $group_id);
+
 				$response = array(
 					'done' => TRUE
 				);
