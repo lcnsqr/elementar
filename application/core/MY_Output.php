@@ -102,14 +102,17 @@ class MY_Output extends CI_Output {
 		// Check for active session before sending the cached page.
 		// Web service method is used because many necessary CodeIgniter
 		// dependencies for session library are not loaded up to this point
-		$session = @unserialize(stripslashes($_COOKIE['elementar_session']));
-		if (is_array($session))
+		if ( array_key_exists('elementar_session', $_COOKIE) )
 		{
-			$response = file_get_contents('http://' . $_SERVER['SERVER_NAME'] . '/identified/session_id/' . $session['session_id']);
-			if ( $response == 'true' )
+			$session = @unserialize(stripslashes($_COOKIE['elementar_session']));
+			if (is_array($session))
 			{
-				// Authenticated session, skip cache
-				return FALSE;
+				$response = file_get_contents('http://' . $_SERVER['SERVER_NAME'] . '/identified/session_id/' . $session['session_id']);
+				if ( $response == 'true' )
+				{
+					// Authenticated session, skip cache
+					return FALSE;
+				}
 			}
 		}
 
