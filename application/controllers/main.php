@@ -69,6 +69,9 @@ class Main extends CI_Controller {
 		// Session library
 		$this->load->library('session');
 		
+		// Create cache file only in anonymous session
+		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
+
 		// Elementar Common Library
 		$this->load->library('common');
 
@@ -204,9 +207,6 @@ class Main extends CI_Controller {
 	 */
 	function index()
 	{
-		// Enable caching only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
-
 		// Default content values
 		$data = array();
 		$data['site'] = htmlspecialchars( $this->config->item('site_name') );
@@ -397,8 +397,6 @@ class Main extends CI_Controller {
 	 */
 	function sitemap()
 	{
-		// Enable caching only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
 		$this->common->sitemap();
 	}
 	
@@ -410,9 +408,6 @@ class Main extends CI_Controller {
 	 */
 	function css()
 	{
-		// Enable caching only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
-
  		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$css = '';
 		if ( $content_id != 1 )
@@ -434,9 +429,6 @@ class Main extends CI_Controller {
 	 */
 	function javascript()
 	{
-		// Enable caching only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
-
 		$content_id = (int) $this->uri->segment($this->uri->total_segments());
 		$javascript = '';
 		if ( $content_id != 1 )
@@ -457,9 +449,6 @@ class Main extends CI_Controller {
 	 * @return void
 	 */
 	function partial() {
-		// Enable caching only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
-		
 		// $variable can be brothers, children or index
 		$variable = $this->uri->segment($this->STARTING_SEGMENT + 3);
 		// $content_id holds the page loaded by client
@@ -522,6 +511,9 @@ class Main extends CI_Controller {
 	 */
 	function account()
 	{
+		// Don't create cache files for account related actions
+		$this->output->cache(0);
+
 		// Required CI helpers
 		$this->load->helper(array('security', 'string', 'form'));
 		
