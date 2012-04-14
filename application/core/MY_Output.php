@@ -18,13 +18,13 @@ class MY_Output extends CI_Output {
 		$elapsed = array('elapsed_time' => $CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end'));
 		$response = array_merge($response, $elapsed);
 		
-		// Render JSON response
-		$this->set_header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		$this->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-		$this->set_header("Cache-Control: post-check=0, pre-check=0");
+		// Try to prevent reponse caching
+		$this->set_header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600)." GMT");
+		$this->set_header("Cache-Control: no-cache, no-store");
 		$this->set_header("Pragma: no-cache");
 		$this->set_header("Content-type: application/json");
 		
+		// Render JSON response
 		$data = json_encode($response);
 		$this->set_output($data);
 	}
