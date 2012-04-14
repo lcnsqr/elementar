@@ -157,6 +157,23 @@ class MY_Output extends CI_Output {
 		
 		list($headers, $expire, $cache) = json_decode($file, TRUE);
 
+		// ETag field check
+		if ( array_key_exists('HTTP_IF_NONE_MATCH', $_SERVER) )
+		{
+			foreach($headers as $header)
+			{
+				if ( strtolower(substr($header[0], 0, 4)) == 'etag')
+				{
+					if ( $_SERVER['HTTP_IF_NONE_MATCH'] == substr($header[0], -32) )
+					{
+						// ETag match, send not modified code and finish
+						$this->set_status_header(304);
+						return TRUE;
+					}
+				}
+			}
+		}
+
 		// Has the file expired? If so we'll delete it.
 		if (time() >= intval($expire) )
 		{

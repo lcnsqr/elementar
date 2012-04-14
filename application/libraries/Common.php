@@ -1092,8 +1092,11 @@ class Common {
 				}				
 			}
 		}
+		// HTTP headers
 		$this->CI->output->set_header("Content-type: application/xml");
-		$this->CI->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+		$mtime = gmdate('D, d M Y H:i:s').' GMT';
+		$this->CI->output->set_header('ETag: ' . md5($mtime));
+		$this->CI->output->set_header('Last-Modified: ' . $mtime);
 		$this->CI->output->append_output('<?xml version="1.0" encoding="UTF-8"?>' . "\n");
 		$this->CI->load->view('sitemap', array('urls' => $urls));
 	}

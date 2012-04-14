@@ -385,8 +385,11 @@ class Main extends CI_Controller {
 		$data['extra_head'] = $template['head'];
 		$data['content'] = $this->parser->parse_string($template['html'], $content, TRUE);
 
-		$this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-		$this->output->set_header('Content-Language: '. $this->LANG);
+		// HTTP headers
+		$mtime = gmdate('D, d M Y H:i:s').' GMT';
+		$this->output->set_header('ETag: ' . md5($mtime));
+		$this->output->set_header('Last-Modified: ' . $mtime);
+		$this->output->set_header('Content-Language: ' . $this->LANG);
 
 		// Build final view and display the results
 		$this->load->view('content', $data);
@@ -420,8 +423,13 @@ class Main extends CI_Controller {
 		}
 		// Load individual CSS
 		$css .= $this->storage->get_template_css($content_id);
+
+		// HTTP headers
 		$this->output->set_header("Content-type: text/css");
-		$this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+		$mtime = gmdate('D, d M Y H:i:s').' GMT';
+		$this->output->set_header('ETag: ' . md5($mtime));
+		$this->output->set_header('Last-Modified: ' . $mtime);
+
 		$this->output->set_output($css);
 	}
 
@@ -442,8 +450,13 @@ class Main extends CI_Controller {
 		}
 		// Load individual Javascript
 		$javascript .= $this->storage->get_template_javascript($content_id);
+
+		// HTTP headers
 		$this->output->set_header("Content-type: text/javascript");
-		$this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+		$mtime = gmdate('D, d M Y H:i:s').' GMT';
+		$this->output->set_header('ETag: ' . md5($mtime));
+		$this->output->set_header('Last-Modified: ' . $mtime);
+
 		$this->output->set_output($javascript);
 	}
 	
@@ -504,8 +517,12 @@ class Main extends CI_Controller {
 			$order++;
 		}
 
+		// HTTP headers
 		$this->output->set_header("Content-type: text/html");
-		$this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+		$mtime = gmdate('D, d M Y H:i:s').' GMT';
+		$this->output->set_header('ETag: ' . md5($mtime));
+		$this->output->set_header('Last-Modified: ' . $mtime);
+
 		$this->output->set_output($html);
 	}
 	
