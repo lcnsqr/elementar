@@ -309,18 +309,25 @@ class Content {
 			return;
 		}
 		
+		// Main cache files
 		$cache_files = array(
-			$cache_path . md5(site_url($this->CI->storage->get_content_uri($this->id))),
+			$cache_path . md5(site_url($this->uri)),
 			$cache_path . md5(site_url('/main/css/' . $this->id)),
 			$cache_path . md5(site_url('/main/javascript/' . $this->id)),
 			$cache_path . md5(site_url('/sitemap.xml'))
 		);
+		// Cache files in other languages
+		list($lang, $lang_avail) = $this->CI->common->load_i18n_settings();
+		foreach ( $lang_avail as $lang_code => $lang_name )
+		{
+			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $this->uri));
+		}
 
 		foreach ( $cache_files as $cache_path )
 		{
 			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 			{
-				log_message('error', "Unable to write cache file: ".$cache_path);
+				log_message('error', "Unable to erase cache file: ".$cache_path);
 				return;
 			}
 			unlink($cache_path);
