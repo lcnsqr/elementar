@@ -1890,6 +1890,51 @@ class Storage extends CI_Model {
 	}
 
 	/*
+	 * List contents associated to a template
+	 */
+	function get_contents_by_template($template_id)
+	{
+		$contents = NULL;
+		
+		// Search for contents by its content type's template
+		$this->elementar->select('content.id');
+		$this->elementar->from('content');
+		$this->elementar->join('content_type', 'content_type.id = content.content_type_id', 'inner');
+		$this->elementar->where('content_type.template_id', $template_id);
+		$this->elementar->where('content.template_id', NULL);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$contents = array();
+			foreach ($query->result() as $row)
+			{
+				$contents[] = array(
+					'id' => $row->id
+				);
+			}
+		}
+		
+		// Search for contents using an exclusive template
+		$this->elementar->select('content.id');
+		$this->elementar->from('content');
+		$this->elementar->where('content.template_id', $template_id);
+		$query = $this->elementar->get();
+		if ($query->num_rows() > 0)
+		{
+			$contents = ( is_array($contents ) ) ? $contents : array();
+			foreach ($query->result() as $row)
+			{
+				$contents[] = array(
+					'id' => $row->id
+				);
+			}
+		}
+		
+
+		return $contents;
+	}
+
+	/*
 	 * List element by parent
 	 */
 	function get_elements_by_parent($parent_id = 1)

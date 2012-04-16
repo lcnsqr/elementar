@@ -1944,12 +1944,17 @@ class Editor extends CI_Controller {
 		 * All contents associated to template 
 		 * shold have their cache files erased
 		 */
+		$contents = $this->storage->get_contents_by_template($template_id);
+		$contents = ( (bool) $contents ) ? $contents : array();
 		// Content instance
 		$this->load->library('content');
-		$this->content->set_id($content_id);
-		$this->content->load();
-		// Erase cached content
-		$this->content->erase_cache();
+		foreach ( $contents as $content )
+		{
+			$this->content->set_id($content['id']);
+			$this->content->load();
+			// Erase cached content
+			$this->content->erase_cache();
+		}
 
 		// Response
 		$response = array(
@@ -2003,6 +2008,22 @@ class Editor extends CI_Controller {
 		
 		// write filter
 		$this->storage->put_template_filter($template_id, json_encode($template_filter));
+
+		/*
+		 * All contents associated to template 
+		 * shold have their cache files erased
+		 */
+		$contents = $this->storage->get_contents_by_template($template_id);
+		$contents = ( (bool) $contents ) ? $contents : array();
+		// Content instance
+		$this->load->library('content');
+		foreach ( $contents as $content )
+		{
+			$this->content->set_id($content['id']);
+			$this->content->load();
+			// Erase cached content
+			$this->content->erase_cache();
+		}
 
 		// Response
 		$response = array(
