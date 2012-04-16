@@ -282,6 +282,7 @@ class Content {
 		$this->CI->storage->put_content_status($this->id, $this->status);
 		$this->account_id = $this->CI->session->userdata('account_id');
 		$this->CI->storage->put_content_account_id($this->id, $this->account_id);
+		$this->load();
 		return $this->id;
 	}
 
@@ -291,7 +292,7 @@ class Content {
 	}
 	
 	/**
-	 * Remove a cached URI File
+	 * Remove a cached URI and related files
 	 *
 	 * @access	public
 	 * @param 	string
@@ -308,7 +309,7 @@ class Content {
 			log_message('error', "Unable to write cache file: ".$cache_path);
 			return;
 		}
-		
+
 		// Main cache files
 		$cache_files = array(
 			$cache_path . md5(site_url($this->uri)),
@@ -316,21 +317,73 @@ class Content {
 			$cache_path . md5(site_url('/main/javascript/' . $this->id)),
 			$cache_path . md5(site_url('/sitemap.xml'))
 		);
+
 		// Cache files in other languages
 		list($lang, $lang_avail) = $this->CI->common->load_i18n_settings();
 		foreach ( $lang_avail as $lang_code => $lang_name )
 		{
 			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $this->uri));
 		}
+		
+		// Remove relative's partials cache
+		if ( $this->id != 1 )
+		{
+			// Remove brother's cache from my brothers
+			$brothers = $this->CI->storage->get_contents_by_parent($this->parent_id);
+			$brothers = ( (bool) $brothers ) ? $brothers : array();
+			// Include myself
+			$brothers = array_merge(array('id' => $this->id), $brothers);
+			foreach ( $brothers as $brother )
+			{
+				$brother_uri = '/main/partial/brothers/' . $brother['id'];
+				// Count ocurrences of brothers tag in template
+				$template = $this->CI->storage->get_template($brother['id']);
+				$html = $template['html'];
+				$pair_count = 0;
+				while ( preg_match("|" . '{brothers}' . "(.+?)". '{/brothers}' . "|s", $html, $match) )
+				{
+					$pos = strpos($html, $match['0']);
+					$html = substr_replace($html, '', $pos, strlen($match['0']));
+					$cache_files[] = $cache_path . md5(site_url($brother_uri . '/' . $pair_count));
+					// Cache files in other languages
+					foreach ( $lang_avail as $lang_code => $lang_name )
+					{
+						$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $brother_uri . '/' . $pair_count));
+					}
+					$pair_count++;
+				}
+			}
+			// Erase children cache for own parent
+			$children_uri = '/main/partial/children/' . $this->parent_id;
+			// Count ocurrences of brothers tag in template
+			$parent_template = $this->CI->storage->get_template($this->parent_id);
+			$html = $parent_template['html'];
+			$pair_count = 0;
+			while ( preg_match("|" . '{children}' . "(.+?)". '{/children}' . "|s", $html, $match) )
+			{
+				$pos = strpos($html, $match['0']);
+				$html = substr_replace($html, '', $pos, strlen($match['0']));
+				$cache_files[] = $cache_path . md5(site_url($children_uri . '/' . $pair_count));
+				// Cache files in other languages
+				foreach ( $lang_avail as $lang_code => $lang_name )
+				{
+					$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $children_uri . '/' . $pair_count));
+				}
+				$pair_count++;
+			}
+		}
 
+		// Erase all selected cache files
 		foreach ( $cache_files as $cache_path )
 		{
 			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 			{
 				log_message('error', "Unable to erase cache file: ".$cache_path);
-				return;
 			}
-			unlink($cache_path);
+			else
+			{
+				unlink($cache_path);
+			}
 		}
 	}
 

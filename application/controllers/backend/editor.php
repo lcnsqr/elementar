@@ -1940,6 +1940,17 @@ class Editor extends CI_Controller {
 		// Reload content's template
 		$template = $this->storage->get_template($content_id);
 
+		/*
+		 * All contents associated to template 
+		 * shold have their cache files erased
+		 */
+		// Content instance
+		$this->load->library('content');
+		$this->content->set_id($content_id);
+		$this->content->load();
+		// Erase cached content
+		$this->content->erase_cache();
+
 		// Response
 		$response = array(
 			'done' => TRUE,
