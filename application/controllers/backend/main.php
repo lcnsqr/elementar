@@ -288,6 +288,19 @@ class Main extends CI_Controller {
 			$this->storage->put_config('favicon', $this->input->post('favicon', TRUE));
 		}
 
+		// Erase all cache files
+		$contents = $this->storage->get_content_descendants(1);
+		// Including home page
+		$contents = array_merge(array('id' => '1'), $contents);
+		$this->load->library('content');
+		foreach ( $contents as $content )
+		{
+			$this->content->set_id($content['id']);
+			$this->content->load();
+			// Erase cached content
+			$this->content->erase_cache();
+		}
+
 		$response = array(
 			'done' => TRUE,
 			'message' => $this->lang->line('elementar_xhr_write_config'),
