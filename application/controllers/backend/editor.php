@@ -1852,6 +1852,12 @@ class Editor extends CI_Controller {
 			// Write url meta field
 			$this->storage->put_meta_field($id, 'url', $url);
 		}
+
+		// Erase cached content
+		$this->load->library('content');
+		$this->content->set_id($id);
+		$this->content->load();
+		$this->content->erase_cache();
 		
 		$response = array(
 			'done' => TRUE,
