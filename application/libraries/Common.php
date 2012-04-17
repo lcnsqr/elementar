@@ -763,7 +763,7 @@ class Common {
 		$listing = array();
 		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_contents') . '</strong>');
 		// Contents
-		foreach ( $this->CI->storage->get_contents_by_parent() as $content )
+		foreach ( $this->CI->storage->get_contents_by_parent(1) as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
 			$listing[] = anchor($content['id'], (array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('class' => 'root_content'));
@@ -1378,7 +1378,7 @@ class Common {
 	 */
 	private function _index_field($content_id, $order_by, $direction, $limit, $depth, $depth_count = 1)
 	{
-		$children = $this->CI->storage->get_content_children($content_id);
+		$children = $this->CI->storage->get_contents_by_parent($content_id);
 		$children = ( is_array($children) ) ? $children : array();
 		/*
 		 * Perform filtering first by the 

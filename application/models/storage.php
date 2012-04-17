@@ -1835,34 +1835,33 @@ class Storage extends CI_Model {
 	/*
 	 * List contents by parent
 	 */
-	function get_contents_by_parent($parent_id = 1)
+	function get_contents_by_parent($content_id = 1)
 	{
-		$contents = NULL;
-		
-		$this->elementar->select('content.id, content.name, content.sname');
+		$contents = array();
+	
+		$this->elementar->select('content.id, content.name, content.sname, content.created, content.modified');
 		$this->elementar->from('content');
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
-		$this->elementar->where('content_parent.parent_id', $parent_id);
+		$this->elementar->where('content_parent.parent_id', $content_id);
 		if ( $this->STATUS != 'all' )
 		{
 			$this->elementar->where('content.status', $this->STATUS);
 		}
-		$this->elementar->order_by('content.created', 'desc');
 		$query = $this->elementar->get();
 		if ($query->num_rows() > 0)
 		{
-			$contents = array();
 			foreach ($query->result() as $row)
 			{
 				$contents[] = array(
 					'id' => $row->id, 
 					'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
 					'sname' => $row->sname,
+					'created' => $row->created,
+					'modified' => $row->modified,
 					'children' => $this->get_content_has_children($row->id)
 				);
 			}
 		}
-
 		return $contents;
 	}
 
@@ -2128,43 +2127,6 @@ class Storage extends CI_Model {
 		}
 		return $contents;
 	}
-	
-	/*
-	 * Children contents
-	 */
-	function get_content_children($content_id)
-	{
-		$contents = array();
-	
-		$this->elementar->select('content.id, content.name, content.sname, content.created, content.modified');
-		$this->elementar->from('content');
-		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
-		$this->elementar->where('content_parent.parent_id', $content_id);
-		if ( $this->STATUS != 'all' )
-		{
-			$this->elementar->where('content.status', $this->STATUS);
-		}
-		$query = $this->elementar->get();
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{
-				$contents[] = array(
-					'id' => $row->id, 
-					'name' => html_entity_decode($row->name, ENT_QUOTES, "UTF-8"),
-					'sname' => $row->sname,
-					'created' => $row->created,
-					'modified' => $row->modified,
-					'children' => $this->get_content_has_children($row->id)
-				);
-			}
-			return $contents;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
 
 	/*
 	 * All descendants contents
@@ -2174,7 +2136,7 @@ class Storage extends CI_Model {
 		$contents = array();
 		if ( $this->get_content_has_children($content_id, FALSE) )
 		{
-			$contents = $this->get_content_children($content_id);
+			$contents = $this->get_contents_by_parent($content_id);
 			foreach ( $contents as $content )
 			{
 				$contents = array_merge($contents, $this->get_content_descendants($content['id']));
