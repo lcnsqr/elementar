@@ -237,6 +237,9 @@ class Main extends CI_Controller {
 		// Favicon choice
 		$form .= $this->common->render_form_field('file', 'Favicon', 'favicon', NULL, $this->storage->get_config('favicon'), FALSE);
 
+		// Google Site Verification
+		$form .= $this->common->render_form_field('line', $this->lang->line('elementar_meta_google-site-verification'), 'google-site-verification', NULL, $this->storage->get_config('google-site-verification'), FALSE);
+
 		$form .= div_open(array('class' => 'form_control_buttons'));
 		
 		// Submit button
@@ -287,6 +290,10 @@ class Main extends CI_Controller {
 		{
 			$this->storage->put_config('favicon', $this->input->post('favicon', TRUE));
 		}
+		
+		// Google Site Verification
+		$google_site_verification = $this->input->post('google-site-verification', TRUE);
+		$this->storage->put_config('google-site-verification', $google_site_verification);
 
 		// Erase all cache files
 		$contents = $this->storage->get_content_descendants(1);

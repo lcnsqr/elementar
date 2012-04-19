@@ -1021,10 +1021,6 @@ class Editor extends CI_Controller {
 				$this->lang->line('elementar_meta_author') => 'copyright'
 			);
 			
-			if ( (int) $this->content->get_id() == 1 )
-			{
-				$fields[$this->lang->line('elementar_meta_google-site-verification')] = 'google-site-verification';
-			}
 			foreach ( $fields as $label => $name )
 			{
 				$attributes = array('class' => 'field_label');

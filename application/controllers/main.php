@@ -224,6 +224,18 @@ class Main extends CI_Controller {
 			$data['favicon'] = '/favicon.ico';
 		}
 
+		// Metafields
+		$data['metafields'] = array();
+		// common meta fields
+		$google_site_verification = $this->storage->get_config('google-site-verification');
+		if ( ! empty($google_site_verification) )
+		{
+			$data['metafields'][] = array(
+				'name' => 'google-site-verification',
+				'value' => $google_site_verification
+			);
+		}
+
 		// Array to carry content fields, elements,
 		// and other useful variables & rendered data
 		
@@ -291,7 +303,7 @@ class Main extends CI_Controller {
 			$data['title'] = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			
 			// Metafields
-			$data['metafields'] = (array) $this->storage->get_meta_fields($content_id);
+			$data['metafields'] = array_merge($data['metafields'] ,(array) $this->storage->get_meta_fields($content_id));
 			
 			// Content fields & associated contents
 			$content['name'] = $data['site'];
@@ -342,14 +354,8 @@ class Main extends CI_Controller {
 			
 				// Metafields
 				$data['title'] = $content_name;
-				$data['metafields'] = (array) $this->storage->get_meta_fields($content_id);
+				$data['metafields'] = array_merge($data['metafields'], (array) $this->storage->get_meta_fields($content_id));
 				
-				// Common meta fields
-				$data['metafields'][] = array(
-					'name' => 'google-site-verification',
-					'value' => $this->storage->get_meta_field(1, 'google-site-verification')
-				);
-
 				// Template
 				$template = $this->storage->get_template($content_id);
 
@@ -377,7 +383,6 @@ class Main extends CI_Controller {
 				// Defaults to home content_id
 				$data['content_id'] = 1;
 				$data['title'] = 'Página não encontrada';
-				$data['metafields'] = array();
 			}
 		}
 
