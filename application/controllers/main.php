@@ -528,6 +528,13 @@ class Main extends CI_Controller {
 			$this->output->set_header('ETag: ' . md5($mtime));
 			$this->output->set_header('Last-Modified: ' . $mtime);
 		}
+		else
+		{
+			// Try to prevent caching
+			$this->output->set_header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600)." GMT");
+			$this->output->set_header("Cache-Control: no-cache, no-store");
+			$this->output->set_header("Pragma: no-cache");
+		}
 		$this->output->set_output($html);
 	}
 	
