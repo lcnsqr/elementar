@@ -41,7 +41,7 @@ class MY_Output extends CI_Output {
 		$CI =& get_instance();
 
 		// If request is account related, exit now
-		if ( (bool) stristr($CI->uri->uri_string, 'partial/account') )
+		if ( (bool) stristr($CI->uri->uri_string(), 'partial/account') )
 		{
 			return;
 		}

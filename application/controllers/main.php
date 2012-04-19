@@ -69,8 +69,8 @@ class Main extends CI_Controller {
 		// Session library
 		$this->load->library('session');
 		
-		// Create cache file only in anonymous session
-		$this->output->cache( ((bool) $this->session->userdata('account_id')) ? 0 : $this->cache_expire);
+		// Create cache files by default
+		$this->output->cache($this->cache_expire);
 
 		// Elementar Common Library
 		$this->load->library('common');
