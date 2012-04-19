@@ -1465,6 +1465,11 @@ class Common {
 		{
 			$content['brothers'] = array($this->URI_PREFIX, $content_id);
 		}
+		
+		// Account data for ajax loading
+		// These calls ignore language uri prefix
+		$content['account'] = array('', $content_id);
+		
 		return $content;
 	}
 	
@@ -1527,6 +1532,34 @@ class Common {
 				);
 			}
 			$content['children'] = $children_variables;
+			break;
+			
+			case 'account' :
+			$account_id = $this->CI->session->userdata('account_id');
+			if ( (bool) $account_id )
+			{
+				// Access model 
+				$this->CI->load->model('Access', 'access');
+				$content['account'] = array(
+					array(
+						'identified' => TRUE,
+						'id' => $account_id,
+						'user' => $this->CI->access->get_account_username($account_id),
+						'email' => $this->CI->access->get_account_email($account_id)
+					)
+				);
+			}
+			else
+			{
+				$content['account'] = array(
+					array(
+						'identified' => FALSE,
+						'id' => '',
+						'user' => '',
+						'email' => ''
+					)
+				);
+			}
 			break;
 		}
 		return $content;

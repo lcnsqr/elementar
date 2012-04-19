@@ -102,6 +102,7 @@ class MY_Parser extends CI_Parser {
 			{
 				case 'brothers' :
 				case 'children' :
+				case 'account' :
 					$template = $this->_parse_partial($key, $val, $template);
 				break;
 

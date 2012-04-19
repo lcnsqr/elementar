@@ -491,10 +491,11 @@ class Main extends CI_Controller {
 				{
 					case 'brothers' :
 					case 'children' :
+					case 'account' :
 					$content = $this->common->render_content_partial($content_id, $variable);
 					$html = $this->parser->parse_string_partial($match['0'], $content, TRUE);
 					break;
-					
+
 					default :
 					$html = '<!-- unknown variable -->';
 					break;
@@ -509,6 +510,7 @@ class Main extends CI_Controller {
 				{
 					case 'brothers' :
 					case 'children' :
+					case 'account' :
 					$pos = strpos($template['html'], $match['0']);
 					$template['html'] = substr_replace($template['html'], '', $pos, strlen($match['0']));
 					break;
@@ -519,10 +521,13 @@ class Main extends CI_Controller {
 
 		// HTTP headers
 		$this->output->set_header("Content-type: text/html");
-		$mtime = gmdate('D, d M Y H:i:s').' GMT';
-		$this->output->set_header('ETag: ' . md5($mtime));
-		$this->output->set_header('Last-Modified: ' . $mtime);
-
+		// Cache headers only used if not related to account
+		if ( $variable != 'account' )
+		{
+			$mtime = gmdate('D, d M Y H:i:s').' GMT';
+			$this->output->set_header('ETag: ' . md5($mtime));
+			$this->output->set_header('Last-Modified: ' . $mtime);
+		}
 		$this->output->set_output($html);
 	}
 	
