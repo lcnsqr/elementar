@@ -486,6 +486,9 @@ class Main extends CI_Controller {
 		$l_delim = '{';
 		$r_delim = '}';
 		$order = 0;
+		
+		// Default response is empty
+		$html = '';
 
 		while ( preg_match("|" . preg_quote($l_delim) . $variable . preg_quote($r_delim) . "(.+?)". preg_quote($l_delim) . '/' . $variable . preg_quote($r_delim) . "|s", $template['html'], $match))
 		{
