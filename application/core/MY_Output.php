@@ -40,12 +40,6 @@ class MY_Output extends CI_Output {
 	{
 		$CI =& get_instance();
 
-		// If request is account related, exit now
-		if ( (bool) stristr($CI->uri->uri_string(), 'partial/account') )
-		{
-			return;
-		}
-		
 		$path = $CI->config->item('cache_path');
 
 		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
@@ -106,12 +100,6 @@ class MY_Output extends CI_Output {
 	 */
 	function _display_cache(&$CFG, &$URI)
 	{
-		// If request is account related, exit now
-		if ( (bool) stristr($URI->uri_string, 'partial/account') )
-		{
-			return FALSE;
-		}
-		
 		$cache_path = ($CFG->item('cache_path') == '') ? APPPATH.'cache/' : $CFG->item('cache_path');
 
 		// Build the file path.  The file name is an MD5 hash of the full URI

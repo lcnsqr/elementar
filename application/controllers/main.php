@@ -536,6 +536,7 @@ class Main extends CI_Controller {
 		else
 		{
 			// Try to prevent caching
+			$this->output->cache(0);
 			$this->output->set_header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600)." GMT");
 			$this->output->set_header("Cache-Control: no-cache, no-store");
 			$this->output->set_header("Pragma: no-cache");
