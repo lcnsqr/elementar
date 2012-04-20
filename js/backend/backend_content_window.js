@@ -30,6 +30,11 @@
 
 $(function() {
 
+	// Display something by default
+	if ( $.trim($("#content_window").html()) == '' )
+	{
+	}
+
 	// Unfocus proper elements
 	$("body").click(function() {
 		// dropdown widget
@@ -222,41 +227,6 @@ $(function() {
 		$("#content_editor_form").hide('slow', function() {
 			$("#content_editor_form").html("");
 		});
-	});
-
-	/*
-	 * Discard file in a file field	
-	 */
-	$(".file_erase").live("click", function(event) {
-		event.preventDefault();
-		var container = $(this).parents(".file_item").first();
-		/*
-		 * Clear file input field
-		 */
-		$(container).find("input.upload_file").val("");
-		/*
-		 * Update thumbnail and hide loading animation
-		 */
-		var file_thumbnail = $(container).find(".file_item_thumbnail");
-		$(file_thumbnail).addClass('file_item_thumbnail_missing');
-		$(file_thumbnail).removeAttr("style");
-		/*
-		 * Empty the file id field
-		 */
-		var field_sname = $(this).attr('href');
-		var file_field = $(container).parents('.file_field').first().find("input[name='"+field_sname+"']");
-		$(file_field).val('');
-		/*
-		 * Empty the description field
-		 */
-		var file_description = $(container).find("input[name='"+field_sname+"_description']");
-		$(file_description).val('');
-		/*
-		 * Hide details
-		 */
-		var file_details = $(container).find("ul.file_details");
-		$(file_details).hide();
-		$(file_details).find('span').html('');
 	});
 
 	// Save content
@@ -718,36 +688,5 @@ $(function() {
 			}, "json");
 		}
 	});
-	
-	/*
-	 * Alternate betwin language inputs
-	 */
-	$('.input_lang_tab_link').live('click', function(event){
-		event.preventDefault();
-		var lang_code = $(this).attr('href');
-		var form_window_column_input = $(this).parents('.form_window_column_input').first();
-		// Change tab link colors
-		$(form_window_column_input).find("a.input_lang_tab_link.current").removeClass("current");
-		$(this).addClass("current");
-		// Hide all other language inputs
-		$(form_window_column_input).children('.input_lang_field:visible').hide();
-		// Show requested language input
-		$(form_window_column_input).children('.input_lang_field_' + lang_code).show();
-	});
-	
-	/*
-	 * Open file manager
-	 */
-	$('.browse_file').live('click', function(event){
-		event.preventDefault();
-		/*
-		 * Identifies receptor input
-		 */
-		var identifier = $(this).attr('href');
-		/*
-		 * Pass caller data to file manager 
-		 */
-		window.open('/backend/file/manager?parent=direct&identifier=' + identifier, '_blank', 'height=480, width=880');
-	});
-	
+
 });

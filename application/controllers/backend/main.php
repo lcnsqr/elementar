@@ -99,8 +99,6 @@ class Main extends CI_Controller {
 			'/js/backend/tiny_mce/jquery.tinymce.js',
 			'/js/backend/backend_client_warning.js',
 			'/js/backend/backend_settings.js',
-			'/js/backend/backend_content_tree.js',
-			'/js/backend/backend_content_window.js',
 			'/js/backend/backend_composite_field.js',
 			'/js/backend/jquery.json-2.3.min.js',
 			'/js/backend/backend_anchor.js'

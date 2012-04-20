@@ -28,6 +28,13 @@
  */
 
 $(function(){
+	
+	// Display something by default
+	if ( $.trim($("#content_window").html()) == '' )
+	{
+	}
+
+	
 	$('.settings > a').click(function(event){
 		event.preventDefault();
 
