@@ -41,9 +41,6 @@ class Main extends CI_Controller {
 	// Starting URI segment
 	var $STARTING_SEGMENT = 0;
 	
-	// 24 hours caching
-	var $cache_expire = 1440;
-		
 	function __construct()
 	{
 		parent::__construct();
@@ -69,9 +66,6 @@ class Main extends CI_Controller {
 		// Session library
 		$this->load->library('session');
 		
-		// Create cache files by default
-		$this->output->cache($this->cache_expire);
-
 		// Elementar Common Library
 		$this->load->library('common');
 
@@ -556,7 +550,7 @@ class Main extends CI_Controller {
 	function account()
 	{
 		// Don't create cache files for account related actions
-		$this->output->cache(0);
+		$this->output->disable_cache();
 
 		// Required CI helpers
 		$this->load->helper(array('security', 'string', 'form'));

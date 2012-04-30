@@ -11,6 +11,47 @@
  */
 class MY_Output extends CI_Output {
 
+	/**
+	 * Enable caching
+	 *
+	 * @var bool
+	 * @access 	protected
+	 */
+	protected $enabled = TRUE;
+
+	/**
+	 * Cache expiration time greater than 0
+	 * to avoid skipping cache creation
+	 *
+	 * @var int
+	 * @access 	protected
+	 */
+	protected $cache_expiration	= 1;
+
+	/**
+	 * Enable Cache
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	function enable_cache()
+	{
+		$this->enabled = TRUE;
+		return $this;
+	}
+
+	/**
+	 * Disable Cache
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	function disable_cache()
+	{
+		$this->enabled = FALSE;
+		return $this;
+	}
+
 	function set_output_json($response)
 	{
 		// execution time
@@ -70,11 +111,9 @@ class MY_Output extends CI_Output {
 			return;
 		}
 
-		$expire = time() + ($this->cache_expiration * 60);
-
 		if (flock($fp, LOCK_EX))
 		{
-			fwrite($fp, json_encode(array($this->headers, $expire, $output)));
+			fwrite($fp, json_encode(array($this->headers, $output)));
 			flock($fp, LOCK_UN);
 		}
 		else
@@ -139,7 +178,7 @@ class MY_Output extends CI_Output {
 		flock($fp, LOCK_UN);
 		fclose($fp);
 		
-		list($headers, $expire, $cache) = json_decode($file, TRUE);
+		list($headers, $cache) = json_decode($file, TRUE);
 
 		// ETag field check
 		if ( array_key_exists('HTTP_IF_NONE_MATCH', $_SERVER) )
@@ -155,17 +194,6 @@ class MY_Output extends CI_Output {
 						return TRUE;
 					}
 				}
-			}
-		}
-		
-		// Has the file expired? If so we'll delete it.
-		if (time() >= intval($expire) )
-		{
-			if (is_really_writable($cache_path))
-			{
-				@unlink($filepath);
-				log_message('debug', "Cache file has expired. File deleted");
-				return FALSE;
 			}
 		}
 		
