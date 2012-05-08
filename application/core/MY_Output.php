@@ -85,6 +85,11 @@ class MY_Output extends CI_Output {
 	 */
 	function _write_cache($output)
 	{
+		// Do nothing if not enabled
+		if ( ! $this->enabled ) {
+			return;
+		}
+		
 		$CI =& get_instance();
 
 		$path = $CI->config->item('cache_path');
