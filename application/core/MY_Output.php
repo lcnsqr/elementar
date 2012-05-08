@@ -3,7 +3,7 @@
 /**
  * My Output Class
  *
- * Responsible for sending final output to browser
+ * Responsable for sending final output to browser
  * write & display function modified to preserve 
  * content type header
  *
@@ -52,6 +52,12 @@ class MY_Output extends CI_Output {
 		return $this;
 	}
 
+	/**
+	 * Ajax responses, mainly used by backend
+	 *
+	 * @access public
+	 * @return void
+	 */
 	function set_output_json($response)
 	{
 		// execution time
