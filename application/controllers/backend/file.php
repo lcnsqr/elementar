@@ -43,6 +43,9 @@ class File extends CI_Controller {
 	{
 		parent::__construct();
 
+		// Disable caching in backend
+		$this->output->disable_cache();
+
 		// Elementar database
 		$this->elementar = $this->load->database('elementar', TRUE);
 

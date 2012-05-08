@@ -40,6 +40,9 @@ class Editor extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+		
+		// Disable caching in backend
+		$this->output->disable_cache();
 
 		// CI helpers
 		$this->load->helper(array('string', 'security', 'cookie', 'form', 'html', 'text', 'url'));

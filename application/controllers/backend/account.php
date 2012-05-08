@@ -41,6 +41,9 @@ class Account extends CI_Controller {
 	{
 		parent::__construct();
 
+		// Disable caching in backend
+		$this->output->disable_cache();
+
 		//  CI helpers
 		$this->load->helper(array('string', 'security', 'cookie', 'form', 'html', 'text', 'url'));
 
