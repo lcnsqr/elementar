@@ -33,12 +33,14 @@ class Setup extends CI_Controller {
 	/**
 	 * Constructor - Load required libraries and database
 	 *
-	 * /application/config/database.php must 
-	 * be configured before loading this
+	 * /application/config/database.php must be configured before loading this
 	 */
 	function __construct()
 	{
 		parent::__construct();		
+
+		// Disable caching in backend
+		$this->output->disable_cache();
 
 		// Backend language file
 		$this->lang->load('elementar', $this->config->item('language'));
@@ -228,6 +230,7 @@ class Setup extends CI_Controller {
 		// Log admin in
 		$this->load->library('session');
 		$this->session->set_userdata('account_id', 1);
+		$this->session->set_userdata('group_id', 1);
 		
 		// Send XHR response
 		$response = array(
