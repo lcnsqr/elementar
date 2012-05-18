@@ -438,6 +438,21 @@ $(function() {
 	});
 	
 	/*
+	 * Template HTML actions
+	 */
+	$('.template_menu.add_file_uri').live('click', function(event){
+		event.preventDefault();
+		/*
+		 * Identifies receptor input
+		 */
+		var identifier = $(this).data('identifier');
+		/*
+		 * Pass caller data to file manager 
+		 */
+		window.open('/backend/file/manager?parent=add_file_uri&identifier=' + identifier, '_blank', 'height=480, width=880');
+	});
+	
+	/*
 	 * insertAtCursor: jQuery extended function to 
 	 * insert text at cursor on input
 	 */

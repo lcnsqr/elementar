@@ -628,3 +628,11 @@
 	border: 0;
 	height: 0;
 }
+
+/*
+ * Template action menus
+ */
+ul.template_actions 
+{
+	margin-top: 6px;
+}

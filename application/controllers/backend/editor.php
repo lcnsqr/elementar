@@ -939,6 +939,10 @@ class Editor extends CI_Controller {
 			// HTML Template editor
 			$attributes = array('class' => 'field_label');
 			$label = form_label($this->lang->line('elementar_type_markup_template'), 'template_' . $this->content->get_id(), $attributes);
+			$template_menu = ul(array(
+				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'template_' . $this->content->get_id()))
+			), array('class' => 'template_actions'));
+			// Include variables section
 			$input = $variables;			
 			$attributes = array(
 				'name' => 'template',
@@ -949,11 +953,14 @@ class Editor extends CI_Controller {
 				'value' => $this->content->get_template_html()
 			);
 			$input .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label, $input);
+			$template_form .= backend_input_columns($label.$template_menu, $input);
 
 			// CSS editor
 			$attributes = array('class' => 'field_label');
 			$label = form_label($this->lang->line('elementar_type_css'), 'css_' . $this->content->get_id(), $attributes);
+			$template_menu = ul(array(
+				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'css_' . $this->content->get_id()))
+			), array('class' => 'template_actions'));
 			$attributes = array(
 				'name' => 'css',
 				'class' => 'css_textarea noform',
@@ -963,11 +970,14 @@ class Editor extends CI_Controller {
 				'value' => $this->content->get_template_css()
 			);
 			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label, $input);
+			$template_form .= backend_input_columns($label.$template_menu, $input);
 
 			// Javascript editor
 			$attributes = array('class' => 'field_label');
 			$label = form_label($this->lang->line('elementar_type_javascript'), 'css_' . $this->content->get_id(), $attributes);
+			$template_menu = ul(array(
+				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'javascript_' . $this->content->get_id()))
+			), array('class' => 'template_actions'));
 			$attributes = array(
 				'name' => 'javascript',
 				'class' => 'javascript_textarea noform',
@@ -977,11 +987,14 @@ class Editor extends CI_Controller {
 				'value' => $this->content->get_template_javascript()
 			);
 			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label, $input);
+			$template_form .= backend_input_columns($label.$template_menu, $input);
 
 			// Extra Head editor
 			$attributes = array('class' => 'field_label');
 			$label = form_label($this->lang->line('elementar_type_extra_head'), 'head_' . $this->content->get_id(), $attributes);
+			$template_menu = ul(array(
+				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'head_' . $this->content->get_id()))
+			), array('class' => 'template_actions'));
 			$attributes = array(
 				'name' => 'head',
 				'class' => 'head_textarea noform',
@@ -991,7 +1004,7 @@ class Editor extends CI_Controller {
 				'value' => $this->content->get_template_head()
 			);
 			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label, $input);
+			$template_form .= backend_input_columns($label.$template_menu, $input);
 
 			$template_form .= div_open(array('class' => 'form_control_buttons'));
 			$attributes = array(

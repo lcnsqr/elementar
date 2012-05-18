@@ -122,6 +122,8 @@ $lang['elementar_editor_content']		= 'Content';
 $lang['elementar_editor_template']		= 'Template';
 $lang['elementar_editor_meta']		= 'Meta';
 
+$lang['elementar_add_file_uri']		= 'Insert file URI';
+
 $lang['elementar_meta_keywords']		= 'Keywords';
 $lang['elementar_meta_description']		= 'Description';
 $lang['elementar_meta_author']		= 'Author';
