@@ -224,7 +224,7 @@ $(function() {
 		/*
 		 * Pass caller data to file manager 
 		 */
-		window.open('/backend/file/manager?parent=direct&identifier=' + identifier, '_blank', 'height=480, width=880');
+		window.open('/backend/file/manager?parent=file_field&identifier=' + identifier, '_blank', 'height=480, width=880');
 	});
 
 	/*

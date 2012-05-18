@@ -182,7 +182,7 @@ $(function() {
 		if ( $.getUrlVar('parent') == 'tinymce' ) { 
 			FileManagerDialog.insert(uri);
 		}
-		else if ( $.getUrlVar('parent') == 'direct' ) {
+		else if ( $.getUrlVar('parent') == 'file_field' ) {
 			var identifier = $.getUrlVar('identifier');
 			var field = window.opener.$('input[name="' + identifier + '"]');
 			var field_description = window.opener.$('input#' + identifier + '_description');
