@@ -90,6 +90,23 @@ $lang['elementar_language_codes'] = 'Idiomas (ISO-639-1)';
 $lang['elementar_language_default'] = 'Idioma padrão';
 
 /*
+ * file manager
+ */
+$lang['elementar_fm_title'] = 'Gerenciador de Arquivos';
+$lang['elementar_fm_new_folder'] = 'Nova pasta';
+$lang['elementar_fm_upload_file'] = 'Enviar arquivo';
+$lang['elementar_fm_type'] = 'Tipo';
+$lang['elementar_fm_size'] = 'Tamanho';
+$lang['elementar_fm_dimensions'] = 'Dimensões';
+$lang['elementar_fm_rename'] = 'Renomear';
+$lang['elementar_fm_erase'] = 'Apagar';
+$lang['elementar_fm_and_all_its_contents'] = ' e todo seu conteúdo?';
+$lang['elementar_fm_insert_link'] = 'Inserir link';
+$lang['elementar_fm_insert_picture'] = 'Inserir como imagem';
+$lang['elementar_fm_insert'] = 'Inserir';
+$lang['elementar_fm_choose_file'] = 'Escolher arquivo';
+
+/*
  * Account related
  */
 $lang['elementar_groups']		= 'Grupos';

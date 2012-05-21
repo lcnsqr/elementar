@@ -2,7 +2,7 @@
 <hr />
 
 <div class="fake_upload_link_container">
-<a href="upload_file" class="fake_upload_link">Escolher Arquivo</a>
+<a href="upload_file" class="fake_upload_link"><?php echo $fm_choose_file; ?></a>
 </div>
 <?php echo $upload_form; ?>
 <iframe style="display: none;" id="iframeUpload_<?php echo $upload_session_id; ?>" name="iframeUpload_<?php echo $upload_session_id; ?>" scrolling="no" frameborder="0"></iframe>

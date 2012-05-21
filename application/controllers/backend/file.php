@@ -56,6 +56,9 @@ class File extends CI_Controller {
 		$this->load->model('Storage', 'storage');
 		$this->storage->STATUS = 'all';
 
+		// Backend language file
+		$this->lang->load('elementar', $this->config->item('language'));
+		
 		// Load encryption key before session library
 		$this->config->set_item('encryption_key', $this->storage->get_config('encryption_key'));
 		
@@ -120,6 +123,12 @@ class File extends CI_Controller {
 		);
 		$data['folders'] = $this->_render_tree_folder($this->ROOT);
 		$data['listing'] = $this->_render_listing($this->ROOT, $this->input->get('parent', TRUE));
+
+		// Localized texts
+		$data['fm_title'] = $this->lang->line('elementar_fm_title');
+		$data['fm_new_folder'] = $this->lang->line('elementar_fm_new_folder');
+		$data['fm_upload_file'] = $this->lang->line('elementar_fm_upload_file');
+		
 		$this->load->view('backend/backend_file', $data);
 	}
 
@@ -516,6 +525,17 @@ class File extends CI_Controller {
 
 		// Store parent window caller element type
 		$data['parent'] = $parent;
+		
+		// Localized texts
+		$data['fm_type'] = $this->lang->line('elementar_fm_type');
+		$data['fm_size'] = $this->lang->line('elementar_fm_size');
+		$data['fm_dimensions'] = $this->lang->line('elementar_fm_dimensions');
+		$data['fm_rename'] = $this->lang->line('elementar_fm_rename');
+		$data['fm_erase'] = $this->lang->line('elementar_fm_erase');
+		$data['fm_and_all_its_contents'] = $this->lang->line('elementar_fm_and_all_its_contents');
+		$data['fm_insert_link'] = $this->lang->line('elementar_fm_insert_link');
+		$data['fm_insert_picture'] = $this->lang->line('elementar_fm_insert_picture');
+		$data['fm_insert'] = $this->lang->line('elementar_fm_insert');
 
 		$html = $this->load->view('backend/backend_file_listing', $data, true);
 		return $html;
@@ -676,7 +696,10 @@ class File extends CI_Controller {
 			'upload_form' => $form,
 			'upload_session_id' => $upload_session_id
 		);
-		
+
+		// Localized texts
+		$data['fm_choose_file'] = $this->lang->line('elementar_fm_choose_file');
+
 		$html = $this->load->view('backend/backend_file_upload', $data, TRUE); 
 		
 		$response = array(

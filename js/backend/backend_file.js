@@ -533,7 +533,7 @@ $(function() {
 			/*
 			 * Directory
 			 */
-			var question = ' e todo seu conteúdo?';
+			var question = $(this).data('and-all-its-contents');
 		}
 		else
 		{
@@ -543,7 +543,7 @@ $(function() {
 			var question = '?';
 		}
 
-		if ( confirm("Excluir “" + title + '”' + question) == true )
+		if ( confirm($(this).html() + ' “' + title + '”' + question) == true )
 		{
 			var path = $(this).attr('href');
 			$.post("/backend/file/xhr_rm", { path : path }, function(data){
@@ -573,7 +573,7 @@ $(function() {
 
 		var path = $(this).attr('href');
 		
-		var name = prompt('Renomear “' + title + '”', title);
+		var name = prompt($(this).html() + ' “' + title + '”', title);
 		
 		if ( name != '' && name != null )
 		{
@@ -602,7 +602,7 @@ $(function() {
 		
 		var path = $(this).attr('href');
 		
-		var newdir = prompt('Nova Pasta', 'Nova Pasta');
+		var newdir = prompt($(this).html(), $(this).html());
 		
 		if ( newdir != '' && newdir != null )
 		{

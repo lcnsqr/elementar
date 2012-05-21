@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-	<title>File Manager</title>
+	<title><?php echo $fm_title; ?></title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<link rel="stylesheet" href="/css/backend/backend_file.css" type="text/css" />
 	<link rel="stylesheet" href="/css/backend/reset.css" type="text/css" />
@@ -105,8 +105,8 @@
 			<div id="current_folder_icon"></div>
 			<p id="current_folder_title">Raiz</p>
 			<ul>
-				<li><a href="<?php echo $folder['path']; ?>" id="current_folder_mkdir">Nova Pasta</a></li>
-				<li><a href="<?php echo $folder['path']; ?>" id="current_folder_upload">Enviar Arquivo</a></li>
+				<li><a href="<?php echo $folder['path']; ?>" id="current_folder_mkdir"><?php echo $fm_new_folder; ?></a></li>
+				<li><a href="<?php echo $folder['path']; ?>" id="current_folder_upload"><?php echo $fm_upload_file; ?></a></li>
 			</ul>
 		</div>
 		<div id="current_file_details">
