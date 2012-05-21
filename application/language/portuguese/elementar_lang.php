@@ -93,6 +93,7 @@ $lang['elementar_language_default'] = 'Idioma padrão';
  * file manager
  */
 $lang['elementar_fm_title'] = 'Gerenciador de Arquivos';
+$lang['elementar_fm_root'] = 'Raiz';
 $lang['elementar_fm_new_folder'] = 'Nova pasta';
 $lang['elementar_fm_upload_file'] = 'Enviar arquivo';
 $lang['elementar_fm_type'] = 'Tipo';

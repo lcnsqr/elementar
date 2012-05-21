@@ -117,7 +117,7 @@ class File extends CI_Controller {
 		$data['js'] = $js;
 
 		$data['folder'] = array(
-			'name' => 'Raiz',
+			'name' => $this->lang->line('elementar_fm_root'),
 			'path' => $this->ROOT,
 			'children' => (bool) count($this->_subfolders($this->ROOT))
 		);
