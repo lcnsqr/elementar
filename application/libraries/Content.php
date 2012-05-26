@@ -306,7 +306,7 @@ class Content {
 
 		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
 		{
-			log_message('error', "Unable to write cache file: ".$cache_path);
+			log_message('error', "Unable to erase cache file: ".$cache_path);
 			return;
 		}
 
@@ -315,7 +315,10 @@ class Content {
 			$cache_path . md5(site_url($this->uri)),
 			$cache_path . md5(site_url('/main/css/' . $this->id)),
 			$cache_path . md5(site_url('/main/javascript/' . $this->id)),
-			$cache_path . md5(site_url('/sitemap.xml'))
+			$cache_path . md5(site_url('/sitemap.xml')),
+			$cache_path . md5(site_url('/feed/' . $this->id)),
+			$cache_path . md5(site_url('/feed/1')),
+			$cache_path . md5(site_url('/feed/'))
 		);
 
 		// Cache files in other languages
@@ -324,7 +327,28 @@ class Content {
 		{
 			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $this->uri));
 		}
-		
+
+		// Feed files in other languages
+		foreach ( $lang_avail as $lang_code => $lang_name )
+		{
+			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . '/feed/' . $this->id));
+			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . '/feed/1'));
+			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . '/feed/'));
+		}
+
+		// Upper contents feeds
+		$parent_id = $this->CI->storage->get_content_parent_id($this->id);
+		while ( (int) $parent_id > 1 )
+		{
+			$cache_files[] = $cache_path . md5(site_url('/feed/' . $parent_id));
+			// Feed file in other languages
+			foreach ( $lang_avail as $lang_code => $lang_name )
+			{
+				$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . '/feed/' . $parent_id));
+			}
+			$parent_id = $this->CI->storage->get_content_parent_id($parent_id);
+		}
+
 		// Remove relative's partials cache
 		if ( $this->id != 1 )
 		{

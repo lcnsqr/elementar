@@ -368,7 +368,7 @@ class Main extends CI_Controller {
 			{
 				// 404
 				$template = array(
-					'html' => '<p>404: Página não encontrada</p>',
+					'html' => '<p>404</p>',
 					'css' => '',
 					'javascript' => '',
 					'head' => ''
@@ -376,7 +376,7 @@ class Main extends CI_Controller {
 
 				// Defaults to home content_id
 				$data['content_id'] = 1;
-				$data['title'] = 'Página não encontrada';
+				$data['title'] = '404';
 			}
 		}
 
@@ -403,6 +403,24 @@ class Main extends CI_Controller {
 	function sitemap()
 	{
 		$this->common->sitemap();
+	}
+	
+	/**
+	 * Generate rss feed for requested content
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function feed()
+	{
+		//$this->output->disable_cache();
+		
+		$content_id = (int) $this->uri->segment($this->uri->total_segments());
+
+		// With no content specified, catch home id
+		$content_id = ( $content_id == 0 ) ? 1 : $content_id;
+
+		$this->common->rss($content_id);
 	}
 	
 	/**

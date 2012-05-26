@@ -1102,6 +1102,94 @@ class Common {
 	}
 
 	/**
+	 * RSS feed generation
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function rss($content_id)
+	{
+		// HTTP headers
+		$this->CI->output->set_header("Content-type: application/xml");
+		$mtime = gmdate('D, d M Y H:i:s').' GMT';
+		$this->CI->output->set_header('ETag: ' . md5($mtime));
+		$this->CI->output->set_header('Last-Modified: ' . $mtime);
+		$this->CI->output->append_output('<?xml version="1.0" encoding="UTF-8"?>' . "\n");
+
+		$data = array();
+		$data['title'] = htmlspecialchars( $this->CI->config->item('site_name') );
+		if ( $content_id > 1 ) {
+			$titles = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
+			$title = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
+			$data['title'] = $title . " | " . $data['title'];
+		}
+
+		$uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($content_id);
+		$url = $this->CI->storage->get_meta_field($content_id, 'url');
+		if ( $url == '' )
+		{
+			// Using default content's URL
+			$url = site_url($uri);
+		}
+		$data['link'] = $url;
+		
+		$data['description'] = $this->CI->storage->get_meta_field($content_id, 'description');
+		$data['lastBuildDate'] = $mtime;
+		$data['language'] = $this->LANG;
+
+		$favicon = json_decode($this->CI->storage->get_config('favicon'), TRUE);
+		if ( is_array($favicon) )
+		{
+			$data['image_url'] = ( $favicon['uri'] != '' ) ? $favicon['uri'] : '/favicon.ico';
+		}
+		else
+		{
+			$data['image_url'] = '/favicon.ico';
+		}
+
+		$items = array();
+		// Children contents as items
+		$children = $this->CI->storage->get_contents_by_parent($content_id);
+		// Order by modified desc
+		$filter = new Filter('modified', 'desc');
+		$filter->set_is_date(TRUE);
+		usort($children, array($filter, 'sort'));
+		// Limit to 30 items
+		$children = array_slice($children, 0, 30);
+
+		foreach ( $children as $content )
+		{
+			// Item title
+			$titles = json_decode($this->CI->storage->get_content_name($content['id']), TRUE);
+			$title = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
+
+			// Item link
+			$uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($content['id']);
+			$url = $this->CI->storage->get_meta_field($content['id'], 'url');
+			if ( $url == '' )
+			{
+				// Using default content's URL
+				$url = site_url($uri);
+			}
+			
+			// Item description
+			$description = '';
+			
+			// Assemble item
+			$items[] = array(
+				'title' => $title,
+				'link' => $url,
+				'description' => $this->CI->storage->get_meta_field($content['id'], 'description'),
+				'modified' => gmdate('D, d M Y H:i:s', strtotime($content['modified'])).' GMT'
+			);
+		}
+
+		$data['items'] = $this->CI->load->view('rss_item', array('items' => $items), TRUE);
+
+		$this->CI->load->view('rss', $data);
+	}
+
+	/**
 	 * Convert non-ascii and other characters to ascii and underscores
 	 * 
 	 * @access public
@@ -1758,7 +1846,7 @@ class Common {
 					{
 						$filter->set_is_date(TRUE);
 					}
-					usort($data[$element_type], array($filter, 'sortElement'));
+					usort($data[$element_type], array($filter, 'sort'));
 
 					/*
 					 * Limit number of elements (if specified)
@@ -2016,7 +2104,7 @@ class Filter {
 		$this->LANG = $lang;
 	}
 	
-	function sortElement($a, $b)
+	function sort($a, $b)
 	{
 		$previous = $a[$this->order_by];
 		$next = $b[$this->order_by];
