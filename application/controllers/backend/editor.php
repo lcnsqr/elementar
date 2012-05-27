@@ -1141,16 +1141,32 @@ class Editor extends CI_Controller {
 		
 		// Meta fields
 		$fields = array(
-			$this->lang->line('elementar_meta_keywords') => 'keywords',
-			$this->lang->line('elementar_meta_description') => 'description',
-			$this->lang->line('elementar_meta_author') => 'author',
-			$this->lang->line('elementar_meta_copyright') => 'copyright'
+			array(
+				'name' => 'keywords',
+				'label' => $this->lang->line('elementar_meta_keywords'),
+				'type' => 'line'
+			),
+			array(
+				'name' => 'description',
+				'label' => $this->lang->line('elementar_meta_description'),
+				'type' => 'textarea'
+			),
+			array(
+				'name' => 'author',
+				'label' => $this->lang->line('elementar_meta_author'),
+				'type' => 'line'
+			),
+			array(
+				'name' => 'copyright',
+				'label' => $this->lang->line('elementar_meta_copyright'),
+				'type' => 'line'
+			)
 		);
 		
-		foreach ( $fields as $label => $name )
+		foreach ( $fields as $field )
 		{
-			$value = html_entity_decode($this->storage->get_meta_field($this->content->get_id(), $name), ENT_QUOTES, "UTF-8");
-			$meta_form .= $this->common->render_form_field('line', $label, $name, NULL, $value, TRUE);
+			$value = html_entity_decode($this->storage->get_meta_field($this->content->get_id(), $field['name']), ENT_QUOTES, "UTF-8");
+			$meta_form .= $this->common->render_form_field($field['type'], $field['label'], $field['name'], NULL, $value, TRUE);
 		}
 
 		// Priority
