@@ -1043,14 +1043,27 @@ class Common {
 		{
 			$priority = $this->CI->storage->get_meta_field($content['id'], 'priority');
 			$uri = $this->CI->storage->get_content_uri($content['id']);
-			$url = site_url($uri);
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
-				'loc' => $url,
+				'loc' => site_url($uri),
 				'lastmod' => date("Y-m-d", strtotime($content['modified'])),
 				'changefreq' => 'daily',
 				'priority' => $priority
 			);
+			// Add entry for each language
+			reset($this->LANG_AVAIL);
+			// Skip first (default) language
+			next($this->LANG_AVAIL);
+			while (current($this->LANG_AVAIL))
+			{
+				$urls[] = array(
+					'loc' => site_url('/' . key($this->LANG_AVAIL) . $uri),
+					'lastmod' => date("Y-m-d", strtotime($content['modified'])),
+					'changefreq' => 'daily',
+					'priority' => $priority
+				);
+				next($this->LANG_AVAIL);
+			}
 		}
 		// Addons
 		foreach ( $this->load_addons() as $addon ) 
