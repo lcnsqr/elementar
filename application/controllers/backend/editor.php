@@ -879,232 +879,6 @@ class Editor extends CI_Controller {
 			$data['breadcrumb'] = $this->common->breadcrumb_content((int)$parent_id);
 		}
 
-		// Show template tab only to existing contents
-		$data['show_tabs'] = (bool) $this->content->get_id();
-
-		if ( $data['show_tabs'] )
-		{
-			// Template editor
-			$template_form = '';
-			/*
-			$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
-			$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
-			$template_form .= form_open('/backend/content/xhr_write_template', $attributes, $hidden);
-			*/
-
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'template_id',
-				'value'=> $this->content->get_template_id(),
-				'type' => 'hidden'
-			);
-			$template_form .= form_input($attributes);
-
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'content_id',
-				'value'=> $this->content->get_id(),
-				'type' => 'hidden'
-			);
-			$template_form .= form_input($attributes);
-
-			// Show Sole template checkbox (if not home)
-			if ( $this->content->get_id() != 1 )
-			{
-				$attributes = array('class' => 'field_label');
-				$label = form_label($this->lang->line('elementar_template_sole'), "sole", $attributes);
-				if ( (bool) $this->content->get_id() ) 
-				{
-					$checked = $this->storage->get_content_type_template_id($this->content->get_type_id()) != $this->content->get_template_id() ;
-				}
-				else 
-				{
-					$checked = FALSE;
-				}
-				$attributes = array(
-					'name'        => 'template_sole',
-					'id'          => 'template_sole_' . $this->content->get_id(),
-					'class' => 'template_form noform',
-					'value'       => 'true',
-					'checked'     => (bool) $checked
-				);
-				$input = form_checkbox($attributes);
-				$input .= '<label class="template_confirm_overwrite" for="' . 'template_sole_' . $this->content->get_id() . '">' . $this->lang->line('elementar_template_confirm_overwrite') . '</label>';
-				$template_form .= backend_input_columns($label, $input);
-			}
-			
-			// Template pseudo variables available for this content
-			$variables = $this->_render_variables($this->content->get_id());
-
-			// HTML Template editor
-			$attributes = array('class' => 'field_label');
-			$label = form_label($this->lang->line('elementar_type_markup_template'), 'template_' . $this->content->get_id(), $attributes);
-			$template_menu = ul(array(
-				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'template_' . $this->content->get_id()))
-			), array('class' => 'template_actions'));
-			// Include variables section
-			$input = $variables;			
-			$attributes = array(
-				'name' => 'template',
-				'class' => 'template_textarea noform',
-				'id' => 'template_' . $this->content->get_id(),
-				'rows' => 16,
-				'cols' => 32,
-				'value' => $this->content->get_template_html()
-			);
-			$input .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label.$template_menu, $input);
-
-			// CSS editor
-			$attributes = array('class' => 'field_label');
-			$label = form_label($this->lang->line('elementar_type_css'), 'css_' . $this->content->get_id(), $attributes);
-			$template_menu = ul(array(
-				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'css_' . $this->content->get_id()))
-			), array('class' => 'template_actions'));
-			$attributes = array(
-				'name' => 'css',
-				'class' => 'css_textarea noform',
-				'id' => 'css_' . $this->content->get_id(),
-				'rows' => 16,
-				'cols' => 32,
-				'value' => $this->content->get_template_css()
-			);
-			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label.$template_menu, $input);
-
-			// Javascript editor
-			$attributes = array('class' => 'field_label');
-			$label = form_label($this->lang->line('elementar_type_javascript'), 'css_' . $this->content->get_id(), $attributes);
-			$template_menu = ul(array(
-				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'javascript_' . $this->content->get_id()))
-			), array('class' => 'template_actions'));
-			$attributes = array(
-				'name' => 'javascript',
-				'class' => 'javascript_textarea noform',
-				'id' => 'javascript_' . $this->content->get_id(),
-				'rows' => 16,
-				'cols' => 32,
-				'value' => $this->content->get_template_javascript()
-			);
-			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label.$template_menu, $input);
-
-			// Extra Head editor
-			$attributes = array('class' => 'field_label');
-			$label = form_label($this->lang->line('elementar_type_extra_head'), 'head_' . $this->content->get_id(), $attributes);
-			$template_menu = ul(array(
-				anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'head_' . $this->content->get_id()))
-			), array('class' => 'template_actions'));
-			$attributes = array(
-				'name' => 'head',
-				'class' => 'head_textarea noform',
-				'id' => 'head_' . $this->content->get_id(),
-				'rows' => 16,
-				'cols' => 32,
-				'value' => $this->content->get_template_head()
-			);
-			$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
-			$template_form .= backend_input_columns($label.$template_menu, $input);
-
-			$template_form .= div_open(array('class' => 'form_control_buttons'));
-			$attributes = array(
-			    'name' => 'button_template_save',
-			    'id' => 'button_template_save',
-			    'value' => $this->lang->line('elementar_save')
-			);
-			$template_form .= form_submit($attributes);
-			$template_form .= div_close("<!-- form_control_buttons -->");
-			/*
-			$template_form .= form_close();
-			*/
-			$data['template_form'] = $template_form;
-
-			// Meta fields editor tab
-			$meta_form = '';
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'id',
-				'value'=> $this->content->get_id(),
-				'type' => 'hidden'
-			);
-			$meta_form .= form_input($attributes);
-			
-			// Meta fields
-			$fields = array(
-				$this->lang->line('elementar_meta_keywords') => 'keywords',
-				$this->lang->line('elementar_meta_description') => 'description',
-				$this->lang->line('elementar_meta_author') => 'author',
-				$this->lang->line('elementar_meta_author') => 'copyright'
-			);
-			
-			foreach ( $fields as $label => $name )
-			{
-				$attributes = array('class' => 'field_label');
-				$label = form_label($label, $name, $attributes);
-				$attributes = array(
-					'class' => 'noform',
-					'name' => $name,
-					'id' => $name,
-					'value' => html_entity_decode($this->storage->get_meta_field($this->content->get_id(), $name), ENT_QUOTES, "UTF-8")
-				);
-				$input = form_input($attributes);
-				$meta_form .= backend_input_columns($label, $input);
-			}
-
-			// URL
-			$attributes = array('class' => 'field_label');
-			$label = form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
-			$uri = $this->content->get_uri();
-			$url = $this->storage->get_meta_field($this->content->get_id(), 'url');
-			if ( $url == '' )
-			{
-				// Default URL based on content's sname
-				$url = site_url($uri);
-			}
-			$attributes = array(
-				'class' => 'noform',
-				'name' => 'url',
-				'id' => 'url',
-				'value' => $url
-			);
-			$input = form_input($attributes);
-			$meta_form .= backend_input_columns($label, $input);
-
-			// Priority
-			$attributes = array('class' => 'field_label');
-			$label = form_label($this->lang->line('elementar_meta_priority'), 'priority', $attributes);
-			$values = array(
-				'0.0' => '0.0',
-				'0.1' => '0.1',
-				'0.2' => '0.2',
-				'0.3' => '0.3',
-				'0.4' => '0.4',
-				'0.5' => '0.5',
-				'0.6' => '0.6',
-				'0.7' => '0.7',
-				'0.8' => '0.8',
-				'0.9' => '0.9',
-				'1.0' => '1.0'
-			);
-			$value = $this->storage->get_meta_field($this->content->get_id(), 'priority');
-			$selected = ( (bool) $value ) ? $value : '0.5';
-			$input = form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
-			$meta_form .= backend_input_columns($label, $input);
-
-			// Save button
-			$meta_form .= div_open(array('class' => 'form_control_buttons'));
-			$attributes = array(
-			    'name' => 'button_meta_save',
-			    'id' => 'button_meta_save',
-			    'class' => 'noform',
-			    'content' => $this->lang->line('elementar_save')
-			);
-			$meta_form .= form_button($attributes);
-			$meta_form .= div_close();
-			$data['meta_form'] = $meta_form;
-
-		}
-
 		// Content main form
 		$content_form = "";
 		
@@ -1178,6 +952,15 @@ class Editor extends CI_Controller {
 		$content_form .= div_close("<!-- form_control_buttons -->");
 		
 		$data['content_form'] = $content_form;
+
+		// Show template tab only to existing contents
+		$data['show_tabs'] = (bool) $this->content->get_id();
+
+		if ( $data['show_tabs'] )
+		{
+			$data['template_form'] = $this->_render_template_form();
+			$data['meta_form'] = $this->_render_meta_form();
+		}
 		
 		// Localized texts
 		$data['elementar_editor_content'] = $this->lang->line('elementar_editor_content');
@@ -1192,6 +975,235 @@ class Editor extends CI_Controller {
 		);
 
 		$this->output->set_output_json($response);
+	}
+	
+	/**
+	 * Render the template form for a content
+	 *
+	 * @access private
+	 * @return string
+	 */
+	private function _render_template_form()
+	{
+		// Template editor
+		$template_form = '';
+		/*
+		$attributes = array('class' => 'template_form', 'id' => 'template_form_' . $content_id);
+		$hidden = array('template_id' => $template_id, 'content_id' => $content_id);
+		$template_form .= form_open('/backend/content/xhr_write_template', $attributes, $hidden);
+		*/
+
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'template_id',
+			'value'=> $this->content->get_template_id(),
+			'type' => 'hidden'
+		);
+		$template_form .= form_input($attributes);
+
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'content_id',
+			'value'=> $this->content->get_id(),
+			'type' => 'hidden'
+		);
+		$template_form .= form_input($attributes);
+
+		// Show Sole template checkbox (if not home)
+		if ( $this->content->get_id() != 1 )
+		{
+			$attributes = array('class' => 'field_label');
+			$label = form_label($this->lang->line('elementar_template_sole'), "sole", $attributes);
+			if ( (bool) $this->content->get_id() ) 
+			{
+				$checked = $this->storage->get_content_type_template_id($this->content->get_type_id()) != $this->content->get_template_id() ;
+			}
+			else 
+			{
+				$checked = FALSE;
+			}
+			$attributes = array(
+				'name'        => 'template_sole',
+				'id'          => 'template_sole_' . $this->content->get_id(),
+				'class' => 'template_form noform',
+				'value'       => 'true',
+				'checked'     => (bool) $checked
+			);
+			$input = form_checkbox($attributes);
+			$input .= '<label class="template_confirm_overwrite" for="' . 'template_sole_' . $this->content->get_id() . '">' . $this->lang->line('elementar_template_confirm_overwrite') . '</label>';
+			$template_form .= backend_input_columns($label, $input);
+		}
+		
+		// Template pseudo variables available for this content
+		$variables = $this->_render_variables($this->content->get_id());
+
+		// HTML Template editor
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_type_markup_template'), 'template_' . $this->content->get_id(), $attributes);
+		$template_menu = ul(array(
+			anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'template_' . $this->content->get_id()))
+		), array('class' => 'template_actions'));
+		// Include variables section
+		$input = $variables;			
+		$attributes = array(
+			'name' => 'template',
+			'class' => 'template_textarea noform',
+			'id' => 'template_' . $this->content->get_id(),
+			'rows' => 16,
+			'cols' => 32,
+			'value' => $this->content->get_template_html()
+		);
+		$input .= div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+		$template_form .= backend_input_columns($label.$template_menu, $input);
+
+		// CSS editor
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_type_css'), 'css_' . $this->content->get_id(), $attributes);
+		$template_menu = ul(array(
+			anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'css_' . $this->content->get_id()))
+		), array('class' => 'template_actions'));
+		$attributes = array(
+			'name' => 'css',
+			'class' => 'css_textarea noform',
+			'id' => 'css_' . $this->content->get_id(),
+			'rows' => 16,
+			'cols' => 32,
+			'value' => $this->content->get_template_css()
+		);
+		$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+		$template_form .= backend_input_columns($label.$template_menu, $input);
+
+		// Javascript editor
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_type_javascript'), 'css_' . $this->content->get_id(), $attributes);
+		$template_menu = ul(array(
+			anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'javascript_' . $this->content->get_id()))
+		), array('class' => 'template_actions'));
+		$attributes = array(
+			'name' => 'javascript',
+			'class' => 'javascript_textarea noform',
+			'id' => 'javascript_' . $this->content->get_id(),
+			'rows' => 16,
+			'cols' => 32,
+			'value' => $this->content->get_template_javascript()
+		);
+		$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+		$template_form .= backend_input_columns($label.$template_menu, $input);
+
+		// Extra Head editor
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_type_extra_head'), 'head_' . $this->content->get_id(), $attributes);
+		$template_menu = ul(array(
+			anchor('add_file_uri', $this->lang->line('elementar_add_file_uri'), array('class' => 'template_menu add_file_uri', 'data-identifier' => 'head_' . $this->content->get_id()))
+		), array('class' => 'template_actions'));
+		$attributes = array(
+			'name' => 'head',
+			'class' => 'head_textarea noform',
+			'id' => 'head_' . $this->content->get_id(),
+			'rows' => 16,
+			'cols' => 32,
+			'value' => $this->content->get_template_head()
+		);
+		$input = div_open(array('class' => 'textarea_limiter')) . form_textarea($attributes) . div_close("<!-- .textarea_limiter -->");
+		$template_form .= backend_input_columns($label.$template_menu, $input);
+
+		$template_form .= div_open(array('class' => 'form_control_buttons'));
+		$attributes = array(
+			'name' => 'button_template_save',
+			'id' => 'button_template_save',
+			'value' => $this->lang->line('elementar_save')
+		);
+		$template_form .= form_submit($attributes);
+		$template_form .= div_close("<!-- form_control_buttons -->");
+		/*
+		$template_form .= form_close();
+		*/
+		return $template_form;
+	}
+
+	/**
+	 * Render the meta fields form for a content
+	 *
+	 * @access private
+	 * @return string
+	 */
+	private function _render_meta_form()
+	{
+		// Meta fields editor tab
+		$meta_form = '';
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'id',
+			'value'=> $this->content->get_id(),
+			'type' => 'hidden'
+		);
+		$meta_form .= form_input($attributes);
+		
+		// Meta fields
+		$fields = array(
+			$this->lang->line('elementar_meta_keywords') => 'keywords',
+			$this->lang->line('elementar_meta_description') => 'description',
+			$this->lang->line('elementar_meta_author') => 'author',
+			$this->lang->line('elementar_meta_copyright') => 'copyright'
+		);
+		
+		foreach ( $fields as $label => $name )
+		{
+			$value = html_entity_decode($this->storage->get_meta_field($this->content->get_id(), $name), ENT_QUOTES, "UTF-8");
+			$meta_form .= $this->common->render_form_field('line', $label, $name, NULL, $value, TRUE);
+		}
+
+		// URL
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
+		$uri = $this->content->get_uri();
+		$url = $this->storage->get_meta_field($this->content->get_id(), 'url');
+		if ( $url == '' )
+		{
+			// Default URL based on content's sname
+			$url = site_url($uri);
+		}
+		$attributes = array(
+			'class' => 'noform',
+			'name' => 'url',
+			'id' => 'url',
+			'value' => $url
+		);
+		$input = form_input($attributes);
+		$meta_form .= backend_input_columns($label, $input);
+
+		// Priority
+		$attributes = array('class' => 'field_label');
+		$label = form_label($this->lang->line('elementar_meta_priority'), 'priority', $attributes);
+		$values = array(
+			'0.0' => '0.0',
+			'0.1' => '0.1',
+			'0.2' => '0.2',
+			'0.3' => '0.3',
+			'0.4' => '0.4',
+			'0.5' => '0.5',
+			'0.6' => '0.6',
+			'0.7' => '0.7',
+			'0.8' => '0.8',
+			'0.9' => '0.9',
+			'1.0' => '1.0'
+		);
+		$value = $this->storage->get_meta_field($this->content->get_id(), 'priority');
+		$selected = ( (bool) $value ) ? $value : '0.5';
+		$input = form_dropdown('priority', $values, $selected , 'class="noform" id="priority"');
+		$meta_form .= backend_input_columns($label, $input);
+
+		// Save button
+		$meta_form .= div_open(array('class' => 'form_control_buttons'));
+		$attributes = array(
+			'name' => 'button_meta_save',
+			'id' => 'button_meta_save',
+			'class' => 'noform',
+			'content' => $this->lang->line('elementar_save')
+		);
+		$meta_form .= form_button($attributes);
+		$meta_form .= div_close();
+		return $meta_form;
 	}
 	
 	/**
@@ -1834,28 +1846,23 @@ class Editor extends CI_Controller {
 			'keywords',
 			'description',
 			'author',
-			'copyright',
-			'priority'
+			'copyright'
 		);
-
-		if ( (int) $id == 1 )
-		{
-			$fields[] = 'google-site-verification';
-		}
 
 		foreach ( $fields as $name )
 		{
-			$value = $this->input->post($name, TRUE);
-			if ( (bool) $value )
+			$values = array();
+			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
-				$this->storage->put_meta_field($id, $name, $value);
+				$values[$lang_code] = htmlentities($this->input->post($name . '_' . $lang_code, TRUE), ENT_QUOTES, "UTF-8");
 			}
-			else
-			{
-				// Remove meta field
-				$this->storage->delete_meta_field($id, $name);
-			}
+			$value = json_encode($values);
+
+			$this->storage->put_meta_field($id, $name, $value);
 		}
+		
+		$priority = $this->input->post('priority', TRUE);
+		$this->storage->put_meta_field($id, 'priority', $priority);
 		
 		$uri = $this->storage->get_content_uri($id);
 		$url = $this->input->post('url', TRUE);

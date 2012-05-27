@@ -297,7 +297,15 @@ class Main extends CI_Controller {
 			$data['title'] = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
 			
 			// Metafields
-			$data['metafields'] = array_merge($data['metafields'] ,(array) $this->storage->get_meta_fields($content_id));
+			$metafields = (array) $this->storage->get_meta_fields($content_id);
+			foreach ( $metafields as $metafield ) 
+			{
+				$values = (array) json_decode($metafield['value'], TRUE);
+				if ( array_key_exists($this->LANG, $values) )
+				{
+					$data['metafields'][] = array('name' => $metafield['name'], 'value' => $values[$this->LANG]);
+				}
+			}
 			
 			// Content fields & associated contents
 			$content['name'] = $data['site'];
@@ -348,7 +356,15 @@ class Main extends CI_Controller {
 			
 				// Metafields
 				$data['title'] = $content_name;
-				$data['metafields'] = array_merge($data['metafields'], (array) $this->storage->get_meta_fields($content_id));
+				$metafields = (array) $this->storage->get_meta_fields($content_id);
+				foreach ( $metafields as $metafield ) 
+				{
+					$values = (array) json_decode($metafield['value'], TRUE);
+					if ( array_key_exists($this->LANG, $values) )
+					{
+						$data['metafields'][] = array('name' => $metafield['name'], 'value' => $values[$this->LANG]);
+					}
+				}
 				
 				// Template
 				$template = $this->storage->get_template($content_id);
