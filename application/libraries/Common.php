@@ -1141,7 +1141,10 @@ class Common {
 		}
 		$data['link'] = $url;
 		
-		$data['description'] = $this->CI->storage->get_meta_field($content_id, 'description');
+		// Localized description from meta field
+		$descriptions = (array) json_decode($this->CI->storage->get_meta_field($content_id, 'description'), TRUE);
+		$data['description'] = (array_key_exists($this->LANG, $descriptions)) ? $descriptions[$this->LANG] : '';
+		
 		$data['lastBuildDate'] = $mtime;
 		$data['language'] = $this->LANG;
 
@@ -1180,14 +1183,15 @@ class Common {
 				$url = site_url($uri);
 			}
 			
-			// Item description
-			$description = '';
+			// Localized description from meta field
+			$descriptions = (array) json_decode($this->CI->storage->get_meta_field($content['id'], 'description'), TRUE);
+			$description = (array_key_exists($this->LANG, $descriptions)) ? $descriptions[$this->LANG] : '';
 			
 			// Assemble item
 			$items[] = array(
 				'title' => $title,
 				'link' => $url,
-				'description' => $this->CI->storage->get_meta_field($content['id'], 'description'),
+				'description' => $description,
 				'modified' => gmdate('D, d M Y H:i:s', strtotime($content['modified'])).' GMT'
 			);
 		}
