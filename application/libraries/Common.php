@@ -1043,12 +1043,7 @@ class Common {
 		{
 			$priority = $this->CI->storage->get_meta_field($content['id'], 'priority');
 			$uri = $this->CI->storage->get_content_uri($content['id']);
-			$url = $this->CI->storage->get_meta_field($content['id'], 'url');
-			if ( $url == '' )
-			{
-				// Using default content's URL
-				$url = site_url($uri);
-			}
+			$url = site_url($uri);
 			$priority = ( (bool) $priority ) ? $priority : '0.5';
 			$urls[] = array(
 				'loc' => $url,

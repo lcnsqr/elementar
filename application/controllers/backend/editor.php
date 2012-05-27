@@ -1153,25 +1153,6 @@ class Editor extends CI_Controller {
 			$meta_form .= $this->common->render_form_field('line', $label, $name, NULL, $value, TRUE);
 		}
 
-		// URL
-		$attributes = array('class' => 'field_label');
-		$label = form_label($this->lang->line('elementar_meta_url'), 'url', $attributes);
-		$uri = $this->content->get_uri();
-		$url = $this->storage->get_meta_field($this->content->get_id(), 'url');
-		if ( $url == '' )
-		{
-			// Default URL based on content's sname
-			$url = site_url($uri);
-		}
-		$attributes = array(
-			'class' => 'noform',
-			'name' => 'url',
-			'id' => 'url',
-			'value' => $url
-		);
-		$input = form_input($attributes);
-		$meta_form .= backend_input_columns($label, $input);
-
 		// Priority
 		$attributes = array('class' => 'field_label');
 		$label = form_label($this->lang->line('elementar_meta_priority'), 'priority', $attributes);
@@ -1864,14 +1845,6 @@ class Editor extends CI_Controller {
 		$priority = $this->input->post('priority', TRUE);
 		$this->storage->put_meta_field($id, 'priority', $priority);
 		
-		$uri = $this->storage->get_content_uri($id);
-		$url = $this->input->post('url', TRUE);
-		if ( site_url($uri) != $url )
-		{
-			// Write url meta field
-			$this->storage->put_meta_field($id, 'url', $url);
-		}
-
 		// Erase cached content
 		$this->load->library('content');
 		$this->content->set_id($id);
