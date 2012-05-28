@@ -105,7 +105,8 @@ class File extends CI_Controller {
 			'/js/backend/jquery.easing.1.3.js',
 			'/js/backend/jquery.timers-1.2.js',
 			'/js/backend/jquery.json-2.3.min.js',
-			'/js/backend/backend_file.js'
+			'/js/backend/backend_file.js',
+			'/js/backend/jquery.cookie.js'
 		);
 
 		// Add tinymce support scripts if requested by file manager plugin

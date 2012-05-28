@@ -79,6 +79,9 @@
 	<div class="shade_bottom"></div>	
 	</div> <!-- #content_editor_board -->
 
+	<!-- vertical resizer (tree width -->
+	<div id="vertical_resizer"></div>
+
 
 </div> <!-- #main -->
 

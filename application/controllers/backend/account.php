@@ -112,7 +112,8 @@ class Account extends CI_Controller {
 			'/js/backend/backend_account_tree.js',
 			'/js/backend/backend_account_window.js',
 			'/js/backend/backend_client_warning.js',
-			'/js/backend/backend_anchor.js'
+			'/js/backend/backend_anchor.js',
+			'/js/backend/jquery.cookie.js'
 		);
 		
 		// Top menu

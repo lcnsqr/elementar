@@ -153,6 +153,7 @@
 	margin-right: 16px;
 	height: 16px;
 	line-height: 16px;
+	white-space: nowrap;
 }
 
 .tree_listing_row .tree_listing_text {

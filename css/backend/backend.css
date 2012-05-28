@@ -11,6 +11,9 @@ body {
 /*
 	background: url('/css/backend/backend_bg.png') no-repeat left top;
 */
+	position: absolute;
+	width: 100%;
+	height: 100%;
 }
 
 #authenticate, #setup
@@ -255,6 +258,18 @@ a:visited {
 /*
  * Main internal items
  */
+#vertical_resizer {
+	position: absolute;
+	top: 6px;
+	width: 6px;
+	bottom: 6px;
+	left: 220px;
+	background-image: url("/css/backend/vertical_grip.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	cursor: col-resize;
+}
+
 
 /*
  * Users table
@@ -578,7 +593,7 @@ a:visited {
 	top: 4px;
 	right: 4px;
 	bottom: 4px;
-	left: 222px;
+	left: 224px;
 }
 
 /*

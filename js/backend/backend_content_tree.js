@@ -429,12 +429,27 @@ $(function() {
 
 		}
 		
+		/*
+		 * Stop resizing tree
+		 */
+		if ( resizing == 1 ) {
+			resizing = 0;
+			$('body').css('cursor', 'inherit');
+			// Remember position
+			var position = parseInt($('#vertical_resizer').css('left'), 10);
+			$.cookie('editor_tree_width', position);
+		}
+		
 	});
 	
 	/*
-	 * Move item and highlight droppable row behind
+	 * Trigger drag and drop moving events
 	 */
 	$(window).mousemove(function(event){
+		
+		/*
+		 * Draging item
+		 */
 		if ( mouseButton == 1 && $('#tree_drag_container').children().length > 0 ) {
 			/*
 			 * Show draging container if not visible
@@ -464,6 +479,24 @@ $(function() {
 					$(this).removeClass('hover');
 				}
 			});
+		}
+		
+		/*
+		 * Resize tree width
+		 */
+		var limit_left = 140;
+		var limit_right = parseInt(window.innerWidth - ( window.innerWidth / 2 ), 10);
+		var current = parseInt($('#vertical_resizer').css('left'), 10);
+		if ( mouseButton == 1 && resizing == 1 ) {
+			var grip_left = event.pageX - resizing_offset_grip;
+			if ( grip_left < limit_left || grip_left > limit_right ) {
+				return;
+			}
+			$('#vertical_resizer').css('left', grip_left + 'px');
+			var tree_width = event.pageX - resizing_offset_tree;
+			$('#content_tree').width(tree_width);
+			var editor_left = event.pageX + resizing_offset_editor;
+			$('#content_editor_board').css('left', editor_left + 'px');
 		}
 	});
 	
@@ -502,8 +535,38 @@ $(function() {
 		$(moving).children().addClass('dragging');
 		$('#tree_drag_container').html(moving);
 	});
+	
+	/*
+	 * Resize tree width
+	 */
+	$('#vertical_resizer').mousedown(function(event){
+		//event.stopPropagation();  
+		event.preventDefault();
+		$('body').css('cursor', 'col-resize');
+		resizing = 1;
+		resizing_offset_grip = event.pageX - parseInt($(this).css('left'), 10);
+		resizing_offset_tree = event.pageX - $('#content_tree').width();
+		resizing_offset_editor = parseInt($('#content_editor_board').css('left'), 10) - event.pageX;
+	});
 
-})
+	/*
+	 * Load saved tree width
+	 */
+	var limit_left = 140;
+	var limit_right = parseInt(window.innerWidth - ( window.innerWidth / 2 ), 10);
+	var position = parseInt($.cookie('editor_tree_width'), 10);
+	if ( position > 0 ) {
+		var grip_left = position;
+		if ( grip_left >= limit_left && grip_left <= limit_right ) {
+			$('#vertical_resizer').css('left', grip_left + 'px');
+			var tree_width = position;
+			$('#content_tree').width(tree_width);
+			var editor_left = position + 4;
+			$('#content_editor_board').css('left', editor_left + 'px');
+		}
+	}
+
+});
 
 /*
  * Drag and drop settings
@@ -511,3 +574,11 @@ $(function() {
 var offsetY = 0;
 var offsetX = 0;
 var mouseButton = 0;
+
+/*
+ * Vertical resizer
+ */
+var resizing = 0;
+var resizing_offset_grip = 0;
+var resizing_offset_tree = 0;
+var resizing_offset_editor = 0;

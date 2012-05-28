@@ -65,6 +65,9 @@
 	<div class="shade_bottom"></div>	
 </div>
 
+<!-- vertical resizer (tree width -->
+<div id="vertical_resizer"></div>
+
 </div> <!-- #main -->
 
 <?php include("global/footer.php"); ?>

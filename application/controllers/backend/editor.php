@@ -110,7 +110,8 @@ class Editor extends CI_Controller {
 			'/js/backend/backend_content_window.js',
 			'/js/backend/backend_composite_field.js',
 			'/js/backend/jquery.json-2.3.min.js',
-			'/js/backend/backend_anchor.js'
+			'/js/backend/backend_anchor.js',
+			'/js/backend/jquery.cookie.js'
 		);
 		
 		// Top menu
