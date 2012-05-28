@@ -116,7 +116,7 @@ $(function(){
 		var limit_left = 140;
 		var limit_right = parseInt(window.innerWidth - ( window.innerWidth / 2 ), 10);
 		var current = parseInt($('#vertical_resizer').css('left'), 10);
-		if ( mouseButton == 1 && resizing == 1 ) {
+		if ( mouseButton == 1 && resizing == 1 && ( event.pageX % 2 ) == 0 ) {
 			var grip_left = event.pageX - resizing_offset_grip;
 			if ( grip_left < limit_left || grip_left > limit_right ) {
 				return;
@@ -160,7 +160,6 @@ $(function(){
 		}
 	}
 
-	
 });
 
 
