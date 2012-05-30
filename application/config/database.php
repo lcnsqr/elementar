@@ -63,7 +63,7 @@ $db['elementar']['cachedir'] = 'application/cache';
 $db['elementar']['char_set'] = 'utf8';
 $db['elementar']['dbcollat'] = 'utf8_general_ci';
 $db['elementar']['swap_pre'] = '';
-$db['elementar']['autoinit'] = FALSE;
+$db['elementar']['autoinit'] = TRUE;
 $db['elementar']['stricton'] = FALSE;
 
 /* End of file database.php */
