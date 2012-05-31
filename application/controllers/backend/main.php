@@ -300,7 +300,7 @@ class Main extends CI_Controller {
 		// Erase all cache files
 		$contents = $this->storage->get_content_descendants(1);
 		// Including home page
-		$contents = array_merge(array('id' => '1'), $contents);
+		$contents = array_merge(array('id' => 1), $contents);
 		$this->load->library('content');
 		foreach ( $contents as $content )
 		{
