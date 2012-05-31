@@ -356,7 +356,7 @@ class Content {
 			$brothers = $this->CI->storage->get_contents_by_parent($this->parent_id);
 			$brothers = ( (bool) $brothers ) ? $brothers : array();
 			// Include myself
-			$brothers = array_merge(array('id' => $this->id), $brothers);
+			$brothers = array_merge(array('id' => (int) $this->id), $brothers);
 			foreach ( $brothers as $brother )
 			{
 				$brother_uri = '/main/partial/brothers/' . $brother['id'];
