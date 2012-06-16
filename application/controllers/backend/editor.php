@@ -1428,7 +1428,7 @@ class Editor extends CI_Controller {
 			else
 			{
 				// Not multilanguage
-				$value = $this->input->post($field['sname'], TRUE);
+				$value = $this->input->post($field['sname'], FALSE);
 			}
 			$this->content->set_field($field['id'], $value);
 		}
@@ -1722,14 +1722,14 @@ class Editor extends CI_Controller {
 				$values = array();
 				foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 				{
-					$values[$lang_code] = $this->input->post($field['sname'] . '_' . $lang_code, TRUE);
+					$values[$lang_code] = $this->input->post($field['sname'] . '_' . $lang_code, FALSE);
 				}
 				$value = json_encode($values);
 			}
 			else
 			{
 				// Not multilanguage
-				$value = $this->input->post($field['sname'], TRUE);
+				$value = $this->input->post($field['sname'], FALSE);
 			}
 			$this->element->set_field($field['id'], $value);
 		}
