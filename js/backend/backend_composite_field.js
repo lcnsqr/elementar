@@ -134,7 +134,9 @@ $(function() {
 				
 					theme_advanced_source_editor_width : 800,
 					theme_advanced_source_editor_height : 480,
-					relative_urls : false
+					relative_urls : false,
+					doctype : "<!DOCTYPE html>",
+					schema: "html5"
 				};
 				$(this).tinymce(config);
 			}
@@ -160,7 +162,9 @@ $(function() {
 					
 					theme_advanced_source_editor_width : 800,
 					theme_advanced_source_editor_height : 480,
-					relative_urls : false
+					relative_urls : false,
+					doctype : "<!DOCTYPE html>",
+					schema: "html5"
 				};
 				$(this).tinymce(config);
 			}
