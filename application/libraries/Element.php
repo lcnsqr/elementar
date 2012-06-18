@@ -222,38 +222,20 @@ class Element {
 	 */
 	function erase_cache()
 	{
-		$path = $this->CI->config->item('cache_path');
-
-		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
-
-		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
-		{
-			log_message('error', "Unable to write cache file: ".$cache_path);
-			return;
-		}
+		// Content instance
+		$this->CI->load->library('content');
+		$this->CI->content->set_id($this->parent_id);
+		$this->CI->content->load();
+		$this->CI->content->erase_cache();
 		
-		$cache_files = array();
-		$cache_files[] = $cache_path . md5(site_url($this->CI->storage->get_content_uri($this->parent_id)));
-
-		/*
-		 * Erase cache for descendants contents if spreaded element
-		 */
-		if ( $this->spread )
-		{
-			foreach ($this->CI->storage->get_content_descendants($this->parent_id) as $content )
-			{
-				$cache_files[] = $cache_path . md5(site_url($this->CI->storage->get_content_uri($content['id'])));
+		// On spreaded elements, erase descendants cache too
+		if ( (bool) $this->spread ) {
+			$descendants = $this->CI->storage->get_content_descendants($this->parent_id);
+			foreach ( $descendants as $descendant ) {
+				$this->CI->content->set_id($descendant['id']);
+				$this->CI->content->load();
+				$this->CI->content->erase_cache();
 			}
-		}
-
-		foreach ( $cache_files as $cache_path )
-		{
-			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-			{
-				log_message('error', "Unable to write cache file: ".$cache_path);
-				return;
-			}
-			unlink($cache_path);
 		}
 	}
 
