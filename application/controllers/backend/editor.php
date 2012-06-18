@@ -1852,7 +1852,7 @@ class Editor extends CI_Controller {
 			$values = array();
 			foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
 			{
-				$values[$lang_code] = $this->input->post($name . '_' . $lang_code, TRUE);
+				$values[$lang_code] = htmlentities($this->input->post($name . '_' . $lang_code, TRUE, ENT_QUOTES, "UTF-8"));
 			}
 			$value = json_encode($values);
 
