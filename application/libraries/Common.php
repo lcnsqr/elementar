@@ -1775,7 +1775,8 @@ class Common {
 		{
 			$element_id = $element['id'];
 			$element_sname = $element['sname'];
-			$element_name = $element['name'];
+			$names = json_decode($element['name'], TRUE);
+			$element_name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 			$element_created = $element['created'];
 			$element_modified = $element['modified'];
 			$element_type_id = $element['type_id'];
@@ -1807,7 +1808,7 @@ class Common {
 			// To be added in the element type array
 			$entry = array(
 				'id' => $element['id'],
-				'name' => $element['name'],
+				'name' => $element_name,
 				'sname' => $element['sname'],
 				'created' => $element['created'],
 				'modified' => $element['modified'],
@@ -1827,7 +1828,7 @@ class Common {
 				// Add element direct access (without a template loop)
 				// Adapt to template pseudo variables
 				$data[$element['sname'] . '.sname'] = $element['sname'];
-				$data[$element['sname'] . '.name'] = $element['name'];
+				$data[$element['sname'] . '.name'] = $element_name;
 				$data[$element['sname'] . '.created'] = $element['created'];
 				$data[$element['sname'] . '.modified'] = $element['modified'];
 				$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;

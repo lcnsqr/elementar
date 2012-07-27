@@ -11,7 +11,7 @@
 				<img src="/css/backend/icon_element.png" alt="<?php echo $element['name']; ?>" />
 			</div>
 			<div class="tree_listing_text">
-				<p class="label element"><a href="<?php echo $element['id']; ?>"><?php echo $element['name']; ?></a></p>
+				<p class="label element"><a href="<?php echo $element['id']; ?>"><?php echo current(json_decode($element['name'], TRUE)); ?></a></p>
 			</div>
 			<div class="tree_listing_menu dark_board">
 				<div class="border top_side"></div>
@@ -25,11 +25,11 @@
 				<div class="foreground"></div>
 				<div class="menu_indicator"></div>
 				<ul>
-					<li><span class="title"><?php echo $element['name']; ?></span></li>
+					<li><span class="title"><?php echo current(json_decode($element['name'], TRUE)); ?></span></li>
 					<li><hr /></li>
 					<li><a class="edit element" href="<?php echo $element['id']; ?>"><?php echo $elementar_edit; ?></a></li>
 					<li><hr /></li>
-					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="<?php echo $elementar_delete; ?> “<?php echo $element['name']; ?>”"><?php echo $elementar_delete; ?></a></li>
+					<li><a class="remove element" href="<?php echo $element['id']; ?>" title="<?php echo $elementar_delete; ?> “<?php echo current(json_decode($element['name'], TRUE)); ?>”"><?php echo $elementar_delete; ?></a></li>
 				</ul>
 			</div>
 		</div> <!-- .tree_listing_row -->

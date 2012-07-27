@@ -577,7 +577,7 @@ class Editor extends CI_Controller {
 		else
 		{
 			// Generate a default name for element
-			$value = $this->element->get_default_name();
+			$value = json_encode(array($this->LANG => $this->element->get_default_name()));
 		}
 
 		/*
@@ -585,7 +585,7 @@ class Editor extends CI_Controller {
 		 */
 		$this->common->set_caller_entity('element');
 		
-		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, FALSE);
+		$form .= $this->common->render_form_field('name', $this->lang->line('elementar_name'), 'name', NULL, $value, TRUE);
 
 		// Element type fields
 		foreach ( $this->element->get_type_fields() as $field )
@@ -812,9 +812,11 @@ class Editor extends CI_Controller {
 			{
 				$fields .= '{' . $element['sname'] . '.' . $element_field['sname'] . '}' . "\n";
 			}
+			$names = json_decode($element['name'], TRUE);
+			$name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 			$template_variables['element_variables'][$element['type_name']]['elements'][] = array(
 				'sname' => urlencode($fields),
-				'name' => $element['name']
+				'name' => $name
 			);
 		}
 		return $this->load->view('backend/backend_content_form_variables', $template_variables, true);
@@ -1656,8 +1658,16 @@ class Editor extends CI_Controller {
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
 
-		// Element sname are not multilanguage
-		$sname = $this->common->normalize_string($this->input->post('name', TRUE));
+		// Group each language's value on a array before saving
+		$names = array();
+		foreach ( $this->LANG_AVAIL as $lang_code => $lang_name )
+		{
+			$names[$lang_code] = $this->input->post('name' . '_' . $lang_code, TRUE);
+		}
+		$name = json_encode($names);
+
+		// Element sname built from the default language's name
+		$sname = $this->common->normalize_string($names[$this->LANG]);
 
 		if ( (bool) $sname === false )
 		{
@@ -1675,7 +1685,7 @@ class Editor extends CI_Controller {
 		$this->element->set_sname($sname);
 		
 		// Element name are not multilanguage
-		$this->element->set_name($this->input->post('name', TRUE));
+		$this->element->set_name($name);
 		
 		// Locate element type
 		$this->element->set_type_id($this->input->post('type_id', TRUE));
