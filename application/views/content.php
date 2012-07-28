@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title><?php echo $title; ?> &laquo; <?php echo $site; ?></title>
+<?php echo $extra_head; ?>
 	<link rel="icon" href="<?php echo $favicon; ?>" />
 <?php foreach ($metafields as $metafield) : ?>
 <?php if ( (bool) $metafield['value'] ): ?>
@@ -11,7 +12,6 @@
 <?php endforeach; ?>
 	<link rel="stylesheet" href="/main/css/<?php echo $content_id; ?>" />
 	<script src="/main/javascript/<?php echo $content_id; ?>"></script>
-<?php echo $extra_head; ?>
 </head>
 <body>
 <?php echo $content; ?>
