@@ -663,7 +663,14 @@ class Editor extends CI_Controller {
 			'relative_content_variables_title' => $this->lang->line('elementar_contents'),
 			'relative_content_variables' => array(),
 			'element_variables_title' => $this->lang->line('elementar_elements'),
-			'element_variables' => array()
+			'element_variables' => array(),
+			'filter_of' => $this->lang->line('elementar_filter_of'),
+			'filter_at' => $this->lang->line('elementar_filter_at'),
+			'filter_order_by' => $this->lang->line('elementar_filter_order_by'),
+			'filter_limit' => $this->lang->line('elementar_filter_limit'),
+			'filter_select' => $this->lang->line('elementar_filter_select'),
+			'filter_save' => $this->lang->line('elementar_filter_save'),
+			'filter_insert' => $this->lang->line('elementar_filter_insert')
 		);
 		
 		// Default single variables
@@ -757,15 +764,15 @@ class Editor extends CI_Controller {
 				$filter_form = array(
 					'order_by' => array(
 						'created' => array(
-							'name' => 'Criação',
+							'name' => $this->lang->line('elementar_filter_created'),
 							'selected' => ( $order_by == 'created' ) ? TRUE : FALSE
 						),
 						'modified' => array(
-							'name' => 'Modificação',
+							'name' => $this->lang->line('elementar_filter_modified'),
 							'selected' => ( $order_by == 'modified' ) ? TRUE : FALSE
 						),
 						'name' => array(
-							'name' => 'Nome',
+							'name' => $this->lang->line('elementar_filter_name'),
 							'selected' => ( $order_by == 'name' ) ? TRUE : FALSE
 						)
 					),
@@ -773,13 +780,13 @@ class Editor extends CI_Controller {
 					'limit' => $limit,
 					'insert' => array(
 						'created' => array(
-							'name' => 'Criação'
+							'name' => $this->lang->line('elementar_filter_created')
 						),
 						'modified' => array(
-							'name' => 'Modificação'
+							'name' => $this->lang->line('elementar_filter_modified')
 						),
 						'name' => array(
-							'name' => 'Nome'
+							'name' => $this->lang->line('elementar_filter_name')
 						)
 					)
 				);

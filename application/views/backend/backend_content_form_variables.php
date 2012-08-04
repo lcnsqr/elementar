@@ -44,12 +44,12 @@
 			<div class="corner bottom_left"></div>
 			<div class="foreground"></div>
 			<div class="menu_indicator"></div>
-			<p class="title">Filtro de <?php echo $element_variable_type; ?> em <?php echo $type_name; ?></p>
+			<p class="title"><?php echo $filter_of; ?> <?php echo $element_variable_type; ?> <?php echo $filter_at; ?> <?php echo $type_name; ?></p>
 			<a href="close" class="close_menu"></a>
 			<div class="filter_forms">
 				<div class="order_by">
 				<form action="/backend/content/xhr_write_template_filter" name="<?php echo $element_variable_type; ?>_form">
-					<p class="title">Ordenar por</p>
+					<p class="title"><?php echo $filter_order_by; ?></p>
 					<input type="hidden" name="template_id" value="<?php echo $template_id; ?>" />
 					<input type="hidden" name="element_type" value="<?php echo $element_variable_type_list['sname']; ?>" />
 						<div class="filter_fields_left">
@@ -64,7 +64,7 @@
 							<li><input type="radio" name="direction" value="asc" <?php echo ( $element_variable_type_list['filter_form']['direction'] == 'asc' ) ? 'checked="checked"' : ''; ?> /><label>Asc</label></li>
 							<li><input type="radio" name="direction" value="desc" <?php echo ( $element_variable_type_list['filter_form']['direction'] == 'desc' ) ? 'checked="checked"' : ''; ?> /><label>Desc</label></li>
 							<li><hr /></li>
-							<li>Limite:<br /><input type="text" name="limit" value="<?php echo $element_variable_type_list['filter_form']['limit']; ?>" /></li>
+							<li><?php echo $filter_limit; ?>:<br /><input type="text" name="limit" value="<?php echo $element_variable_type_list['filter_form']['limit']; ?>" /></li>
 							</ul>
 						</div> <!-- filter_fields_right -->
 						<hr class="hr_clear" />
@@ -72,7 +72,7 @@
 				</div> <!-- order_by -->
 				<div class="insertion">
 				<form action="/backend/content" name="<?php echo $element_variable_type; ?>_insert">
-					<p class="title">Selecionar</p>
+					<p class="title"><?php echo $filter_select; ?></p>
 					<input type="hidden" name="template_id" value="<?php echo $template_id; ?>" />
 					<ul>
 						<?php foreach($element_variable_type_list['filter_form']['insert'] as $sname => $insert ): ?>
@@ -83,10 +83,10 @@
 				</div> <!-- insertion -->
 				<hr class="hr_clear" />
 				<div class="order_by">
-					<p class="form_action"><a class="save_filter" href="filter">Salvar</a></p>
+					<p class="form_action"><a class="save_filter" href="filter"><?php echo $filter_save; ?></a></p>
 				</div>
 				<div class="insertion" style="border: 0;">
-					<p class="form_action"><a class="add_variable_pair" href="<?php echo $element_variable_type_list['sname']; ?>">Inserir</a></p>
+					<p class="form_action"><a class="add_variable_pair" href="<?php echo $element_variable_type_list['sname']; ?>"><?php echo $filter_insert; ?></a></p>
 				</div>
 				<hr class="hr_clear" />
 			</div> <!-- filter_forms -->

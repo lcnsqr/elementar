@@ -1,6 +1,20 @@
 <?php
 
 /*
+ * Elements filters labels
+ */
+$lang['elementar_filter_of'] = 'Filtro de';
+$lang['elementar_filter_at'] = 'em';
+$lang['elementar_filter_order_by'] = 'Ordenar por';
+$lang['elementar_filter_limit'] = 'Limite';
+$lang['elementar_filter_select'] = 'Selecionar';
+$lang['elementar_filter_save'] = 'Salvar';
+$lang['elementar_filter_insert'] = 'Inserir';
+$lang['elementar_filter_created'] = 'Criado';
+$lang['elementar_filter_modified'] = 'Modificado';
+$lang['elementar_filter_name'] = 'Nome';
+
+/*
  * Account groups descriptions
  */
 $lang['elementar_group_1'] = 'Administração';
