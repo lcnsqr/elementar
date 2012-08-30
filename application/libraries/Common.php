@@ -1437,7 +1437,7 @@ class Common {
 				'title' => htmlspecialchars( $content_name ),
 				'class' => $class
 			);
-			$link = anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($menu_item['name']), $attributes);
+			$link = anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($content_name), $attributes);
 			//$link = '<a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
 			if ( $this->CI->storage->get_content_has_children($content_id, FALSE) && $depth > 0 )
 			{
@@ -1491,7 +1491,7 @@ class Common {
 			$filter->set_is_date(TRUE);
 		}
 		$filter->set_lang($this->LANG);
-		usort($children, array($filter, 'sortElement'));
+		usort($children, array($filter, 'sort'));
 
 		// Limit number of elements (if specified)
 		if ( (bool) $limit )
@@ -1514,7 +1514,7 @@ class Common {
 				'title' => htmlspecialchars( $content_name ),
 				'class' => $class
 			);
-			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> '. anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($menu_item['name']), $attributes);
+			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> '. anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($content_name), $attributes);
 			//$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
 			if ( (bool) $child['children'] && $depth >= $depth_count )
 			{
@@ -2123,20 +2123,24 @@ class Filter {
 		$previous = $a[$this->order_by];
 		$next = $b[$this->order_by];
 
-		// Use apropriate language
-		if ( (bool) $this->LANG )
-		{
-			$localized = json_decode($a[$this->order_by], TRUE);
-			$previous = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
-			$localized = json_decode($b[$this->order_by], TRUE);
-			$next = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
-		}
-
-		// Convert to unix timestamp
+		// When comparing dates,
+		// convert to unix timestamp
 		if ( (bool) $this->is_date )
 		{
 			$previous = strtotime($a[$this->order_by]);
 			$next = strtotime($b[$this->order_by]);
+		}
+		else
+		{
+			// Comparing by custom field content
+			// Use apropriate language
+			if ( (bool) $this->LANG )
+			{
+				$localized = json_decode($a[$this->order_by], TRUE);
+				$previous = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
+				$localized = json_decode($b[$this->order_by], TRUE);
+				$next = (array_key_exists($this->LANG, $localized)) ? $localized[$this->LANG] : '';
+			}
 		}
 
 		switch ( $this->direction )
