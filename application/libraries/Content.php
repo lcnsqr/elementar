@@ -379,7 +379,7 @@ class Content {
 			}
 			// Erase children cache for own parent
 			$children_uri = '/main/partial/children/' . $this->parent_id;
-			// Count ocurrences of brothers tag in template
+			// Count ocurrences of children tag in template
 			$parent_template = $this->CI->storage->get_template($this->parent_id);
 			$html = $parent_template['html'];
 			$pair_count = 0;
@@ -395,6 +395,24 @@ class Content {
 				}
 				$pair_count++;
 			}
+		}
+		
+		// Erase partial for index field
+		$index_uri = '/main/partial/index/' . $this->id;
+		// Count ocurrences of index tag in template
+		$html = $this->template_html;
+		$pair_count = 0;
+		while ( preg_match("|" . '{index}' . "(.+?)". '{/index}' . "|s", $html, $match) )
+		{
+			$pos = strpos($html, $match['0']);
+			$html = substr_replace($html, '', $pos, strlen($match['0']));
+			$cache_files[] = $cache_path . md5(site_url($index_uri . '/' . $pair_count));
+			// Cache files in other languages
+			foreach ( $lang_avail as $lang_code => $lang_name )
+			{
+				$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $index_uri . '/' . $pair_count));
+			}
+			$pair_count++;
 		}
 
 		// Erase all selected cache files

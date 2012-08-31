@@ -1567,6 +1567,9 @@ class Common {
 			$content['brothers'] = array($this->URI_PREFIX, $content_id);
 		}
 		
+		// Index field (automatic menu) pair
+		$content['index'] = array($this->URI_PREFIX, $content_id);
+		
 		// Account data for ajax loading
 		// These calls ignore language uri prefix
 		$content['account'] = array('', $content_id);
@@ -1575,7 +1578,7 @@ class Common {
 	}
 	
 	/**
-	 * Render values for a partial content's brothers or children
+	 * Render values for a partial content's brothers, children or other
 	 * 
 	 * @access public
 	 * @param integer
@@ -1633,6 +1636,23 @@ class Common {
 				);
 			}
 			$content['children'] = $children_variables;
+			break;
+			
+			case 'index' :
+			// All content fields
+			$index_variables = array();
+			$fields = $this->CI->storage->get_content_fields($content_id);
+			foreach ($fields as $field)
+			{
+				// Match variable
+				if ( $field['type'] == 'index' )
+				{
+					$index_variables[] = array(
+						$field['sname'] => $this->render_field($field, $field['value'])
+					);
+				}
+			}
+			$content['index'] = $index_variables;
 			break;
 			
 			case 'account' :

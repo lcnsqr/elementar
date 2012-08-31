@@ -527,6 +527,7 @@ class Main extends CI_Controller {
 				{
 					case 'brothers' :
 					case 'children' :
+					case 'index' :
 					case 'account' :
 					$content = $this->common->render_content_partial($content_id, $variable);
 					$html = $this->parser->parse_string_partial($match['0'], $content, TRUE);
@@ -546,6 +547,7 @@ class Main extends CI_Controller {
 				{
 					case 'brothers' :
 					case 'children' :
+					case 'index' :
 					case 'account' :
 					$pos = strpos($template['html'], $match['0']);
 					$template['html'] = substr_replace($template['html'], '', $pos, strlen($match['0']));
