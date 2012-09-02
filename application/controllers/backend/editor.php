@@ -687,10 +687,23 @@ class Editor extends CI_Controller {
 		$type_id = $this->storage->get_content_type_id($content_id);
 		foreach ( $this->storage->get_content_type_fields($type_id) as $content_field )
 		{
-			$template_variables['content_variables'][] = array(
-				'sname' => '{' . $content_field['sname'] . '}',
-				'name' => $content_field['name']
-			);
+			// Some variables have different template syntax
+			switch ( $content_field['type'] )
+			{
+				case 'index' :
+				$template_variables['content_variables'][] = array(
+					'sname' => '{index}{' . $content_field['sname'] . '}{/index}',
+					'name' => $content_field['name']
+				);
+				break;
+
+				default :
+				$template_variables['content_variables'][] = array(
+					'sname' => '{' . $content_field['sname'] . '}',
+					'name' => $content_field['name']
+				);
+				break;
+			}
 		}
 		
 		// There are two "types" of relative contents: children and brother 
