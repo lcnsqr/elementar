@@ -677,9 +677,9 @@ class Common {
 		$content_type_id = $this->CI->storage->get_content_type_id($content_id);
 		
 		$default_fields = array(
-			array('name' => 'Criado', 'sname' => 'created'),
-			array('name' => 'Modificado', 'sname' => 'modified'),
-			array('name' => 'Nome', 'sname' => 'name')
+			array('name' => $this->CI->lang->line('elementar_index_created'), 'sname' => 'created'),
+			array('name' => $this->CI->lang->line('elementar_index_modified'), 'sname' => 'modified'),
+			array('name' => $this->CI->lang->line('elementar_index_name'), 'sname' => 'name')
 		);
 		
 		$fields = $this->CI->storage->get_content_type_fields($content_type_id);

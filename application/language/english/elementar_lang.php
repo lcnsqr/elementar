@@ -1,6 +1,13 @@
 <?php
 
 /*
+ * Index field labels
+ */
+$lang['elementar_index_created'] = 'Created';
+$lang['elementar_index_modified'] = 'Modified';
+$lang['elementar_index_name'] = 'Name';
+
+/*
  * Elements filters labels
  */
 $lang['elementar_filter_of'] = 'Filter of';
