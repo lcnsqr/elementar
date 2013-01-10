@@ -220,9 +220,13 @@ $(function() {
 
 		$.post("/backend/editor/xhr_render_content_form", { id : id, editor : editor }, function(data){
 			if ( data.done == true ) {
+
 				$("#content_window").html(data.html).show(function() {
 					// WYSIWYG textarea activation
 					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
+					
+					CodeMirrors.initialize(id);
+					
 				});
 			}
 

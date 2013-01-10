@@ -107,7 +107,10 @@ class Main extends CI_Controller {
 			'/js/backend/backend_anchor.js',
 			'/js/backend/jquery.cookie.js'
 		);
-		
+
+		// CSS for main view
+		$css = array();
+
 		// Top menu
 		$resource_menu = array(
 			'<strong>' . $this->lang->line('elementar_settings') . '</strong>',
@@ -121,6 +124,7 @@ class Main extends CI_Controller {
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
+			'css' => $css,
 			'is_logged' => $is_logged,
 			'username' => $username,
 			'resource_menu' => ul($resource_menu)

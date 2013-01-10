@@ -111,8 +111,18 @@ class Editor extends CI_Controller {
 			'/js/backend/backend_composite_field.js',
 			'/js/backend/jquery.json-2.3.min.js',
 			'/js/backend/backend_anchor.js',
-			'/js/backend/jquery.cookie.js'
+			'/js/backend/jquery.cookie.js',
+			'/js/backend/codemirror/lib/codemirror.js',
+			'/js/backend/codemirror/mode/xml/xml.js',
+			'/js/backend/codemirror/mode/css/css.js',
+			'/js/backend/codemirror/mode/javascript/javascript.js'
 		);
+		
+		// CSS for editor view
+		$css = array(
+			'/js/backend/codemirror/lib/codemirror.css'
+		);
+		
 		
 		// Top menu
 		$resource_menu = array(
@@ -126,6 +136,7 @@ class Editor extends CI_Controller {
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
+			'css' => $css,
 			'is_logged' => $is_logged,
 			'username' => $username,
 			'resource_menu' => ul($resource_menu)

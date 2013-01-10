@@ -109,6 +109,9 @@ class File extends CI_Controller {
 			'/js/backend/jquery.cookie.js'
 		);
 
+		// CSS for file view
+		$css = array();
+		
 		// Add tinymce support scripts if requested by file manager plugin
 		if ( $this->input->get('parent', TRUE) == 'tinymce' )
 		{
@@ -116,6 +119,7 @@ class File extends CI_Controller {
 			$js[] = '/js/backend/tiny_mce/plugins/filemanager/js/dialog.js';
 		}
 		$data['js'] = $js;
+		$data['css'] = $css;
 
 		$data['folder'] = array(
 			'name' => $this->lang->line('elementar_fm_root'),

@@ -16,4 +16,8 @@
 <link rel="stylesheet" href="/css/backend/backend_tree.css" type="text/css" />
 <link rel="stylesheet" href="/css/backend/backend_window.css" type="text/css" />
 
+<?php foreach ( $css as $uri ): ?>
+<link rel="stylesheet" href="<?php echo $uri; ?>" type="text/css" />
+<?php endforeach; ?>
+
 </head>

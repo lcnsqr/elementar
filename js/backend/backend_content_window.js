@@ -661,6 +661,11 @@ $(function() {
 		
 		$("div.editor_form[id!='"+target+"']").hide();
 		$("div.editor_form[id='"+target+"']").show();
+		
+		// Refresh CodeMirror instances
+		if ( target == "template_editor_form" ) {
+			CodeMirrors.refresh();
+		}
 	});
 	
 	/*
@@ -686,13 +691,13 @@ $(function() {
 			$("#blocker").fadeIn("fast");
 
 			/*
-			 * Template textarea
+			 * Save all CodeMirror (highlighted 
+			 * code) to its original textarea
 			 */
-			var template_textarea = $(template_form).find('.template_textarea');
+			CodeMirrors.save();
 	
 			$.post("/backend/editor/xhr_write_template", $(template_form).find('.noform').serialize() + '&overwrite=' + overwrite, function(data){
 				if ( data.done == true ) {
-					//$(template_textarea).val(data.template);
 					showClientWarning(data.message);
 				}
 				else {
@@ -705,3 +710,70 @@ $(function() {
 	});
 
 });
+
+// CodeMirror object to control 
+// all codemirror instances
+var CodeMirrors = {
+	instances: [],
+	save: function(){
+		/*
+		 * Save all CodeMirror (highlighted 
+		 * code) to its original textarea
+		 */
+		for (var i=0; i < this.instances.length; i++) {
+			this.instances[i].save();
+		}
+	},
+	revert: function(){
+		/*
+		 * Revert all CodeMirror (highlighted 
+		 * code) to its original textarea
+		 */
+		for (var i=0; i < this.instances.length; i++) {
+			this.instances[i].toTextArea();
+		}
+		this.instances = [];
+	},
+	initialize: function(id){
+		// Code highlighting for textareas
+		this.revert();
+		this.instances[this.instances.length] = CodeMirror.fromTextArea(
+			document.getElementById('template_'+id),
+			{
+				mode: 'text/html',
+				htmlMode: true,
+				lineNumbers: true
+			}
+		);
+		this.instances[this.instances.length] = CodeMirror.fromTextArea(
+			document.getElementById('css_'+id),
+			{
+				mode: 'text/css',
+				lineNumbers: true
+			}
+		);
+		this.instances[this.instances.length] = CodeMirror.fromTextArea(
+			document.getElementById('javascript_'+id),
+			{
+				mode: 'text/javascript',
+				lineNumbers: true
+			}
+		);
+		this.instances[this.instances.length] = CodeMirror.fromTextArea(
+			document.getElementById('head_'+id),
+			{
+				mode: 'text/html',
+				htmlMode: true,
+				lineNumbers: true
+			}
+		);
+	},
+	refresh: function(){
+		/*
+		 * Refresh all CodeMirror instances
+		 */
+		for (var i=0; i < this.instances.length; i++) {
+			this.instances[i].refresh();
+		}
+	}
+};

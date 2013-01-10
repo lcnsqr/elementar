@@ -116,6 +116,9 @@ class Account extends CI_Controller {
 			'/js/backend/jquery.cookie.js'
 		);
 		
+		// CSS for account view
+		$css = array();
+
 		// Top menu
 		$resource_menu = array(
 			anchor('/backend', $this->lang->line('elementar_settings'), array('title' => $this->lang->line('elementar_settings'))),
@@ -129,6 +132,7 @@ class Account extends CI_Controller {
 		$data = array(
 			'title' => $this->config->item('site_name'),
 			'js' => $js,
+			'css' => $css,
 			'is_logged' => $is_logged,
 			'username' => $username,
 			'resource_menu' => ul($resource_menu)
