@@ -179,6 +179,7 @@ class Common {
 					'/js/backend/jquery.timers-1.2.js', 
 					'/js/backend/backend_client_warning.js'
 				),
+				'css' => array(),
 				'action' => '/' . uri_string(),
 				'elapsed_time' => $this->CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
 			);
