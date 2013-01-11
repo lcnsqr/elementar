@@ -217,6 +217,9 @@ $(function() {
 		else if ( $(this).hasClass("meta") ) {
 			var editor = 'meta';
 		}
+		
+		// Remove CodeMirror instances
+		CodeMirrors.revert();
 
 		$.post("/backend/editor/xhr_render_content_form", { id : id, editor : editor }, function(data){
 			if ( data.done == true ) {
@@ -225,6 +228,7 @@ $(function() {
 					// WYSIWYG textarea activation
 					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 					
+					// Restore CodeMirror instances
 					CodeMirrors.initialize(id);
 					
 				});
