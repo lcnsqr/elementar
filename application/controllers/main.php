@@ -397,7 +397,13 @@ class Main extends CI_Controller {
 		}
 
 		// Parse the template
-		$data['extra_head'] = $template['head'];
+		$data['extra_head'] = "";
+		if ( $content_id != 1 )
+		{
+			// Load main extra head too
+			$data['extra_head'] = $this->storage->get_template_head(1) . "\n";
+		}
+		$data['extra_head'] .= $template['head'];
 		$data['content'] = $this->parser->parse_string($template['html'], $content, TRUE);
 
 		// HTTP headers
