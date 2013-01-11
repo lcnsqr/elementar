@@ -174,7 +174,7 @@ class Common {
 				'is_logged' => FALSE,
 				'title' => $this->CI->config->item('site_name'),
 				'js' => array(
-					'/js/backend/jquery-1.8.2.min.js', 
+					'/js/backend/jquery-1.8.3.min.js', 
 					'/js/backend/backend_account.js', 
 					'/js/backend/jquery.timers-1.2.js', 
 					'/js/backend/backend_client_warning.js'
