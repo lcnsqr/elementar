@@ -28,7 +28,7 @@
  */
 
 $(function() {
-
+	
 	// Unfocus proper elements
 	$("body").click(function() {
 		// Discard labels being edited
@@ -221,58 +221,28 @@ $(function() {
 			window.close();
 		}
 		else if ( $.getUrlVar('parent') == 'add_file_uri' ) {
+			// Insert on template CodeMirror fields
 			var identifier = $.getUrlVar('identifier');
-			var field = window.opener.$('#'+identifier);
-			if ($(field) != null) {
-				$(field).insertAtCursor(uri);
+			// Identify which CodeMirror field is the source
+			for (var i=0, max=window.opener.CodeMirrors.instances.length; i < max; i++){
+				var id = window.opener.CodeMirrors.instances[i].getTextArea().id;
+				if ( identifier == id ){
+					if ( window.opener.CodeMirrors.instances[i].somethingSelected() ){
+						// Replace selected text
+						window.opener.CodeMirrors.instances[i].replaceSelection(uri);
+					}
+					else {
+						// Insert at current cursor position
+						var from = window.opener.CodeMirrors.instances[i].getCursor();
+						window.opener.CodeMirrors.instances[i].replaceRange(uri, from);
+					}
+					window.opener.CodeMirrors.instances[i].focus();
+					break;
+				}
 			}
+
 			// Close File manager
 			window.close();
-		}
-	});
-
-	/*
-	 * insertAtCursor: jQuery extended function to 
-	 * insert text at cursor on input
-	 */
-	$.fn.extend({
-		insertAtCursor: function (value) {
-			/*
-			 * Based on code found in
-			 * http://alexking.org/blog/2003/06/02/inserting-at-the-cursor-using-javascript
-			 */
-			// IE support
-			if (document.selection) {
-				$(this)[0].focus();
-				sel = document.selection.createRange();
-				sel.text = value;
-			}
-			// Other browsers
-			else if ($(this)[0].selectionStart || $(this)[0].selectionStart == '0') {
-				var startPos = $(this)[0].selectionStart;
-				var endPos = $(this)[0].selectionEnd;
-				$(this)[0].value = $(this)[0].value.substring(0, startPos)
-				+ value
-				+ $(this)[0].value.substring(endPos, $(this)[0].value.length);
-			} 
-			else {
-				$(this)[0].value += value;
-			}
-
-			var CaretPos = $(this)[0].value.substring(0, startPos).length + value.length;	
-
-			if($(this)[0].setSelectionRange)
-			{
-				$(this)[0].focus();
-				$(this)[0].setSelectionRange(CaretPos,CaretPos);
-			}
-			else if ($(this)[0].createTextRange) {
-				var range = $(this)[0].createTextRange();
-				range.collapse(true);
-				range.moveEnd('character', CaretPos);
-				range.moveStart('character', CaretPos);
-				range.select();
-			}
 		}
 	});
 
