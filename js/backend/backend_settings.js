@@ -56,7 +56,7 @@ $(function(){
 		}, 'json');
 	});
 	
-	$('#button_settings_save').live('click', function(event){
+	$(document).on('click', '#button_settings_save', function(event){
 		var page = $(this).data('page');
 		
 		// Loading blocker in

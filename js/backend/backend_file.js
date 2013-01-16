@@ -121,7 +121,7 @@ $(function() {
 	/*
 	 * Select folder in tree
 	 */
-	$(".label.folder > a").live("click", function(event) {
+	$(document).on("click", ".label.folder > a", function(event) {
 		event.preventDefault();
 
 		/*
@@ -135,7 +135,7 @@ $(function() {
 	/*
 	 * Select file listing item
 	 */
-	$('a.item.block').live('click', function(event){
+	$(document).on('click', 'a.item.block', function(event){
 		event.preventDefault();
 		$("a.item.block.current").removeClass('current');
 		$(this).addClass('current');
@@ -146,7 +146,7 @@ $(function() {
 	/*
 	 * Enter directory item upon double click
 	 */
-	$('a.item.block.directory').live('dblclick', function(event){
+	$(document).on('dblclick', 'a.item.block.directory', function(event){
 		event.preventDefault();
 		/*
 		 * Show folder contents
@@ -160,7 +160,7 @@ $(function() {
 	/*
 	 * Insert selected file URI
 	 */
-	$('a.insert').live('click', function(event){
+	$(document).on('click', 'a.insert', function(event){
 		event.preventDefault();
 
 		/* 
@@ -249,7 +249,7 @@ $(function() {
 	/*
 	 * Show existing contents listing and rotate bullet arrow
 	 */
-	$("a.fold.folder_switch").live("click", function(event) {
+	$(document).on("click", "a.fold.folder_switch", function(event) {
 		event.preventDefault();
 
 		// Loading icon
@@ -279,7 +279,7 @@ $(function() {
 	/*
 	 * Hide contents listing and rotate bullet arrow
 	 */
-	$("a.unfold.folder_switch").live("click", function(event) {
+	$(document).on("click", "a.unfold.folder_switch", function(event) {
 		event.preventDefault();
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		$(listing).slideUp("fast", "easeOutSine");
@@ -290,7 +290,7 @@ $(function() {
 	/*
 	 * Show upload file form
 	 */
-	$('#current_folder_upload').live('click', function(event){
+	$(document).on('click', '#current_folder_upload', function(event){
 		event.preventDefault();
 		var path = $(this).attr('href');
 		$.post("/backend/file/xhr_render_upload_form", { path : path }, function(data){
@@ -309,19 +309,19 @@ $(function() {
 	/*
 	 * Deactivate fake upload link
 	 */
-	$('.fake_upload_link').live('click', function(event){
+	$(document).on('click', '.fake_upload_link', function(event){
 		event.preventDefault();
 	});
 	
 	/*
 	 * Trigger fake upload link hover
 	 */
-	$("input.upload_file").live("mouseenter", function() {
+	$(document).on("mouseenter", "input.upload_file", function() {
 		var fake_link = $(this).parents('.upload_form_container').first().find('.fake_upload_link');
 		$(this).css('cursor', 'pointer');
 		$(fake_link).css('text-decoration', 'underline');
 	});
-	$("input.upload_file").live("mouseleave", function() {
+	$(document).on("mouseleave", "input.upload_file", function() {
 		var fake_link = $(this).parents('.upload_form_container').first().find('.fake_upload_link');
 		$(this).css('cursor', 'default');
 		$(fake_link).css('text-decoration', 'none');
@@ -330,14 +330,14 @@ $(function() {
 	/*
 	 * Automatic sending after file choosen
 	 */
-	$("input.upload_file").live("change", function() {
+	$(document).on("change", "input.upload_file", function() {
 		$(this).parents("form.upload_form").first().submit();
 	});
 	
 	/*
 	 * File upload
 	 */
-	$(".upload_form").live("submit", function(event) {
+	$(document).on("submit", ".upload_form", function(event) {
 		/*
 		 * This upload form
 		 */
@@ -427,23 +427,23 @@ $(function() {
 	/*
 	 * Close/Cancel hover
 	 */
-	$('.close_upload').live('mouseenter', function(event){
+	$(document).on('mouseenter', '.close_upload', function(event){
 		$(this).addClass('close_upload_hover');
 	});
-	$('.close_upload').live('mouseleave', function(event){
+	$(document).on('mouseleave', '.close_upload', function(event){
 		$(this).removeClass('close_upload_hover');
 	});
-	$('.cancel_upload').live('mouseenter', function(event){
+	$(document).on('mouseenter', '.cancel_upload', function(event){
 		$(this).addClass('cancel_upload_hover');
 	});
-	$('.cancel_upload').live('mouseleave', function(event){
+	$(document).on('mouseleave', '.cancel_upload', function(event){
 		$(this).removeClass('cancel_upload_hover');
 	});
 
 	/*
 	 * Cancel upload
 	 */
-	$(".cancel_upload").live("click", function(event) {
+	$(document).on("click", ".cancel_upload", function(event) {
 		event.preventDefault();
 		var container = $(this).parents('.upload_form_container').first();
 		/*
@@ -467,7 +467,7 @@ $(function() {
 	/*
 	 * Close upload form
 	 */
-	$('.close_upload').live('click', function(event){
+	$(document).on('click', '.close_upload', function(event){
 		event.preventDefault();
 		$(this).parents('.upload_form_container').first().hide('slow', function(){
 			$(this).remove();
@@ -477,7 +477,7 @@ $(function() {
 	/*
 	 * Select uploaded file
 	 */
-	$('a.uploaded_file').live('click', function(event){
+	$(document).on('click', 'a.uploaded_file', function(event){
 		event.preventDefault();
 		/*
 		 * Show file in listing
@@ -491,7 +491,7 @@ $(function() {
 	/*
 	 * Erase file/folder
 	 */
-	$('.current_item_erase').live('click', function(event){
+	$(document).on('click', '.current_item_erase', function(event){
 		event.preventDefault();
 		
 		var details = $(this).parents('#current_file_details');
@@ -535,7 +535,7 @@ $(function() {
 	/*
 	 * Rename file/folder
 	 */
-	$('.current_item_rename').live('click', function(event){
+	$(document).on('click', '.current_item_rename', function(event){
 		event.preventDefault();
 		
 		var details = $(this).parents('#current_file_details');
@@ -566,7 +566,7 @@ $(function() {
 	/*
 	 * Create a folder
 	 */
-	$('#current_folder_mkdir').live('click', function(event)
+	$(document).on('click', '#current_folder_mkdir', function(event)
 	{
 		event.preventDefault();
 		

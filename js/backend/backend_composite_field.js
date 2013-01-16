@@ -32,7 +32,7 @@ $(function() {
 	/*
 	 * Alternate betwin language inputs
 	 */
-	$('.input_lang_tab_link').live('click', function(event){
+	$(document).on('click', '.input_lang_tab_link', function(event){
 		event.preventDefault();
 		var lang_code = $(this).attr('href');
 		var form_window_column_input = $(this).parents('.form_window_column_input').first();
@@ -177,7 +177,7 @@ $(function() {
 	/*
 	 * New file item
 	 */
-	$("a.file_add").live('click', function(event) {
+	$(document).on('click', "a.file_add", function(event) {
 		event.preventDefault();
 		/*
 		 * Gallery real field (json encoded)
@@ -219,7 +219,7 @@ $(function() {
 	/*
 	 * Open file manager
 	 */
-	$('.browse_file').live('click', function(event){
+	$(document).on('click', '.browse_file', function(event){
 		event.preventDefault();
 		/*
 		 * Identifies receptor input
@@ -234,7 +234,7 @@ $(function() {
 	/*
 	 * New file item above
 	 */
-	$("a.file_add_up").live('click', function(event) {
+	$(document).on('click', "a.file_add_up", function(event) {
 		event.preventDefault();
 		var current_item = $(this).parents('div.file_item').first();
 
@@ -270,7 +270,7 @@ $(function() {
 	/*
 	 * New file item below
 	 */
-	$("a.file_add_down").live('click', function(event) {
+	$(document).on('click', "a.file_add_down", function(event) {
 		event.preventDefault();
 
 		var current_item = $(this).parents('div.file_item').first();
@@ -305,7 +305,7 @@ $(function() {
 	/*
 	 * Discard file in file field	
 	 */
-	$(".file_erase").live("click", function(event) {
+	$(document).on("click", ".file_erase", function(event) {
 		event.preventDefault();
 		var container = $(this).parents(".file_item").first();
 		/*
@@ -340,7 +340,7 @@ $(function() {
 	/*
 	 * Remove file item
 	 */
-	$("a.file_delete").live('click', function(event) {
+	$(document).on('click', "a.file_delete", function(event) {
 		event.preventDefault();
 
 		var file_item = $(this).parents("div.file_item").first();
@@ -352,7 +352,7 @@ $(function() {
 	/*
 	 * Move file item up
 	 */
-	$("a.file_up").live("click", function(event) {
+	$(document).on("click", "a.file_up", function(event) {
 		event.preventDefault();
 		var item = $(this).parents("div.file_item").first();
 		var swap = $(item).prev("div.file_item");
@@ -365,7 +365,7 @@ $(function() {
 	/*
 	 * Move file item down
 	 */
-	$("a.file_down").live("click", function(event) {
+	$(document).on("click", "a.file_down", function(event) {
 		event.preventDefault();
 		var item = $(this).parents("div.file_item").first();
 		var swap = $(item).next("div.file_item");
@@ -412,7 +412,7 @@ $(function() {
 	/*
 	 * New hypertext page
 	 */
-	$("a.add_hypertext_page").live('click', function(event) {
+	$(document).on('click', "a.add_hypertext_page", function(event) {
 		event.preventDefault();
 		var hypertext = $(this).parents('.hypertext_field').first();
 		var NewPage = $(hypertext).find(".hypertext_page_template").first().clone();
@@ -431,7 +431,7 @@ $(function() {
 	/*
 	 * Remove hypertext page
 	 */
-	$("a.remove_hypertext_page").live('click', function(event) {
+	$(document).on('click', "a.remove_hypertext_page", function(event) {
 		event.preventDefault();
 
 		var page = $(this).parents("div.hypertext_page").first();
@@ -466,12 +466,12 @@ $(function() {
 	/*
 	 * Dropdown contents items
 	 */	
-	$("input.index_field[type='text']").live('click', function(event) {
+	$(document).on('click', "input.index_field[type='text']", function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		$(listing).fadeIn("fast");
 	});
-	$("input.index_field[type='text']").live('blur', function(event) {
+	$(document).on('blur', "input.index_field[type='text']", function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		$(listing).fadeOut("fast");
@@ -480,7 +480,7 @@ $(function() {
 	/*
 	 * Choose parent content for the field
 	 */
-	$(".root_content").live('click', function(event) {
+	$(document).on('click', ".root_content", function(event) {
 		event.preventDefault();
 		var content_id = $(this).attr('href');
 		var content_name = $(this).html();
@@ -520,7 +520,7 @@ $(function() {
 	/*
 	 * New top menu
 	 */
-	$("a.menu_add").live('click', function(event) {
+	$(document).on('click', "a.menu_add", function(event) {
 		event.preventDefault();
 		var parent = $(this).parents(".menu_field").first().children(".menu_parent:visible");
 		if ( $(parent).length > 0 ) {
@@ -549,7 +549,7 @@ $(function() {
 	/*
 	 * New menu above
 	 */
-	$("a.menu_add_up").live('click', function(event) {
+	$(document).on('click', "a.menu_add_up", function(event) {
 		event.preventDefault();
 		var NewMenu = $(".menu_item_template").first().clone();
 		// Reset
@@ -563,7 +563,7 @@ $(function() {
 	/*
 	 * New menu below
 	 */
-	$("a.menu_add_down").live('click', function(event) {
+	$(document).on('click', "a.menu_add_down", function(event) {
 		event.preventDefault();
 		var NewMenu = $(".menu_item_template").first().clone();
 		// Reset
@@ -577,7 +577,7 @@ $(function() {
 	/*
 	 * New submenu
 	 */
-	$("a.menu_add_submenu").live('click', function(event) {
+	$(document).on('click', "a.menu_add_submenu", function(event) {
 		event.preventDefault();
 
 		var NewParent = $(".menu_parent_template").first().clone();
@@ -607,7 +607,7 @@ $(function() {
 	/*
 	 * Remove menu
 	 */
-	$("a.menu_delete").live('click', function(event) {
+	$(document).on('click', "a.menu_delete", function(event) {
 		event.preventDefault();
 
 		var menu_item = $(this).parents("div.menu_item").first();
@@ -629,18 +629,18 @@ $(function() {
 	/*
 	 * Dropdown menu items
 	 */	
-	$(".menu_item_target > input[type='text']").live('click', function(event) {
+	$(document).on('click', ".menu_item_target > input[type='text']", function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		$(listing).fadeIn("fast");
 	});
-	$(".menu_item_target > input[type='text']").live('blur', function(event) {
+	$(document).on('blur', ".menu_item_target > input[type='text']", function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		$(listing).fadeOut("fast");
 	});
 	
-	$(".dropdown_items_listing_targets > li > a").live('click', function(event) {
+	$(document).on('click', ".dropdown_items_listing_targets > li > a", function(event) {
 		event.preventDefault();
 		var input = $(this).parents(".dropdown_items_listing_position").first().prev("input");
 		$(input).val($(this).attr("href"));
@@ -649,7 +649,7 @@ $(function() {
 	/*
 	 * Move item menu up
 	 */
-	$("a.menu_up").live("click", function(event) {
+	$(document).on("click", "a.menu_up", function(event) {
 		event.preventDefault();
 		var item = $(this).parents("div.menu_item").first();
 		var swap = $(item).prev("div.menu_item");
@@ -662,7 +662,7 @@ $(function() {
 	/*
 	 * Move item menu down
 	 */
-	$("a.menu_down").live("click", function(event) {
+	$(document).on("click", "a.menu_down", function(event) {
 		event.preventDefault();
 		var item = $(this).parents("div.menu_item").first();
 		var swap = $(item).next("div.menu_item");
@@ -702,7 +702,7 @@ $(function() {
 	/*
 	 * New video
 	 */
-	$("a.youtube_add").live('click', function(event) {
+	$(document).on('click', "a.youtube_add", function(event) {
 		event.preventDefault();
 		var parent = $(this).parents(".youtube_gallery_field").first().children(".youtube_parent:visible");
 		var NewVideo = $(".youtube_item_template").first().clone();
@@ -717,7 +717,7 @@ $(function() {
 	/*
 	 * New video up
 	 */
-	$("a.youtube_add_up").live('click', function(event) {
+	$(document).on('click', "a.youtube_add_up", function(event) {
 		event.preventDefault();
 		var NewVideo = $(".youtube_item_template").first().clone();
 		// empty field
@@ -731,7 +731,7 @@ $(function() {
 	/*
 	 * New video below
 	 */
-	$("a.youtube_add_down").live('click', function(event) {
+	$(document).on('click', "a.youtube_add_down", function(event) {
 		event.preventDefault();
 		var NewVideo = $(".youtube_item_template").first().clone();
 		// Empty field
@@ -745,7 +745,7 @@ $(function() {
 	/*
 	 * Remove video
 	 */
-	$("a.youtube_delete").live('click', function(event) {
+	$(document).on('click', "a.youtube_delete", function(event) {
 		event.preventDefault();
 
 		var youtube_item = $(this).parents("div.youtube_item").first();
@@ -767,7 +767,7 @@ $(function() {
 	/*
 	 * Move video up
 	 */
-	$("a.youtube_up").live("click", function(event) {
+	$(document).on("click", "a.youtube_up", function(event) {
 		event.preventDefault();
 		var item = $(this).parents("div.youtube_item").first();
 		var swap = $(item).prev("div.youtube_item");
@@ -780,7 +780,7 @@ $(function() {
 	/*
 	 * Move video down
 	 */
-	$("a.youtube_down").live("click", function(event) {
+	$(document).on("click", "a.youtube_down", function(event) {
 		event.preventDefault();
 		var item = $(this).parents("div.youtube_item").first();
 		var swap = $(item).next("div.youtube_item");

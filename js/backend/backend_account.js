@@ -75,14 +75,14 @@ $(function() {
 	});
 
 	// Show user inclusion page
-	$("#user_add").live("click", function(event) {
+	$(document).on("click", "#user_add", function(event) {
 		event.preventDefault();
 		
 		$("#user_add_form").show("slow", "easeInSine");
 	});
 
 	// User inclusion action
-	$("#form_user_add").live("submit", function(event) {
+	$(document).on("submit", "#form_user_add", function(event) {
 		event.preventDefault();
 
 		$.post("/backend/account/xhr_write_user", $(this).serialize(), function(data){
@@ -105,7 +105,7 @@ $(function() {
 	});
 	
 	// User removal
-	$(".user_del").live("click", function(event) {
+	$(document).on("click", ".user_del", function(event) {
 		event.preventDefault();
 
 		var userinfo = $(this).parents(".user_info").first();

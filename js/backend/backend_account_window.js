@@ -31,7 +31,7 @@
 $(function() {
 
 	// Save group
-	$("#button_group_save").live('click', function(event) {
+	$(document).on('click', "#button_group_save", function(event) {
 		event.preventDefault();
 		
 		// Blocking
@@ -77,7 +77,7 @@ $(function() {
 	});
 
 	// Save account
-	$("#button_account_save").live('click', function(event) {
+	$(document).on('click', "#button_account_save", function(event) {
 		event.preventDefault();
 		
 		// Blocking

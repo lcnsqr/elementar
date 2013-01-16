@@ -43,7 +43,7 @@ $(function() {
 	});
 	
 	// Dropdown widget
-	$(".dropdown_items_listing_inline > a").live('click', function(event) {
+	$(document).on('click', ".dropdown_items_listing_inline > a", function(event) {
 		event.preventDefault();
 		var listing = $(this).parent().find(".dropdown_items_listing").first();
 		if ( ! $(listing).is(":visible") ) {
@@ -55,7 +55,7 @@ $(function() {
 	});
 
 	// Save meta fields
-	$("#button_meta_save").live('click', function(event) {
+	$(document).on('click', "#button_meta_save", function(event) {
 		event.preventDefault();
 		
 		// Blocking
@@ -76,7 +76,7 @@ $(function() {
 
 	// Element type selection
 	
-	$(".dropdown_items_listing_element_type_target").live('click', function(event) {
+	$(document).on('click', ".dropdown_items_listing_element_type_target", function(event) {
 		event.preventDefault();
 		
 		var type_id = $(this).attr("href");
@@ -89,7 +89,7 @@ $(function() {
 	});
 
 	// Create a new element under a content
-	$("a#choose_element_type_for_parent_id").live('click', function(event) {
+	$(document).on('click', "a#choose_element_type_for_parent_id", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -122,7 +122,7 @@ $(function() {
 	});
 
 	// Discard new element form
-	$("#button_element_discard").live('click', function(event) {
+	$(document).on('click', "#button_element_discard", function(event) {
 		event.preventDefault();
 		$("#element_editor_form").hide('slow', function() {
 			$("#element_editor_form").html("");
@@ -130,7 +130,7 @@ $(function() {
 	});
 
 	// Save new element
-	$("#button_element_save").live('click', function(event) {
+	$(document).on('click', "#button_element_save", function(event) {
 		event.preventDefault();
 		
 		// Blocking
@@ -176,7 +176,7 @@ $(function() {
 	});
 
 	// Content type selection
-	$(".dropdown_items_listing_content_type_target").live('click', function(event) {
+	$(document).on('click', ".dropdown_items_listing_content_type_target", function(event) {
 		event.preventDefault();
 		
 		var type_id = $(this).attr("href");
@@ -189,7 +189,7 @@ $(function() {
 	});
 
 	// Content creation form
-	$("a#choose_content_type_for_parent_id").live('click', function(event) {
+	$(document).on('click', "a#choose_content_type_for_parent_id", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -222,7 +222,7 @@ $(function() {
 	});
 
 	// Discard new content form
-	$("#button_content_discard").live('click', function(event) {
+	$(document).on('click', "#button_content_discard", function(event) {
 		event.preventDefault();
 		$("#content_editor_form").hide('slow', function() {
 			$("#content_editor_form").html("");
@@ -230,7 +230,7 @@ $(function() {
 	});
 
 	// Save content
-	$("#button_content_save").live('click', function(event) {
+	$(document).on('click', "#button_content_save", function(event) {
 		event.preventDefault();
 		
 		// Blocking
@@ -277,7 +277,7 @@ $(function() {
 	/*
 	 * Show content's available pseudo variables
 	 */
-	$('.pseudo_variables_menu_switcher').live('click', function(event){
+	$(document).on('click', '.pseudo_variables_menu_switcher', function(event){
 		event.preventDefault();
 		var accordion = $(this).parents('.pseudo_variables_menu').first().find('.pseudo_variables_accordion').first();
 		if ( $(this).hasClass('collapsed') ) {
@@ -299,7 +299,7 @@ $(function() {
 	/*
 	 * pseudo variables filtering/insertion menu
 	 */
-	$('.variable_pair_menu').live('click', function(event){
+	$(document).on('click', '.variable_pair_menu', function(event){
 		event.preventDefault();
 
 		/*
@@ -347,7 +347,7 @@ $(function() {
 	/*
 	 * Save filter
 	 */
-	$('.save_filter').live('click', function(event)
+	$(document).on('click', '.save_filter', function(event)
 	{
 		event.preventDefault();
 		// Blocking
@@ -378,15 +378,15 @@ $(function() {
 	/*
 	 * Close variables filter menu button hover
 	 */
-	$('.close_menu').live('mouseenter', function(event){
+	$(document).on('mouseenter', '.close_menu', function(event){
 		$(this).addClass('close_menu_hover');
 	});
-	$('.close_menu').live('mouseleave', function(event){
+	$(document).on('mouseleave', '.close_menu', function(event){
 		$(this).removeClass('close_menu_hover');
 	});
 
 	// Close pseudo variables floating menus
-	$('.close_menu').live('click', function(event) {
+	$(document).on('click', '.close_menu', function(event) {
 		event.preventDefault();
 		var menu = $(this).parents('.element_filter_menu').first();
 		$(menu).fadeOut('fast', function() {
@@ -397,7 +397,7 @@ $(function() {
 	/*
 	 * Add pseudo variable to template
 	 */
-	$('.add_variable_single').live('click', function(event) {
+	$(document).on('click', '.add_variable_single', function(event) {
 		event.preventDefault();
 		var variable = unescape($(this).attr('href'));
 		var textarea = $(this).parents('.form_window_column_input').first().find('.template_textarea');
@@ -407,7 +407,7 @@ $(function() {
 	/*
 	 * Add relative pseudo variable pair (loop) to template
 	 */
-	$('.add_relative_variable_pair').live('click', function(event) {
+	$(document).on('click', '.add_relative_variable_pair', function(event) {
 		event.preventDefault();
 
 		var insertion_form = $(this).parents('.filter_forms').find('div.insertion');
@@ -420,7 +420,7 @@ $(function() {
 	/*
 	 * Add filtered pseudo variable pair (loop) to template
 	 */
-	$('.add_variable_pair').live('click', function(event) {
+	$(document).on('click', '.add_variable_pair', function(event) {
 		event.preventDefault();
 
 		var insertion_form = $(this).parents('.filter_forms').find('div.insertion');
@@ -440,7 +440,7 @@ $(function() {
 	/*
 	 * Template HTML actions
 	 */
-	$('.template_menu.add_file_uri').live('click', function(event){
+	$(document).on('click', '.template_menu.add_file_uri', function(event){
 		event.preventDefault();
 		/*
 		 * Identifies receptor input
@@ -482,7 +482,7 @@ $(function() {
 	/* 
 	 * Load new content_type form
 	 */
-	$("a#content_type_create").live('click', function(event) {
+	$(document).on('click', "a#content_type_create", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -503,7 +503,7 @@ $(function() {
 	/* 
 	 * Load new element_type form
 	 */
-	$("a#element_type_create").live('click', function(event) {
+	$(document).on('click', "a#element_type_create", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -522,7 +522,7 @@ $(function() {
 	});
 
 	// Discard new content type form
-	$(".type_define_new_form").live('reset', function(event) {
+	$(document).on('reset', ".type_define_new_form", function(event) {
 		event.preventDefault();
 		$("#type_define_new_container").hide('slow', function() {
 			$("#type_define_new_container").html("");
@@ -532,7 +532,7 @@ $(function() {
 	/*
 	 * Create a content_type
 	 */
-	$("#content_type_define_new_form").live('submit', function(event) {
+	$(document).on('submit', "#content_type_define_new_form", function(event) {
 		event.preventDefault();
 		// Blocking
 		$("#blocker").fadeIn("fast");
@@ -567,7 +567,7 @@ $(function() {
 	/*
 	 * Create a element type
 	 */
-	$("#element_type_define_new_form").live('submit', function(event) {
+	$(document).on('submit', "#element_type_define_new_form", function(event) {
 		event.preventDefault();
 		// Blocking
 		$("#blocker").fadeIn("fast");
@@ -601,7 +601,7 @@ $(function() {
 	/*
 	 * Clone and redefine field type from template (new content type field)
 	 */
-	$("a#add_type_field").live('click', function(event) {
+	$(document).on('click', "a#add_type_field", function(event) {
 		event.preventDefault();
 		var NewField = $("#type_define_new_field_0").clone();
 		var field_label = $(NewField).find("label[for='field_0']");
@@ -634,7 +634,7 @@ $(function() {
 	/*
 	 * Content/template editor tabs
 	 */
-	$("a.editors_menu_item").live('click', function(event) {
+	$(document).on('click', "a.editors_menu_item", function(event) {
 		event.preventDefault();
 		var target = $(this).attr('href');
 		
@@ -653,7 +653,7 @@ $(function() {
 	/*
 	 * Template save
 	 */
-	$("#button_template_save").live('click', function(event) {
+	$(document).on('click', "#button_template_save", function(event) {
 		event.preventDefault();
 		
 		var template_form = $(this).parents('#template_editor_form').first();

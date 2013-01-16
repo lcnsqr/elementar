@@ -50,7 +50,7 @@ $(function() {
 	/*
 	 * Item menu
 	 */
-	$('.label > a').live('click', function(event){
+	$(document).on('click', '.label > a', function(event){
 		event.preventDefault();
 
 		/*
@@ -112,14 +112,14 @@ $(function() {
 	/*
 	 * Prevent unintended default browser draging of link
 	 */
-	$('.label > a').live('mousedown', function(event){
+	$(document).on('mousedown', '.label > a', function(event){
 		event.preventDefault();
 	});
 
 	/*
 	 * Show existing contents listing and rotate bullet arrow
 	 */
-	$("a.fold.folder_switch").live("click", function(event) {
+	$(document).on("click", "a.fold.folder_switch", function(event) {
 		event.preventDefault();
 
 		// Loading icon
@@ -143,7 +143,7 @@ $(function() {
 	/*
 	 * Hide contents listing and rotate bullet arrow
 	 */
-	$("a.unfold.folder_switch").live("click", function(event) {
+	$(document).on("click", "a.unfold.folder_switch", function(event) {
 		event.preventDefault();
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		$(listing).slideUp("fast", "easeOutSine");
@@ -155,7 +155,7 @@ $(function() {
 	/*
 	 * Show content creating form
 	 */
-	$("a.new.content").live('click', function(event) {
+	$(document).on('click', "a.new.content", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -176,7 +176,7 @@ $(function() {
 	/*
 	 * Show element creating form
 	 */
-	$("a.new.element").live('click', function(event) {
+	$(document).on('click', "a.new.element", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -197,7 +197,7 @@ $(function() {
 	/*
 	 * Show content editing form
 	 */
-	$("a.edit.content,a.edit.template,a.edit.meta").live('click', function(event) {
+	$(document).on('click', "a.edit.content,a.edit.template,a.edit.meta", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -242,7 +242,7 @@ $(function() {
 	/*
 	 * Show element editing form
 	 */
-	$("a.edit.element").live('click', function(event) {
+	$(document).on('click', "a.edit.element", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -266,7 +266,7 @@ $(function() {
 	/*
 	 * Item removal
 	 */
-	$("a.remove").live('click', function(event) {
+	$(document).on('click', "a.remove", function(event) {
 		event.preventDefault();
 
 		var id = $(this).attr('href');
@@ -511,7 +511,7 @@ $(function() {
 	/*
 	 * Clone draggable row and add it to drag container
 	 */
-	$('.tree_listing_icon').live('mousedown', function(event){
+	$(document).on('mousedown', '.tree_listing_icon', function(event){
 		event.preventDefault();
 		
 		/*

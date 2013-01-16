@@ -47,7 +47,7 @@ $(function() {
 	/*
 	 * Item menu
 	 */
-	$('.label > a').live('click', function(event){
+	$(document).on('click', '.label > a', function(event){
 		event.preventDefault();
 
 		/*
@@ -100,14 +100,14 @@ $(function() {
 	/*
 	 * Prevent unintended default browser draging of link
 	 */
-	$('.label > a').live('mousedown', function(event){
+	$(document).on('mousedown', '.label > a', function(event){
 		event.preventDefault();
 	});
 
 	/*
 	 * Show existing group listing and rotate bullet arrow
 	 */
-	$("a.fold.folder_switch").live("click", function(event) {
+	$(document).on("click", "a.fold.folder_switch", function(event) {
 		event.preventDefault();
 
 		// Loading icon
@@ -131,7 +131,7 @@ $(function() {
 	/*
 	 * Hide contents listing and rotate bullet arrow
 	 */
-	$("a.unfold.folder_switch").live("click", function(event) {
+	$(document).on("click", "a.unfold.folder_switch", function(event) {
 		event.preventDefault();
 		var listing = $(this).parents(".tree_parent").first().find(".tree_listing").first();
 		$(listing).slideUp("fast", "easeOutSine");
@@ -142,7 +142,7 @@ $(function() {
 	/*
 	 * Show group create/edit form
 	 */
-	$("a.new.group,a.edit.group").live('click', function(event) {
+	$(document).on('click', "a.new.group,a.edit.group", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -168,7 +168,7 @@ $(function() {
 	/*
 	 * Show account create/edit form
 	 */
-	$("a.new.account,a.edit.account").live('click', function(event) {
+	$(document).on('click', "a.new.account,a.edit.account", function(event) {
 		event.preventDefault();
 
 		// Blocking
@@ -196,7 +196,7 @@ $(function() {
 	/*
 	 * Item removal
 	 */
-	$("a.remove").live('click', function(event) {
+	$(document).on('click', "a.remove", function(event) {
 		event.preventDefault();
 
 		/*
@@ -395,7 +395,7 @@ $(function() {
 	/*
 	 * Clone draggable row and add it to drag container
 	 */
-	$('.tree_listing_icon.draggable').live('mousedown', function(event){
+	$(document).on('mousedown', '.tree_listing_icon.draggable', function(event){
 		event.preventDefault();
 		
 		/*
