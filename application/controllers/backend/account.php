@@ -103,21 +103,26 @@ class Account extends CI_Controller {
 
 		// Client controller (javascript files)
 		$js = array(
-			'/js/backend/jquery-1.8.3.min.js',
-			'/js/backend/jquery.easing.1.3.js',
-			'/js/backend/jquery.timers-1.2.js',
-			'/js/backend/tiny_mce/jquery.tinymce.js',
-			'/js/backend/backend_composite_field.js',
-			'/js/backend/backend_account.js',
-			'/js/backend/backend_account_tree.js',
-			'/js/backend/backend_account_window.js',
-			'/js/backend/backend_client_warning.js',
-			'/js/backend/backend_anchor.js',
-			'/js/backend/jquery.cookie.js'
+			JQUERY,
+			JQUERY_EASING,
+			JQUERY_TIMERS,
+			JQUERY_TINYMCE,
+			BACKEND_COMPOSITE_FIELD,
+			BACKEND_ACCOUNT,
+			BACKEND_ACCOUNT_TREE,
+			BACKEND_ACCOUNT_WINDOW,
+			BACKEND_CLIENT_WARNING,
+			BACKEND_ANCHOR,
+			JQUERY_COOKIE
 		);
 		
 		// CSS for account view
-		$css = array();
+		$css = array(
+			BACKEND_RESET_CSS,
+			BACKEND_CSS,
+			BACKEND_TREE_CSS,
+			BACKEND_WINDOW_CSS
+		);
 
 		// Top menu
 		$resource_menu = array(

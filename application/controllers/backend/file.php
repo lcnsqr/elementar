@@ -101,22 +101,27 @@ class File extends CI_Controller {
 
 		// Client controller (javascript files)
 		$js = array(
-			'/js/backend/jquery-1.8.3.min.js',
-			'/js/backend/jquery.easing.1.3.js',
-			'/js/backend/jquery.timers-1.2.js',
-			'/js/backend/jquery.json-2.3.min.js',
-			'/js/backend/backend_file.js',
-			'/js/backend/jquery.cookie.js'
+			JQUERY,
+			JQUERY_EASING,
+			JQUERY_TIMERS,
+			JQUERY_JSON,
+			BACKEND_FILE,
+			JQUERY_COOKIE
 		);
 
 		// CSS for file view
-		$css = array();
+		$css = array(
+			BACKEND_RESET_CSS,
+			BACKEND_CSS,
+			BACKEND_TREE_CSS,
+			BACKEND_WINDOW_CSS
+		);
 		
 		// Add tinymce support scripts if requested by file manager plugin
 		if ( $this->input->get('parent', TRUE) == 'tinymce' )
 		{
-			$js[] = '/js/backend/tiny_mce/tiny_mce_popup.js';
-			$js[] = '/js/backend/tiny_mce/plugins/filemanager/js/dialog.js';
+			$js[] = TINY_MCE_POPUP;
+			$js[] = TINY_MCE_FILEMANAGER;
 		}
 		$data['js'] = $js;
 		$data['css'] = $css;

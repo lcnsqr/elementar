@@ -75,12 +75,17 @@ class Setup extends CI_Controller {
 		$data = array(
 			'title' => 'Elementar Setup', 
 			'js' => array(
-				'/js/backend/jquery-1.8.3.min.js', 
-				'/js/backend/backend_setup.js', 
-				'/js/backend/jquery.timers-1.2.js', 
-				'/js/backend/backend_client_warning.js'
+				JQUERY,
+				BACKEND_SETUP,
+				JQUERY_TIMERS,
+				BACKEND_CLIENT_WARNING
 			),
-			'css' => array(),
+			'css' => array(
+				BACKEND_RESET_CSS,
+				BACKEND_CSS,
+				BACKEND_TREE_CSS,
+				BACKEND_WINDOW_CSS
+			),
 			'is_logged' => FALSE
 		);
 

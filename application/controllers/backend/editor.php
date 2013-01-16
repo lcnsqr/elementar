@@ -100,27 +100,31 @@ class Editor extends CI_Controller {
 
 		// Client controller (javascript files)
 		$js = array(
-			'/js/backend/jquery-1.8.3.min.js',
-			'/js/backend/jquery.easing.1.3.js',
-			'/js/backend/jquery.timers-1.2.js',
-			'/js/backend/backend_account.js',
-			'/js/backend/tiny_mce/jquery.tinymce.js',
-			'/js/backend/backend_client_warning.js',
-			'/js/backend/backend_content_tree.js',
-			'/js/backend/backend_content_window.js',
-			'/js/backend/backend_composite_field.js',
-			'/js/backend/jquery.json-2.3.min.js',
-			'/js/backend/backend_anchor.js',
-			'/js/backend/jquery.cookie.js',
-			'/js/backend/codemirror/lib/codemirror.js',
-			'/js/backend/codemirror/mode/xml/xml.js',
-			'/js/backend/codemirror/mode/css/css.js',
-			'/js/backend/codemirror/mode/javascript/javascript.js'
+			JQUERY,
+			JQUERY_EASING,
+			JQUERY_TIMERS,
+			BACKEND_ACCOUNT,
+			JQUERY_TINYMCE,
+			BACKEND_CLIENT_WARNING,
+			BACKEND_CONTENT_TREE,
+			BACKEND_CONTENT_WINDOW,
+			BACKEND_COMPOSITE_FIELD,
+			JQUERY_JSON,
+			BACKEND_ANCHOR,
+			JQUERY_COOKIE,
+			CM_JS,
+			CM_MODE_XML,
+			CM_MODE_CSS,
+			CM_MODE_JS
 		);
 		
 		// CSS for editor view
 		$css = array(
-			'/js/backend/codemirror/lib/codemirror.css'
+			BACKEND_RESET_CSS,
+			BACKEND_CSS,
+			BACKEND_TREE_CSS,
+			BACKEND_WINDOW_CSS,
+			CM_CSS
 		);
 		
 		

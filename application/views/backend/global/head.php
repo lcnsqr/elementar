@@ -11,11 +11,6 @@
 <script type="text/javascript" src="<?php echo $uri; ?>"></script>
 <?php endforeach; ?>
 
-<link rel="stylesheet" href="/css/backend/reset.css" type="text/css" />
-<link rel="stylesheet" href="/css/backend/backend.css" type="text/css" />
-<link rel="stylesheet" href="/css/backend/backend_tree.css" type="text/css" />
-<link rel="stylesheet" href="/css/backend/backend_window.css" type="text/css" />
-
 <?php foreach ( $css as $uri ): ?>
 <link rel="stylesheet" href="<?php echo $uri; ?>" type="text/css" />
 <?php endforeach; ?>

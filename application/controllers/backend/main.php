@@ -95,21 +95,26 @@ class Main extends CI_Controller {
 
 		// Client controller (javascript files)
 		$js = array(
-			'/js/backend/jquery-1.8.3.min.js',
-			'/js/backend/jquery.easing.1.3.js',
-			'/js/backend/jquery.timers-1.2.js',
-			'/js/backend/backend_account.js',
-			'/js/backend/tiny_mce/jquery.tinymce.js',
-			'/js/backend/backend_client_warning.js',
-			'/js/backend/backend_settings.js',
-			'/js/backend/backend_composite_field.js',
-			'/js/backend/jquery.json-2.3.min.js',
-			'/js/backend/backend_anchor.js',
-			'/js/backend/jquery.cookie.js'
+			JQUERY,
+			JQUERY_EASING,
+			JQUERY_TIMERS,
+			BACKEND_ACCOUNT,
+			JQUERY_TINYMCE,
+			BACKEND_CLIENT_WARNING,
+			BACKEND_SETTINGS,
+			BACKEND_COMPOSITE_FIELD,
+			JQUERY_JSON,
+			BACKEND_ANCHOR,
+			JQUERY_COOKIE
 		);
 
 		// CSS for main view
-		$css = array();
+		$css = array(
+			BACKEND_RESET_CSS,
+			BACKEND_CSS,
+			BACKEND_TREE_CSS,
+			BACKEND_WINDOW_CSS
+		);
 
 		// Top menu
 		$resource_menu = array(

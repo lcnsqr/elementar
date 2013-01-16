@@ -174,12 +174,17 @@ class Common {
 				'is_logged' => FALSE,
 				'title' => $this->CI->config->item('site_name'),
 				'js' => array(
-					'/js/backend/jquery-1.8.3.min.js', 
-					'/js/backend/backend_account.js', 
-					'/js/backend/jquery.timers-1.2.js', 
-					'/js/backend/backend_client_warning.js'
+					JQUERY,
+					BACKEND_ACCOUNT,
+					JQUERY_TIMERS,
+					BACKEND_CLIENT_WARNING
 				),
-				'css' => array(),
+				'css' => array(
+					BACKEND_RESET_CSS,
+					BACKEND_CSS,
+					BACKEND_TREE_CSS,
+					BACKEND_WINDOW_CSS
+				),
 				'action' => '/' . uri_string(),
 				'elapsed_time' => $this->CI->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end')
 			);
