@@ -45,24 +45,24 @@
 | the active record class
 */
 
-$active_group = 'default';
+$active_group = 'elementar';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '';
-$db['default']['password'] = '';
-$db['default']['database'] = '';
-$db['default']['dbdriver'] = 'mysql';
-$db['default']['dbprefix'] = '';
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
-$db['default']['cachedir'] = '';
-$db['default']['char_set'] = 'utf8';
-$db['default']['dbcollat'] = 'utf8_general_ci';
-$db['default']['swap_pre'] = '';
-$db['default']['autoinit'] = TRUE;
-$db['default']['stricton'] = FALSE;
+$db['elementar']['hostname'] = 'localhost';
+$db['elementar']['username'] = '';
+$db['elementar']['password'] = '';
+$db['elementar']['database'] = '';
+$db['elementar']['dbdriver'] = 'mysql';
+$db['elementar']['dbprefix'] = '';
+$db['elementar']['pconnect'] = TRUE;
+$db['elementar']['db_debug'] = TRUE;
+$db['elementar']['cache_on'] = FALSE;
+$db['elementar']['cachedir'] = '';
+$db['elementar']['char_set'] = 'utf8';
+$db['elementar']['dbcollat'] = 'utf8_general_ci';
+$db['elementar']['swap_pre'] = '';
+$db['elementar']['autoinit'] = TRUE;
+$db['elementar']['stricton'] = FALSE;
 
 
 /* End of file database.php */
