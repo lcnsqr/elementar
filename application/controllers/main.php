@@ -164,7 +164,7 @@ class Main extends CI_Controller {
 						$$addon['name']->$method();
 					}
 					// End local actions
-					exit(0);
+					return;
 				}
 			}
 			
