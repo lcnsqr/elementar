@@ -69,7 +69,7 @@ class MY_Output extends CI_Output {
 		$this->set_header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600)." GMT");
 		$this->set_header("Cache-Control: no-cache, no-store");
 		$this->set_header("Pragma: no-cache");
-		$this->set_header("Content-type: application/json");
+		$this->set_header("Content-type: application/json; charset=UTF-8");
 		
 		// Render JSON response
 		$data = json_encode($response);
