@@ -866,7 +866,7 @@ class Common {
 				// No submenu
 				$menu_links[] = array(
 					'link' => $link,
-					'submenu' => array();
+					'submenu' => array()
 				);
 			}
 			else
