@@ -54,7 +54,10 @@ $(function() {
 			 * Update file field json data
 			 */
 			$("input.file").each(function() {
-				var file = $.parseJSON($(this).val());
+				var file = null;
+				if ( $(this).val() != "" ){
+					file = $.parseJSON($(this).val());
+				}
 				if ( file != null ) {
 					/*
 					 * Push description text to array
