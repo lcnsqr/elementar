@@ -370,7 +370,7 @@ class Main extends CI_Controller {
 				$template = $this->storage->get_template($content_id);
 
 				// Content fields & associated contents
-				$content['name'] = $content_name;
+				$content['name'] = $data['site'];
 				$content['title'] = $data['title'];
 				$content = array_merge($content, $this->common->render_content($content_id));
 
