@@ -390,7 +390,12 @@ $(function() {
 				 */
 				var file_description = $(this).find("input.file_item_description_field").val();
 				var file_item = $(this).find("input.file_item_field").val();
-				var file = $.parseJSON(file_item);
+
+				var file = null;
+				if ( file_item != "" ){
+					file = $.parseJSON(file_item);
+				}
+
 				if ( file != null ) {
 					/*
 					 * Push description text to array
