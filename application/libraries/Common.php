@@ -939,7 +939,8 @@ class Common {
 		if ( count($element) > 0 )
 		{
 			// Localized name
-			$name = $element['name'];
+			$names = json_decode($element['name'], TRUE);
+			$name = (array_key_exists($this->LANG, $names)) ? $names[$this->LANG] : '';
 			$element_uri = $this->URI_PREFIX . $this->CI->storage->get_content_uri($element['parent_id']) . "#" . $element['sname'];
 			if ( (bool) $element['parent_id'] )
 			{ 
