@@ -221,14 +221,7 @@ class Main extends CI_Controller {
 		// Metafields
 		$data['metafields'] = array();
 		// common meta fields
-		$google_site_verification = $this->storage->get_config('google-site-verification');
-		if ( ! empty($google_site_verification) )
-		{
-			$data['metafields'][] = array(
-				'name' => 'google-site-verification',
-				'value' => $google_site_verification
-			);
-		}
+		// None for now
 
 		// Array to carry content fields, elements,
 		// and other useful variables & rendered data
