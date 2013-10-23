@@ -100,7 +100,7 @@
 	width: 98%;
 }
 
-.index_field
+.index_field, .list_field
 {
 	position: relative;
 	margin-bottom: 6px;

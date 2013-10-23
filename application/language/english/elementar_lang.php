@@ -54,6 +54,8 @@ $lang['elementar_field_type_youtube_gallery'] = 'Video collection';
 $lang['elementar_field_type_youtube_gallery_description'] = 'Youtube.com videos selection';
 $lang['elementar_field_type_index'] = 'Automatic menu';
 $lang['elementar_field_type_index_description'] = 'Auto generated menu';
+$lang['elementar_field_type_list'] = 'Listing';
+$lang['elementar_field_type_list_description'] = 'Content listing';
 
 /*
  * Setup

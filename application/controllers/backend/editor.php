@@ -399,6 +399,30 @@ class Editor extends CI_Controller {
 	}
 
 	/**
+	 * Filters for list field type
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function xhr_render_list_filter()
+	{
+		if ( ! $this->input->is_ajax_request() )
+			exit($this->lang->line('elementar_no_direct_script_access'));
+
+		$content_id = $this->input->post('content_id', TRUE);
+		
+		$field_sname = $this->input->post('field_sname', TRUE);
+		
+		$html = $this->common->_render_list_field_form($field_sname, $content_id);
+		
+		$response = array(
+			'done' => TRUE,
+			'html' => $html
+		);
+		$this->output->set_output_json($response);
+	}
+
+	/**
 	 * Choose type for content creation
 	 * 
 	 * @access public

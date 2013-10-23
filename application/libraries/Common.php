@@ -592,7 +592,48 @@ class Common {
 			$field = div_open(array('class' => 'index_field'));
 			$field .= div_open(array('class' => 'dropdown_items_listing_inline'));
 			$field .= anchor($sname, $content_name);
-			$field .= $this->_render_contents_listing();
+			$field .= $this->_render_contents_listing("index_root_content");
+			$field .= div_close();
+			$field .= div_open(array('class' => 'filter_forms', 'id' => $sname . '_filter_forms'));
+			$field .= $form;
+			$field .= div_close();
+
+			// The actual field
+			$attributes = array(
+				'class' => 'noform index_actual_field',
+				'type' => 'hidden',
+				'name' => $sname,
+				'id' => $sname,
+				'value' => $value
+			);
+			$field .= form_input($attributes);
+			$field .= div_close();
+
+			break;
+
+			case "list" :
+			// content selection
+			$filter = ( $value != '' ) ? json_decode($value, TRUE) : array();
+			if ( (bool) count($filter) )
+			{
+				$content_id = $filter['content_id'];
+				$content_names = json_decode($this->CI->storage->get_content_name($content_id), TRUE);
+				$content_name = (array_key_exists($this->LANG, $content_names)) ? $content_names[$this->LANG] : '';
+				$order_by = $filter['order_by'];
+				$direction = $filter['direction'];
+				$limit = (int) $filter['limit'];
+				$content_types = $filter['content_types'];
+				$form = $this->_render_list_field_form($sname, $content_id, $order_by, $direction, $limit, $content_types);
+			}
+			else
+			{
+				$content_name = 'Escolher raiz...';
+				$form = $this->_render_list_field_form($sname);
+			}
+			$field = div_open(array('class' => 'list_field'));
+			$field .= div_open(array('class' => 'dropdown_items_listing_inline'));
+			$field .= anchor($sname, $content_name);
+			$field .= $this->_render_contents_listing("list_root_content");
 			$field .= div_close();
 			$field .= div_open(array('class' => 'filter_forms', 'id' => $sname . '_filter_forms'));
 			$field .= $form;
@@ -658,6 +699,65 @@ class Common {
 			$html .= div_close();
 		}
 		return $html;
+	}
+
+	/**
+	 * List field HTML elements
+	 * 
+	 * @access public
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param integer
+	 * @param integer
+	 * @return string
+	 */
+	function _render_list_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $content_types = [])
+	{
+		if ( ! (bool) $content_id )
+		{
+			// No content_id, dont render form
+			return NULL;
+		}
+
+		// Select content types
+		$avail_content_types = $this->CI->storage->get_content_types();
+		$content_type_input = "";
+		foreach($avail_content_types as $content_type_id => $content_type){
+			$label = form_label($content_type, "list_content_type_" . $content_type_id, array('class' => 'field_label'));
+			$attributes = array(
+				'name' => 'list_content_type[]',
+				'id' => "list_content_type_" . $content_type_id ,
+				'class' => 'noform',
+				'value' => $content_type_id ,
+				'checked' => (in_array($content_type_id, $content_types)) ? "checked" : ''
+			);
+			$input = form_checkbox($attributes);
+			$content_type_input .= $input . $label . "<br />";
+		}
+
+		$content_type_id = $this->CI->storage->get_content_type_id($content_id);
+		
+		$default_fields = array(
+			array('name' => $this->CI->lang->line('elementar_index_created'), 'sname' => 'created'),
+			array('name' => $this->CI->lang->line('elementar_index_modified'), 'sname' => 'modified'),
+			array('name' => $this->CI->lang->line('elementar_index_name'), 'sname' => 'name')
+		);
+		
+		$data = array(
+			'index_sname' => $field_sname,
+			'content_id' => $content_id,
+			'order_by' => $default_fields,
+			'order_by_checked' => $order_by_checked,
+			'index_filter' => array(
+				'direction' => $direction,
+				'limit' => $limit
+			),
+			'content_type_input' => $content_type_input
+		);
+		
+		return $this->CI->load->view('backend/backend_content_list_field', $data, true);
 	}
 
 	/**
@@ -763,16 +863,19 @@ class Common {
 	 * @access private
 	 * @return string
 	 */
-	private function _render_contents_listing()
+	private function _render_contents_listing($class)
 	{
 		// dropdown target listing
 		$listing = array();
 		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_contents') . '</strong>');
+		$content = $this->CI->storage->get_content(1);
+		$content_name = json_decode($content['name'], TRUE);
+		$listing[] = anchor(1, (array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('class' => $class));
 		// Contents
 		foreach ( $this->CI->storage->get_contents_by_parent(1) as $content )
 		{
 			$content_name = json_decode($content['name'], TRUE);
-			$listing[] = anchor($content['id'], (array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('class' => 'root_content'));
+			$listing[] = anchor($content['id'], (array_key_exists($this->LANG, $content_name)) ? $content_name[$this->LANG] : '', array('class' => $class));
 		}
 		$contents = div_open(array('class' => 'dropdown_items_listing_position'));
 		$contents .= div_open(array('class' => 'dropdown_items_listing'));
@@ -1455,6 +1558,42 @@ class Common {
 				$index[] = $link;
 			}
 			return ul($index);
+			break;
+
+			case 'list' :
+			// List filter values
+			$filter = json_decode($field_value, TRUE);
+			$content_id = $filter['content_id'];
+			$order_by = $filter['order_by'];
+			$direction = $filter['direction'];
+			$limit = (int) $filter['limit'];
+			$content_types = $filter['content_types'];
+
+			$items = $this->CI->storage->get_content_descendants($content_id);
+			$list = array();
+			foreach ( $items as $index => $item )
+			{
+				if ( ! in_array($this->CI->storage->get_content_template_id($item['id']), $content_types) ) continue;
+				$titles = json_decode($item['name'], TRUE);
+				$content_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
+				$content_uri = $this->CI->storage->get_content_uri($item['id']);
+				$fields = array(
+					'name' => $content_name,
+					'uri' => $content_uri,
+					'sname' => $item['sname'],
+					'created' => $item['created'],
+					'modified' => $item['modified']
+				);
+				// Include item custom fields
+				$custom_fields = $this->CI->storage->get_content_fields($item['id']);
+				foreach ( $custom_fields as $field ){
+					$rendered_value = $this->render_field($field, $field['value']);
+					$fields = array_merge($fields, array($field['sname'] => $rendered_value));
+				}
+				$list[] = $fields;
+			}
+			log_message("INFO", print_r($list, TRUE));
+			return $list;
 			break;
 
 			default:
