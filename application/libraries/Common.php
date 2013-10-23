@@ -1986,6 +1986,13 @@ class Common {
 			
 			// Custom fields
 			$data[$element['sname'] . '.id'] = $element['id'];
+
+			// Add element direct access (without a template loop)
+			// Adapt to template pseudo variables
+			$data[$element['sname'] . '.sname'] = $element['sname'];
+			$data[$element['sname'] . '.name'] = $element_name;
+			$data[$element['sname'] . '.created'] = $element['created'];
+			$data[$element['sname'] . '.modified'] = $element['modified'];
 			foreach ($fields as $field)
 			{
 				// Format field value depending on field type
@@ -1996,10 +2003,6 @@ class Common {
 				
 				// Add element direct access (without a template loop)
 				// Adapt to template pseudo variables
-				$data[$element['sname'] . '.sname'] = $element['sname'];
-				$data[$element['sname'] . '.name'] = $element_name;
-				$data[$element['sname'] . '.created'] = $element['created'];
-				$data[$element['sname'] . '.modified'] = $element['modified'];
 				$data[$element['sname'] . '.' . $field['sname']] = $rendered_value;
 			}
 			
