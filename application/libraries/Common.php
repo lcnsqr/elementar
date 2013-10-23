@@ -1658,9 +1658,11 @@ class Common {
 	
 			$attributes = array(
 				'title' => htmlspecialchars( $content_name ),
-				'class' => $class
+				'class' => $class,
+				'data-date' => date('d/m/Y H:i:s', strtotime($child['modified']))
 			);
-			$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> '. anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($content_name), $attributes);
+			$link = anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($content_name), $attributes);
+			//$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> '. anchor($this->URI_PREFIX . $content_uri, htmlspecialchars($content_name), $attributes);
 			//$link = '<span class="date">' . date('d/m/Y H:i:s', strtotime($child['modified'])) . '</span> <a href="'.$this->URI_PREFIX . $content_uri.'" title="'.htmlspecialchars( $content_name ).'" class="'.$class.'">'.htmlspecialchars($content_name).'</a>';
 			if ( (bool) $child['children'] && $depth >= $depth_count )
 			{
