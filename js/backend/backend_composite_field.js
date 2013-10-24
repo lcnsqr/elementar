@@ -97,10 +97,10 @@ $(function() {
 			});
 
 			/*
-			 * Update list field
+			 * Update selection field
 			 */
-			$(".list_field").each(function() {
-				$(this).prepareListField();
+			$(".selection_field").each(function() {
+				$(this).prepareSelectionField();
 			});
 
 			/*
@@ -513,17 +513,17 @@ $(function() {
 	});
 
 	/***************
-	 * List field *
+	 * Selection field *
 	 ***************/
 	/*
 	 * Dropdown contents items
 	 */	
-	$(document).on('click', "input.list_field[type='text']", function(event) {
+	$(document).on('click', "input.selection_field[type='text']", function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		$(listing).fadeIn("fast");
 	});
-	$(document).on('blur', "input.list_field[type='text']", function(event) {
+	$(document).on('blur', "input.selection_field[type='text']", function(event) {
 		var dropdown = $(this).next(".dropdown_items_listing_position").first();
 		var listing = $(dropdown).find(".dropdown_items_listing");
 		$(listing).fadeOut("fast");
@@ -532,7 +532,7 @@ $(function() {
 	/*
 	 * Choose parent content for the field
 	 */
-	$(document).on('click', ".list_root_content", function(event) {
+	$(document).on('click', ".selection_root_content", function(event) {
 		event.preventDefault();
 		var content_id = $(this).attr('href');
 		var content_name = $(this).html();
@@ -540,9 +540,9 @@ $(function() {
 		var root_selector = $(this).parents('.dropdown_items_listing_inline').first().children('a');
 		
 		/*
-		 * Load list field filters
+		 * Load selection field filters
 		 */
-		$.post('/backend/editor/xhr_render_list_filter', { content_id : content_id, field_sname : $(root_selector).attr('href') }, function(data)
+		$.post('/backend/editor/xhr_render_selection_filter', { content_id : content_id, field_sname : $(root_selector).attr('href') }, function(data)
 		{
 			$(root_selector).html(content_name);
 			$( 'div#' + $(root_selector).attr('href') + '_filter_forms' ).html(data.html);
@@ -551,14 +551,14 @@ $(function() {
 	});
 
 	/*
-	 * List field assembling
+	 * Selection field assembling
 	 */
 	$.fn.extend({
-		prepareListField: function()
+		prepareSelectionField: function()
 		{
 			var content_id = $(this).find('form').find('input[name="content_id"]').val();
 			var content_types = [];
-			$(this).find('form').find('input[name="list_content_type[]"]:checked').each(function(){
+			$(this).find('form').find('input[name="selection_content_type[]"]:checked').each(function(){
 				content_types.push($(this).val());
 			});
 			var order_by = $(this).find('form').find('input[name="order_by"]:checked').val();

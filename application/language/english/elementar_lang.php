@@ -52,10 +52,10 @@ $lang['elementar_field_type_file_gallery'] = 'File collection';
 $lang['elementar_field_type_file_gallery_description'] = 'Suitable for images gallery';
 $lang['elementar_field_type_youtube_gallery'] = 'Video collection';
 $lang['elementar_field_type_youtube_gallery_description'] = 'Youtube.com videos selection';
-$lang['elementar_field_type_index'] = 'Automatic menu';
-$lang['elementar_field_type_index_description'] = 'Auto generated menu';
-$lang['elementar_field_type_list'] = 'Listing';
-$lang['elementar_field_type_list_description'] = 'Content listing';
+$lang['elementar_field_type_index'] = 'HTML list index';
+$lang['elementar_field_type_index_description'] = 'Auto generated html list index';
+$lang['elementar_field_type_selection'] = 'Selection';
+$lang['elementar_field_type_selection_description'] = 'Content selection';
 
 /*
  * Setup

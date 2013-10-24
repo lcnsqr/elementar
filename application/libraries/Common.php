@@ -611,7 +611,7 @@ class Common {
 
 			break;
 
-			case "list" :
+			case "selection" :
 			// content selection
 			$filter = ( $value != '' ) ? json_decode($value, TRUE) : array();
 			if ( (bool) count($filter) )
@@ -623,17 +623,17 @@ class Common {
 				$direction = $filter['direction'];
 				$limit = (int) $filter['limit'];
 				$content_types = $filter['content_types'];
-				$form = $this->_render_list_field_form($sname, $content_id, $order_by, $direction, $limit, $content_types);
+				$form = $this->_render_selection_field_form($sname, $content_id, $order_by, $direction, $limit, $content_types);
 			}
 			else
 			{
 				$content_name = 'Escolher raiz...';
-				$form = $this->_render_list_field_form($sname);
+				$form = $this->_render_selection_field_form($sname);
 			}
-			$field = div_open(array('class' => 'list_field'));
+			$field = div_open(array('class' => 'selection_field'));
 			$field .= div_open(array('class' => 'dropdown_items_listing_inline'));
 			$field .= anchor($sname, $content_name);
-			$field .= $this->_render_contents_listing("list_root_content");
+			$field .= $this->_render_contents_listing("selection_root_content");
 			$field .= div_close();
 			$field .= div_open(array('class' => 'filter_forms', 'id' => $sname . '_filter_forms'));
 			$field .= $form;
@@ -713,7 +713,7 @@ class Common {
 	 * @param integer
 	 * @return string
 	 */
-	function _render_list_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $content_types = array())
+	function _render_selection_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $content_types = array())
 	{
 		if ( ! (bool) $content_id )
 		{
@@ -725,10 +725,10 @@ class Common {
 		$avail_content_types = $this->CI->storage->get_content_types();
 		$content_type_input = "";
 		foreach($avail_content_types as $content_type_id => $content_type){
-			$label = form_label($content_type, "list_content_type_" . $content_type_id, array('class' => 'field_label'));
+			$label = form_label($content_type, "selection_content_type_" . $content_type_id, array('class' => 'field_label'));
 			$attributes = array(
-				'name' => 'list_content_type[]',
-				'id' => "list_content_type_" . $content_type_id ,
+				'name' => 'selection_content_type[]',
+				'id' => "selection_content_type_" . $content_type_id ,
 				'class' => 'noform',
 				'value' => $content_type_id ,
 				'checked' => (in_array($content_type_id, $content_types)) ? "checked" : ''
@@ -757,7 +757,7 @@ class Common {
 			'content_type_input' => $content_type_input
 		);
 		
-		return $this->CI->load->view('backend/backend_content_list_field', $data, true);
+		return $this->CI->load->view('backend/backend_content_selection_field', $data, true);
 	}
 
 	/**
@@ -1560,7 +1560,7 @@ class Common {
 			return ul($index);
 			break;
 
-			case 'list' :
+			case 'selection' :
 			// List filter values
 			$filter = json_decode($field_value, TRUE);
 			$content_id = $filter['content_id'];
@@ -1570,7 +1570,7 @@ class Common {
 			$content_types = $filter['content_types'];
 
 			$items = $this->CI->storage->get_content_descendants($content_id);
-			$list = array();
+			$selection = array();
 			foreach ( $items as $index => $item )
 			{
 				if ( ! in_array($this->CI->storage->get_content_template_id($item['id']), $content_types) ) continue;
@@ -1590,10 +1590,9 @@ class Common {
 					$rendered_value = $this->render_field($field, $field['value']);
 					$fields = array_merge($fields, array($field['sname'] => $rendered_value));
 				}
-				$list[] = $fields;
+				$selection[] = $fields;
 			}
-			log_message("INFO", print_r($list, TRUE));
-			return $list;
+			return $selection;
 			break;
 
 			default:

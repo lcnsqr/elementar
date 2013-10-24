@@ -399,12 +399,12 @@ class Editor extends CI_Controller {
 	}
 
 	/**
-	 * Filters for list field type
+	 * Filters for selection field type
 	 * 
 	 * @access public
 	 * @return void
 	 */
-	function xhr_render_list_filter()
+	function xhr_render_selection_filter()
 	{
 		if ( ! $this->input->is_ajax_request() )
 			exit($this->lang->line('elementar_no_direct_script_access'));
@@ -413,7 +413,7 @@ class Editor extends CI_Controller {
 		
 		$field_sname = $this->input->post('field_sname', TRUE);
 		
-		$html = $this->common->_render_list_field_form($field_sname, $content_id);
+		$html = $this->common->_render_selection_field_form($field_sname, $content_id);
 		
 		$response = array(
 			'done' => TRUE,

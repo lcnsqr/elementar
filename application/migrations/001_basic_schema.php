@@ -190,6 +190,10 @@ color: #2d2d2d;
 			array(
 				'sname' => 'index',
 				'i18n' => 0
+			),
+			array(
+				'sname' => 'selection',
+				'i18n' => 0
 			)
 		);
 		$this->db->insert_batch('field_type', $data);

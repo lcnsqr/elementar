@@ -52,10 +52,10 @@ $lang['elementar_field_type_file_gallery'] = 'Seleção de arquivos';
 $lang['elementar_field_type_file_gallery_description'] = 'Especial para coleção de imagens';
 $lang['elementar_field_type_youtube_gallery'] = 'Seleção de vídeos';
 $lang['elementar_field_type_youtube_gallery_description'] = 'Coleção de vídeos do youtube.com';
-$lang['elementar_field_type_index'] = 'Menu automático';
-$lang['elementar_field_type_index_description'] = 'Menu gerado automaticamente';
-$lang['elementar_field_type_list'] = 'Lista';
-$lang['elementar_field_type_list_description'] = 'Lista de conteúdos';
+$lang['elementar_field_type_index'] = 'Índice automático';
+$lang['elementar_field_type_index_description'] = 'Lista HTML gerada automaticamente';
+$lang['elementar_field_type_selection'] = 'Seleção';
+$lang['elementar_field_type_selection_description'] = 'Seleção de conteúdos';
 
 /*
  * Setup
