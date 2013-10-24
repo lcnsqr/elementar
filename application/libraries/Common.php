@@ -713,7 +713,7 @@ class Common {
 	 * @param integer
 	 * @return string
 	 */
-	function _render_list_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $content_types = [])
+	function _render_list_field_form($field_sname, $content_id = '', $order_by_checked = 'created', $direction = 'desc', $limit = 10, $content_types = array())
 	{
 		if ( ! (bool) $content_id )
 		{
