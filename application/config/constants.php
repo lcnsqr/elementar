@@ -68,9 +68,7 @@ define('JQUERY_JSON',							'/js/backend/jquery.json-2.3.min.js');
 define('JQUERY_COOKIE',							'/js/backend/jquery.cookie.js');
 
 // TinyMCE
-define('JQUERY_TINYMCE', 						'/js/backend/tiny_mce/jquery.tinymce.js');
-define('TINY_MCE_POPUP', 						'/js/backend/tiny_mce/tiny_mce_popup.js');
-define('TINY_MCE_FILEMANAGER', 				'/js/backend/tiny_mce/plugins/filemanager/js/dialog.js');
+define('JQUERY_TINYMCE', 						'/js/backend/tinymce/jquery.tinymce.min.js');
 
 // CodeMirror
 define('CM_JS',									'/js/backend/codemirror/lib/codemirror.js');

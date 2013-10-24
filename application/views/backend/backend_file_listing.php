@@ -31,14 +31,17 @@
 		<hr />
 		<ul>
 		<?php if ( $parent == 'tinymce' ): ?>
+			<!--
 			<li><a href="<?php echo $item['path']; ?>" title="<?php echo $item['name']; ?>" class="insert"><?php echo $fm_insert_link; ?></a><span class="action_insert"><a href="<?php echo $item['path']; ?>" alt="<?php echo $item['name']; ?>" title="<?php echo $item['name']; ?>"><?php echo $item['name']; ?></a></span></li>
+			-->
+			<li><a href="<?php echo $item['path']; ?>" title="<?php echo $item['name']; ?>" class="insert"><?php echo $fm_insert; ?></a><span class="action_insert"><?php echo $item['path']; ?></span></li>
 			<?php
 			switch ( $item['mime'] )
 			{
 				case 'image/png' :
 				case 'image/jpeg' :
 				case 'image/gif' :
-				echo '<li><a href="' . $item['path'] . '" title="' . $item['name'] . '" class="insert">'.$fm_insert_picture.'</a><span class="action_insert">' . $item['img']. '</span></li>';
+				//echo '<li><a href="' . $item['path'] . '" title="' . $item['name'] . '" class="insert">'.$fm_insert_picture.'</a><span class="action_insert">' . $item['img']. '</span></li>';
 				break;
 			}
 			?>

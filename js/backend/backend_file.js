@@ -180,7 +180,9 @@ $(function() {
 		 * and responds correctly
 		 */
 		if ( $.getUrlVar('parent') == 'tinymce' ) { 
-			FileManagerDialog.insert(uri);
+			var fieldname = $.getUrlVar('fieldname');
+			window.opener.document.getElementById(fieldname).value = uri;
+			window.close();
 		}
 		else if ( $.getUrlVar('parent') == 'file_field' ) {
 			var identifier = $.getUrlVar('identifier');

@@ -117,12 +117,6 @@ class File extends CI_Controller {
 			BACKEND_WINDOW_CSS
 		);
 		
-		// Add tinymce support scripts if requested by file manager plugin
-		if ( $this->input->get('parent', TRUE) == 'tinymce' )
-		{
-			$js[] = TINY_MCE_POPUP;
-			$js[] = TINY_MCE_FILEMANAGER;
-		}
 		$data['js'] = $js;
 		$data['css'] = $css;
 
