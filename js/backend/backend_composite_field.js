@@ -131,6 +131,7 @@ $(function() {
 					file_browser_callback: function(fieldname, url, type, win) {
 						win.open("/backend/file/manager?parent=tinymce&fieldname="+fieldname, "_blank", "height=480, width=880");
 					},
+					//language: 'pt_BR',
 					width : "100%",
 					height : "24em",
 					force_br_newlines : true,
@@ -153,6 +154,7 @@ $(function() {
 					file_browser_callback: function(fieldname, url, type, win) {
 						win.open("/backend/file/manager?parent=tinymce&fieldname="+fieldname, "_blank", "height=480, width=880");
 					},
+					//language: 'pt_BR',
 					width : "100%",
 					height : "24em",
 					relative_urls : false
