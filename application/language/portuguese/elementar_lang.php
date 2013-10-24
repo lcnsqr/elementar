@@ -146,21 +146,21 @@ $lang['elementar_account_password']		= 'Senha';
 /*
  * Content/element related
  */
-$lang['elementar_type_content_new']		= 'Criar padr&atilde;o para conte&uacute;do';
-$lang['elementar_type_element_new']		= 'Criar padr&atilde;o para elemento';
-$lang['elementar_type_fields']		= 'Campos do padr&atilde;o';
-$lang['elementar_type_name']		= 'Nome do padr&atilde;o';
+$lang['elementar_type_content_new']		= 'Criar forma para conte&uacute;do';
+$lang['elementar_type_element_new']		= 'Criar forma para elemento';
+$lang['elementar_type_fields']		= 'Campos da forma';
+$lang['elementar_type_name']		= 'Nome da forma';
 $lang['elementar_type_field_name']		= 'Nome do campo';
 $lang['elementar_type_field_type']		= 'Tipo do campo';
 $lang['elementar_type_add_field']		= 'Incluir outro campo';
-$lang['elementar_type_markup']		= 'HTML do padr&atilde;o';
+$lang['elementar_type_markup']		= 'HTML da forma';
 $lang['elementar_type_markup_template']		= 'C&oacute;digo HTML';
 $lang['elementar_type_css']		= 'CSS';
 $lang['elementar_type_javascript']		= 'Javascript';
 $lang['elementar_type_extra_head']		= 'Incluir em &lt;head&gt;';
 
 $lang['elementar_editor_content']		= 'Conte&uacute;do';
-$lang['elementar_editor_template']		= 'Padr&atilde;o';
+$lang['elementar_editor_template']		= 'Forma';
 $lang['elementar_editor_meta']		= 'Meta';
 
 $lang['elementar_add_file_uri']		= 'URI de arquivo';
@@ -169,7 +169,6 @@ $lang['elementar_meta_keywords']		= 'Palavras chave';
 $lang['elementar_meta_description']		= 'Descri&ccedil;&atilde;o';
 $lang['elementar_meta_author']		= 'Autor';
 $lang['elementar_meta_copyright']		= 'Copyright';
-$lang['elementar_meta_google-site-verification']		= 'Google Site Verification';
 $lang['elementar_meta_url']		= 'URL';
 $lang['elementar_meta_priority']		= 'Prioridade';
 
@@ -177,12 +176,12 @@ $lang['elementar_edit']		= 'Editar';
 $lang['elementar_delete']		= 'Apagar';
 $lang['elementar_and_associated']		= 'e elementos associados';
 $lang['elementar_edit_content']		= 'Editar Conte&uacute;do';
-$lang['elementar_edit_template']		= 'Editar Padr&atilde;o';
-$lang['elementar_edit_meta']		= 'Meta fields';
+$lang['elementar_edit_template']		= 'Editar Forma';
+$lang['elementar_edit_meta']		= 'Meta dados';
 $lang['elementar_new_content']		= 'Criar conte&uacute;do aqui';
 $lang['elementar_new_element']		= 'Criar elemento aqui';
-$lang['elementar_new_content_from_type']		= 'Criar conte&uacute;do do padr&atilde;o';
-$lang['elementar_new_element_from_type']		= 'Criar elemento do padr&atilde;o';
+$lang['elementar_new_content_from_type']		= 'Criar conte&uacute;do da forma';
+$lang['elementar_new_element_from_type']		= 'Criar elemento da forma';
 
 $lang['elementar_new']		= 'Novo';
 $lang['elementar_proceed']		= 'Continuar';
@@ -201,7 +200,7 @@ $lang['elementar_status']		= 'Status';
 
 $lang['elementar_template_variables_title']		= 'Campos de conteúdo e elementos';
 $lang['elementar_template_sole']		= 'Exclusivo';
-$lang['elementar_template_confirm_overwrite']		= 'Sobrescrever padr&atilde;o?';
+$lang['elementar_template_confirm_overwrite']		= 'Sobrescrever forma?';
 
 /*
  * Ajax return messages
@@ -211,11 +210,11 @@ $lang['elementar_xhr_erase_element']		= 'Elemento removido';
 $lang['elementar_xhr_write_meta']		= 'Campos armazenados com sucesso';
 $lang['elementar_xhr_write_element']		= 'Elemento salvo com sucesso';
 $lang['elementar_xhr_write_element_error']		= 'Erro ao salvar elemento';
-$lang['elementar_xhr_write_element_type']		= 'Padr&atilde;o de elemento salvo';
+$lang['elementar_xhr_write_element_type']		= 'Forma de elemento salvo';
 $lang['elementar_xhr_write_content']		= 'Conte&uacute;do salvo com sucesso';
 $lang['elementar_xhr_write_content_error']		= 'Erro ao salvar conte&uacute;do';
-$lang['elementar_xhr_write_content_type']		= 'Padr&atilde;o de conteúdo salvo';
-$lang['elementar_xhr_write_template']		= 'Padr&atilde;o salvo com sucesso';
+$lang['elementar_xhr_write_content_type']		= 'Forma de conteúdo salvo';
+$lang['elementar_xhr_write_template']		= 'Forma salva com sucesso';
 $lang['elementar_xhr_write_group']		= 'Grupo salvo com sucesso';
 $lang['elementar_xhr_write_account']		= 'Conta salva com sucesso';
 $lang['elementar_xhr_erase_admin']		= 'Não é possível remover';

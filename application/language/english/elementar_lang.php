@@ -169,7 +169,6 @@ $lang['elementar_meta_keywords']		= 'Keywords';
 $lang['elementar_meta_description']		= 'Description';
 $lang['elementar_meta_author']		= 'Author';
 $lang['elementar_meta_copyright']		= 'Copyright';
-$lang['elementar_meta_google-site-verification']		= 'Google Site Verification';
 $lang['elementar_meta_url']		= 'URL';
 $lang['elementar_meta_priority']		= 'Priority';
 
