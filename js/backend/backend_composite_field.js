@@ -139,7 +139,6 @@ $(function() {
 					forced_root_block : '',
 					relative_urls : false
 				};
-				if ( typeof tinymce != "undefined" ) tinymce.remove();
 				$(this).tinymce(config);
 			}
 			else if ( $(this).hasClass('hypertext') ) {
@@ -160,7 +159,6 @@ $(function() {
 					height : "24em",
 					relative_urls : false
 				};
-				if ( typeof tinymce != "undefined" ) tinymce.remove();
 				$(this).tinymce(config);
 			}
 		}
@@ -425,6 +423,7 @@ $(function() {
 		$(this).parents('.hypertext_link_container').first().before(NewPage);
 		$(NewPage).show("fast", "easeInSine");
 		// WYSIWYG textarea activation
+		if ( typeof tinymce != "undefined" ) tinymce.remove();
 		$(NewPage).find('textarea').each(function(){ $(this).wysiwyg(); });
 	});
 
