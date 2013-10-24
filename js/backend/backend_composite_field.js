@@ -139,6 +139,7 @@ $(function() {
 					forced_root_block : '',
 					relative_urls : false
 				};
+				if ( typeof tinymce != "undefined" ) tinymce.remove();
 				$(this).tinymce(config);
 			}
 			else if ( $(this).hasClass('hypertext') ) {
@@ -159,6 +160,7 @@ $(function() {
 					height : "24em",
 					relative_urls : false
 				};
+				if ( typeof tinymce != "undefined" ) tinymce.remove();
 				$(this).tinymce(config);
 			}
 		}
