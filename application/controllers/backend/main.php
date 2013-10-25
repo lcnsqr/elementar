@@ -104,8 +104,7 @@ class Main extends CI_Controller {
 			BACKEND_SETTINGS,
 			BACKEND_COMPOSITE_FIELD,
 			JQUERY_JSON,
-			BACKEND_ANCHOR,
-			JQUERY_COOKIE
+			BACKEND_ANCHOR
 		);
 
 		// CSS for main view

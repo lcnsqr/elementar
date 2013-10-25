@@ -112,8 +112,7 @@ class Account extends CI_Controller {
 			BACKEND_ACCOUNT_TREE,
 			BACKEND_ACCOUNT_WINDOW,
 			BACKEND_CLIENT_WARNING,
-			BACKEND_ANCHOR,
-			JQUERY_COOKIE
+			BACKEND_ANCHOR
 		);
 		
 		// CSS for account view

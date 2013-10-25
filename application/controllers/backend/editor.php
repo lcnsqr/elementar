@@ -111,7 +111,6 @@ class Editor extends CI_Controller {
 			BACKEND_COMPOSITE_FIELD,
 			JQUERY_JSON,
 			BACKEND_ANCHOR,
-			JQUERY_COOKIE,
 			CM_JS,
 			CM_MODE_XML,
 			CM_MODE_CSS,

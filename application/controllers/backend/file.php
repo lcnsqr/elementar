@@ -105,8 +105,7 @@ class File extends CI_Controller {
 			JQUERY_EASING,
 			JQUERY_TIMERS,
 			JQUERY_JSON,
-			BACKEND_FILE,
-			JQUERY_COOKIE
+			BACKEND_FILE
 		);
 
 		// CSS for file view

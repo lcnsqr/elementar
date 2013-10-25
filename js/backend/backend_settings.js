@@ -101,7 +101,7 @@ $(function(){
 			$('body').css('cursor', 'inherit');
 			// Remember position
 			var position = parseInt($('#vertical_resizer').css('left'), 10);
-			$.cookie('main_tree_width', position);
+			localStorage.setItem("main_tree_width", position);
 		}
 	});
 	
@@ -148,7 +148,7 @@ $(function(){
 	 */
 	var limit_left = 140;
 	var limit_right = parseInt(window.innerWidth - ( window.innerWidth / 2 ), 10);
-	var position = parseInt($.cookie('main_tree_width'), 10);
+	var position = parseInt(localStorage.getItem("main_tree_width"), 10);
 	if ( position > 0 ) {
 		var grip_left = position;
 		if ( grip_left >= limit_left && grip_left <= limit_right ) {
