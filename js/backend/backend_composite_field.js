@@ -58,6 +58,10 @@ $(function() {
 				if ( $(this).val() != "" ){
 					file = $.parseJSON($(this).val());
 				}
+				if ( $(this).val() == "" || $(this).val() == "null" ){
+					// Empty json
+					file = $.parseJSON('{"uri":"","title":"","mime":"","size":"","width":"0","height":"0","thumbnail":""}');
+				}
 				if ( file != null ) {
 					/*
 					 * Push description text to array
