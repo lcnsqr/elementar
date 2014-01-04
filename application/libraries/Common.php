@@ -1593,6 +1593,15 @@ class Common {
 					$rendered_value = $this->render_field($field, $field['value']);
 					$fields = array_merge($fields, array($field['sname'] => $rendered_value));
 				}
+				// Include parent name and uri
+				$parent_id = $this->CI->storage->get_content_parent_id($item['id']);
+				$parent_uri = $this->CI->storage->get_content_uri($parent_id);
+				$fields = array_merge($fields, array("parent_uri" => $parent_uri));
+				$parent_names = $this->CI->storage->get_content_name($parent_id);
+				$titles = json_decode($parent_names, TRUE);
+				$parent_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
+				$fields = array_merge($fields, array("parent" => $parent_name));
+
 				$selection[] = $fields;
 			}
 			return $selection;
