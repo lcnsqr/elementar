@@ -1270,7 +1270,7 @@ class Common {
 
 		$items = array();
 		// Children contents as items
-		$children = $this->CI->storage->get_contents_by_parent($content_id);
+		$children = $this->CI->storage->get_content_descendants($content_id);
 		// Order by modified desc
 		$filter = new Filter('modified', 'desc');
 		$filter->set_is_date(TRUE);
