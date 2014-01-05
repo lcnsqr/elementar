@@ -106,11 +106,12 @@ $(function() {
 
 		$.post("/backend/editor/xhr_render_element_form", { parent_id : parent_id, type_id : type_id }, function(data){
 			if ( data.done == true ) {
+				// Remove tinymce instances
+				if ( typeof tinymce != "undefined" ) tinymce.remove();
 				// Close type editor (if visible)
 				$("#type_define_new_container:visible").fadeOut("slow");
 				$("#editors_container").replaceWith(data.html).show(function(){
 					// WYSIWYG textarea activation
-					if ( typeof tinymce != "undefined" ) tinymce.remove();
 					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 				});
 			}
@@ -156,9 +157,10 @@ $(function() {
 				 */
 				$.post("/backend/editor/xhr_render_element_form", { id : data.element_id }, function(data){
 					if ( data.done == true ) {
+						// Remove tinymce instances
+						if ( typeof tinymce != "undefined" ) tinymce.remove();
 						$("#content_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							if ( typeof tinymce != "undefined" ) tinymce.remove();
 							$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 
 							showClientWarning(message);
@@ -210,9 +212,10 @@ $(function() {
 			if ( data.done == true ) {
 				// Close type editor (if visible)
 				$("#type_define_new_container:visible").fadeOut("slow");
+				// Remove tinymce instances
+				if ( typeof tinymce != "undefined" ) tinymce.remove();
 				$("#editors_container").replaceWith(data.html).show(function(){
 					// WYSIWYG textarea activation
-					if ( typeof tinymce != "undefined" ) tinymce.remove();
 					$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 				});
 			}
@@ -257,9 +260,10 @@ $(function() {
 				}
 				$.post("/backend/editor/xhr_render_content_form", { id : data.content_id, editor : 'content' }, function(data){
 					if ( data.done == true ) {
+						// Remove tinymce instances
+						if ( typeof tinymce != "undefined" ) tinymce.remove();
 						$("#content_window").html(data.html).show(function() {
 							// WYSIWYG textarea activation
-							if ( typeof tinymce != "undefined" ) tinymce.remove();
 							$('#content_editor_form').find('textarea').each(function(){ $(this).wysiwyg(); });
 
 							showClientWarning(message);
