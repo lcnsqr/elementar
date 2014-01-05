@@ -328,6 +328,13 @@ class Content {
 			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code . $this->uri));
 		}
 
+		// Main page cache
+		$cache_files[] = $cache_path . md5(site_url('/'));
+		foreach ( $lang_avail as $lang_code => $lang_name )
+		{
+			$cache_files[] = $cache_path . md5(site_url('/' . $lang_code));
+		}
+
 		// Feed files in other languages
 		foreach ( $lang_avail as $lang_code => $lang_name )
 		{
