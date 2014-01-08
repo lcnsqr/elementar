@@ -673,7 +673,9 @@ class File extends CI_Controller {
 		
 		// The URI to handle the upload
 		$this->load->helper('form');
-		$form = form_open_multipart("/backend/file/upload", $attributes, $hidden);
+		//$form = form_open_multipart("/backend/file/upload", $attributes, $hidden);
+		$form = "<form id=\"".$attributes["id"]."\" class=\"".$attributes["class"]."\" enctype=\"multipart/form-data\" name=\"".$attributes["name"]."\" target=\"".$attributes["target"]."\" accepted-charset=\"utf-8\" method=\"post\" action=\"/backend/file/upload\">";
+		$form .= form_hidden($hidden);
 		
 		// Open file field
 		$attributes = array(
