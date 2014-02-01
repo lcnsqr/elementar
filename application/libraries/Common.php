@@ -562,12 +562,13 @@ class Common {
 
 			case "target" :
 			$attributes = array(
-				'class' => 'noform',
+				'class' => 'noform target_field',
 				'name' => $sname,
 				'id' => $sname,
 				'value' => $value
 			);
 			$field = form_input($attributes);
+			$field .= $this->_render_target_listing();
 			break;
 
 			case "index" :

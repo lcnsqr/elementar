@@ -7,7 +7,7 @@
 			</div> <!-- menu_item_name -->
 			<div class="menu_item_target">
 			<label for=""><?php echo $elementar_menu_target; ?></label><br />
-			<input type="text" name="target" value="" />
+			<input type="text" name="target" value="" class="target_field" />
 			<?php echo $targets; ?>
 			</div> <!-- menu_item_target -->
 		</div> <!-- menu_item_inputs -->

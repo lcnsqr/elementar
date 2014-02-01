@@ -5,7 +5,7 @@
 	</div> <!-- menu_item_name -->
 	<div class="menu_item_target">
 	<label for=""><?php echo $elementar_menu_target; ?></label><br />
-	<?php echo form_input(array('name' => 'target', 'value' => $target)); ?>
+	<?php echo form_input(array('name' => 'target', 'value' => $target, 'class' => 'target_field')); ?>
 	<?php echo $targets; ?>
 	</div> <!-- menu_item_target -->
 </div> <!-- menu_item_inputs -->
