@@ -449,8 +449,8 @@ class File extends CI_Controller {
 			{
 				$label = ( strlen($content) > 8 ) ? substr($content, 0, 8) . '...' : $content;
 				$folders[] = array(
-					'name' => $content,
-					'label' => $label,
+					'name' => htmlentities($content),
+					'label' => htmlentities($label),
 					'icon' => '/css/backend/directory.png',
 					'path' => $path . '/' . $content,
 					'class' => ( $path . '/' . $content == $selected_path ) ? 'directory current' : 'directory'
@@ -471,8 +471,8 @@ class File extends CI_Controller {
 
 				$size = filesize($relative_path . '/' . $content);
 				$attrs = array(
-					'name' => $content,
-					'label' => $label,
+					'name' => htmlentities($content),
+					'label' => htmlentities($label),
 					'icon' => '/css/backend/file.png',
 					'path' => $path . '/' . $content,
 					'mime' => $mime_content_type,
