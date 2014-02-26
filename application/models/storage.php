@@ -1843,6 +1843,7 @@ class Storage extends CI_Model {
 		$this->elementar->from('content');
 		$this->elementar->join('content_parent', 'content_parent.content_id = content.id', 'inner');
 		$this->elementar->where('content_parent.parent_id', $content_id);
+		$this->elementar->order_by("content.modified", "desc");
 		if ( $this->STATUS != 'all' )
 		{
 			$this->elementar->where('content.status', $this->STATUS);
