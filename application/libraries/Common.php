@@ -1605,6 +1605,14 @@ class Common {
 
 				$selection[] = $fields;
 			}
+			// Order
+			$order = new Filter($order_by, $direction);
+			if ( $order_by == 'created' || $order_by == 'modified' )
+			{
+				$order->set_is_date(TRUE);
+			}
+			usort($selection, array($order, 'sort'));
+
 			return $selection;
 			break;
 
