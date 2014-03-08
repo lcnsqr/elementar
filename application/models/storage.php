@@ -2115,7 +2115,7 @@ class Storage extends CI_Model {
 
 		$contents = array();
 
-		$this->elementar->select('id, name, sname, modified');
+		$this->elementar->select('id, name, sname, modified, created');
 		$this->elementar->from('content');
 		if ( $this->STATUS != 'all' )
 		{

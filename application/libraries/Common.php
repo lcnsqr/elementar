@@ -818,7 +818,12 @@ class Common {
 		$listing = array();
 		$listing[] = paragraph('<strong>' . $this->CI->lang->line('elementar_inside_targets') . '</strong>');
 		// Contents
-		foreach ( $this->CI->storage->get_contents() as $content )
+		$contents = $this->CI->storage->get_contents();
+		// Order
+		$order = new Filter("created", "desc");
+		$order->set_is_date(TRUE);
+		usort($contents, array($order, 'sort'));
+		foreach ( $contents as $content )
 		{
 			$listing[] = $this->breadcrumb_content($content['id']);
 		}
