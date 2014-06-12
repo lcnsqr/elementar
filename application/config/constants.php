@@ -64,7 +64,7 @@ define('BACKEND_WINDOW_CSS', 					'/css/backend/backend_window.css');
 define('JS_ACCOUNT', 							'/js/account.js');
 
 // jQuery & plugins
-define('JQUERY', 									'/js/backend/jquery-2.0.3.min.js');
+define('JQUERY', 									'/js/backend/jquery-2.1.1.min.js');
 define('JQUERY_EASING', 						'/js/backend/jquery.easing.1.3.js');
 define('JQUERY_TIMERS', 						'/js/backend/jquery.timers-1.2.js');
 define('JQUERY_JSON',							'/js/backend/jquery.json-2.3.min.js');
