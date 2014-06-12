@@ -5,8 +5,8 @@
 <head>
 	<title>Reset password</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="/js/account.js"></script>
+	<script type="text/javascript" src="<?php echo JQUERY; ?>"></script>
+	<script type="text/javascript" src="<?php echo JS_ACCOUNT; ?>"></script>
 </head>
 
 <body>

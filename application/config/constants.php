@@ -60,6 +60,9 @@ define('BACKEND_CSS', 							'/css/backend/backend.css');
 define('BACKEND_TREE_CSS', 					'/css/backend/backend_tree.css');
 define('BACKEND_WINDOW_CSS', 					'/css/backend/backend_window.css');
 
+// Account management
+define('JS_ACCOUNT', 							'/js/account.js');
+
 // jQuery & plugins
 define('JQUERY', 									'/js/backend/jquery-2.0.3.min.js');
 define('JQUERY_EASING', 						'/js/backend/jquery.easing.1.3.js');
