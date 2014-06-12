@@ -260,8 +260,38 @@ PART;
 	{
 		if ( preg_match("|" . preg_quote($this->l_delim) . 'if ' . $key . "(.+?)" . preg_quote($this->r_delim) . "(.+?)" . preg_quote($this->l_delim) . '/if' . preg_quote($this->r_delim) . "|s", $string, $match))
 		{
-			$test = $match[1];
-			if ( eval('if ( "' . addslashes($val) . '" ' . $test . ' ) return TRUE ;') )
+			$test = trim($match[1]);
+			$c = 0;
+			$op1 = "";
+			while ( $test{$c} != " " && $c < strlen($test) ){
+				$op1 .= $test{$c};
+				$c++;
+			}
+			$op2 = substr($test, $c, strlen($test) - $c);
+			if ( $op2{0} == "\"" || $op2{0} == "\'" ) $op2 = substr($op2, 1, -1);
+			$result = FALSE;
+			switch ($op1){
+				case "==":
+					if ( $val == $op2 ) $result = TRUE;
+				break;
+				case "!=":
+					if ( $val != $op2 ) $result = TRUE;
+				break;
+				case ">":
+					if ( $val > $op2 ) $result = TRUE;
+				break;
+				case "<":
+					if ( $val < $op2 ) $result = TRUE;
+				break;
+				case ">=":
+					if ( $val >= $op2 ) $result = TRUE;
+				break;
+				case "<=":
+					if ( $val <= $op2 ) $result = TRUE;
+				break;
+			}
+
+			if ( $result )
 			{
 				// good. Remove if statement
 				$string = str_replace($match[0], $match[2], $string);
