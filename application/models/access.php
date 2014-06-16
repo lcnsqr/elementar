@@ -270,6 +270,7 @@ class Access extends CI_Model {
 	 */
 	function get_account_by_username($username)
 	{
+		if ( strlen(trim($username)) == 0 ) return 0;
 		$this->elementar->select('id');
 		$this->elementar->from('account');
 		$this->elementar->where('username', $username);

@@ -15,8 +15,8 @@
 <p class="page_title">Identificação</p>
 <form name="login" id="login_form" action="/account">
 <p class="login_field">
-<label for="user">Nome de usuário:</label><br />
-<input name="user" id="user" type="text" />
+<label for="username">Nome de usuário:</label><br />
+<input name="username" id="username" type="text" />
 </p>
 <p class="login_field">
 <label for="password">Senha:</label><br />
