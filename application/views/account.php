@@ -4,6 +4,7 @@
 
 <head>
 	<title>Account</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<script type="text/javascript" src="<?php echo JQUERY; ?>"></script>
 	<script type="text/javascript" src="<?php echo JS_ACCOUNT; ?>"></script>
