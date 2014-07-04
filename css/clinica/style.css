@@ -1,0 +1,407 @@
+body {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 1em;
+	background-color: #fff;
+	color: #555753;
+	margin: 0;
+	padding: 0;
+}
+
+div#loading {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 64px;
+	height: 64px;
+	background-image: url("/css/clinica/loading.gif");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+div#loading.cover {
+	opacity: .7;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+}
+
+#cobrancas-dias {
+	float: left;
+	width: 16em;
+}
+#cobrancas-cont {
+	margin-left: 16em;
+}
+#salas-dias {
+	float: left;
+	width: 16em;
+}
+#salas-atendente {
+	margin-left: 16em;
+}
+hr.salas-clear {
+	clear: both;
+	margin: 0;
+	border-width: 0;
+	height: 0;
+}
+
+#cal-agenda {
+	float: left;
+	width: 16em;
+}
+
+#cal-month-nav {
+	position: relative;
+	width: 14em;
+	margin-left: auto;
+	margin-right: auto;
+}
+#cal-month-nav #cal-month-back {
+	position: absolute;
+	width: 1em;
+	top: 0;
+	left: 0;
+}
+#cal-month-nav #cal-month-back p {
+	margin: 0;
+}
+#cal-month-nav #cal-month-forward {
+	position: absolute;
+	width: 1em;
+	top: 0;
+	right: 0;
+}
+#cal-month-nav #cal-month-forward p {
+	margin: 0;
+	text-align: right;
+}
+#cal-month-back > p > a, #cal-month-forward > p > a {
+	text-decoration: none;
+	color: #3465a4;
+	font-weight: bold;
+}
+#cal-month-name {
+	text-align: center;
+	margin: 4px 0;
+}
+#cal-month-header {
+	width: 14em;
+	border: 1px solid #babdb6;
+	margin-left: auto;
+	margin-right: auto;
+}
+#cal-month-header p {
+	font-weight: bold;
+}
+#cal-month-header hr {
+	clear: both;
+	margin: 0;
+	border-width: 0;
+	height: 0;
+}
+#cal-month-header .cal-day p {
+	text-align: center;
+}
+#cal-month-table {
+	width: 14em;
+	border: 1px solid #babdb6;
+	margin-left: auto;
+	margin-right: auto;
+}
+#cal-month-table hr {
+	clear: both;
+	margin: 0;
+	border-width: 0;
+	height: 0;
+}
+.cal-day {
+	float: left;
+	width: 2em;
+	border-bottom: 1px solid #babdb6;
+}
+.cal-day p {
+	margin: 4px 2px 4px 0;
+	padding: 0;
+}
+#cal-month-table .cal-day p {
+	text-align: right;
+	color: #888a85;
+}
+#cal-month-table .cal-day p a {
+	text-decoration: none;
+	color: #3465a4;
+	font-weight: bold;
+}
+.cal-day.even {
+	background-color: #eeeeec;
+}
+.cal-day.odd {
+	background-color: #fff;
+}
+.cal-day.inative {
+	background-color: #eeeeec;
+}
+.cal-day.inative p {
+	color: #888a85;
+}
+#cal-month-table .cal-day.selected {
+	background-color: #3465a4;
+}
+#cal-month-table .cal-day.selected p, #cal-month-table .cal-day.selected p a {
+	color: #fff;
+}
+#cal-month-table .cal-day.ocupado p a {
+	color: #b50000;
+}
+#cal-month-table .cal-day.selected.ocupado {
+	background-color: #b50000;
+}
+#cal-month-table .cal-day.selected.ocupado p a {
+	color: #fff;
+}
+
+/* agenda header */
+#agenda-atendente-header {
+	margin-top: 2em;
+	margin-bottom: 2em;
+	margin-left: 1em;
+	border-bottom: 1px solid #eeeeec;
+}
+#agenda-atendente-header p {
+	font-weight: bold;
+}
+
+/* horarios */
+#agenda-periodos {
+	width: 14em;
+	margin-left: auto;
+	margin-right: auto;
+}
+#agenda-periodos hr {
+	clear: both;
+	margin: 0;
+	border-width: 0;
+	height: 0;
+}
+.agenda-periodo {
+	float: left;
+	width: 4em;
+	margin-top: 1em;
+}
+.agenda-periodo:not(:first-child) {
+	margin-left: 1em;
+}
+.agenda-periodo p {
+	text-align: center;
+	margin: 0;
+}
+.agenda-periodo ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.agenda-periodo ul li {
+	text-align: center;
+}
+.agenda-periodo ul li:not(:first-child) {
+	margin-top: 2px;
+}
+.agenda-periodo ul li a {
+	text-decoration: none;
+	display: block;
+	color: #3465a4;
+	font-weight: bold;
+	background-color: #eeeeec;
+	line-height: 1.4em;
+}
+.agenda-periodo ul li a.selected {
+	background-color: #3465a4;
+	color: #fff;
+}
+.agenda-periodo ul li a.ocupado {
+	color: #b50000;
+}
+.agenda-periodo ul li a.selected.ocupado {
+	background-color: #b50000;
+	color: #fff;
+}
+
+/* fichas */
+p#nome-atendente {
+	margin: 4px 0;
+	line-height: 1.4em;
+	font-weight: bold;
+}
+div#fichas-cont {
+	margin-left: 16em;
+	margin-right: 1em;
+}
+div.fichas > ul.fic-abas {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+div.fichas > ul.fic-abas > li {
+	float: left;
+	background-color: #eeeeec;
+}
+div.fichas > ul.fic-abas > li > a {
+	display: block;
+	line-height: 2em;
+	background-color: #eeeeec;
+	margin: 2px 2px 0 2px;
+	padding: 0 1em;
+	text-decoration: none;
+	color: #3465A4;
+	font-weight: bold;
+}
+div.fichas > ul.fic-abas > li > a.ativo {
+	background-color: #fff;
+}
+div.fichas > ul.fic-abas > li > a.ocupado {
+	color: #b50000;
+}
+div.fichas > hr {
+	border: 0;
+	margin: 0;
+	height: 2em;
+}
+div.fichas > div.fic-cont {
+	border: 2px solid #eeeeec;
+}
+div.fichas > div.fic-cont.ativo {
+	display: block;
+}
+div.fichas > div.fic-cont {
+	display: none;
+}
+form#atendido-fonte {
+	display: none;
+}
+form.atendido-form {
+	margin-left: 1em;
+}
+#ficha-detalhes {
+	font-size: .8em;
+	font-weight: bold;
+	color: #888A85;
+}
+
+div.bot-periodo-nomes {
+	float: left;
+	width: 4em;
+	margin-right: 1em;
+}
+
+div.bot-periodo-nomes ul {
+	list-style-type: none;
+	margin: 1.6em 0 0 0;
+	padding: 0;
+}
+div.bot-periodo-nomes ul li {
+	text-align: right;
+	line-height: 2em;
+}
+div.bot-periodo-nomes ul li:not(:first-child) {
+	margin-top: 2px;
+}
+
+div.bot-dia {
+	float: left;
+	width: 9em;
+}
+div.bot-dia h3 {
+	margin: 0;
+	text-align: center;
+}
+ul.bot-periodo {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+ul.bot-periodo:not(:first-child) {
+	margin-top: 2px;
+}
+ul.bot-periodo hr {
+	margin: 0;
+	height: 0;
+	clear: both;
+	border-width: 0;
+}
+ul.bot-periodo > li {
+	float: left;
+	width: 2em;
+}
+ul.bot-periodo > li:not(:first-child) {
+	margin-left: 2px;
+}
+ul.bot-periodo > li > a {
+	background-color: #eeeeec;
+	text-align: center;
+	display: block;
+	line-height: 2em;
+	text-decoration: none;
+	color: #babdb6;
+	font-weight: bold;
+}
+ul.bot-periodo > li > a.ocupado {
+	background-color: #888a85;
+	color: #fff;
+}
+ul.bot-periodo > li > a.ativo {
+	background-color: #fcaf3e;
+	color: #fff;
+}
+
+#pagina-atendente {
+	width: 16em;
+	margin-left: auto;
+	margin-right: auto;
+}
+#pagina-atendente h2 {
+	color: #888a85;
+	text-align: center;
+}
+#pagina-atendente h3 {
+	color: #3465A4;
+	text-align: center;
+	font-size: 1em;
+}
+#pagina-atendente #cal-agenda {
+	float: none;
+	width: 16em;
+}
+
+#atendente-periodos {
+	margin-left: 1em;
+}
+#atendente-periodos > div > ul {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+#atendente-periodos > div > ul > li > span {
+	color: #888a85;
+	font-size: .9em;
+}
+#atendente-periodos > div > ul > li > ul {
+	list-style-type: none;
+	padding-left: 1em;
+	margin-bottom: 1em
+}
+#atendente-periodos > div > ul > li > ul > li {
+	font-size: .9em;
+}
+#atendente-periodos > div > ul > li > ul > li > span {
+	color: #888a85;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+#atendente-periodos .procedimento {
+	font-size: .9em;
+	font-style: oblique;
+	margin-bottom: .5em;
+}
