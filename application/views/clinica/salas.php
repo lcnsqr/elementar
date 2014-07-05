@@ -128,10 +128,10 @@ window.onload=function(){
 		if ( $(painel).attr("data-exclusivo") == 0 ){
 			// Escolher somente um botão
 			if ( estado == 0 ){
-				$(botao).removeClass("ativo").attr("data-atendente", 0).attr("data-estado", 0).attr("data-ocupado", 0);
+				$(botao).removeClass("ativo").attr("data-atendente", 0).attr("data-estado", 0);
 			}
 			else {
-				$(botao).addClass("ativo").attr("data-atendente", 0).attr("data-estado", 1).attr("data-ocupado", 1);
+				$(botao).addClass("ativo").attr("data-atendente", 0).attr("data-estado", 1);
 			}
 		}
 		else {
