@@ -223,6 +223,7 @@ window.onload=function(){
 					atendenteInicio: inicio.getFullYear()+"-"+(1+inicio.getMonth())+"-"+inicio.getDate(), 
 					atendenteTermino: termino.getFullYear()+"-"+(1+termino.getMonth())+"-"+termino.getDate(), 
 					lotacao: $("input#atendente-lotacao").val(), 
+					notificar: ( document.getElementById("atendente-notificar").checked == true ) ? 1 : 0,
 					horarios: JSON.stringify(horarios)
 				};
 				$.post("/clinica/xhr_salas_associar_mensal", atendente, function(data){
@@ -252,6 +253,7 @@ window.onload=function(){
 							option.setAttribute("data-atendente", data.atendentes[a].id);
 							option.setAttribute("data-nome", data.atendentes[a].nome);
 							option.setAttribute("data-telefone1", data.atendentes[a].telefone1);
+							option.setAttribute("data-notificar", data.atendentes[a].notificar);
 							$("#atendente-id").append(option);
 						}
 					}
@@ -279,6 +281,7 @@ window.onload=function(){
 		var atendenteNome = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-nome");
 		var atendenteTelefone1 = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-telefone1");
 		var atendenteLotacao = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-lotacao");
+		var atendenteNotificar = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-notificar");
 		var atendenteInicio = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-inicio");
 		var atendenteTermino = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-termino");
 		var inicio = new Date(atendenteInicio);
@@ -296,6 +299,7 @@ window.onload=function(){
 		$("input#atendente-nome").val(atendenteNome);
 		$("input#atendente-telefone1").val(atendenteTelefone1);
 		$("input#atendente-lotacao").val(atendenteLotacao);
+		document.getElementById("atendente-notificar").checked = (atendenteNotificar == "1") ? true : false;
 		// Redefinir todos os horários
 		$("a.botao").each(function(index, element){
 			$(this).removeClass("ativo");
@@ -359,7 +363,7 @@ window.onload=function(){
 <form id="atendente-antigo" action="/clinica/salas-atendente">
 <select id="atendente-id" name="atendente-id">
 <?php foreach($atendentes as $atendente): ?>
-<option data-inicio="<?php echo $atendente['inicio']; ?>" data-termino="<?php echo $atendente['termino']; ?>" data-lotacao="<?php echo $atendente['lotacao']; ?>" data-email="<?php echo $atendente['email']; ?>" data-username="<?php echo $atendente['username']; ?>" data-elementar-id="<?php echo $atendente['elementar_id']; ?>" data-atendente="<?php echo $atendente['id']; ?>" data-nome="<?php echo $atendente['nome']; ?>" data-telefone1="<?php echo $atendente['telefone1']; ?>" value="<?php echo $atendente['id']; ?>"><?php echo $atendente['nome']; ?></option>
+<option data-notificar="<?php echo $atendente['notificar']; ?>" data-inicio="<?php echo $atendente['inicio']; ?>" data-termino="<?php echo $atendente['termino']; ?>" data-lotacao="<?php echo $atendente['lotacao']; ?>" data-email="<?php echo $atendente['email']; ?>" data-username="<?php echo $atendente['username']; ?>" data-elementar-id="<?php echo $atendente['elementar_id']; ?>" data-atendente="<?php echo $atendente['id']; ?>" data-nome="<?php echo $atendente['nome']; ?>" data-telefone1="<?php echo $atendente['telefone1']; ?>" value="<?php echo $atendente['id']; ?>"><?php echo $atendente['nome']; ?></option>
 <?php endforeach; ?> <!-- atendentes -->
 <option value="0" selected>Novo...</option>
 </select>
@@ -379,6 +383,7 @@ window.onload=function(){
 	<p><label for="atendente-lotacao">Lotação/hora:</label><br><input type="text" name="atendente-lotacao" id="atendente-lotacao" value=""></p>
 	<p><label for="atendente-inicio">Inicio:</label><br><input type="text" name="atendente-inicio" id="atendente-inicio" value=""></p>
 	<p><label for="atendente-termino">Término:</label><br><input type="text" name="atendente-termino" id="atendente-termino" value=""></p>
+	<p><input type="checkbox" name="atendente-notificar" id="atendente-notificar" value=""><label for="atendente-notificar">Notificar pacientes por SMS</label></p>
 	<p><input type="submit" value="Salvar"></p>
 </form>
 </div> <!-- atendente -->

@@ -144,7 +144,7 @@ class Clinica_mdl extends CI_Model {
 	 */
 	function get_atendentes() {
 		$fields = array();
-		$this->clinica_db->select('id, elementar_id, nome, telefone1, telefone2, registro, endereco, cidade, uf, cep');
+		$this->clinica_db->select('id, elementar_id, nome, telefone1, telefone2, registro, endereco, cidade, uf, cep, notificar');
 		$this->clinica_db->from('atendentes');
 		$this->clinica_db->order_by('nome', 'asc');
 		$query = $this->clinica_db->get();
@@ -161,6 +161,7 @@ class Clinica_mdl extends CI_Model {
 				'cidade' => $row->cidade,
 				'uf' => $row->uf,
 				'cep' => $row->cep,
+				'notificar' => $row->notificar,
 				'username' => $this->access->get_account_username($row->elementar_id),
 				'email' => $this->access->get_account_email($row->elementar_id),
 				'lotacao' => $this->get_atendente_lotacao($row->id),
@@ -175,11 +176,11 @@ class Clinica_mdl extends CI_Model {
 	 *  Lotacao da sala para o atendente
 	 */
 	function get_atendente_lotacao($atendentes_id){
-		// A lotação está associada a um horario
 		$this->clinica_db->select('lotacao');
 		$this->clinica_db->from('atendentes');
 		$this->clinica_db->where('id', $atendentes_id);
 		$query = $this->clinica_db->get();
+		$row = $query->row();
 		return $row->lotacao;
 	}
 

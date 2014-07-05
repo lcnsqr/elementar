@@ -125,7 +125,8 @@ class Clinica {
 			'endereco' => trim($this->CI->input->post('atendenteEndereco', TRUE)),
 			'cidade' => trim($this->CI->input->post('atendenteCidade', TRUE)),
 			'uf' => trim($this->CI->input->post('atendenteUf', TRUE)),
-			'cep' => trim($this->CI->input->post('atendenteCep', TRUE))
+			'cep' => trim($this->CI->input->post('atendenteCep', TRUE)),
+			'notificar' => trim($this->CI->input->post('notificar', TRUE))
 		);
 		if ( strlen($data['nome']) == 0 ){
 			$response = array(
