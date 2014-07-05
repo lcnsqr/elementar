@@ -516,4 +516,25 @@ class Clinica {
 		$login = $this->CI->load->view('clinica/account', $data, TRUE);
 		exit($login);
 	}
+
+	/**
+	 * Trocar senha
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function senha(){
+		$data = array(
+			'is_logged' => FALSE,
+			'title' => "Clínica",
+			'js' => array(
+				JQUERY,
+				JS_ACCOUNT
+			),
+			'css' => array(),
+			'action' => '/' . uri_string()
+		);
+		$login = $this->CI->load->view('clinica/account_password', $data, TRUE);
+		exit($login);
+	}
 }

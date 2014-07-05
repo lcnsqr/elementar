@@ -32,6 +32,15 @@
 <p class="login_field"><input type="submit" value="Entrar" /></p>
 </form>
 
+<form name="forgot_password" id="forgot_password" action="/">
+<p class="page_title">Esqueci a senha</p>
+<p class="login_field">
+<label for="email">Email cadastrado:</label><br />
+<input name="email" id="email" type="text" />
+</p>
+<p class="login_field"><input type="submit" value="Entrar" /></p>
+</form>
+
 <?php else: ?>
 
 <p><?php echo $username; ?></p>
