@@ -177,15 +177,10 @@ class Clinica_mdl extends CI_Model {
 	function get_atendente_lotacao($atendentes_id){
 		// A lotação está associada a um horario
 		$this->clinica_db->select('lotacao');
-		$this->clinica_db->from('horarios');
-		$this->clinica_db->where('atendentes_id', $atendentes_id);
-		$this->clinica_db->limit(1);
+		$this->clinica_db->from('atendentes');
+		$this->clinica_db->where('id', $atendentes_id);
 		$query = $this->clinica_db->get();
-		if ( $query->num_rows() > 0 ){
-			$row = $query->row();
-			return $row->lotacao;
-		}
-		return;
+		return $row->lotacao;
 	}
 
 	/*
@@ -352,7 +347,6 @@ class Clinica_mdl extends CI_Model {
 		$data = array(
 			'termino' => date('Y-m-d', $termino)
 		);
-		log_message("INFO", 'termino ' . date('Y-m-d', $termino));
 		// Apagar onde inicio superior ao termino
 		$this->clinica_db->where('horarios.atendentes_id', $atendentes_id);
 		$this->clinica_db->where('horarios.inicio >=', $data['termino']);
