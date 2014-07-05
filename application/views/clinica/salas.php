@@ -119,57 +119,68 @@ window.onload=function(){
 		var botao = this;
 		var estado = ( $(this).attr("data-estado") == 1 ) ? 0 : 1;
 		var painel = $(botao).parents("div.bot-painel")[0];
-		if ( $(painel).attr("data-exclusivo") == 1 ){
-			// Desapertar demais botões
-			$(painel).find("a.botao").each(function(index, element){
-				$(this).attr("data-estado", 0);
-				$(this).removeClass("ativo");
-			});
-		}
+
 		// Verificar se horário já está ocupado
 		if ( $(this).hasClass("ocupado") ){
 			return;
 		}
 
-		// Marcar todos os horários contíguos no período
-		var sala = $(this).attr("data-sala");
-		var dia = $(this).attr("data-dia");
-		var periodo = $(this).attr("data-periodo");
-		var horario = $(this).attr("data-horario");
-		if ( estado == 1 ){
-			// Verificar se há horário ocupado no período
-			if ( $("a.botao.ocupado[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"]").length == 0 ){
-				// Todos horários do período livres
-				$("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"]").addClass("ativo").attr("data-estado", 1);
+		if ( $(painel).attr("data-exclusivo") == 0 ){
+			// Escolher somente um botão
+			if ( estado == 0 ){
+				$(botao).removeClass("ativo").attr("data-atendente", 0).attr("data-estado", 0).attr("data-ocupado", 0);
 			}
 			else {
-				// Verificar se há no mínimo 3 horários contíguos
-				var horarios = [];
-				horarios.push(horario);
-				// Horários anteriores
-				var h = horario - 1;
-				while ( $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").length == 1 && ! $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").hasClass("ocupado")){
-					horarios.push(h);
-					h--;
+				$(botao).addClass("ativo").attr("data-atendente", 0).attr("data-estado", 1).attr("data-ocupado", 1);
+			}
+		}
+		else {
+			// Desapertar demais botões
+			$(painel).find("a.botao").each(function(index, element){
+				$(this).attr("data-estado", 0);
+				$(this).removeClass("ativo");
+			});
+
+			// Marcar todos os horários contíguos no período
+			var sala = $(this).attr("data-sala");
+			var dia = $(this).attr("data-dia");
+			var periodo = $(this).attr("data-periodo");
+			var horario = $(this).attr("data-horario");
+			if ( estado == 1 ){
+				// Verificar se há horário ocupado no período
+				if ( $("a.botao.ocupado[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"]").length == 0 ){
+					// Todos horários do período livres
+					$("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"]").addClass("ativo").attr("data-estado", 1);
 				}
-				// Horários posteriores
-				var h = horario + 1;
-				while ( $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").length == 1 && ! $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").hasClass("ocupado")){
-					horarios.push(h);
-					h++;
-				}
-				if ( horarios.length < 3 ){
-					alert("Não é possível selecionar o período");
-				}
-				else  {
-					for ( h = 0; h < horarios.length; h++ ){
-						$("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + horarios[h] + "\"]").addClass("ativo").attr("data-estado", 1);
+				else {
+					// Verificar se há no mínimo 3 horários contíguos
+					var horarios = [];
+					horarios.push(horario);
+					// Horários anteriores
+					var h = horario - 1;
+					while ( $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").length == 1 && ! $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").hasClass("ocupado")){
+						horarios.push(h);
+						h--;
+					}
+					// Horários posteriores
+					var h = horario + 1;
+					while ( $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").length == 1 && ! $("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + h + "\"]").hasClass("ocupado")){
+						horarios.push(h);
+						h++;
+					}
+					if ( horarios.length < 3 ){
+						alert("Não é possível selecionar o período");
+					}
+					else  {
+						for ( h = 0; h < horarios.length; h++ ){
+							$("a.botao[data-sala=\"" + sala + "\"][data-dia=\"" + dia + "\"][data-periodo=\"" + periodo + "\"][data-horario=\"" + horarios[h] + "\"]").addClass("ativo").attr("data-estado", 1);
+						}
 					}
 				}
 			}
-		}
-		else{
-			$(this).parents("ul").find("a.botao.ativo").removeClass("ativo").attr("data-atendente", 0).attr("data-estado", 0).attr("data-ocupado", 0);
+			else{
+				$(this).parents("ul").find("a.botao.ativo").removeClass("ativo").attr("data-atendente", 0).attr("data-estado", 0).attr("data-ocupado", 0);
+			}
 		}
 		$(this).blur();
 	});

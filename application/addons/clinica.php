@@ -151,6 +151,7 @@ class Clinica {
 		$this->CI->clinica_mdl->put_atendente_horarios_expirados($atendentes_id, $inicio->format('Y-m-d'));
 
 		$lotacao = (int)$this->CI->input->post('lotacao', TRUE);
+		$lotacao = ($lotacao == 0) ? 4 : $lotacao;
 		$horarios = json_decode($this->CI->input->post('horarios', TRUE), TRUE);
 		foreach($horarios as $horario){
 			// TODO: Checar se horário está livre

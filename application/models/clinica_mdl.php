@@ -181,8 +181,11 @@ class Clinica_mdl extends CI_Model {
 		$this->clinica_db->where('atendentes_id', $atendentes_id);
 		$this->clinica_db->limit(1);
 		$query = $this->clinica_db->get();
-		$row = $query->row();
-		return $row->lotacao;
+		if ( $query->num_rows() > 0 ){
+			$row = $query->row();
+			return $row->lotacao;
+		}
+		return;
 	}
 
 	/*
@@ -195,8 +198,11 @@ class Clinica_mdl extends CI_Model {
 		$this->clinica_db->order_by('inicio', 'asc');
 		$this->clinica_db->limit(1);
 		$query = $this->clinica_db->get();
-		$row = $query->row();
-		return $row->inicio;
+		if ( $query->num_rows() > 0 ){
+			$row = $query->row();
+			return $row->inicio;
+		}
+		return "1970-01-01";
 	}
 
 	/*
@@ -209,8 +215,11 @@ class Clinica_mdl extends CI_Model {
 		$this->clinica_db->order_by('termino', 'desc');
 		$this->clinica_db->limit(1);
 		$query = $this->clinica_db->get();
-		$row = $query->row();
-		return $row->termino;
+		if ( $query->num_rows() > 0 ){
+			$row = $query->row();
+			return $row->termino;
+		}
+		return "1970-01-01";
 	}
 
 	/*
@@ -343,6 +352,7 @@ class Clinica_mdl extends CI_Model {
 		$data = array(
 			'termino' => date('Y-m-d', $termino)
 		);
+		log_message("INFO", 'termino ' . date('Y-m-d', $termino));
 		// Apagar onde inicio superior ao termino
 		$this->clinica_db->where('horarios.atendentes_id', $atendentes_id);
 		$this->clinica_db->where('horarios.inicio >=', $data['termino']);
