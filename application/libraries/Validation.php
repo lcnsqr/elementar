@@ -134,11 +134,12 @@ class Validation {
 				'message' => $this->CI->lang->line('elementar_xhr_password_field_missing')
 			);
 		}
+		/*
+		 * Missing either letter, caps or number
+		 */
+		/*
 		if ( (bool) $value && ! preg_match("#.*^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#", $value) )
 		{
-			/*
-			 * Missing either letter, caps or number
-			 */
 			$response = array(
 				'done' => FALSE,
 				'message' => $this->CI->lang->line('elementar_xhr_password_field_missing_chars')
@@ -151,6 +152,7 @@ class Validation {
 				'message' => $this->CI->lang->line('elementar_xhr_password_field_small')
 			);
 		}
+		*/
 		if ( strlen($value) > 20 )
 		{
 			$response = array(
