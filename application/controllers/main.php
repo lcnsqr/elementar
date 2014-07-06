@@ -122,9 +122,13 @@ class Main extends CI_Controller {
 		$this->config->set_item('site_name', (array_key_exists($this->LANG, $site_names)) ? $site_names[$this->LANG] : '');
 
 		// Email settings
+		/*
 		$email_settings = json_decode($this->storage->get_config('email') ,TRUE);
-		$this->load->library('email', $email_settings);
+		$this->load->library('email');
+		$this->email->initialize($email_settings);
 		$this->email->set_newline("\r\n");
+		*/
+		$this->load->library('email');
 
 		// Redirect to existing function or parser
 		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT )
@@ -782,7 +786,7 @@ class Main extends CI_Controller {
 			// Mail confirmation
 			$this->email->subject($this->lang->line('elementar_xhr_password_subject'));
 			$this->email->message(site_url('account/reset') . '/' . $reset_hash);
-			$this->email->from($this->access->get-account_email(1), $this->config->item('site_name'));
+			$this->email->from($this->access->get_account_email(1), $this->config->item('site_name'));
 			$this->email->to($email);
 			$this->email->send();
 			
