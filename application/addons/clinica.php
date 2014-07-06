@@ -280,7 +280,7 @@ class Clinica {
 	function agenda(){
 		// Autorização
 		$group_id = $this->CI->session->userdata('group_id');
-		if ( $group_id != 1 ){
+		if ( ! ( $group_id == 1 || $group_id == 5 ) ){
 			$this->_auth();
 		}
 
