@@ -310,7 +310,7 @@ class Clinica {
 		$account_id = $this->CI->clinica_mdl->get_atendente_account_id($id);
 		$session_id = $this->CI->session->userdata('account_id');
 		$group_id = $this->CI->session->userdata('group_id');
-		if ( $group_id != 1 && ($session_id != $account_id) ){
+		if ( ! ( $group_id == 1 || $group_id == 5 ) && ($session_id != $account_id) ){
 			$response = array(
 				'done' => FALSE,
 				'message' => "Sessão expirada"
@@ -358,7 +358,7 @@ class Clinica {
 
 		// Autorização
 		$group_id = $this->CI->session->userdata('group_id');
-		if ( $group_id != 1 ){
+		if ( ! ( $group_id == 1 || $group_id == 5 ) ){
 			$response = array(
 				'done' => FALSE,
 				'message' => "Sessão expirada"
@@ -450,7 +450,7 @@ class Clinica {
 
 		// Autorização
 		$group_id = $this->CI->session->userdata('group_id');
-		if ( $group_id != 1 ){
+		if ( ! ( $group_id == 1 || $group_id == 5 ) ){
 			$response = array(
 				'done' => FALSE,
 				'message' => "Sessão expirada"
