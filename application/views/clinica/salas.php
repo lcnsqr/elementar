@@ -314,6 +314,25 @@ window.onload=function(){
 			});
 		}
 	});
+
+	$("a#atendente-remover").on("click", function(e){
+		e.preventDefault();
+		var atendenteId = $("select#atendente-id").val();
+		if ( atendenteId == 0 ) return;
+		if ( ! confirm("O atendente e todos os horarios e agendamentos associados a ele serão definitivamente excluídos.")){
+			return;
+		}
+		var atendenteId = $("select#atendente-id").val();
+		$.post("/clinica/xhr_salas_remover_atendente", {atendenteId: atendenteId}, function(data){
+			if ( data.done == true ) {
+				location.reload(); 
+			}
+			else {
+				//alert(data.message);
+			}
+		}, "json");
+	});
+
 	// Atendente inicial sempre em branco 
 	$("select#atendente-id").val(0);
 	$("form#atendente-form")[0].reset();
@@ -369,9 +388,8 @@ window.onload=function(){
 </select>
 </form>
 
-<script>
+<p><a href="remover" id="atendente-remover">Excluir atendente</a></p>
 
-</script>
 <form autocomplete="off" id="atendente-form" action="/clinica/salas-alugar">
 	<input type="hidden" name="atendente-elementar-id" id="atendente-elementar-id" value="0">
 	<input type="hidden" name="atendente-id" id="atendente-id" value="0">

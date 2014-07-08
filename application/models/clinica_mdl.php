@@ -127,6 +127,17 @@ class Clinica_mdl extends CI_Model {
 	}
 
 	/*
+	 * Remover atendente
+	 */
+	function delete_atendente($id){
+		$this->clinica_db->query('DELETE agendamentos.* FROM agendamentos INNER JOIN horarios ON agendamentos.horarios_id = horarios.id WHERE horarios.atendentes_id = ' . intval($id));
+		$this->clinica_db->where('horarios.atendentes_id', $id);
+		$this->clinica_db->delete('horarios');
+		$this->clinica_db->where('atendentes.id', $id);
+		$this->clinica_db->delete('atendentes');
+	}
+
+	/*
 	 * Armazenar ocupação da sala no horário
 	 */
 	function put_horario($data){

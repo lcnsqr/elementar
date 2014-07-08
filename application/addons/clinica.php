@@ -81,6 +81,39 @@ class Clinica {
 		$this->CI->load->view('clinica/salas', $data);
 	}
 	
+	function xhr_salas_remover_atendente(){
+		// Autorização
+		$group_id = $this->CI->session->userdata('group_id');
+		if ( $group_id != 1 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Sessão expirada"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
+		if ( ! $this->CI->input->is_ajax_request() )
+			exit($this->CI->lang->line('elementar_no_direct_script_access'));
+
+		$atendenteId = (int)$this->CI->input->post('atendenteId', TRUE);
+		$account_id = $this->CI->clinica_mdl->get_atendente_account_id($atendenteId);
+
+		// Remover do elementar
+		if ( (int) $account_id > 1 ) {
+			$this->CI->access->delete_account($account_id);
+		}
+
+		// Remover atendente, horarios e agendamentos associados
+		$this->CI->clinica_mdl->delete_atendente($atendenteId);
+
+		$response = array(
+			'done' => TRUE,
+			'message' => "Removido"
+		);
+		$this->CI->output->set_output_json($response);
+	}
+
 	function xhr_salas_associar_mensal(){
 		// Autorização
 		$group_id = $this->CI->session->userdata('group_id');
