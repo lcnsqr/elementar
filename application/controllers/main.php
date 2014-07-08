@@ -788,7 +788,10 @@ class Main extends CI_Controller {
 			$this->email->message(site_url('account/reset') . '/' . $reset_hash);
 			$this->email->from($this->access->get_account_email(1), $this->config->item('site_name'));
 			$this->email->to($email);
-			$this->email->send();
+			if ( ! $this->email->send()){
+				log_message("INFO", "Error no envio de email"));
+				log_message("INFO", $this->email->print_debugger());
+			}
 			
 			$response = array(
 				'done' => TRUE,

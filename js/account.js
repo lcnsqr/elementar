@@ -21,11 +21,12 @@ $(function() {
 		event.preventDefault();
 		$.post("/account/forgot", $("#forgot_password").serialize(), function(data){
 			if ( data.done == true ) {
-				alert(data.message);
+				//alert(data.message);
 			}
 			else {
-				alert(data.message);
+				//alert(data.message);
 			}
+			alert("O endereço de redefinição da senha foi enviado para o email cadastrado");
 		}, "json");
 	});	
 
