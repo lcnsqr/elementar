@@ -789,7 +789,7 @@ class Main extends CI_Controller {
 			$this->email->from($this->access->get_account_email(1), $this->config->item('site_name'));
 			$this->email->to($email);
 			if ( ! $this->email->send()){
-				log_message("INFO", "Error no envio de email"));
+				log_message("INFO", "Error no envio de email");
 				log_message("INFO", $this->email->print_debugger());
 			}
 			
