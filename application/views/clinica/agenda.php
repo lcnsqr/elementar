@@ -185,6 +185,13 @@ window.onload=function(){
 		localStorage.setItem("agenda", JSON.stringify(sessao));
 	});
 
+	// Resumo da agenda
+	$("#resumo_agenda").on("click", function(event){
+		event.preventDefault();
+		var uri = $(this).attr("href");
+		window.open(uri + sessao.atendenteId, "resumo_agenda", "location=0,menubar=0,width=320,height=480");
+	});
+
 	// Recuperar estado salvo
 	$("select#atendente-id").val(sessao.atendenteId);
 	carregarAgenda(exibirAgenda);
@@ -393,6 +400,7 @@ window.onload=function(){
 <option data-atendente="<?php echo $atendente['id']; ?>" data-nome="<?php echo $atendente['nome']; ?>" data-telefone1="<?php echo $atendente['telefone1']; ?>" value="<?php echo $atendente['id']; ?>"><?php echo $atendente['nome']; ?></option>
 <?php endforeach; ?> <!-- atendentes -->
 </select>
+<a id="resumo_agenda" href="/clinica/agenda_resumo/">Resumo da agenda</a>
 </p>
 </form>
 </div> <!-- atendente -->

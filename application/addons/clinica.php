@@ -477,6 +477,28 @@ class Clinica {
 	}
 
 	/**
+	 * Resumo da agenda do atendente
+	 */
+	function agenda_resumo(){
+		// Autorização
+		$group_id = $this->CI->session->userdata('group_id');
+		if ( ! ( $group_id == 1 || $group_id == 5 ) ){
+			$this->_auth();
+		}
+
+		$atendente_id = $this->CI->uri->segment(3);
+		$data = array(
+			'title' => $this->CI->config->item('site_name'),
+			'nome' => $this->CI->clinica_mdl->get_atendente_nome($atendente_id),
+			'js' => array(
+				JQUERY
+			),
+			'atendente_id' => $atendente_id
+		);
+		$this->CI->load->view('clinica/atendente', $data);
+	}
+	
+	/**
 	 * Página do atendente
 	 */
 	function atendente(){
