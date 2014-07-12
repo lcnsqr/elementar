@@ -31,7 +31,7 @@ class Clinica {
 		$this->URI_PREFIX = $params['uri_prefix'];
 		
 		// Clinica DB
-		$dsn = 'mysqli://clinica:5tcfth0t5@localhost/clinicasistema';
+		$dsn = 'mysqli://clinirjv_clinica:L7M6(RuBhHxR@localhost/clinirjv_sistema';
 		$this->CI->clinica_db = $this->CI->load->database($dsn, TRUE);
 		$this->CI->load->model('Clinica_mdl', 'clinica_mdl');
 
