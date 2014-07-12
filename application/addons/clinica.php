@@ -99,6 +99,9 @@ class Clinica {
 		$atendenteId = (int)$this->CI->input->post('atendenteId', TRUE);
 		$account_id = $this->CI->clinica_mdl->get_atendente_account_id($atendenteId);
 
+		// Log
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": tenta excluir atendente ".$this->CI->clinica_mdl->get_atendente_nome($atendenteId));
+
 		// Remover do elementar
 		if ( (int) $account_id > 1 ) {
 			$this->CI->access->delete_account($account_id);
@@ -106,6 +109,9 @@ class Clinica {
 
 		// Remover atendente, horarios e agendamentos associados
 		$this->CI->clinica_mdl->delete_atendente($atendenteId);
+
+		// Log
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": excluiu atendente ".$this->CI->clinica_mdl->get_atendente_nome($atendenteId));
 
 		$response = array(
 			'done' => TRUE,
@@ -178,10 +184,15 @@ class Clinica {
 			return;
 		}
 
+		// Log
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": associar mensalista ".$data['nome']);
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": período ".$inicio->format('Y-m-d')." ".$termino->format('Y-m-d'));
+
 		$lotacao = (int)$this->CI->input->post('lotacao', TRUE);
 		if ($lotacao != 0){
 			$data['lotacao'] = $lotacao;
 		}
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": lotacao $lotacao");
 		// Armazenar atendente
 		$atendentes_id = $this->CI->clinica_mdl->put_atendente($data);
 
@@ -464,6 +475,9 @@ class Clinica {
 		);
 		$agendamentos_id = $this->CI->clinica_mdl->put_agendamento($data);
 
+		// Log
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": agendamento -> atendente: $atendenteId, atendido: $atendidos_id, horario: ".$data['horario']);
+
 		// Response
 		$response = array(
 			'done' => TRUE,
@@ -499,6 +513,9 @@ class Clinica {
 		// Dados do agendamento
 		$id = $this->CI->input->post('agendamento_id', TRUE);
 		$this->CI->clinica_mdl->put_agendamento_cancelamento($id, 1);
+
+		// Log
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": desagendar -> atendente: $atendenteId, agendamento: $id");
 
 		// Response
 		$response = array(

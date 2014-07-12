@@ -466,4 +466,11 @@ class Clinica_mdl extends CI_Model {
 		return $query->result();
 	}
 
+	/*
+	 * Registro de log
+	 */
+	function put_log($descricao){
+		$this->clinica_db->insert('log', array('descricao' => $descricao));
+	}
+
 }
