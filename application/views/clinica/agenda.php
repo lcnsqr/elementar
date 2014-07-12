@@ -189,7 +189,7 @@ window.onload=function(){
 	$("#resumo_agenda").on("click", function(event){
 		event.preventDefault();
 		var uri = $(this).attr("href");
-		window.open(uri + sessao.atendenteId, "resumo_agenda", "width=320,height=480");
+		window.open(uri + sessao.atendenteId, "resumo_agenda", "scrollbars=1,width=320,height=480");
 	});
 
 	// Recuperar estado salvo
