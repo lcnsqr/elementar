@@ -139,19 +139,19 @@ class Clinica {
 		$inicio = trim($this->CI->input->post('atendenteInicio', TRUE));
 		if ( strlen($inicio) == 0 ){
 			// Padrão inicio = hoje
-			$inicio = new DateTime(date("Y-m-d"));
+			$inicio = new DateTime(date("Y-m-d"), new DateTimeZone('utc'));
 		}
 		else {
-			$inicio = new DateTime($inicio);
+			$inicio = new DateTime($inicio, new DateTimeZone('utc'));
 		}
 		$termino = trim($this->CI->input->post('atendenteTermino', TRUE));
 		if ( strlen($termino) == 0 ){
 			// Padrão termino = inicio + 1 ano
-			$termino = new DateTime($inicio->format('Y-m-d'));
+			$termino = new DateTime($inicio->format('Y-m-d'), new DateTimeZone('utc'));
 			$termino->add(new DateInterval("P1Y"));
 		}
 		else {
-			$termino = new DateTime($termino);
+			$termino = new DateTime($termino, new DateTimeZone('utc'));
 		}
 
 		$data = array(
@@ -284,10 +284,10 @@ class Clinica {
 				'valor' => 0
 			);
 			$dia_vencimento = $vencimento['dia_vencimento'];
-			$data_vencimento = new DateTime($ano . "-" . $mes . "-" . $dia_vencimento);
+			$data_vencimento = new DateTime($ano . "-" . $mes . "-" . $dia_vencimento, new DateTimeZone('utc'));
 
 			// Começar no dia do vencimento no mês anterior
-			$referencia = new DateTime($ano . "-" . $mes . "-" . $dia_vencimento);
+			$referencia = new DateTime($ano . "-" . $mes . "-" . $dia_vencimento, new DateTimeZone('utc'));
 			$referencia->modify('-1 months');
 			// Listar todos os dias do mês de referência
 			while ( $referencia->format('Y-m-d') != $data_vencimento->format('Y-m-d') ){
@@ -381,7 +381,7 @@ class Clinica {
 	 */
 	function _agenda_atendente($id, $ano, $mes){
 		// Listar todos os dias do respectivo mês
-		$dia = new DateTime($ano . "-" . $mes . "-01");
+		$dia = new DateTime($ano . "-" . $mes . "-01", new DateTimeZone('utc'));
 		$agenda = array();
 		while ( $dia->format('m') == $mes ){
 			$atendenteAgenda = $this->CI->clinica_mdl->get_atendente_agenda($id, $dia->format('Y-m-d'), $dia->format('w'));
@@ -452,11 +452,11 @@ class Clinica {
 		// Armazenar atendido
 		$atendidos_id = $this->CI->clinica_mdl->put_atendido($data);
 		// Armazenar agendamento
-		$horario = new DateTime($ano . "-" . $mes . "-" . $dia . " " . $hora . ":" . $min);
+		$horario = new DateTime($ano . "-" . $mes . "-" . $dia . " " . $hora . ":" . $min, new DateTimeZone('utc'));
 		// Verificar se horário não está ocupado
 		$horarios = $this->CI->clinica_mdl->get_horario_agendamentos($horarios_id, $horario->format('Y-m-d'));
 		foreach( $horarios as $atendido ){
-			$agendado = new DateTime($atendido['horario']);
+			$agendado = new DateTime($atendido['horario'], new DateTimeZone('utc'));
 			if ( (int)$min == (int)$agendado->format('i') ){
 				// Horário ocupado
 				$response = array(

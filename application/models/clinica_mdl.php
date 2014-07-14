@@ -442,7 +442,7 @@ class Clinica_mdl extends CI_Model {
 		$query = $this->clinica_db->get();
 		$fields = array();
 		foreach ($query->result() as $row) {
-			$agendado = new DateTime($row->horario);
+			$agendado = new DateTime($row->horario, new DateTimeZone('utc'));
 			$fields[] = array(
 				'id' => $row->id,
 				'horario' => $row->horario,
