@@ -24,6 +24,14 @@ window.onload=function(){
 		min: 0
 	};
 
+	// Redefinir alguns campos
+	sessao.dia = -1;
+	sessao.wdia = -1;
+	sessao.horarioId = -1;
+	sessao.hora = -1;
+	sessao.lotacao = -1;
+	sessao.min = 0;
+
 	// Redesenhar calendário
 	var calMonth = function(){
 		var dia = new Date(sessao.ano, sessao.mes);
