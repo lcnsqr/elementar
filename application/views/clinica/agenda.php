@@ -187,6 +187,13 @@ window.onload=function(){
 		// Remover fichas
 		$("ul.fic-abas > li").remove();
 		$("div.fichas > div").remove();
+		// Redefinir alguns campos
+		sessao.dia = -1;
+		sessao.wdia = -1;
+		sessao.horarioId = -1;
+		sessao.hora = -1;
+		sessao.lotacao = -1;
+		sessao.min = 0;
 		// Buscar agenda do atendente no servidor
 		carregarAgenda(exibirAgenda);
 		// Salvar estado da agenda
