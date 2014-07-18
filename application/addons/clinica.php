@@ -40,7 +40,8 @@ class Clinica {
 	}
 
 	function index(){
-		$this->CI->output->set_output(".");
+		$this->CI->load->helper('url');
+		redirect('/');
 	}
 
 	function salas(){
