@@ -193,8 +193,12 @@ window.onload=function(){
 			// Preencher com agendado (se houver)
 			for ( var i = 0; i < atendidos.length; i++ ){
 				var atendimento = document.createElement("li");
-				atendimento.innerHTML = "<span>" + twoDigit(horas[h]["hora"]) + ":" + atendidos[i].minuto + "</span> " + atendidos[i].nome;
+				//atendimento.innerHTML = "<span>" + twoDigit(horas[h]["hora"]) + ":" + atendidos[i].minuto + "</span> " + atendidos[i].nome;
+				atendimento.innerHTML = "<span>" + twoDigit(horas[h]["hora"]) + ":" + atendidos[i].minuto + "</span> ";
 				atendimentos.appendChild(atendimento);
+				var atendido = document.createElement("li");
+				atendido.innerHTML =  atendidos[i].nome;
+				atendimentos.appendChild(atendido);
 				if ( atendidos[i].procedimento != "" ){
 					// Exibir procedimento
 					var atendimento = document.createElement("li");

@@ -35,11 +35,67 @@ div#loading.cover {
 	margin-left: 16em;
 }
 #salas-dias {
-	float: left;
+    float: none;
 	width: 16em;
+    margin-left: auto;
+    margin-right: auto;
+}
+#salas-dias > h2, #salas-dias > p {
+    text-align: center;
 }
 #salas-atendente {
-	margin-left: 16em;
+    margin-top: 4em;
+    width: 30em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 4em;
+}
+#salas-atendente h2 {
+    text-align: center;
+}
+
+#salas-atendente form#atendente-antigo {
+    text-align: center;
+}
+#salas-atendente p.enviar-remover, #salas-atendente p.enviar-salvar {
+    text-align: center;
+    line-height: 3em;
+    margin: 1em 0;
+}
+#salas-atendente p.enviar-remover a#atendente-remover, #salas-atendente p.enviar-salvar a#atendente-salvar {
+	border: 2px solid #3465a4;
+	background-color: #3465a4;
+	color: #fff;
+    border-radius: .2em;
+    padding: .8em;
+    text-decoration: none;
+    font-weight: bold;
+}
+#salas-atendente p.enviar-remover a#atendente-remover:active, #salas-atendente p.enviar-salvar a#atendente-salvar:active {
+	border: 2px solid #3465a4;
+	background-color: #eeeeec;
+	color: #3465a4;   
+}
+
+form#atendente-form {
+	margin-left: 1em;
+	margin-right: 2em;
+}
+form#atendente-form input[type=text]{
+    width: 100%;
+}
+
+#salas-quadro p {
+    text-align: center;
+}
+#salas-quadro h2 {
+    text-align: center;
+}
+#salas-quadro .bot-painel {
+    width: 62em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 4em;
 }
 hr.salas-clear {
 	clear: both;
@@ -283,6 +339,29 @@ form#atendido-fonte {
 }
 form.atendido-form {
 	margin-left: 1em;
+	margin-right: 2em;
+}
+form.atendido-form input[type=text]{
+    width: 100%;
+}
+form.atendido-form p.enviar {
+    text-align: right;
+    line-height: 3em;
+    margin: 1em 0;
+}
+form.atendido-form p.enviar a.atendido-acao {
+	border: 2px solid #3465a4;
+	background-color: #3465a4;
+	color: #fff;
+    border-radius: .2em;
+    padding: .8em;
+    text-decoration: none;
+    font-weight: bold;
+}
+form.atendido-form p.enviar a.atendido-acao:active {
+	border: 2px solid #3465a4;
+	background-color: #eeeeec;
+	color: #3465a4;   
 }
 #ficha-detalhes {
 	font-size: .8em;

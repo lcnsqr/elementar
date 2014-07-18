@@ -483,8 +483,8 @@ window.onload=function(){
 <p><label>Nome:</label><br><input list="atendidos-list" type="text" name="atendido-nome"></p>
 <p><label>Celular:</label><br><input class="campo-telefone" type="text" name="atendido-telefone1"></p>
 <p><label>Procedimento:</label><br><input class="campo-procedimento" type="text" name="atendido-procedimento"></p>
-<p><a href="agendar" class="atendido-acao agendar">Agendar</a></p>
-<p><a href="desmarcar" class="atendido-acao desmarcar">Desmarcar</a></p>
+<p class="enviar"><a href="agendar" class="atendido-acao agendar">Agendar</a></p>
+<p class="enviar"><a href="desmarcar" class="atendido-acao desmarcar">Desmarcar</a></p>
 </form>
 
 <div id="loading"></div>

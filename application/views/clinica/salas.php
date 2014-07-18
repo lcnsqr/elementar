@@ -186,6 +186,10 @@ window.onload=function(){
 	});
 
 	// Criar/atualizar usuário no sistema
+	$("#atendente-salvar").on("click", function(event){
+		event.preventDefault();
+		$("form#atendente-form").submit();
+	});
 	$("form#atendente-form").on("submit", function(event){
 		event.preventDefault();
 		
@@ -351,10 +355,11 @@ window.onload=function(){
 </head>
 <body>
 
-<div id="atendente">
-<h2>Salas</h2>
 
 <div id="salas-dias">
+<h2>Ocupação de Salas</h2>
+<h2>Data de referência</h2>
+<p>Ocupação na data</p>
 
 <div id="cal-month">
 <div id="cal-month-nav">
@@ -377,8 +382,9 @@ window.onload=function(){
 
 </div> <!-- salas-dias -->
 
+<div id="atendente">
 <div id="salas-atendente">
-
+<h2>Dados do atendente</h2>
 <form id="atendente-antigo" action="/clinica/salas-atendente">
 <select id="atendente-id" name="atendente-id">
 <?php foreach($atendentes as $atendente): ?>
@@ -388,7 +394,7 @@ window.onload=function(){
 </select>
 </form>
 
-<p><a href="remover" id="atendente-remover">Excluir atendente</a></p>
+<p class="enviar-remover"><a href="remover" id="atendente-remover">Excluir atendente</a></p>
 
 <form autocomplete="off" id="atendente-form" action="/clinica/salas-alugar">
 	<input type="hidden" name="atendente-elementar-id" id="atendente-elementar-id" value="0">
@@ -402,14 +408,19 @@ window.onload=function(){
 	<p><label for="atendente-inicio">Inicio:</label><br><input type="text" name="atendente-inicio" id="atendente-inicio" value=""></p>
 	<p><label for="atendente-termino">Término:</label><br><input type="text" name="atendente-termino" id="atendente-termino" value=""></p>
 	<p><input type="checkbox" name="atendente-notificar" id="atendente-notificar" value=""><label for="atendente-notificar">Notificar pacientes por SMS</label></p>
-	<p><input type="submit" value="Salvar"></p>
+	<!-- <p><input type="submit" value="Salvar"></p> -->
+	<p class="enviar-salvar"><a href="submit" id="atendente-salvar">Salvar</a></p>
 </form>
 </div> <!-- atendente -->
 
 </div> <!-- salas-atendente -->
 
+<div id="salas-quadro">
+<h2>Ocupação das salas</h2>
+<form id="atendente-antigo" action="/clinica/salas-atendente">
 <?php foreach($salas as $sala): ?>
-<h2><?php echo $sala['tipo']; ?> &ndash; <?php echo $sala['nome']; ?></h2>
+<p>Sala: <strong><?php echo $sala['nome']; ?></strong></p>
+<p>Modalidade: <strong><?php echo $sala['tipo']; ?></strong></p>
 <div class="bot-painel" data-exclusivo="0">
 
 <div class="bot-periodo-nomes">
@@ -442,9 +453,11 @@ case 6: echo "Sábado"; break;
 <?php endforeach; ?> <!-- periodos -->
 </div> <!-- bot-dia -->
 <?php endforeach; ?> <!-- dias -->
-</div> <!-- bot-painel -->
 <hr class="salas-clear">
+</div> <!-- bot-painel -->
 <?php endforeach; ?> <!-- salas -->
+
+</div> <!-- salas-quadro -->
 
 <div id="loading"></div>
 
