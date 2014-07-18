@@ -84,17 +84,17 @@ class Clinica_mdl extends CI_Model {
 			for ( $h = 8; $h < 12; $h++ ){
 				// Consultar manhã
 				$atendente = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
-				$horarios[$d]['manha'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente));
+				$horarios[$d]['manha'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($atendente)));
 			}
 			for ( $h = 12; $h < 16; $h++ ){
 				// Consultar tarde
 				$atendente = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
-				$horarios[$d]['tarde'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente));
+				$horarios[$d]['tarde'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($atendente)));
 			}
 			for ( $h = 16; $h < 20; $h++ ){
 				// Consultar noite
 				$atendente = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
-				$horarios[$d]['noite'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente));
+				$horarios[$d]['noite'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($atendente)));
 			}
 		}
 		return $horarios;
@@ -237,8 +237,10 @@ class Clinica_mdl extends CI_Model {
 		$this->clinica_db->from('atendentes');
 		$this->clinica_db->where('id', $atendente_id);
 		$query = $this->clinica_db->get();
-		$row = $query->row();
-		return $row->nome;
+		if ( $query->num_rows() > 0 ){
+			$row = $query->row();
+			return $row->nome;
+		}
 	}
 
 	/*

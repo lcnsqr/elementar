@@ -435,7 +435,7 @@ case 6: echo "Sábado"; break;
 <?php foreach($periodos as $periodo => $horas): ?>
 <ul class="bot-periodo">
 <?php foreach($horas as $hora): ?>
-<li><a class="botao <?php echo ($hora['ocupado']) ? "ocupado" : ""; ?>" href="<?php echo $hora['horario']; ?>" data-estado="0" data-ocupado="<?php echo ($hora['ocupado']) ? 1 : 0; ?>" data-sala="<?php echo $sala['id']; ?>" data-dia="<?php echo $dia; ?>" data-periodo="<?php echo $periodo; ?>" data-horario="<?php echo $hora['horario']; ?>" data-atendente="<?php echo $hora['atendente']; ?>"><?php echo $hora['horario']; ?></a></li>
+<li><a class="botao <?php echo ($hora['ocupado']) ? "ocupado" : ""; ?>" href="<?php echo $hora['horario']; ?>" data-estado="0" data-ocupado="<?php echo ($hora['ocupado']) ? 1 : 0; ?>" data-sala="<?php echo $sala['id']; ?>" data-dia="<?php echo $dia; ?>" data-periodo="<?php echo $periodo; ?>" data-horario="<?php echo $hora['horario']; ?>" data-atendente="<?php echo $hora['atendente']; ?>" data-nome="<?php echo $hora['nome']; ?>"<?php if ($hora['nome'] != ""): ?> title="Ocupado por <?php echo $hora['nome']; ?>"<?php endif; ?>><?php echo $hora['horario']; ?></a></li>
 <?php endforeach; ?> <!-- periodos -->
 <hr class="salas-clear">
 </ul>
