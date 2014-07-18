@@ -432,6 +432,41 @@ class Clinica {
 		$min = $this->CI->input->post('min', TRUE);
 		$horarios_id = (int)$this->CI->input->post('horarioId', TRUE);
 
+		// Verificar se dados enviados correspondem ao horarios
+		$h = $this->CI->clinica_mdl->get_horario($horarios_id);
+		if ( count($h) != 1 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Agendamento solicitado incorreto"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+		$minuto_ok = 0;
+		$janela = (int)round(60 / $h[0]['lotacao']);
+		if ( $janela < 1 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Agendamento solicitado incorreto"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+		for ( $j = 0; $j < 60; $j = $j + $janela ){
+			if ( (int)$j == (int)$min ){
+				$minuto_ok = 1;
+				break;
+			}
+		}
+		if ( $minuto_ok != 1 || $h[0]['atendentes_id'] !=  $atendenteId || $h[0]['dia'] !=  $wdia || $h[0]['hora'] !=  $hora ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Agendamento solicitado incorreto"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
 		// Dados do atendido
 		$data = array(
 			'id' => $this->CI->input->post('atendidoId', TRUE),

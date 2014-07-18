@@ -257,6 +257,17 @@ class Clinica_mdl extends CI_Model {
 	}
 
 	/*
+	 *  Detalhes de um horário
+	 */
+	function get_horario($id){
+		$this->clinica_db->select('atendentes_id, dia, hora, lotacao');
+		$this->clinica_db->from('horarios');
+		$this->clinica_db->where('id', $id);
+		$query = $this->clinica_db->get();
+		return $query->result_array();
+	}
+
+	/*
 	 *  Apenas os horários em vigor do atendente
 	 */
 	function get_atendente_horarios_vigentes($atendentes_id){
