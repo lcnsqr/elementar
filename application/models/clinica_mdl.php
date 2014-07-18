@@ -352,6 +352,19 @@ class Clinica_mdl extends CI_Model {
 	}
 
 	/*
+	 * Agendamentos após a data esoecificada
+	 */
+	function get_atendente_agendamentos_apos($atendentes_id, $date){
+		$this->clinica_db->select('agendamentos.horario AS horario');
+		$this->clinica_db->from('agendamentos');
+		$this->clinica_db->join('horarios', 'horarios.id = agendamentos.horarios_id', 'inner');
+		$this->clinica_db->where('horarios.atendentes_id', $atendentes_id);
+		$this->clinica_db->where('DATE(agendamentos.horario) >=', $date);
+		$query = $this->clinica_db->get();
+		return $query->result_array();
+	}
+
+	/*
 	 *  Expirar os horários em vigor do atendente
 	 */
 	function put_atendente_horarios_expirados($atendentes_id, $date){

@@ -188,6 +188,17 @@ class Clinica {
 		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": associar mensalista ".$data['nome']);
 		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": período ".$inicio->format('Y-m-d')." ".$termino->format('Y-m-d'));
 
+		// Verificar se não há agendamentos após a nova data de início
+		$conflitos = $this->CI->clinica_mdl->get_atendente_agendamentos_apos($data['id'], $inicio->format('Y-m-d'));
+		if ( count($conflitos) > 0 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Existe agendamento antes da data de inicio especificada"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
 		$lotacao = (int)$this->CI->input->post('lotacao', TRUE);
 		if ($lotacao != 0){
 			$data['lotacao'] = $lotacao;
