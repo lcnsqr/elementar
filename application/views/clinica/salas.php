@@ -224,6 +224,7 @@ window.onload=function(){
 					atendenteId: $("input#atendente-id").val(), 
 					atendenteNome: $("input#atendente-nome").val(), 
 					atendenteTelefone1: $("input#atendente-telefone1").val(), 
+					atendenteRegistro: $("input#atendente-registro").val(), 
 					atendenteInicio: inicio.getFullYear()+"-"+(1+inicio.getMonth())+"-"+inicio.getDate(), 
 					atendenteTermino: termino.getFullYear()+"-"+(1+termino.getMonth())+"-"+termino.getDate(), 
 					lotacao: $("input#atendente-lotacao").val(), 
@@ -257,6 +258,7 @@ window.onload=function(){
 							option.setAttribute("data-atendente", data.atendentes[a].id);
 							option.setAttribute("data-nome", data.atendentes[a].nome);
 							option.setAttribute("data-telefone1", data.atendentes[a].telefone1);
+							option.setAttribute("data-registro", data.atendentes[a].registro);
 							option.setAttribute("data-notificar", data.atendentes[a].notificar);
 							$("#atendente-id").append(option);
 						}
@@ -284,6 +286,7 @@ window.onload=function(){
 		var elementarId = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-elementar-id");
 		var atendenteNome = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-nome");
 		var atendenteTelefone1 = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-telefone1");
+		var atendenteRegistro = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-registro");
 		var atendenteLotacao = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-lotacao");
 		var atendenteNotificar = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-notificar");
 		var atendenteInicio = $(this).children("option[data-atendente=\""+atendenteId+"\"]").attr("data-inicio");
@@ -302,6 +305,7 @@ window.onload=function(){
 		$("input#atendente-id").val(atendenteId);
 		$("input#atendente-nome").val(atendenteNome);
 		$("input#atendente-telefone1").val(atendenteTelefone1);
+		$("input#atendente-registro").val(atendenteRegistro);
 		$("input#atendente-lotacao").val(atendenteLotacao);
 		document.getElementById("atendente-notificar").checked = (atendenteNotificar == "1") ? true : false;
 		// Redefinir todos os horários
@@ -388,7 +392,7 @@ window.onload=function(){
 <form id="atendente-antigo" action="/clinica/salas-atendente">
 <select id="atendente-id" name="atendente-id">
 <?php foreach($atendentes as $atendente): ?>
-<option data-notificar="<?php echo $atendente['notificar']; ?>" data-inicio="<?php echo $atendente['inicio']; ?>" data-termino="<?php echo $atendente['termino']; ?>" data-lotacao="<?php echo $atendente['lotacao']; ?>" data-email="<?php echo $atendente['email']; ?>" data-username="<?php echo $atendente['username']; ?>" data-elementar-id="<?php echo $atendente['elementar_id']; ?>" data-atendente="<?php echo $atendente['id']; ?>" data-nome="<?php echo $atendente['nome']; ?>" data-telefone1="<?php echo $atendente['telefone1']; ?>" value="<?php echo $atendente['id']; ?>"><?php echo $atendente['nome']; ?></option>
+<option data-registro="<?php echo $atendente['registro']; ?>" data-notificar="<?php echo $atendente['notificar']; ?>" data-inicio="<?php echo $atendente['inicio']; ?>" data-termino="<?php echo $atendente['termino']; ?>" data-lotacao="<?php echo $atendente['lotacao']; ?>" data-email="<?php echo $atendente['email']; ?>" data-username="<?php echo $atendente['username']; ?>" data-elementar-id="<?php echo $atendente['elementar_id']; ?>" data-atendente="<?php echo $atendente['id']; ?>" data-nome="<?php echo $atendente['nome']; ?>" data-telefone1="<?php echo $atendente['telefone1']; ?>" value="<?php echo $atendente['id']; ?>"><?php echo $atendente['nome']; ?></option>
 <?php endforeach; ?> <!-- atendentes -->
 <option value="0" selected>Novo...</option>
 </select>
@@ -403,7 +407,8 @@ window.onload=function(){
 	<p><label for="atendente-email">Email:</label><br><input type="text" name="atendente-email" id="atendente-email" value=""></p>
 	<p><label for="atendente-password">Senha:</label><br><input type="password" name="atendente-password" id="atendente-password" value=""></p>
 	<p><label for="atendente-nome">Nome:</label><br><input type="text" name="atendente-nome" id="atendente-nome" value=""></p>
-	<p><label for="atendente-telefone1">Telefone 1:</label><br><input type="text" name="atendente-telefone1" id="atendente-telefone1" value="" class="campo-telefone"></p>
+	<p><label for="atendente-telefone1">Telefone:</label><br><input type="text" name="atendente-telefone1" id="atendente-telefone1" value="" class="campo-telefone"></p>
+	<p><label for="atendente-registro">CRX:</label><br><input type="text" name="atendente-registro" id="atendente-registro" value=""></p>
 	<p><label for="atendente-lotacao">Lotação/hora:</label><br><input type="text" name="atendente-lotacao" id="atendente-lotacao" value=""></p>
 	<p><label for="atendente-inicio">Inicio:</label><br><input type="text" name="atendente-inicio" id="atendente-inicio" value=""></p>
 	<p><label for="atendente-termino">Término:</label><br><input type="text" name="atendente-termino" id="atendente-termino" value=""></p>
