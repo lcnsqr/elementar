@@ -76,7 +76,10 @@ window.onload=function(){
 				if ( dia.getDate() == day ) div.setAttribute("class", div.getAttribute("class") + " selected");
 			}
 			div.appendChild(p);
-			divMonthTable.appendChild(div);
+			// Bug dia duplicado
+			if ( $("div.cal-day[data-day=\"" + dia.getDate() + "\"]").length == 0 ){
+				divMonthTable.appendChild(div);
+			}
 			dia.setDate(dia.getDate() + 1);
 		}
 		if ( dia.getDay() != 0 ){
