@@ -365,14 +365,16 @@ class Clinica_mdl extends CI_Model {
 	}
 
 	/*
-	 * Agendamentos após a data esoecificada
+	 * Agendamentos após a data especificada
 	 */
 	function get_atendente_agendamentos_apos($atendentes_id, $date){
-		$this->clinica_db->select('agendamentos.horario AS horario');
+		$this->clinica_db->select('agendamentos.id, agendamentos.horario, horarios.periodo, horarios.plano, horarios.salas_id, horarios.hora, horarios.dia');
 		$this->clinica_db->from('agendamentos');
 		$this->clinica_db->join('horarios', 'horarios.id = agendamentos.horarios_id', 'inner');
 		$this->clinica_db->where('horarios.atendentes_id', $atendentes_id);
 		$this->clinica_db->where('DATE(agendamentos.horario) >=', $date);
+		$this->clinica_db->where('agendamentos.cancelado', FALSE);
+		$this->clinica_db->order_by('agendamentos.horario');
 		$query = $this->clinica_db->get();
 		return $query->result_array();
 	}
@@ -394,6 +396,18 @@ class Clinica_mdl extends CI_Model {
 		$this->clinica_db->where('horarios.inicio <=', $data['termino']);
 		$this->clinica_db->where('horarios.termino >=', $data['termino']);
 		$this->clinica_db->update('horarios', $data);
+	}
+
+	/*
+	 *  Trocar horarios_id de agendamento
+	 */
+	function put_agendamento_horario_id($agendamentos_id, $horarios_id, $horario){
+		$data = array(
+			'horarios_id' => $horarios_id,
+			'horario' => $horario
+		);
+		$this->clinica_db->where('agendamentos.id', $agendamentos_id);
+		$this->clinica_db->update('agendamentos', $data);
 	}
 
 	/*

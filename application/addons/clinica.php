@@ -197,21 +197,37 @@ class Clinica {
 		// Armazenar atendente
 		$atendentes_id = $this->CI->clinica_mdl->put_atendente($data);
 
-		// Verificar se não há agendamentos após a nova data de início
+		// Verificar se horário removido não possui agendamento
 		$conflitos = $this->CI->clinica_mdl->get_atendente_agendamentos_apos($atendentes_id, $inicio->format('Y-m-d'));
-		if ( count($conflitos) > 0 ){
-			$response = array(
-				'done' => FALSE,
-				'message' => "A ocupação das salas  não pôde ser modificada. Existe agendamento antes da data de inicio especificada"
-			);
-			$this->CI->output->set_output_json($response);
-			return;
+		$horarios = json_decode($this->CI->input->post('horarios', TRUE), TRUE);
+		foreach($conflitos as $conflito){
+			$presente = 0;
+			foreach($horarios as $horario){
+				if ( $horario['periodo'] == $conflito['periodo'] &&
+					$horario['sala'] == $conflito['salas_id'] &&
+					$horario['horario'] == $conflito['hora'] &&
+					$horario['dia'] == $conflito['dia'] ){
+					$presente = 1;
+					break;
+				}
+			}
+			if ( $presente ) {
+				continue;
+			}
+			else {
+				$conflito_horario = new DateTime($conflito['horario'], new DateTimeZone('utc'));
+				$response = array(
+					'done' => FALSE,
+					'message' => "Existe agendamento em " . $conflito_horario->format('d/m/Y') . " às " . $conflito_horario->format('H:i')
+				);
+				$this->CI->output->set_output_json($response);
+				return;
+			}
 		}
 
 		// Antes de associar, expirar previamente associados
 		$this->CI->clinica_mdl->put_atendente_horarios_expirados($atendentes_id, $inicio->format('Y-m-d'));
 
-		$horarios = json_decode($this->CI->input->post('horarios', TRUE), TRUE);
 		foreach($horarios as $horario){
 			// TODO: Checar se horário está livre
 			$data = array(
@@ -225,7 +241,16 @@ class Clinica {
 				'termino' => $termino->format('Y-m-d'),
 				'lotacao' => $this->CI->clinica_mdl->get_atendente_lotacao($atendentes_id)
 			);
-			$this->CI->clinica_mdl->put_horario($data);
+			$horario_id = $this->CI->clinica_mdl->put_horario($data);
+			// Modificar agendamento em novo horario_id
+			foreach($conflitos as $conflito){
+				if ( $horario['periodo'] == $conflito['periodo'] &&
+					$horario['sala'] == $conflito['salas_id'] &&
+					$horario['horario'] == $conflito['hora'] &&
+					$horario['dia'] == $conflito['dia'] ){
+					$this->CI->clinica_mdl->put_agendamento_horario_id($conflito['id'], $horario_id, $conflito['horario']);
+				}
+			}
 		}
 
 		// Response
