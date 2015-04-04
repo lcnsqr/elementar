@@ -167,6 +167,10 @@ class Main extends CI_Controller {
 					{
 						$$addon['name']->$method();
 					}
+					else {
+						// Method not found, load index anyway
+						$$addon['name']->index();
+					}
 					// End local actions
 					return;
 				}
