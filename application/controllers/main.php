@@ -134,22 +134,16 @@ class Main extends CI_Controller {
 		$this->load->library('email');
 
 		// Redirect to existing function or parser
-		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT || $this->INIT_ADDON )
+		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT )
 		{
-			if ( $this->INIT_ADDON ){
-				// Load predefined addon
-				$request = $this->INIT_ADDON;
+			// Step forward on segments if method is the controller myself
+			if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
+			{
+				$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
 			}
-			else {
-				// Step forward on segments if method is the controller myself
-				if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
-				{
-					$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
-				}
-				else
-				{
-					$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
-				}
+			else
+			{
+				$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
 			}
 			
 			// Load addons
@@ -204,6 +198,22 @@ class Main extends CI_Controller {
 		}
 		else
 		{
+			// Load predefined addon (if present)
+			if ( $this->INIT_ADDON ){
+				// Load addons
+				$addons = $this->common->load_addons();
+				foreach ( $addons as $addon ){
+					if ( strtolower($this->INIT_ADDON) == strtolower($addon['name']) ){
+						// Addon requested
+						$$addon['name'] = new $addon['name'](array(
+							'lang' => $this->LANG, 
+							'uri_prefix' => $this->URI_PREFIX
+						));
+						$$addon['name']->index();
+						return;
+					}
+				}
+			}
 			// Redirect to parser
 			$this->index();
 		}
