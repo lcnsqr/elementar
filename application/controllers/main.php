@@ -41,6 +41,9 @@ class Main extends CI_Controller {
 	// Starting URI segment
 	var $STARTING_SEGMENT = 0;
 	
+	// Load an addon by default
+	var $INIT_ADDON = null;
+
 	function __construct()
 	{
 		parent::__construct();
@@ -131,16 +134,22 @@ class Main extends CI_Controller {
 		$this->load->library('email');
 
 		// Redirect to existing function or parser
-		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT )
+		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT || $this->INIT_ADDON )
 		{
-			// Step forward on segments if method is the controller myself
-			if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
-			{
-				$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
+			if ( $this->INIT_ADDON ){
+				// Load predefined addon
+				$request = $this->INIT_ADDON;
 			}
-			else
-			{
-				$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
+			else {
+				// Step forward on segments if method is the controller myself
+				if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
+				{
+					$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
+				}
+				else
+				{
+					$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
+				}
 			}
 			
 			// Load addons
