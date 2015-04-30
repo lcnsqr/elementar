@@ -204,6 +204,22 @@ class Main extends CI_Controller {
 		}
 		else
 		{
+			// Load predefined addon (if present)
+			if ( $this->INIT_ADDON ){
+				// Load addons
+				$addons = $this->common->load_addons();
+				foreach ( $addons as $addon ){
+					if ( strtolower($this->INIT_ADDON) == strtolower($addon['name']) ){
+						// Addon requested
+						$$addon['name'] = new $addon['name'](array(
+							'lang' => $this->LANG, 
+							'uri_prefix' => $this->URI_PREFIX
+						));
+						$$addon['name']->index();
+						return;
+					}
+				}
+			}
 			// Redirect to parser
 			$this->index();
 		}
