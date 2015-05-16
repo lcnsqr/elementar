@@ -115,23 +115,6 @@
 }
 
 /*
- * Paragraph pages
- */
-.hypertext_page_template
-{
-	display: none;
-}
-.hypertext_link_container
-{
-	text-align: right;
-	margin-top: 6px;
-}
-.hypertext_page_many
-{
-	margin-bottom: 12px;
-}
-
-/*
  * Menu field editor
  */
 .menu_parent_template, .menu_item_template {
