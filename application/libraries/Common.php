@@ -332,6 +332,7 @@ class Common {
 			break;
 
 			case "p" :
+			case "hypertext" :
 			$attributes = array(
 				'class' => 'noform ' . $type,
 				'name' => $sname,
@@ -343,20 +344,6 @@ class Common {
 			$field = form_textarea($attributes);
 			break;
 			
-			case "hypertext" :
-			// The actual field
-			$attributes = array(
-				'class' => 'noform hypertext_actual_field',
-				'type' => 'hidden',
-				'name' => $sname,
-				'id' => $sname,
-				'value' => $value
-			);
-			$html = form_input($attributes);
-			$data = array('html' => $html);
-			$field = $this->CI->load->view("backend/backend_content_hypertext_field", $data, TRUE);
-			break;
-
 			case "menu" :
 			$menu = ( $value != '' ) ? json_decode($value, TRUE) : array();
 			$html = div_open(array('class' => 'menu_parent'));
