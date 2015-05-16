@@ -107,12 +107,6 @@ $(function() {
 				$(this).prepareSelectionField();
 			});
 
-			/*
-			 * Update hypertext field
-			 */
-			$(".hypertext_field").each(function() {
-				$(this).prepareHypertextField();
-			});
 		}
 	});
 
@@ -405,61 +399,6 @@ $(function() {
 			 * Update gallery field
 			 */
 			$(this).find('input.file_gallery_actual_field').val($.toJSON(gallery));
-		}
-	});
-
-	/*******************
-	 * Hypertext field *
-	 *******************/
-	/*
-	 * New hypertext page
-	 */
-	$(document).on('click', "a.add_hypertext_page", function(event) {
-		event.preventDefault();
-		var hypertext = $(this).parents('.hypertext_field').first();
-		var NewPage = $(hypertext).find(".hypertext_page_template").first().clone();
-		// Reset
-		$(NewPage).removeClass("hypertext_page_template");
-		$(NewPage).addClass("hypertext_page");
-		$(NewPage).css("display", "none");
-		$(NewPage).find("textarea.page").addClass('hypertext');
-		// Insert
-		$(this).parents('.hypertext_link_container').first().before(NewPage);
-		$(NewPage).show("fast", "easeInSine");
-		// WYSIWYG textarea activation
-		if ( typeof tinymce != "undefined" ) tinymce.remove();
-		$(NewPage).find('textarea').each(function(){ $(this).wysiwyg(); });
-	});
-
-	/*
-	 * Remove hypertext page
-	 */
-	$(document).on('click', "a.remove_hypertext_page", function(event) {
-		event.preventDefault();
-
-		var page = $(this).parents("div.hypertext_page").first();
-		$(page).hide("fast", 'easeOutSine', function() {
-			$(this).remove();
-		});
-	});
-
-	/*
-	 * Hypertext pages assembling
-	 */
-	$.fn.extend({
-		prepareHypertextField: function(){
-			var pages = new Array();
-			$(this).find(".hypertext_page").each(function() {
-				/*
-				 * Push page into pages
-				 */
-				var page = $(this).find("textarea.page").val();
-				pages.push(page);
-			});
-			/*
-			 * Update hypertext field
-			 */
-			$(this).find('input.hypertext_actual_field').val($.toJSON(pages));
 		}
 	});
 
