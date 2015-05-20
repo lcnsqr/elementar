@@ -1299,11 +1299,14 @@ class Common {
 	 */
 	private function _field_localized_value($field_value, $i18n = TRUE)
 	{
+		$field_value = '';
 		if ( (bool) $i18n )
 		{
 			// Choose language
 			$field_values = json_decode($field_value, TRUE);
-			$field_value = (array_key_exists($this->LANG, $field_values)) ? $field_values[$this->LANG] : '';
+			if ( $field_values ){
+				$field_value = (array_key_exists($this->LANG, $field_values)) ? $field_values[$this->LANG] : '';
+			}
 		}
 		return $field_value;
 	}
