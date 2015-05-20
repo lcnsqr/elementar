@@ -1299,7 +1299,6 @@ class Common {
 	 */
 	private function _field_localized_value($field_value, $i18n = TRUE)
 	{
-		$field_value = '';
 		if ( (bool) $i18n )
 		{
 			// Choose language
