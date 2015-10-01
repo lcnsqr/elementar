@@ -409,16 +409,9 @@ class Main extends CI_Controller {
 			else
 			{
 				// 404
-				$template = array(
-					'html' => '<p>404</p>',
-					'css' => '',
-					'javascript' => '',
-					'head' => ''
-				);
-
-				// Defaults to home content_id
-				$data['content_id'] = 1;
-				$data['title'] = '404';
+				header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+                                print($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+                                return;
 			}
 		}
 
