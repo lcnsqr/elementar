@@ -437,6 +437,7 @@ class Main extends CI_Controller {
 		$this->output->set_header('ETag: ' . md5($mtime));
 		$this->output->set_header('Last-Modified: ' . $mtime);
 		$this->output->set_header('Content-Language: ' . $this->LANG);
+		$this->output->set_header('Cache-Control: max-age=86401');
 
 		// Build final view and display the results
 		$this->load->view('content', $data);
@@ -494,6 +495,7 @@ class Main extends CI_Controller {
 		$mtime = gmdate('D, d M Y H:i:s').' GMT';
 		$this->output->set_header('ETag: ' . md5($mtime));
 		$this->output->set_header('Last-Modified: ' . $mtime);
+		$this->output->set_header('Cache-Control: max-age=86400');
 
 		$this->output->set_output($css);
 	}
@@ -521,6 +523,7 @@ class Main extends CI_Controller {
 		$mtime = gmdate('D, d M Y H:i:s').' GMT';
 		$this->output->set_header('ETag: ' . md5($mtime));
 		$this->output->set_header('Last-Modified: ' . $mtime);
+		$this->output->set_header('Cache-Control: max-age=86400');
 
 		$this->output->set_output($javascript);
 	}
@@ -597,6 +600,7 @@ class Main extends CI_Controller {
 			$mtime = gmdate('D, d M Y H:i:s').' GMT';
 			$this->output->set_header('ETag: ' . md5($mtime));
 			$this->output->set_header('Last-Modified: ' . $mtime);
+			$this->output->set_header('Cache-Control: max-age=86400');
 		}
 		else
 		{
