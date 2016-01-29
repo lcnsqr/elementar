@@ -41,6 +41,9 @@ class Main extends CI_Controller {
 	// Starting URI segment
 	var $STARTING_SEGMENT = 0;
 	
+	// Load an addon by default
+	var $INIT_ADDON = null;
+
 	function __construct()
 	{
 		parent::__construct();
@@ -131,16 +134,22 @@ class Main extends CI_Controller {
 		$this->load->library('email');
 
 		// Redirect to existing function or parser
-		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT )
+		if ( $this->uri->total_segments() > $this->STARTING_SEGMENT || $this->INIT_ADDON )
 		{
-			// Step forward on segments if method is the controller myself
-			if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
-			{
-				$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
+			if ( $this->INIT_ADDON ){
+				// Load predefined addon
+				$request = $this->INIT_ADDON;
 			}
-			else
-			{
-				$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
+			else {
+				// Step forward on segments if method is the controller myself
+				if ( $this->uri->segment($this->STARTING_SEGMENT + 1) == 'main' )
+				{
+					$request = $this->uri->segment($this->STARTING_SEGMENT + 2);
+				}
+				else
+				{
+					$request = $this->uri->segment($this->STARTING_SEGMENT + 1);
+				}
 			}
 			
 			// Load addons
@@ -167,6 +176,10 @@ class Main extends CI_Controller {
 					{
 						$$addon['name']->$method();
 					}
+					else {
+						// Method not found, load index anyway
+						$$addon['name']->index();
+					}
 					// End local actions
 					return;
 				}
@@ -191,6 +204,22 @@ class Main extends CI_Controller {
 		}
 		else
 		{
+			// Load predefined addon (if present)
+			if ( $this->INIT_ADDON ){
+				// Load addons
+				$addons = $this->common->load_addons();
+				foreach ( $addons as $addon ){
+					if ( strtolower($this->INIT_ADDON) == strtolower($addon['name']) ){
+						// Addon requested
+						$$addon['name'] = new $addon['name'](array(
+							'lang' => $this->LANG, 
+							'uri_prefix' => $this->URI_PREFIX
+						));
+						$$addon['name']->index();
+						return;
+					}
+				}
+			}
 			// Redirect to parser
 			$this->index();
 		}
@@ -356,7 +385,7 @@ class Main extends CI_Controller {
 				$metafields = (array) $this->storage->get_meta_fields($content_id);
 				foreach ( $metafields as $metafield ) 
 				{
-					$values = (array) json_decode($metafield['value'], TRUE);
+					$values = (array) json_decode(html_entity_decode($metafield['value'], ENT_QUOTES, "UTF-8"), TRUE);
 					if ( array_key_exists($this->LANG, $values) )
 					{
 						$data['metafields'][] = array('name' => $metafield['name'], 'value' => $values[$this->LANG]);
@@ -380,16 +409,9 @@ class Main extends CI_Controller {
 			else
 			{
 				// 404
-				$template = array(
-					'html' => '<p>404</p>',
-					'css' => '',
-					'javascript' => '',
-					'head' => ''
-				);
-
-				// Defaults to home content_id
-				$data['content_id'] = 1;
-				$data['title'] = '404';
+				header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+                                print($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+                                return;
 			}
 		}
 
@@ -408,6 +430,7 @@ class Main extends CI_Controller {
 		$this->output->set_header('ETag: ' . md5($mtime));
 		$this->output->set_header('Last-Modified: ' . $mtime);
 		$this->output->set_header('Content-Language: ' . $this->LANG);
+		$this->output->set_header('Cache-Control: max-age=86401');
 
 		// Build final view and display the results
 		$this->load->view('content', $data);
@@ -465,6 +488,7 @@ class Main extends CI_Controller {
 		$mtime = gmdate('D, d M Y H:i:s').' GMT';
 		$this->output->set_header('ETag: ' . md5($mtime));
 		$this->output->set_header('Last-Modified: ' . $mtime);
+		$this->output->set_header('Cache-Control: max-age=86400');
 
 		$this->output->set_output($css);
 	}
@@ -492,6 +516,7 @@ class Main extends CI_Controller {
 		$mtime = gmdate('D, d M Y H:i:s').' GMT';
 		$this->output->set_header('ETag: ' . md5($mtime));
 		$this->output->set_header('Last-Modified: ' . $mtime);
+		$this->output->set_header('Cache-Control: max-age=86400');
 
 		$this->output->set_output($javascript);
 	}
@@ -568,6 +593,7 @@ class Main extends CI_Controller {
 			$mtime = gmdate('D, d M Y H:i:s').' GMT';
 			$this->output->set_header('ETag: ' . md5($mtime));
 			$this->output->set_header('Last-Modified: ' . $mtime);
+			$this->output->set_header('Cache-Control: max-age=86400');
 		}
 		else
 		{
