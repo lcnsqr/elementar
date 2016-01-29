@@ -239,10 +239,10 @@ var selecionarHorario = function(event, botao){
 	else {
 		editarHorario.querySelector("input[name='lotacao']").setAttribute("value", $("input#atendente-lotacao").val());
 	}
-	var inicio = new Date(botao.getAttribute("data-inicio"));
+	var inicio = new Date(botao.getAttribute("data-inicio").substr(0,10));
 	inicio.setDate(inicio.getDate() + 1);
 	inicio.setMonth(inicio.getMonth() + 1);
-	var termino = new Date(botao.getAttribute("data-termino"));
+	var termino = new Date(botao.getAttribute("data-termino").substr(0,10));
 	termino.setDate(termino.getDate() + 1);
 	termino.setMonth(termino.getMonth() + 1);
 	$(editarHorario).find( "input[name='periodo-inicio']" ).datepicker( "setDate", inicio.getDate()+"/"+inicio.getMonth()+"/"+inicio.getFullYear() );
