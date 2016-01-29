@@ -19,6 +19,7 @@ div#loading {
 	background-position: center center;
 }
 div#loading.cover {
+	position: fixed;
 	opacity: .7;
 	left: 0;
 	bottom: 0;
@@ -62,7 +63,10 @@ div#loading.cover {
     line-height: 3em;
     margin: 1em 0;
 }
-#salas-atendente p.enviar-remover a#atendente-remover, #salas-atendente p.enviar-salvar a#atendente-salvar {
+#salas-atendente p.enviar-remover a#atendente-remover, 
+#salas-atendente p.enviar-salvar a#atendente-salvar ,
+a[href="salvar-horario"] 
+{
 	border: 2px solid #3465a4;
 	background-color: #3465a4;
 	color: #fff;
@@ -102,6 +106,32 @@ hr.salas-clear {
 	margin: 0;
 	border-width: 0;
 	height: 0;
+}
+#salas-quadro .bot-painel .editar-horario {
+	display: none;
+	border-bottom: 1px solid #babdb6;
+	padding: 1em 0;
+}
+#salas-quadro .bot-painel .editar-horario[data-aberto="1"] {
+	display: block;
+}
+input[type="text"] {
+	padding: 3px;
+}
+#salas-quadro .bot-painel .editar-horario h3 {
+	text-align: center;
+	margin: 4px 0;
+}
+#salas-quadro .bot-painel .editar-horario h4 {
+	text-align: center;
+	margin: 0;
+}
+#salas-quadro .bot-painel .editar-horario p {
+	margin: 0;
+	line-height: 2.2em;
+}
+span.editar-horario-atendente {
+	font-weight: bold;
 }
 
 #cal-agenda {
@@ -190,6 +220,7 @@ hr.salas-clear {
 	text-decoration: none;
 	color: #3465a4;
 	font-weight: bold;
+	line-height: .9em;
 }
 .cal-day.even {
 	background-color: #eeeeec;
@@ -426,12 +457,16 @@ ul.bot-periodo > li > a {
 	color: #babdb6;
 	font-weight: bold;
 }
-ul.bot-periodo > li > a.ocupado {
+ul.bot-periodo > li > a[data-ocupado="1"] {
 	background-color: #888a85;
 	color: #fff;
 }
-ul.bot-periodo > li > a.ativo {
+ul.bot-periodo > li > a[data-destaque="1"] {
 	background-color: #fcaf3e;
+	color: #fff;
+}
+ul.bot-periodo > li > a[data-selecionado="1"] {
+	background-color: #3465A4;
 	color: #fff;
 }
 

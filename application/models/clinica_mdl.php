@@ -55,7 +55,7 @@ class Clinica_mdl extends CI_Model {
 	 * Verificar atendente ocupando a sala no horário
 	 */
 	function get_salas_atendente($salas_id, $dia, $hora, $data){
-		$this->clinica_db->select('atendentes.id AS atendente');
+		$this->clinica_db->select('atendentes.id AS atendente, horarios.lotacao AS lotacao, horarios.id AS horarioId, horarios.inicio AS inicio, horarios.termino AS termino');
 		$this->clinica_db->from('horarios');
 		$this->clinica_db->join('salas', 'horarios.salas_id = salas.id', 'inner');
 		$this->clinica_db->join('atendentes', 'horarios.atendentes_id = atendentes.id', 'inner');
@@ -67,7 +67,7 @@ class Clinica_mdl extends CI_Model {
 		$query = $this->clinica_db->get();
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			return $row->atendente;
+			return array('lotacao' => $row->lotacao, 'inicio' => $row->inicio, 'termino' => $row->termino, 'atendente' => $row->atendente, 'horarioId' => $row->horarioId);;
 		}
 		else {
 			return NULL;
@@ -79,22 +79,44 @@ class Clinica_mdl extends CI_Model {
 	function get_salas_horarios($sala_id, $data){
 		// 1 : segunda → 6 : sábado
 		$horarios = array(1, 2, 3, 4, 5, 6);
+
+		// Padrão inicio = hoje
+		$inicio = new DateTime(date("Y-m-d"), new DateTimeZone('utc'));
+		// Padrão termino = inicio + 1 ano
+		$termino = new DateTime($inicio->format('Y-m-d'), new DateTimeZone('utc'));
+		$termino->add(new DateInterval("P1Y"));
+
 		for ($d = 1; $d < 7; $d++){
 			$horarios[$d] = array('manha' => array(), 'tarde' => array(), 'noite' => array());
 			for ( $h = 8; $h < 12; $h++ ){
 				// Consultar manhã
-				$atendente = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
-				$horarios[$d]['manha'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($atendente)));
+				$horario = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
+				if ( $horario ){
+					$horarios[$d]['manha'][] = array('lotacao' => $horario['lotacao'], 'inicio' => $horario['inicio'], 'termino' => $horario['termino'], 'id' => intval($horario['horarioId']), 'horario' => $h, 'atendente' => intval($horario['atendente']), 'ocupado' => ! is_null($horario['atendente']), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($horario['atendente'])));
+				}
+				else {
+					$horarios[$d]['manha'][] = array('lotacao' => '', 'inicio' => $inicio->format('Y-m-d'), 'termino' => $termino->format('Y-m-d'), 'id' => 0, 'horario' => $h, 'atendente' => 0, 'ocupado' => 0, 'nome' => "");
+				}
 			}
 			for ( $h = 12; $h < 16; $h++ ){
 				// Consultar tarde
-				$atendente = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
-				$horarios[$d]['tarde'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($atendente)));
+				$horario = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
+				if ( $horario ){
+					$horarios[$d]['tarde'][] = array('lotacao' => $horario['lotacao'], 'inicio' => $horario['inicio'], 'termino' => $horario['termino'], 'id' => intval($horario['horarioId']), 'horario' => $h, 'atendente' => intval($horario['atendente']), 'ocupado' => ! is_null($horario['atendente']), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($horario['atendente'])));
+				}
+				else {
+					$horarios[$d]['tarde'][] = array('lotacao' => '', 'inicio' => $inicio->format('Y-m-d'), 'termino' => $termino->format('Y-m-d'), 'id' => 0, 'horario' => $h, 'atendente' => 0, 'ocupado' => 0, 'nome' => "");
+				}
 			}
 			for ( $h = 16; $h < 20; $h++ ){
 				// Consultar noite
-				$atendente = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
-				$horarios[$d]['noite'][] = array('horario' => $h, 'atendente' => intval($atendente), 'ocupado' => ! is_null($atendente), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($atendente)));
+				$horario = $this->clinica_mdl->get_salas_atendente($sala_id, $d, $h, $data);
+				if ( $horario ){
+					$horarios[$d]['noite'][] = array('lotacao' => $horario['lotacao'], 'inicio' => $horario['inicio'], 'termino' => $horario['termino'], 'id' => intval($horario['horarioId']), 'horario' => $h, 'atendente' => intval($horario['atendente']), 'ocupado' => ! is_null($horario['atendente']), 'nome' => $this->clinica_mdl->get_atendente_nome(intval($horario['atendente'])));
+				}
+				else {
+					$horarios[$d]['noite'][] = array('lotacao' => '', 'inicio' => $inicio->format('Y-m-d'), 'termino' => $termino->format('Y-m-d'), 'id' => 0, 'horario' => $h, 'atendente' => 0, 'ocupado' => 0, 'nome' => "");
+				}
 			}
 		}
 		return $horarios;
@@ -140,13 +162,20 @@ class Clinica_mdl extends CI_Model {
 	/*
 	 * Armazenar ocupação da sala no horário
 	 */
-	function put_horario($data){
-		$inserted = $this->clinica_db->insert('horarios', $data);
-		if ($inserted) {
-			return $this->clinica_db->insert_id();
+	function put_horario($id, $data){
+		if ( $id == NULL ){
+			$inserted = $this->clinica_db->insert('horarios', $data);
+			if ($inserted) {
+				return $this->clinica_db->insert_id();
+			}
+			else {
+				return FALSE;
+			}
 		}
 		else {
-			return FALSE;
+			$this->clinica_db->where('horarios.id', $id);
+			$this->clinica_db->update('horarios', $data);
+			return $id;
 		}
 	}
 
@@ -350,6 +379,7 @@ class Clinica_mdl extends CI_Model {
 		$this->clinica_db->where('horarios.atendentes_id', $atendentes_id);
 		$this->clinica_db->where('horarios.inicio <=', $data);
 		$this->clinica_db->where('horarios.termino >=', $data);
+		$this->clinica_db->order_by('horarios.hora');
 		$query = $this->clinica_db->get();
 		$fields = array();
 		foreach ($query->result() as $row) {

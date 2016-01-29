@@ -121,6 +121,9 @@ class Clinica {
 		$this->CI->output->set_output_json($response);
 	}
 
+	/*
+	 * DEPRECATED
+	 */
 	function xhr_salas_associar_mensal(){
 		// Autorização
 		$group_id = $this->CI->session->userdata('group_id');
@@ -259,6 +262,153 @@ class Clinica {
 			'atendente' => $atendentes_id,
 			'atendentes' => $this->CI->clinica_mdl->get_atendentes(),
 			'message' => "Horários registrados com sucesso"
+		);
+		$this->CI->output->set_output_json($response);
+	}
+
+	/*
+	 * Salvar atendente
+	 */
+	function xhr_salas_atendente(){
+		// Autorização
+		$group_id = $this->CI->session->userdata('group_id');
+		if ( $group_id != 1 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Sessão expirada"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
+		if ( ! $this->CI->input->is_ajax_request() )
+			exit($this->CI->lang->line('elementar_no_direct_script_access'));
+
+		$data = array(
+			'id' => $this->CI->input->post('atendenteId', TRUE),
+			'elementar_id' => $this->CI->input->post('accountId', TRUE),
+			'nome' => trim($this->CI->input->post('atendenteNome', TRUE)),
+			'telefone1' => trim($this->CI->input->post('atendenteTelefone1', TRUE)),
+			'telefone2' => trim($this->CI->input->post('atendenteTelefone2', TRUE)),
+			'registro' => trim($this->CI->input->post('atendenteRegistro', TRUE)),
+			'endereco' => trim($this->CI->input->post('atendenteEndereco', TRUE)),
+			'cidade' => trim($this->CI->input->post('atendenteCidade', TRUE)),
+			'uf' => trim($this->CI->input->post('atendenteUf', TRUE)),
+			'cep' => trim($this->CI->input->post('atendenteCep', TRUE)),
+			'notificar' => trim($this->CI->input->post('notificar', TRUE))
+		);
+		if ( strlen($data['nome']) == 0 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Campo “Nome” ausente"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+		if ( strlen($data['telefone1']) == 0 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Campo “Telefone 1” ausente"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
+		// Log
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": salvar atendente ".$data['nome']);
+
+		$lotacao = (int)$this->CI->input->post('lotacao', TRUE);
+		if ($lotacao != 0){
+			$data['lotacao'] = $lotacao;
+		}
+		$this->CI->clinica_mdl->put_log($this->CI->access->get_account_username($this->CI->session->userdata('account_id')).": lotacao $lotacao");
+		// Armazenar atendente
+		$atendentes_id = $this->CI->clinica_mdl->put_atendente($data);
+
+		// Response
+		$response = array(
+			'done' => TRUE,
+			'atendente' => $atendentes_id,
+			'atendentes' => $this->CI->clinica_mdl->get_atendentes(),
+			'message' => "Horários registrados com sucesso"
+		);
+		$this->CI->output->set_output_json($response);
+	}
+
+	/*
+	 * Salvar horário
+	 */
+	function xhr_salas_horario(){
+		// Autorização
+		$group_id = $this->CI->session->userdata('group_id');
+		if ( $group_id != 1 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Sessão expirada"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
+		if ( ! $this->CI->input->is_ajax_request() )
+			exit($this->CI->lang->line('elementar_no_direct_script_access'));
+
+		// Campos obrigatórios
+		if ( strlen($this->CI->input->post('lotacao', TRUE)) == 0 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Campo “Lotação” ausente"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+		if ( strlen($this->CI->input->post('inicio', TRUE)) == 0 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Campo “Início” ausente"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+		if ( strlen($this->CI->input->post('termino', TRUE)) == 0 ){
+			$response = array(
+				'done' => FALSE,
+				'message' => "Campo “Término” ausente"
+			);
+			$this->CI->output->set_output_json($response);
+			return;
+		}
+
+		// Datas de início e término da ocupação
+		$inicio = new DateTime($this->CI->input->post('inicio', TRUE), new DateTimeZone('utc'));
+		$termino = new DateTime($this->CI->input->post('termino', TRUE), new DateTimeZone('utc'));
+
+		$data = array(
+			'periodo' => $this->CI->input->post('periodo', TRUE),
+			'plano' => 'mensal',
+			'atendentes_id' => $this->CI->input->post('atendente', TRUE),
+			'salas_id' => $this->CI->input->post('sala', TRUE),
+			'hora' => $this->CI->input->post('hora', TRUE),
+			'dia' => $this->CI->input->post('dia', TRUE),
+			'inicio' => $inicio->format('Y-m-d'),
+			'termino' => $termino->format('Y-m-d'),
+			'lotacao' => $this->CI->input->post('lotacao', TRUE)
+		);
+
+		if ( (bool) $this->CI->input->post('horario', TRUE) ){
+			$horario_id = $this->CI->clinica_mdl->put_horario($this->CI->input->post('horario', TRUE), $data);
+		}
+		else {
+			$horario_id = $this->CI->clinica_mdl->put_horario(NULL, $data);
+		}
+
+		$this->CI->clinica_mdl->put_log(sprintf("Horário %d de %d salvo", $horario_id, $data['atendentes_id']));
+
+		// Response
+		$response = array(
+			'done' => TRUE,
+			'horario_id' => $horario_id,
+			'message' => "Horário salvo"
 		);
 		$this->CI->output->set_output_json($response);
 	}
