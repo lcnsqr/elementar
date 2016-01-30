@@ -1529,8 +1529,12 @@ class Common {
 			 */
 			if ( ! (bool) $field_value && $this->LANG != $this->DEFAULT_LANG )
 			{
-				$field_values = ( (bool) $field_values ) ? $field_values : '';
-				$field_value = (array_key_exists($this->DEFAULT_LANG, $field_values)) ? $field_values[$this->DEFAULT_LANG] : '';
+				if ( isset($field_values) ){
+					$field_value = (array_key_exists($this->DEFAULT_LANG, $field_values)) ? $field_values[$this->DEFAULT_LANG] : '';
+				}
+				else {
+					$field_value = "";
+				}
 			}
 			return (string) $field_value;
 			break;
