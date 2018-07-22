@@ -1480,9 +1480,6 @@ class Common {
 			$selection = array();
 			foreach ( $items as $index => $item )
 			{
-				// Limit
-				if (count($selection) == $limit) break;
-
 				if ( ! in_array($this->CI->storage->get_content_template_id($item['id']), $content_types) ) continue;
 				$titles = json_decode($item['name'], TRUE);
 				$content_name = (array_key_exists($this->LANG, $titles)) ? $titles[$this->LANG] : '';
@@ -1518,6 +1515,9 @@ class Common {
 				$order->set_is_date(TRUE);
 			}
 			usort($selection, array($order, 'sort'));
+
+			// Limit
+			$selection = array_slice($selection, 0, $limit);
 
 			return $selection;
 			break;
