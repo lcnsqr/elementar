@@ -8,6 +8,8 @@
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<script type="text/javascript" src="<?php echo JQUERY; ?>"></script>
 	<script type="text/javascript" src="<?php echo JS_ACCOUNT; ?>"></script>
+	<link rel="stylesheet" href="/css/backend/reset.css" type="text/css" />
+	<link rel="stylesheet" href="/css/backend/backend.css" type="text/css" />
 </head>
 
 <body>

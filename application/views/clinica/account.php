@@ -18,8 +18,9 @@
 
 <body>
 
+<div id="authenticate">
 <?php if ( ! $is_logged ): ?>
-<p class="page_title">Identificação</p>
+<h1>Identificação</h1>
 <form name="login" id="login_form" action="<?php echo $action; ?>">
 <p class="login_field">
 <label for="username">Nome de usuário:</label><br />
@@ -33,7 +34,7 @@
 </form>
 
 <form name="forgot_password" id="forgot_password" action="/">
-<p class="page_title">Esqueci a senha</p>
+<h1>Esqueci a senha</h1>
 <p class="login_field">
 <label for="email">Email cadastrado:</label><br />
 <input name="email" id="email" type="text" />
@@ -46,6 +47,8 @@
 <p><?php echo $username; ?></p>
 <p><a href="/account" class="logout">Sair</a></p>
 <?php endif; ?>
+
+</div><!-- authenticate -->
 
 </body>
 

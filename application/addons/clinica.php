@@ -803,7 +803,9 @@ class Clinica {
 				JQUERY,
 				JS_ACCOUNT
 			),
-			'css' => array(),
+			'css' => array(
+				"/css/backend/backend.css"
+			),
 			'action' => '/' . uri_string()
 		);
 		$login = $this->CI->load->view('clinica/account', $data, TRUE);
@@ -824,7 +826,9 @@ class Clinica {
 				JQUERY,
 				JS_ACCOUNT
 			),
-			'css' => array(),
+			'css' => array(
+				"/css/backend/backend.css"
+			),
 			'action' => '/' . uri_string()
 		);
 		$login = $this->CI->load->view('clinica/account_password', $data, TRUE);
